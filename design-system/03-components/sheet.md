@@ -14,7 +14,9 @@ Built on `@gorhom/bottom-sheet` and mounted from the app root through:
 
 Use for global mobile action menus, order options, filters, account menus, and contextual detail flows.
 
-`QuickActionSheet` keeps its independent trigger, but must follow the same three-zone structure.
+All mobile bottom sheets must enter through `src/components/BottomSheet.tsx`, `useBottomSheet()`, and `bottomSheetPresets`.
+
+`QuickActionSheet` is a content module rendered through the shared `BottomSheet` action-menu preset. It must not own a host, scrim, handle, SafeArea bottom shell, or fixed footer.
 
 ## API
 
@@ -50,6 +52,7 @@ Page code must either call a preset or pass an explicit `header` / `header: fals
 
 - Header navigation area: fixed-height `56px` title bar below the handle.
 - The header is a component-owned fixed visual navigation layer. When a header is present, `BottomSheetContent` must insert an internal `BottomSheetHeaderSpacer` with the same `sheetHeaderHeight` token before page content.
+- Header copy, content, and fixed footer actions must share the same entrance progress and reveal together as one bottom panel. Content must never appear before the bottom action area.
 - Page code must never use padding, margin, an empty `View`, or a locally drawn title bar to simulate global sheet header height.
 - The header title bar does not render a divider line; separation comes from spacing, surface shape, and content hierarchy.
 - Left slot is a reserved semantic/navigation icon slot, not the default close action.
@@ -69,6 +72,7 @@ Page code must either call a preset or pass an explicit `header` / `header: fals
 - Destructive, edit, close, submit, and other explicit operations should pair their button label with a registered `AppIcon` unless the surrounding pattern already supplies the same icon semantics.
 - Backdrop is rendered by the app-owned `AppBottomSheetBackdrop`, not the library default backdrop, and tapping it closes the sheet.
 - The global sheet host sits above `AppViewport`; backdrop covers the full app stage while the sheet surface aligns to the active app page width.
+- `enablePanDownToClose` is mandatory for every shared sheet, including headerless action-menu sheets.
 
 ## Height
 
@@ -104,7 +108,9 @@ default, opening, open, closing, disabled action, loading action, failed action.
 
 ## Governance
 
-- Page code must not draw its own global sheet header or backdrop.
+- Page code and ordinary components must not draw their own bottom sheet host, scrim, drag handle, SafeArea bottom shell, fixed bottom button area, or absolute bottom modal container.
+- Page code must not call `BottomSheetModal` directly; only `src/components/BottomSheet.tsx` may import and render the bottom-sheet host.
+- Page code must not call `bottomSheet.show({ ... })` or `bottomSheet.push({ ... })` with ad hoc sheet options. Use `bottomSheetPresets.actionMenu`, `bottomSheetPresets.detail`, or `bottomSheetPresets.selection`.
 - Use `header.leftIcon` for semantic context icons such as account, options, order, or history.
 - Do not use the right header slot for close. Use `rightAction` only for business actions.
 - Do not put descriptions into the title bar unless approved as a compatibility exception; use content-area copy instead.
@@ -115,11 +121,13 @@ default, opening, open, closing, disabled action, loading action, failed action.
 - Header, content, and footer horizontal padding must come from `layout.screenPaddingX`; page code must not add outer padding to compensate for sheet module alignment.
 - Header occupancy is a global component invariant: `BottomSheetHeader` and `BottomSheetHeaderSpacer` must both bind to `sheetHeaderHeight`, and any regression is a QA blocker for the component library.
 - Footer actions must be owned by the global BottomSheet component and paired with `enableFooterMarginAdjustment`; page content must not simulate fixed operation buttons.
+- Header, content, and fixed footer must use the shared entrance animation layer; async footer appearance is a QA blocker.
 - New or modified sheets must be audited across dynamic height, max-height scrolling, footer obstruction, header spacer, page-width alignment, backdrop close, and pan-down close.
 - Page code must not add `snapPoints` or `contentSizing="fill"` without recording the business reason in the component or page review.
 - Use `header: false` only when the header would duplicate nearby content and the sheet remains understandable without a title.
 - Detail sheets may use `header: false` when the first content block already presents the object identity, status, and context; position and pending-order detail sheets follow this mode.
 - Footer actions for edit, close, delete, and submit flows must stay in the fixed bottom operation area and use documented action icons from `AppIcon`.
-- Every `bottomSheet.show(...)` call must declare a header mode explicitly, either through `header`, `header: false`, or `bottomSheetPresets`.
+- Every `bottomSheet.show(...)` and `bottomSheet.push(...)` call must use a `bottomSheetPresets` factory so the header mode, action-menu mode, and content sizing remain governed.
 - Full-page interaction acceptance covers every global sheet entry in `app/**`, not only the trade page: home account switching, portfolio account switching and menus, position/order details, account detail actions, and balance transaction details.
 - Each accepted sheet must pass open, backdrop-close, pan-down-close, header-close when present, dynamic-height, max-height safe area, and page-width alignment checks.
+- Auth confirmation dialogs, PIN error dialogs, and the TextField web select menu are registered non-sheet exceptions. Country pickers and auth error sheets are bottom-sheet interactions and must use `GlobalBottomSheetHost`.

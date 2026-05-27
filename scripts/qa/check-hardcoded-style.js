@@ -184,20 +184,20 @@ function getPath(root, path) {
 function requireRamp(root, path, label) {
   const ramp = getPath(root, path);
   if (!ramp || typeof ramp !== 'object') {
-    return [fail('QA_COLOR_RAMP', `Missing ${label} color ramp`, 'design-system-engineering/01_tokens/tokens.color.json')];
+    return [fail('QA_COLOR_RAMP', `Missing ${label} color ramp`, 'packages/design-tokens/registry/tokens.color.json')];
   }
 
   return COLOR_STEPS.map((step) =>
     ramp[step]?.$type === 'color' && typeof ramp[step]?.$value === 'string'
-      ? pass('QA_COLOR_RAMP', `${label}.${step} exists`, 'design-system-engineering/01_tokens/tokens.color.json')
-      : fail('QA_COLOR_RAMP', `${label}.${step} must be a DTCG color token`, 'design-system-engineering/01_tokens/tokens.color.json'),
+      ? pass('QA_COLOR_RAMP', `${label}.${step} exists`, 'packages/design-tokens/registry/tokens.color.json')
+      : fail('QA_COLOR_RAMP', `${label}.${step} must be a DTCG color token`, 'packages/design-tokens/registry/tokens.color.json'),
   );
 }
 
 function createColorTokenIssues() {
   const issues = [];
-  const tokenFile = 'design-system-engineering/01_tokens/tokens.color.json';
-  const modeFile = 'design-system-engineering/01_tokens/token-mode.matrix.json';
+  const tokenFile = 'packages/design-tokens/registry/tokens.color.json';
+  const modeFile = 'packages/design-tokens/registry/token-mode.matrix.json';
 
   if (!exists(tokenFile) || !exists(modeFile)) {
     return [fail('QA_COLOR_TOKEN_FILE', 'Color token source and mode matrix are required', tokenFile)];
@@ -324,7 +324,7 @@ const ts = require('typescript');
 
 const bottomSheetIssues = sourceFiles.flatMap((file) => {
   const text = read(file);
-  if (!text.includes('bottomSheet.show')) {
+  if (!text.includes('bottomSheet.show') && !text.includes('bottomSheet.push')) {
     return [];
   }
 
@@ -334,10 +334,11 @@ const bottomSheetIssues = sourceFiles.flatMap((file) => {
     if (
       ts.isCallExpression(node)
       && ts.isPropertyAccessExpression(node.expression)
-      && node.expression.name.text === 'show'
+      && ['show', 'push'].includes(node.expression.name.text)
       && ts.isIdentifier(node.expression.expression)
       && node.expression.expression.text === 'bottomSheet'
     ) {
+      const methodName = node.expression.name.text;
       const firstArg = node.arguments[0];
 
       const isPresetCall = firstArg
@@ -351,9 +352,11 @@ const bottomSheetIssues = sourceFiles.flatMap((file) => {
       }
 
       if (!firstArg || !ts.isObjectLiteralExpression(firstArg)) {
-        issues.push(fail('QA_STYLE_BOTTOM_SHEET', 'Global bottomSheet.show must use structured options with an explicit header mode', file));
+        issues.push(fail('QA_STYLE_BOTTOM_SHEET', `Global bottomSheet.${methodName} must use a shared bottomSheetPresets call`, file));
         return;
       }
+
+      issues.push(fail('QA_STYLE_BOTTOM_SHEET', `Global bottomSheet.${methodName} must use bottomSheetPresets instead of ad hoc options`, file));
 
       const hasHeader = firstArg.properties.some((property) => ts.isPropertyAssignment(property) && property.name && ts.isIdentifier(property.name) && property.name.text === 'header');
       const hasLegacyHeader = firstArg.properties.some(
@@ -361,11 +364,11 @@ const bottomSheetIssues = sourceFiles.flatMap((file) => {
       );
 
       if (!hasHeader) {
-        issues.push(fail('QA_STYLE_BOTTOM_SHEET', 'Global bottomSheet.show options must declare `header` or `header: false`', file));
+        issues.push(fail('QA_STYLE_BOTTOM_SHEET', `Global bottomSheet.${methodName} options must declare \`header\` or \`header: false\``, file));
       }
 
       if (hasLegacyHeader) {
-        issues.push(fail('QA_STYLE_BOTTOM_SHEET', 'Global bottomSheet.show must not rely on legacy title/subtitle compatibility props', file));
+        issues.push(fail('QA_STYLE_BOTTOM_SHEET', `Global bottomSheet.${methodName} must not rely on legacy title/subtitle compatibility props`, file));
       }
 
       const headerProperty = firstArg.properties.find((property) => ts.isPropertyAssignment(property) && property.name && ts.isIdentifier(property.name) && property.name.text === 'header');
@@ -394,26 +397,153 @@ const bottomSheetIssues = sourceFiles.flatMap((file) => {
 const bottomSheetRuntimeText = read('src/components/BottomSheet.tsx');
 const screenRuntimeText = read('src/components/Screen.tsx');
 const runtimeTokenText = read('src/theme/tokens.ts');
+const packageRuntimeTokenText = exists('packages/design-tokens/src/tokens.ts') ? read('packages/design-tokens/src/tokens.ts') : '';
+const spacingTokenDocText = exists('design-system/01-tokens/spacing-tokens.md') ? read('design-system/01-tokens/spacing-tokens.md') : '';
+const tokenRegistryText = exists('packages/design-tokens/registry/tokens.json') ? read('packages/design-tokens/registry/tokens.json') : '';
+const engineeringTokenRegistryText = exists('design-system-engineering/01_tokens/tokens.json') ? read('design-system-engineering/01_tokens/tokens.json') : '';
+const tokenExportMapText = exists('packages/design-tokens/registry/token-export.map.json') ? read('packages/design-tokens/registry/token-export.map.json') : '';
+const engineeringTokenExportMapText = exists('design-system-engineering/01_tokens/token-export.map.json') ? read('design-system-engineering/01_tokens/token-export.map.json') : '';
 const fundActionGridText = read('src/components/FundActionGrid.tsx');
 const quickActionSheetText = read('src/components/QuickActionSheet.tsx');
 const headerIconButtonText = read('src/components/HeaderIconButton.tsx');
+const discoverModuleText = read('src/screens/discover/DiscoverModuleScreen.tsx');
 const bottomSheetFooterIssues = [];
+const semanticSpacingRoles = [
+  'moduleGap',
+  'sectionGap',
+  'sectionGapLarge',
+  'cardPaddingX',
+  'cardPaddingY',
+  'cardPaddingCompactX',
+  'cardPaddingCompactY',
+  'cardPadding',
+  'cardPaddingCompact',
+  'listRowPaddingX',
+  'listRowPaddingY',
+  'formGroupGap',
+  'fieldGap',
+  'inlineGap',
+  'controlGap',
+  'sheetContentGap',
+  'sheetFooterGap',
+  'quoteGroupGap',
+  'dataRowGap',
+];
 if (!/screenPaddingX: spacing\.lg/.test(runtimeTokenText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Page and global sheet module horizontal padding must be 16px through layout.screenPaddingX', 'src/theme/tokens.ts'));
+}
+semanticSpacingRoles.forEach((role) => {
+  const runtimePattern = new RegExp(`${role}:\\s*spacing\\.`);
+  const registryPattern = new RegExp(`"${role}"\\s*:\\s*"layout\\.${role}`);
+  const docPattern = new RegExp(`layout\\.${role}`);
+  if (!runtimePattern.test(runtimeTokenText)) {
+    bottomSheetFooterIssues.push(fail('QA_STYLE_SEMANTIC_SPACING', `Runtime layout.${role} must map to the governed base spacing scale`, 'src/theme/tokens.ts'));
+  }
+  if (!runtimePattern.test(packageRuntimeTokenText)) {
+    bottomSheetFooterIssues.push(fail('QA_STYLE_SEMANTIC_SPACING', `Package runtime layout.${role} must mirror the app runtime spacing role`, 'packages/design-tokens/src/tokens.ts'));
+  }
+  if (!registryPattern.test(tokenRegistryText) || !registryPattern.test(engineeringTokenRegistryText)) {
+    bottomSheetFooterIssues.push(fail('QA_STYLE_SEMANTIC_SPACING', `Token registries must declare semantic spacing role layout.${role}`, 'packages/design-tokens/registry/tokens.json'));
+  }
+  if (!docPattern.test(spacingTokenDocText)) {
+    bottomSheetFooterIssues.push(fail('QA_STYLE_SEMANTIC_SPACING_DOC', `Spacing documentation must explain layout.${role}`, 'design-system/01-tokens/spacing-tokens.md'));
+  }
+});
+if (!/semanticSpacing/.test(tokenExportMapText) || !/semanticSpacing/.test(engineeringTokenExportMapText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_SEMANTIC_SPACING_EXPORT', 'Token export maps must expose semantic spacing roles for future project consumption', 'packages/design-tokens/registry/token-export.map.json'));
 }
 if (!/paddingHorizontal: layout\.screenPaddingX/.test(screenRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Screen page content must use layout.screenPaddingX for 16px module alignment', 'src/components/Screen.tsx'));
 }
+const cardRuntimeText = read('src/components/Card.tsx');
+if (!/paddingHorizontal:\s*layout\.cardPaddingX/.test(cardRuntimeText)
+  || !/paddingVertical:\s*layout\.cardPaddingY/.test(cardRuntimeText)
+  || !/paddingHorizontal:\s*layout\.cardPaddingCompactX/.test(cardRuntimeText)
+  || !/paddingVertical:\s*layout\.cardPaddingCompactY/.test(cardRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_CARD_AXIS_PADDING', 'Shared Card must use axis-specific card padding tokens for 12px horizontal and governed vertical rhythm', 'src/components/Card.tsx'));
+}
+const cardLikeStyleIssues = allSourceFiles.flatMap((file) => {
+  const text = read(file);
+  const issues = [];
+  const styleBlockPattern = /(\w*(?:Card|Panel|Surface|Tile)\w*)\s*:\s*\{[\s\S]*?\n\s*\},/g;
+  for (const match of text.matchAll(styleBlockPattern)) {
+    const styleName = match[1];
+    const block = match[0];
+    if (/(?:padding:\s*spacing\.lg|paddingHorizontal:\s*spacing\.lg)/.test(block)) {
+      issues.push(fail('QA_STYLE_CARD_AXIS_PADDING', `${styleName} must use layout.cardPaddingX/Y axis tokens instead of scalar spacing.lg card padding`, file));
+    }
+  }
+  return issues;
+});
+if (cardLikeStyleIssues.length > 0) {
+  bottomSheetFooterIssues.push(...cardLikeStyleIssues);
+}
+if (!/useSafeAreaInsets/.test(screenRuntimeText)
+  || !/const insets = useSafeAreaInsets\(\)/.test(screenRuntimeText)
+  || !/const screenContentBottomPadding = layout\.screenBottomPadding \+ insets\.bottom/.test(screenRuntimeText)
+  || !/const baseBottomPadding = stickyFooter \? bottomActionInset : screenContentBottomPadding/.test(screenRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_SCREEN_SAFE_BOTTOM', 'Screen scroll content must combine layout.screenBottomPadding with the device bottom safe-area inset', 'src/components/Screen.tsx'));
+}
+const screenNoBottomPaddingCallSites = allSourceFiles
+  .filter((file) => file !== 'src/components/Screen.tsx')
+  .filter((file) => /contentBottomPadding\s*=\s*(?:"none"|'none'|\{\s*['"]none['"]\s*\})/.test(read(file)));
+if (/contentBottomPadding === 'none' \? 0/.test(screenRuntimeText) || screenNoBottomPaddingCallSites.length > 0) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_SCREEN_SAFE_BOTTOM', `Route pages must not remove the global Screen bottom safety gap with contentBottomPadding="none"${screenNoBottomPaddingCallSites.length ? `: ${screenNoBottomPaddingCallSites.join(', ')}` : ''}`, 'src/components/Screen.tsx'));
+}
 if (!/footerComponent=\{options\.footer \? footerComponent : undefined\}/.test(bottomSheetRuntimeText) || !/GorhomBottomSheetFooter animatedFooterPosition=\{animatedFooterPosition\}/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_FOOTER', 'Global BottomSheet footer actions must render through the component-owned fixed footer zone', 'src/components/BottomSheet.tsx'));
+}
+if (!/enablePanDownToClose/.test(bottomSheetRuntimeText)
+  || !/onPress=\{hide\}/.test(bottomSheetRuntimeText)
+  || !/const \[backdropInteractive, setBackdropInteractive\] = useState\(false\)/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_DISMISS', 'Global BottomSheet must support pan-down close and app-owned backdrop tap dismissal', 'src/components/BottomSheet.tsx'));
+}
+if (!/const sheetEntranceProgress = useSharedValue\(0\)/.test(bottomSheetRuntimeText)
+  || !/function useBottomSheetEntranceStyle/.test(bottomSheetRuntimeText)
+  || !/entranceProgress=\{sheetEntranceProgress\}/.test(bottomSheetRuntimeText)
+  || !/function BottomSheetHeader\([\s\S]*?const entranceStyle = useBottomSheetEntranceStyle\(entranceProgress\)/.test(bottomSheetRuntimeText)
+  || !/style=\{\[styles\.headerEntrance, entranceStyle\]\}/.test(bottomSheetRuntimeText)
+  || !/<BottomSheetContent[\s\S]*?entranceProgress=\{sheetEntranceProgress\}/.test(bottomSheetRuntimeText)
+  || !/<Animated\.View style=\{entranceStyle\}>[\s\S]*?<View ref=\{footerRef\}/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_ENTRANCE', 'Global BottomSheet header, content, and fixed footer must share synchronized entrance animation so footer never appears after content', 'src/components/BottomSheet.tsx'));
+}
+const pageOwnedBottomSheetShellIssues = allSourceFiles
+  .filter((file) => file !== 'src/components/BottomSheet.tsx')
+  .flatMap((file) => {
+    const text = read(file);
+    const issues = [];
+    if (/BottomSheetModal/.test(text)) {
+      issues.push(fail('QA_STYLE_BOTTOM_SHEET_GOVERNANCE', 'Only the global BottomSheet component may import or render BottomSheetModal', file));
+    }
+    if (/styles\.scrim/.test(text) || /scrim:\s*\{[\s\S]*?position:\s*['"]absolute['"]/m.test(text)) {
+      issues.push(fail('QA_STYLE_BOTTOM_SHEET_GOVERNANCE', 'Bottom sheet scrims must be owned by GlobalBottomSheetHost, not page or feature components', file));
+    }
+    if (/SafeAreaView edges=\{\['bottom'\]\}/.test(text) && /borderTopLeftRadius|borderTopRightRadius|handleWrap|bottom:\s*0/.test(text)) {
+      issues.push(fail('QA_STYLE_BOTTOM_SHEET_GOVERNANCE', 'Bottom sheet safe-area shells must use the shared BottomSheet host instead of page-local bottom containers', file));
+    }
+    if (file !== 'src/screens/trading/OrderTicketScreen.tsx' && /handleWrap:\s*\{/.test(text) && /bottom:\s*0/.test(text) && /position:\s*['"]absolute['"]/.test(text)) {
+      issues.push(fail('QA_STYLE_BOTTOM_SHEET_GOVERNANCE', 'Bottom sheet handles must be owned by the shared BottomSheet component', file));
+    }
+    return issues;
+  });
+if (pageOwnedBottomSheetShellIssues.length > 0) {
+  bottomSheetFooterIssues.push(...pageOwnedBottomSheetShellIssues);
 }
 if (!/content:\s*\{[\s\S]*?padding: layout\.screenPaddingX/.test(bottomSheetRuntimeText)
   || !/footer:\s*\{[\s\S]*?paddingHorizontal: layout\.screenPaddingX/.test(bottomSheetRuntimeText)
   || !/header:\s*\{[\s\S]*?paddingHorizontal: layout\.screenPaddingX/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Global BottomSheet header, content, and footer must use layout.screenPaddingX for 16px module alignment', 'src/components/BottomSheet.tsx'));
 }
-if (!/<BottomSheetContent hasFooter=\{Boolean\(options\.footer\)\}>/.test(bottomSheetRuntimeText) || !/enableFooterMarginAdjustment=\{hasFooter\}/.test(bottomSheetRuntimeText)) {
+if (!/<BottomSheetContent[\s\S]*?hasFooter=\{Boolean\(options\.footer\)\}/.test(bottomSheetRuntimeText) || !/enableFooterMarginAdjustment=\{hasFooter\}/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_FOOTER', 'Global BottomSheet scroll content must reserve space for the fixed footer actions', 'src/components/BottomSheet.tsx'));
+}
+if (!/const \[footerHeight, setFooterHeight\] = useState\(0\)/.test(bottomSheetRuntimeText)
+  || !/footerHeight=\{footerHeight\}/.test(bottomSheetRuntimeText)
+  || !/onHeightChange=\{handleFooterHeightChange\}/.test(bottomSheetRuntimeText)
+  || !/new ResizeObserver\(updateMeasuredHeight\)/.test(bottomSheetRuntimeText)
+  || !/const availableContentHeight = Math\.max\(1, maxHeight - reservedFooterHeight\)/.test(bottomSheetRuntimeText)
+  || !/const shouldScroll = contentHeight > availableContentHeight \+ 1/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_SCROLL', 'Global BottomSheet must measure fixed footer height and only enable scroll when content plus footer exceeds the max-height cap', 'src/components/BottomSheet.tsx'));
 }
 if (!/icon\?: AppIconName/.test(bottomSheetRuntimeText) || !/icon=\{action\.icon\}/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_FOOTER', 'Global BottomSheet footer actions must support registered action icons', 'src/components/BottomSheet.tsx'));
@@ -424,13 +554,16 @@ if (!/sheetHeaderHeight/.test(bottomSheetRuntimeText) || !/height: SHEET_HEADER_
 if (!/sheetTitle:\s*\{\s*fontSize: 20,/.test(runtimeTokenText) || !/variant="title\.sheet"/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_HEADER', 'Global BottomSheet title must use the title.sheet semantic role backed by the 20px sheetTitle typography token', 'src/components/BottomSheet.tsx'));
 }
+if (/<AppText\b(?=[^>]*\badjustsFontSizeToFit\b)(?=[^>]*variant="title\.sheet")/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_HEADER', 'Global BottomSheet title must not auto-shrink; keep the governed title.sheet size and truncate long titles', 'src/components/BottomSheet.tsx'));
+}
 if (!/titleTypography\s*=\s*\{[\s\S]*?page:\s*typography\.displayXl[\s\S]*?dialog:\s*typography\.sheetTitle[\s\S]*?card:\s*typography\.titleMd[\s\S]*?tabs:\s*typography\.caption[\s\S]*?bottomTabs:\s*typography\.microLabel/m.test(runtimeTokenText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_TITLE_TYPOGRAPHY', 'Design system must expose semantic titleTypography roles for page, dialog, card, list, and tab titles', 'src/theme/tokens.ts'));
 }
 if (!/bodyTypography\s*=\s*\{[\s\S]*?primary:\s*typography\.bodyMd[\s\S]*?secondary:\s*typography\.bodySm[\s\S]*?dense:\s*typography\.bodySm[\s\S]*?prominent:\s*typography\.bodyLg/m.test(runtimeTokenText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BODY_TYPOGRAPHY', 'Design system must expose semantic bodyTypography roles for primary, secondary, dense, and prominent body text', 'src/theme/tokens.ts'));
 }
-if (!/labelTypography\s*=\s*\{[\s\S]*?default:\s*typography\.caption[\s\S]*?helper:\s*typography\.captionSm[\s\S]*?metadata:\s*typography\.captionSm[\s\S]*?control:\s*typography\.caption[\s\S]*?minimum:\s*typography\.microLabel/m.test(runtimeTokenText)) {
+if (!/labelTypography\s*=\s*\{[\s\S]*?default:\s*typography\.caption[\s\S]*?helper:\s*typography\.captionSm[\s\S]*?metadata:\s*typography\.captionSm[\s\S]*?control:\s*typography\.caption[\s\S]*?controlLarge:\s*typography\.titleSm[\s\S]*?minimum:\s*typography\.microMeta/m.test(runtimeTokenText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_LABEL_TYPOGRAPHY', 'Design system must expose semantic labelTypography roles for labels, helper text, metadata, controls, status, and minimum text', 'src/theme/tokens.ts'));
 }
 if (!/`title\.\$\{TitleTypographyRole\}`/.test(read('src/components/Typography.tsx'))) {
@@ -445,8 +578,17 @@ if (!/variant=\{back \? 'title\.pageCompact' : 'title\.page'\}/.test(read('src/c
 if (!/variant="title\.sheet"/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_TITLE_TYPOGRAPHY', 'Global BottomSheet title must use title.sheet semantic role', 'src/components/BottomSheet.tsx'));
 }
-if (!/variant="label\.control"/.test(read('src/components/SegmentedTabs.tsx'))) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_LABEL_TYPOGRAPHY', 'SegmentedTabs labels must use label.control semantic role', 'src/components/SegmentedTabs.tsx'));
+const authFlowControlsText = read('src/components/AuthFlowControls.tsx');
+if (!/variant="title\.dialog"/.test(authFlowControlsText) || /<AppText\b(?=[^>]*variant="subtitle")[\s\S]*?\{title\}[\s\S]*?<\/AppText>/.test(authFlowControlsText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_TITLE_TYPOGRAPHY', 'Auth modal dialog titles must use title.dialog and must not use the generic subtitle variant', 'src/components/AuthFlowControls.tsx'));
+}
+const segmentedTabsText = read('src/components/SegmentedTabs.tsx');
+if (!/labelSize\?: SegmentedTabsLabelSize/.test(segmentedTabsText)
+  || !/labelSize === 'large' \? 'label\.controlLarge' : 'label\.control'/.test(segmentedTabsText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_LABEL_TYPOGRAPHY', 'SegmentedTabs labels must use label.control by default and label.controlLarge only through the explicit large labelSize variant', 'src/components/SegmentedTabs.tsx'));
+}
+if (!/labelSize="large"/.test(read('src/screens/portfolio/PortfolioScreen.tsx'))) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_TRADE_TABS_TYPOGRAPHY', 'Trade workspace order-view tabs must opt into the 16px SegmentedTabs large label variant', 'src/screens/portfolio/PortfolioScreen.tsx'));
 }
 if (!/titleTypography\.bottomTabs/.test(read('src/screens/navigation/TabLayout.tsx'))) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_TITLE_TYPOGRAPHY', 'Bottom navigation labels must use titleTypography.bottomTabs', 'src/screens/navigation/TabLayout.tsx'));
@@ -458,8 +600,11 @@ if (!/variant="title\.card"/.test(read('src/components/feedback/EmptyState.tsx')
   bottomSheetFooterIssues.push(fail('QA_STYLE_TEXT_ROLE_TYPOGRAPHY', 'EmptyState must use title.card, label.helper, and body.secondary roles', 'src/components/feedback/EmptyState.tsx'));
 }
 const subMinimumTypographyIssues = allSourceFiles.flatMap((file) => {
+  if (file === 'src/theme/tokens.ts') {
+    return [];
+  }
   const matches = read(file).match(/\bfontSize\s*:\s*(?:[0-9]|1[01])\b/g) ?? [];
-  return matches.map((match) => fail('QA_STYLE_MIN_TEXT_SIZE', `Text size ${match.trim()} is below the 12px minimum`, file));
+  return matches.map((match) => fail('QA_STYLE_MIN_TEXT_SIZE', `Text size ${match.trim()} is below the governed 10px minimum or bypasses label.minimum`, file));
 });
 if (!/function BottomSheetHeaderSpacer\(\)/.test(bottomSheetRuntimeText) || !/hasHeader \? <BottomSheetHeaderSpacer \/> : null/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_HEADER', 'Global BottomSheet content must insert the component-owned header spacer only when a header is present', 'src/components/BottomSheet.tsx'));
@@ -500,12 +645,12 @@ if (/\$\{color\}12/.test(fundActionGridText) || /\$\{color\}55/.test(fundActionG
 if (
   !/fundActionIconSize:\s*size\.icon\.fundAction/.test(runtimeTokenText)
   || !/fundActionIconBoxSize:\s*size\.icon\.fundActionBox/.test(runtimeTokenText)
-  || !/size=\{layout\.fundActionIconSize\}/.test(fundActionGridText)
+  || !/<IconSurface background="hidden" icon=\{item\.icon\} sizeVariant="md" tone=\{iconToneByTone\[item\.tone\]\}/.test(fundActionGridText)
 ) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_SIZE', 'Fund action icons must use the 24px icon.fund-action size inside a 40px reserved box', 'src/components/FundActionGrid.tsx'));
+  bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_SIZE', 'Fund action icons must use IconSurface md with hidden background to keep the governed 24px / 40px slot.', 'src/components/FundActionGrid.tsx'));
 }
-if (!/deposit: colors\.market\.down\.fg/.test(fundActionGridText) || !/withdraw: colors\.status\.warning\.fg/.test(fundActionGridText) || !/transfer: colors\.status\.info\.fg/.test(fundActionGridText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_COLOR', 'Fund action tones must map deposit to green, withdraw to yellow, and transfer to blue', 'src/components/FundActionGrid.tsx'));
+if (!/deposit: 'down'/.test(fundActionGridText) || !/withdraw: 'warning'/.test(fundActionGridText) || !/transfer: 'info'/.test(fundActionGridText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_COLOR', 'Fund action tones must map deposit to down, withdraw to warning, and transfer to info IconSurface tone families.', 'src/components/FundActionGrid.tsx'));
 }
 if (/tone: ['"](down|amber|blue)['"]/.test(fundActionGridText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_COLOR', 'Fund action defaults must use business tones: deposit, withdraw, and transfer', 'src/components/FundActionGrid.tsx'));
@@ -516,8 +661,16 @@ if (/\$\{action\.tone\}12/.test(quickActionSheetText) || /\$\{action\.tone\}55/.
 if (/button:\s*\{[^}]*borderWidth:/m.test(headerIconButtonText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_CONTAINER', 'Header icon buttons must keep touch area without rendering an outlined circular frame', 'src/components/HeaderIconButton.tsx'));
 }
+if (/tone === 'default' \? 'tertiary' : tone/.test(headerIconButtonText)
+  || !/const iconTone = tone === 'default' \? undefined : tone/.test(headerIconButtonText)
+  || !/<AppIcon name=\{icon\} size=\{layout\.headerIconSize\} tone=\{iconTone\}/.test(headerIconButtonText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_HEADER_ICON_COLOR', 'HeaderIconButton default tone must defer to AppIcon default color.icon.primary instead of forcing tertiary.', 'src/components/HeaderIconButton.tsx'));
+}
 if (/decorativeHeaderIcon:\s*\{[^}]*borderWidth:/m.test(bottomSheetRuntimeText) || /decorativeHeaderIcon:\s*\{[^}]*backgroundColor:/m.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_CONTAINER', 'BottomSheet reserved header icons must be plain semantic icons without a decorative background frame', 'src/components/BottomSheet.tsx'));
+}
+if (!/profileMenuList:\s*\{[\s\S]*?paddingHorizontal: spacing\.none/.test(discoverModuleText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_QUICK_PROFILE_MENU_EDGE', 'Quick profile settings and support menu-card wrappers must not add extra horizontal padding around GlobalMenuList.', 'src/screens/discover/DiscoverModuleScreen.tsx'));
 }
 
 complete('qa:style', [
@@ -525,10 +678,10 @@ complete('qa:style', [
     'DESIGN.md',
     'src/theme/colors.ts',
     'src/theme/tokens.ts',
-    'design-system-engineering/01_tokens/tokens.color.json',
-    'design-system-engineering/01_tokens/token-mode.matrix.json',
-    'design-system-engineering/08_code_mapping/css-variable.mapping.css',
-    'design-system-engineering/08_code_mapping/tailwind.mapping.js',
+    'packages/design-tokens/registry/tokens.color.json',
+    'packages/design-tokens/registry/token-mode.matrix.json',
+    'packages/design-tokens/mappings/css-variable.mapping.css',
+    'packages/design-tokens/mappings/tailwind.mapping.js',
     'design-system/01-tokens/token-architecture.md',
     'design-system/01-tokens/color-tokens.md',
     'design-system/01-tokens/typography-tokens.md',
@@ -550,8 +703,8 @@ complete('qa:style', [
     : fail('QA_STYLE_TYPOGRAPHY', 'Hardcoded typography styles found outside typography surfaces'),
   ...hardcodedTypographyIssues,
   subMinimumTypographyIssues.length === 0
-    ? pass('QA_STYLE_MIN_TEXT_SIZE', 'No text size below 12px found')
-    : fail('QA_STYLE_MIN_TEXT_SIZE', 'Text size below 12px found'),
+    ? pass('QA_STYLE_MIN_TEXT_SIZE', 'No text size below 10px or page-local 10/11px found')
+    : fail('QA_STYLE_MIN_TEXT_SIZE', 'Text size below 10px or page-local 10/11px found'),
   ...subMinimumTypographyIssues,
   directTextInputIssues.length === 0
     ? pass('QA_STYLE_TEXT_INPUT', 'No direct TextInput usage outside shared wrappers')

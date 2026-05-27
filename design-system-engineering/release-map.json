@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-05-26",
+  "packages": {
+    "@dpf/design-tokens": {
+      "path": "packages/design-tokens",
+      "version": "2.3.7",
+      "sourceOfTruth": [
+        "packages/design-tokens/registry/tokens.json",
+        "packages/design-tokens/registry/tokens.color.json",
+        "packages/design-tokens/registry/token-mode.matrix.json"
+      ]
+    },
+    "@dpf/component-library": {
+      "path": "packages/component-library",
+      "version": "1.6.12",
+      "sourceOfTruth": [
+        "packages/component-library/registry/component-manifest.json",
+        "packages/component-library/registry/component.schema.json",
+        "packages/component-library/registry/component-token-binding.map.json"
+      ]
+    },
+    "@dpf/icon-library": {
+      "path": "packages/icon-library",
+      "version": "4.1.8",
+      "sourceOfTruth": [
+        "packages/icon-library/registry/icon-registry.json",
+        "packages/icon-library/registry/icon.schema.json",
+        "packages/icon-library/local/iconsax"
+      ]
+    }
+  },
+  "compatibilityPaths": [
+    "design-system-engineering/01_tokens",
+    "design-system-engineering/02_components",
+    "design-system-engineering/04_icons",
+    "src/theme",
+    "src/components",
+    "src/icons"
+  ]
+}

@@ -1,8 +1,8 @@
+import { useCallback, useEffect, useRef } from 'react';
 import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { lineWidth } from '@/src/theme/tokens';
+import { layout, radius, spacing } from '@/src/theme/tokens';
 import { getFundingOperationHref } from '@/src/domain/funding';
 import { useToast } from '@/src/feedback/Toast';
 import { impactLight, notifySuccess, notifyWarning } from '@/src/feedback/haptics';
@@ -11,7 +11,7 @@ import { useBroker } from '@/src/state/BrokerStore';
 
 import { NativePressable } from './NativePressable';
 import { AppIcon, type AppIconName, type IconTone } from './AppIcon';
-import { HeaderIconButton } from './HeaderIconButton';
+import { bottomSheetPresets, useBottomSheet } from './BottomSheet';
 import { AppText } from './Typography';
 
 type QuickActionSheetProps = {
@@ -20,6 +20,35 @@ type QuickActionSheetProps = {
 };
 
 export function QuickActionSheet({ onClose, open }: QuickActionSheetProps) {
+  const bottomSheet = useBottomSheet();
+  const ownsSheetRef = useRef(false);
+  const handleDismiss = useCallback(() => {
+    ownsSheetRef.current = false;
+    onClose();
+  }, [onClose]);
+  const handleClose = useCallback(() => {
+    bottomSheet.hide();
+  }, [bottomSheet]);
+
+  useEffect(() => {
+    if (!open) {
+      if (ownsSheetRef.current) {
+        bottomSheet.hide();
+      }
+      return;
+    }
+
+    ownsSheetRef.current = true;
+    bottomSheet.show(bottomSheetPresets.actionMenu({
+      content: <QuickActionSheetContent onClose={handleClose} />,
+      onDismiss: handleDismiss,
+    }));
+  }, [bottomSheet, handleClose, handleDismiss, open]);
+
+  return null;
+}
+
+export function QuickActionSheetContent({ onClose }: { onClose: () => void }) {
   const { instruments, role, submitUpgradeRequest, upgradeRequest } = useBroker();
   const { authStatus, colors, t } = useProductSettings();
   const toast = useToast();
@@ -147,46 +176,31 @@ export function QuickActionSheet({ onClose, open }: QuickActionSheetProps) {
     },
   ];
 
-  if (!open) {
-    return null;
-  }
-
   return (
-    <View style={styles.host}>
-      <NativePressable accessibilityLabel={t('common.cancel')} onPress={onClose} style={StyleSheet.flatten([styles.scrim, { backgroundColor: `${colors.surface.canvas}CC` }])} />
-      <SafeAreaView edges={['bottom']} style={StyleSheet.flatten([styles.sheet, { backgroundColor: colors.surface.raised, borderColor: colors.border.subtle }])}>
-        <View style={styles.handleWrap}>
-          <View style={StyleSheet.flatten([styles.handle, { backgroundColor: colors.border.default }])} />
-        </View>
-        <View style={StyleSheet.flatten([styles.sheetHead, { borderBottomColor: colors.border.subtle }])}>
-          <View>
-            <AppText tone="dim" variant="eyebrow">
-              {t('tabs.quick')}
+    <View style={styles.content}>
+      <View style={styles.sheetHead}>
+        <AppText tone="dim" variant="eyebrow">
+          {t('tabs.quick')}
+        </AppText>
+        <AppText variant="title.card">{t('quick.title')}</AppText>
+      </View>
+      <View style={styles.actionGrid}>
+        {actions.map((action) => (
+          <NativePressable
+            accessibilityRole="button"
+            key={action.label}
+            minTouch={64}
+            onPress={action.onPress}
+            style={StyleSheet.flatten([styles.actionItem, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+            <View style={styles.actionIcon}>
+              <AppIcon name={action.icon} sizeVariant="sm" tone={action.tone} />
+            </View>
+            <AppText adjustsFontSizeToFit numberOfLines={1} variant="caption">
+              {action.label}
             </AppText>
-            <AppText variant="subtitle">{t('quick.title')}</AppText>
-          </View>
-          <HeaderIconButton accessibilityLabel={t('common.cancel')} icon="icon.system.close" onPress={onClose} />
-        </View>
-        <View style={styles.sheetContent}>
-          <View style={styles.actionGrid}>
-          {actions.map((action) => (
-            <NativePressable
-              accessibilityRole="button"
-              key={action.label}
-              minTouch={64}
-              onPress={action.onPress}
-              style={StyleSheet.flatten([styles.actionItem, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-              <View style={styles.actionIcon}>
-                <AppIcon name={action.icon} size={17} tone={action.tone} />
-              </View>
-              <AppText adjustsFontSizeToFit numberOfLines={1} variant="caption">
-                {action.label}
-              </AppText>
-            </NativePressable>
-          ))}
-          </View>
-        </View>
-      </SafeAreaView>
+          </NativePressable>
+        ))}
+      </View>
     </View>
   );
 }
@@ -195,74 +209,28 @@ const styles = StyleSheet.create({
   actionGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
-    paddingHorizontal: 16,
-    paddingTop: 10,
+    gap: spacing.sm,
   },
   actionIcon: {
     alignItems: 'center',
-    height: 34,
+    height: layout.iconSurface.sm.container,
     justifyContent: 'center',
-    width: 34,
+    width: layout.iconSurface.sm.container,
   },
   actionItem: {
     alignItems: 'center',
-    borderRadius: 14,
-    borderWidth: lineWidth.none,
+    borderRadius: radius.lg,
     flexBasis: '30%',
     flexGrow: 1,
-    gap: 7,
+    gap: spacing.sm,
     minWidth: 88,
-    padding: 10,
+    padding: spacing.md,
   },
-  handle: {
-    borderRadius: 999,
-    height: 4,
-    width: 38,
-  },
-  handleWrap: {
-    alignItems: 'center',
-    paddingTop: 8,
-  },
-  host: {
-    bottom: 0,
-    left: 0,
-    pointerEvents: 'box-none',
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    zIndex: 70,
-  },
-  scrim: {
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-  },
-  sheet: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    borderTopWidth: lineWidth.hairline,
-    bottom: 0,
-    left: 0,
-    paddingBottom: 8,
-    paddingTop: 0,
-    position: 'absolute',
-    right: 0,
+  content: {
+    gap: spacing.md,
+    paddingBottom: spacing.sm,
   },
   sheetHead: {
-    alignItems: 'center',
-    borderBottomWidth: lineWidth.hairline,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    minHeight: 62,
-    paddingBottom: 12,
-    paddingHorizontal: 16,
-    paddingTop: 6,
-  },
-  sheetContent: {
-    minHeight: 194,
-    paddingBottom: 12,
+    gap: spacing.xs,
   },
 });

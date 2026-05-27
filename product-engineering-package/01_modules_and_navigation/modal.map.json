@@ -1,0 +1,48 @@
+{
+  "modal_policy": "Runtime modal inventory. Routeable modal criteria are defined in docs/07-routing.md and enforced by scripts/qa/check-navigation-registry.js.",
+  "source_of_truth": "src/navigation/modalRegistry.ts",
+  "routeable_modals": {
+    "order.ticket.route": {
+      "component": "OrderTicketScreen",
+      "route_path": "/order/[id]",
+      "risk_level": "high",
+      "routing_reason": "Trading ticket is a transaction flow that benefits from refresh recovery, deep links, and external task entry."
+    },
+    "discover.layout.route": {
+      "component": "DiscoverLayoutScreen",
+      "route_path": "/discover-layout",
+      "risk_level": "low",
+      "routing_reason": "Current route-backed configuration layer; consider demoting if deep link or recovery is not required."
+    }
+  },
+  "non_routeable_modals": {
+    "auth.countryPicker": "Country picker sheet for phone flows.",
+    "auth.contactConfirm": "Contact confirmation dialog for registration.",
+    "auth.leaveVerifiedStep": "Leave verified registration step confirmation.",
+    "auth.errorSheet": "Validation error bottom sheet.",
+    "auth.errorDialog": "PIN error dialog.",
+    "global.bottomSheet": "Shared BottomSheet host and presets for all mobile bottom-sheet interactions.",
+    "global.toastFeedback": "Global toast feedback.",
+    "global.webSelectMenu": "Web-only select menu modal.",
+    "quick.actionSheet": "Quick actions content rendered through shared BottomSheet actionMenu preset.",
+    "tradingAccount.switchSheet": "Trading account selection sheet.",
+    "funding.paymentMethodSheet": "Funding payment or payout method selection sheet.",
+    "funding.submitFeedbackToast": "Funding submit reference feedback.",
+    "security.deviceDetailSheet": "Security device detail sheet.",
+    "security.revokeConfirmSheet": "Session revoke confirmation.",
+    "security.reportConfirmSheet": "Suspicious event report confirmation.",
+    "portfolio.accountMenuSheet": "Portfolio account menu sheet.",
+    "portfolio.positionDetailSheet": "Position detail sheet.",
+    "portfolio.pendingOrderDetailSheet": "Pending order detail sheet.",
+    "portfolio.closePositionConfirm": "Close position confirmation through shared ConfirmActionSheet.",
+    "portfolio.pendingOrderFeedbackToast": "Pending order action feedback.",
+    "account.moreActionSheet": "Account detail more action sheet.",
+    "account.metricDescriptionSheet": "Metric description sheet.",
+    "account.balanceTransactionDetailSheet": "Balance transaction detail sheet."
+  },
+  "hard_rules": [
+    "Non-routeable modal entries must not define routePath.",
+    "Ordinary confirmation, success, failure, toast, tips, delete confirmation, and picker sheets must not be independent routes.",
+    "Only routeable modals may point to paths in routeRegistry."
+  ]
+}

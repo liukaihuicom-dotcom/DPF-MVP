@@ -26,4 +26,4 @@ Use this audit before marking a page production-ready.
 
 ## Style Gate
 
-`pnpm run qa:style` must pass before a page is marked production-ready. Raw colors, direct page typography literals, direct `TextInput` usage, legacy `bottomSheet.show(...)` calls, page-owned global sheet header/footer/backdrop patterns, and page padding or empty views used to fake global sheet header height are blockers.
+`pnpm run qa:style` must pass before a page is marked production-ready. Raw colors, direct page typography literals, direct `TextInput` usage, legacy `bottomSheet.show(...)` / `bottomSheet.push(...)` option objects, page-owned global sheet header/footer/backdrop patterns, and page padding or empty views used to fake global sheet header height are blockers.
