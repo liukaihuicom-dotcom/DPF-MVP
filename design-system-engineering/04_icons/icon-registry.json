@@ -1,42 +1,23 @@
 {
-  "version": "3.0.0",
-  "generated_at": "2026-05-24",
-  "governance_skill": "icon-asset-library-governance v1.0.0-L5",
+  "version": "4.1.7",
+  "generated_at": "2026-05-26",
+  "governance_skill": "icon-asset-library-governance v1.1.0-L5",
   "source_policy": {
-    "primary_library": "phosphor",
-    "supplement_libraries": [
-      "remix",
-      "lucide"
-    ],
-    "custom_policy": "custom icons require a Custom Icon Request and ownership review before registry approval",
+    "primary_library": "iconsax",
+    "supplement_libraries": [],
+    "custom_policy": "custom icons are limited to retained brand assets or approved owned glyphs with registry metadata and QA approval",
     "approved_libraries": [
       {
-        "library": "phosphor",
-        "role": "primary",
-        "package": "phosphor-react-native",
+        "library": "iconsax",
+        "role": "primary-functional-source",
+        "package": "iconsax-react-native",
         "license": "MIT",
-        "license_url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
-      },
-      {
-        "library": "remix",
-        "role": "financial-business-supplement",
-        "package": "react-native-remix-icon",
-        "license": "Remix Icon License v1.0",
-        "license_url": "https://github.com/Remix-Design/RemixIcon/blob/master/License",
-        "attribution_required": false
-      },
-      {
-        "library": "lucide",
-        "role": "system-operation-supplement",
-        "package": "lucide-react-native",
-        "license": "ISC",
-        "license_url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
+        "license_url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE",
         "attribution_required": false
       },
       {
         "library": "custom",
-        "role": "approved-custom-only",
+        "role": "retained-brand-or-approved-custom-only",
         "package": "internal",
         "license": "custom-owned",
         "license_url": "internal-custom-icon-request",
@@ -45,12 +26,28 @@
     ],
     "blocked_libraries": [
       {
+        "library": "phosphor-react-native",
+        "reason": "replaced by local Iconsax functional icon source policy"
+      },
+      {
+        "library": "lucide-react-native",
+        "reason": "replaced by local Iconsax functional icon source policy"
+      },
+      {
+        "library": "react-native-remix-icon",
+        "reason": "replaced by local Iconsax functional icon source policy"
+      },
+      {
+        "library": "iconsax-react-native",
+        "reason": "allowed only as temporary extraction source; runtime dependency is blocked"
+      },
+      {
         "library": "hugeicons-free-stroke-rounded",
-        "reason": "replaced by latest Icon Asset Library Governance source policy"
+        "reason": "blocked by icon source policy"
       },
       {
         "library": "hugeicons-pro-duotone-rounded",
-        "reason": "not approved by latest Icon Asset Library Governance source policy"
+        "reason": "blocked by icon source policy"
       }
     ],
     "forbidden_sources": [
@@ -63,16 +60,19 @@
     ],
     "runtime_policy": {
       "delivery": "local-vendored-assets",
-      "asset_root": "src/icons/local",
+      "asset_root": "src/icons/local/iconsax",
       "renderer": "src/components/AppIcon.tsx",
       "blocked_runtime_dependencies": [
+        "iconsax-react-native",
         "phosphor-react-native",
         "react-native-remix-icon",
         "lucide-react-native",
         "@expo/vector-icons",
         "@hugeicons/core-free-icons",
         "@hugeicons/react-native"
-      ]
+      ],
+      "package_asset_root": "packages/icon-library/local/iconsax",
+      "package_renderer": "packages/icon-library/src/index.ts"
     }
   },
   "taxonomy": [
@@ -152,6 +152,7 @@
     "keyAccess": "icon.security.key_access",
     "keyboardDigits": "icon.system.keyboard_digits",
     "showPassword": "icon.system.password_visible",
+    "hidePassword": "icon.system.password_hidden",
     "searchGlass": "icon.system.search",
     "qrCode": "icon.wallet.deposit",
     "partnerNetwork": "icon.ib.network",
@@ -204,8 +205,8 @@
       ],
       "category": "brand",
       "meaning": "Apple sign-in provider mark",
-      "source_library": "phosphor",
-      "source_icon_name": "AppleLogo",
+      "source_library": "custom",
+      "source_icon_name": "Apple",
       "style": {
         "default": "line",
         "active": "fill",
@@ -247,13 +248,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
-      "modified": false,
+      "modified": true,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalAppleLogoIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalAppleIcon.tsx"
     },
     {
       "icon_key": "icon.wallet.withdrawal",
@@ -263,8 +264,8 @@
       ],
       "category": "wallet",
       "meaning": "Withdrawal, outgoing funds, payout request, or send-money transaction",
-      "source_library": "phosphor",
-      "source_icon_name": "HandWithdraw",
+      "source_library": "iconsax",
+      "source_icon_name": "MoneySend",
       "style": {
         "default": "line",
         "active": "fill",
@@ -312,13 +313,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalHandWithdrawIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalMoneySendIcon.tsx"
     },
     {
       "icon_key": "icon.wallet.transfer",
@@ -327,8 +328,8 @@
       ],
       "category": "wallet",
       "meaning": "Transfer, swap, or two-way movement between accounts",
-      "source_library": "phosphor",
-      "source_icon_name": "ArrowsLeftRight",
+      "source_library": "iconsax",
+      "source_icon_name": "ArrowSwapHorizontal",
       "style": {
         "default": "line",
         "active": "fill",
@@ -374,13 +375,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalArrowsLeftRightIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalArrowSwapHorizontalIcon.tsx"
     },
     {
       "icon_key": "icon.account.trading",
@@ -390,8 +391,8 @@
       ],
       "category": "trading_account",
       "meaning": "Trading account workspace, account switcher, account list, and margin account identity",
-      "source_library": "phosphor",
-      "source_icon_name": "UserSwitch",
+      "source_library": "iconsax",
+      "source_icon_name": "Wallet",
       "style": {
         "default": "line",
         "active": "fill",
@@ -425,13 +426,13 @@
         "size": "size.icon.md"
       },
       "usage": [
-        "Bank, balance, funding account, or institutional account.",
+        "Trading account entry points must visually match the bottom-navigation Accounts tab glyph.",
         "Trading account workspace, account switcher, account list, and margin account identity.",
         "Trading account workspace, account switcher, account list, and margin account identity"
       ],
       "forbidden": [
         "Avoid for generic profile or archive action.",
-        "Do not use for personal profile or wallet balance."
+        "Do not use for personal profile, bank institution, deposit, withdrawal, archive action, or wallet balance."
       ],
       "platforms": [
         "app",
@@ -439,13 +440,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalUserSwitchIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalWalletIcon.tsx"
     },
     {
       "icon_key": "icon.notification.bell",
@@ -454,8 +455,8 @@
       ],
       "category": "notification",
       "meaning": "Notifications entry",
-      "source_library": "lucide",
-      "source_icon_name": "Bell",
+      "source_library": "iconsax",
+      "source_icon_name": "Notification",
       "style": {
         "default": "line",
         "active": "fill",
@@ -500,13 +501,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalBellIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalNotificationIcon.tsx"
     },
     {
       "icon_key": "icon.system.chevron_down",
@@ -515,8 +516,8 @@
       ],
       "category": "system",
       "meaning": "Dropdown or expandable control",
-      "source_library": "lucide",
-      "source_icon_name": "ChevronDown",
+      "source_library": "iconsax",
+      "source_icon_name": "ArrowDown2",
       "style": {
         "default": "line",
         "active": "fill",
@@ -561,13 +562,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalChevronDownIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalArrowDown2Icon.tsx"
     },
     {
       "icon_key": "icon.system.back",
@@ -575,9 +576,9 @@
         "navigateBack"
       ],
       "category": "system",
-      "meaning": "Back navigation",
-      "source_library": "lucide",
-      "source_icon_name": "ArrowLeft",
+      "meaning": "Back navigation with a horizontal shaft",
+      "source_library": "custom",
+      "source_icon_name": "ArrowLeftLine",
       "style": {
         "default": "line",
         "active": "fill",
@@ -610,7 +611,7 @@
         "size": "size.icon.md"
       },
       "usage": [
-        "Back navigation.",
+        "Back navigation with a horizontal shaft for app headers.",
         "Back navigation"
       ],
       "forbidden": [
@@ -622,13 +623,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "custom-owned",
+        "url": "internal-custom-icon-request"
       },
-      "modified": false,
+      "modified": true,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalArrowLeftIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalArrowLeftLineIcon.tsx"
     },
     {
       "icon_key": "icon.system.chevron_right",
@@ -637,8 +638,8 @@
       ],
       "category": "system",
       "meaning": "Next row navigation and disclosure",
-      "source_library": "lucide",
-      "source_icon_name": "ChevronRight",
+      "source_library": "iconsax",
+      "source_icon_name": "ArrowRight2",
       "style": {
         "default": "line",
         "active": "fill",
@@ -684,13 +685,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalChevronRightIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalArrowRight2Icon.tsx"
     },
     {
       "icon_key": "icon.trading.market",
@@ -699,8 +700,8 @@
       ],
       "category": "trading",
       "meaning": "Market trend, quote movement, chart entry, or trading direction",
-      "source_library": "remix",
-      "source_icon_name": "stock-line",
+      "source_library": "iconsax",
+      "source_icon_name": "ChartSquare",
       "style": {
         "default": "line",
         "active": "fill",
@@ -749,13 +750,13 @@
         "web"
       ],
       "license": {
-        "name": "Remix Icon License v1.0",
-        "url": "https://github.com/Remix-Design/RemixIcon/blob/master/License",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/remix/LocalStockLineIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalChartSquareIcon.tsx"
     },
     {
       "icon_key": "icon.notification.feedback",
@@ -764,8 +765,8 @@
       ],
       "category": "notification",
       "meaning": "Feedback or single conversation entry",
-      "source_library": "phosphor",
-      "source_icon_name": "ChatCircle",
+      "source_library": "iconsax",
+      "source_icon_name": "Message",
       "style": {
         "default": "line",
         "active": "fill",
@@ -809,13 +810,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalChatCircleIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalMessageIcon.tsx"
     },
     {
       "icon_key": "icon.copy.community",
@@ -824,8 +825,8 @@
       ],
       "category": "copy_trading",
       "meaning": "Community, group chat, or social trading discussions",
-      "source_library": "phosphor",
-      "source_icon_name": "UsersThree",
+      "source_library": "iconsax",
+      "source_icon_name": "People",
       "style": {
         "default": "line",
         "active": "fill",
@@ -870,13 +871,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalUsersThreeIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalPeopleIcon.tsx"
     },
     {
       "icon_key": "icon.status.check",
@@ -884,9 +885,9 @@
         "checkMark"
       ],
       "category": "status",
-      "meaning": "Checkbox or compact selected indicator",
-      "source_library": "lucide",
-      "source_icon_name": "Check",
+      "meaning": "Plain check mark for checkbox, single-select, or compact selected indicator",
+      "source_library": "custom",
+      "source_icon_name": "Tick",
       "style": {
         "default": "line",
         "active": "fill",
@@ -920,8 +921,8 @@
         "size": "size.icon.md"
       },
       "usage": [
-        "Checkbox or compact selected indicator.",
-        "Checkbox or compact selected indicator"
+        "Single-select selected indicator, checkbox selected indicator, or compact selected state.",
+        "Use this plain check mark instead of radio dots or circled check icons when a row selection already has a selected container state."
       ],
       "forbidden": [
         "Do not use as full verification badge."
@@ -932,13 +933,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "custom-owned",
+        "url": "internal-custom-icon-request"
       },
-      "modified": false,
+      "modified": true,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalCheckIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalTickIcon.tsx"
     },
     {
       "icon_key": "icon.status.verified",
@@ -947,8 +948,8 @@
       ],
       "category": "status",
       "meaning": "Verified state, selected account, completed status",
-      "source_library": "phosphor",
-      "source_icon_name": "SealCheck",
+      "source_library": "iconsax",
+      "source_icon_name": "Verify",
       "style": {
         "default": "line",
         "active": "fill",
@@ -994,13 +995,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalSealCheckIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalVerifyIcon.tsx"
     },
     {
       "icon_key": "icon.trading.history",
@@ -1009,8 +1010,8 @@
       ],
       "category": "trading",
       "meaning": "Order history, transaction history, pending activity, or time filter",
-      "source_library": "lucide",
-      "source_icon_name": "History",
+      "source_library": "iconsax",
+      "source_icon_name": "Clock",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1055,13 +1056,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalHistoryIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalClockIcon.tsx"
     },
     {
       "icon_key": "icon.navigation.discover",
@@ -1070,8 +1071,8 @@
       ],
       "category": "navigation",
       "meaning": "Discover and module exploration entry",
-      "source_library": "phosphor",
-      "source_icon_name": "Compass",
+      "source_library": "iconsax",
+      "source_icon_name": "Discover",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1115,13 +1116,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalCompassIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalDiscoverIcon.tsx"
     },
     {
       "icon_key": "icon.system.more",
@@ -1130,8 +1131,8 @@
       ],
       "category": "system",
       "meaning": "More actions menu",
-      "source_library": "lucide",
-      "source_icon_name": "Ellipsis",
+      "source_library": "iconsax",
+      "source_icon_name": "More",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1175,13 +1176,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalEllipsisIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalMoreIcon.tsx"
     },
     {
       "icon_key": "icon.notification.email",
@@ -1190,8 +1191,8 @@
       ],
       "category": "notification",
       "meaning": "Email, inbox, password recovery",
-      "source_library": "phosphor",
-      "source_icon_name": "EnvelopeOpen",
+      "source_library": "iconsax",
+      "source_icon_name": "Sms",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1234,13 +1235,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalEnvelopeOpenIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalSmsIcon.tsx"
     },
     {
       "icon_key": "icon.account.phone_verified",
@@ -1249,8 +1250,8 @@
       ],
       "category": "account",
       "meaning": "Phone number entry, SMS verification, and confirmed phone contact",
-      "source_library": "lucide",
-      "source_icon_name": "SmartphoneNfc",
+      "source_library": "iconsax",
+      "source_icon_name": "Mobile",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1295,13 +1296,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalSmartphoneNfcIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalMobileIcon.tsx"
     },
     {
       "icon_key": "icon.promotion.reward",
@@ -1310,7 +1311,7 @@
       ],
       "category": "promotion",
       "meaning": "Rewards, bonus, promotional gift",
-      "source_library": "phosphor",
+      "source_library": "iconsax",
       "source_icon_name": "Gift",
       "style": {
         "default": "line",
@@ -1355,13 +1356,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalGiftIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalGiftIcon.tsx"
     },
     {
       "icon_key": "icon.market.global",
@@ -1370,8 +1371,8 @@
       ],
       "category": "trading",
       "meaning": "Global market, language, regional onboarding",
-      "source_library": "phosphor",
-      "source_icon_name": "GlobeHemisphereWest",
+      "source_library": "iconsax",
+      "source_icon_name": "Global",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1415,13 +1416,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalGlobeHemisphereWestIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalGlobalIcon.tsx"
     },
     {
       "icon_key": "icon.education.academy",
@@ -1430,8 +1431,8 @@
       ],
       "category": "education",
       "meaning": "Education, academy, trading lessons",
-      "source_library": "phosphor",
-      "source_icon_name": "Student",
+      "source_library": "iconsax",
+      "source_icon_name": "Teacher",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1475,13 +1476,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalStudentIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalTeacherIcon.tsx"
     },
     {
       "icon_key": "icon.support.headset",
@@ -1490,8 +1491,8 @@
       ],
       "category": "support",
       "meaning": "Support center or service contact",
-      "source_library": "phosphor",
-      "source_icon_name": "Headset",
+      "source_library": "iconsax",
+      "source_icon_name": "Headphone",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1535,13 +1536,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalHeadsetIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalHeadphoneIcon.tsx"
     },
     {
       "icon_key": "icon.kyc.identity",
@@ -1550,8 +1551,8 @@
       ],
       "category": "kyc_compliance",
       "meaning": "Identity verification, onboarding KYC, profile document",
-      "source_library": "phosphor",
-      "source_icon_name": "IdentificationCard",
+      "source_library": "iconsax",
+      "source_icon_name": "Personalcard",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1597,13 +1598,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalIdentificationCardIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalPersonalcardIcon.tsx"
     },
     {
       "icon_key": "icon.risk.info",
@@ -1612,8 +1613,8 @@
       ],
       "category": "status",
       "meaning": "Inline help, disclosure, risk explanation",
-      "source_library": "lucide",
-      "source_icon_name": "Info",
+      "source_library": "iconsax",
+      "source_icon_name": "InfoCircle",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1659,13 +1660,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalInfoIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalInfoCircleIcon.tsx"
     },
     {
       "icon_key": "icon.market.watchlist",
@@ -1674,8 +1675,8 @@
       ],
       "category": "trading",
       "meaning": "Watchlist, quote list, list view",
-      "source_library": "phosphor",
-      "source_icon_name": "ListBullets",
+      "source_library": "iconsax",
+      "source_icon_name": "BookSaved",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1719,13 +1720,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalListBulletsIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalBookSavedIcon.tsx"
     },
     {
       "icon_key": "icon.trading.order",
@@ -1735,8 +1736,8 @@
       ],
       "category": "trading",
       "meaning": "Order list, open orders, and order-based position grouping",
-      "source_library": "phosphor",
-      "source_icon_name": "ListChecks",
+      "source_library": "iconsax",
+      "source_icon_name": "ClipboardTick",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1783,13 +1784,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalListChecksIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalClipboardTickIcon.tsx"
     },
     {
       "icon_key": "icon.security.lock",
@@ -1798,8 +1799,8 @@
       ],
       "category": "security",
       "meaning": "Password, locked field, protected content",
-      "source_library": "phosphor",
-      "source_icon_name": "LockKey",
+      "source_library": "iconsax",
+      "source_icon_name": "Lock",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1845,13 +1846,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalLockKeyIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalLockIcon.tsx"
     },
     {
       "icon_key": "icon.security.password_rules",
@@ -1860,8 +1861,8 @@
       ],
       "category": "security",
       "meaning": "Password rule validation and credential setup guidance",
-      "source_library": "phosphor",
-      "source_icon_name": "Password",
+      "source_library": "iconsax",
+      "source_icon_name": "PasswordCheck",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1907,13 +1908,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalPasswordIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalPasswordCheckIcon.tsx"
     },
     {
       "icon_key": "icon.security.key_access",
@@ -1922,8 +1923,8 @@
       ],
       "category": "security",
       "meaning": "PIN setup, unlock, or access-key semantics",
-      "source_library": "lucide",
-      "source_icon_name": "KeyRound",
+      "source_library": "iconsax",
+      "source_icon_name": "Key",
       "style": {
         "default": "line",
         "active": "fill",
@@ -1967,13 +1968,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalKeyRoundIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalKeyIcon.tsx"
     },
     {
       "icon_key": "icon.system.keyboard_digits",
@@ -1982,7 +1983,7 @@
       ],
       "category": "system",
       "meaning": "Numeric keyboard, OTP input, or PIN keypad hint",
-      "source_library": "lucide",
+      "source_library": "iconsax",
       "source_icon_name": "Keyboard",
       "style": {
         "default": "line",
@@ -2027,13 +2028,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalKeyboardIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalKeyboardIcon.tsx"
     },
     {
       "icon_key": "icon.system.password_visible",
@@ -2042,7 +2043,7 @@
       ],
       "category": "system",
       "meaning": "Toggle password visibility in credential fields",
-      "source_library": "lucide",
+      "source_library": "iconsax",
       "source_icon_name": "Eye",
       "style": {
         "default": "line",
@@ -2087,13 +2088,74 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalEyeIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalEyeIcon.tsx"
+    },
+    {
+      "icon_key": "icon.system.password_hidden",
+      "legacy_names": [
+        "hidePassword"
+      ],
+      "category": "system",
+      "meaning": "Toggle password hidden state in credential fields",
+      "source_library": "custom",
+      "source_icon_name": "EyeSlash",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "textDim",
+        "text"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.tertiary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Toggle password hidden state in credential fields.",
+        "Use when the password is currently visible and the next action will hide it."
+      ],
+      "forbidden": [
+        "Do not use for market watchlist visibility.",
+        "Do not use as a hidden-state placeholder outside credential fields."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "custom-owned",
+        "url": "internal-custom-icon-request"
+      },
+      "modified": true,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalEyeSlashIcon.tsx"
     },
     {
       "icon_key": "icon.system.search",
@@ -2102,8 +2164,8 @@
       ],
       "category": "system",
       "meaning": "Search entry and field prefix",
-      "source_library": "lucide",
-      "source_icon_name": "Search",
+      "source_library": "iconsax",
+      "source_icon_name": "SearchNormal",
       "style": {
         "default": "line",
         "active": "fill",
@@ -2148,13 +2210,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalSearchIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalSearchNormalIcon.tsx"
     },
     {
       "icon_key": "icon.wallet.deposit",
@@ -2164,8 +2226,8 @@
       ],
       "category": "wallet",
       "meaning": "Deposit, incoming funds, successful credit, or receive-money transaction",
-      "source_library": "phosphor",
-      "source_icon_name": "HandDeposit",
+      "source_library": "iconsax",
+      "source_icon_name": "MoneyRecive",
       "style": {
         "default": "line",
         "active": "fill",
@@ -2213,13 +2275,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalHandDepositIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalMoneyReciveIcon.tsx"
     },
     {
       "icon_key": "icon.ib.network",
@@ -2228,8 +2290,8 @@
       ],
       "category": "ib_partner",
       "meaning": "Partner network, sharing, referral graph",
-      "source_library": "phosphor",
-      "source_icon_name": "ShareNetwork",
+      "source_library": "iconsax",
+      "source_icon_name": "Share",
       "style": {
         "default": "line",
         "active": "fill",
@@ -2274,13 +2336,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalShareNetworkIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalShareIcon.tsx"
     },
     {
       "icon_key": "icon.security.risk_shield",
@@ -2289,8 +2351,8 @@
       ],
       "category": "security",
       "meaning": "Security, fraud prevention, compliance protection",
-      "source_library": "phosphor",
-      "source_icon_name": "ShieldCheck",
+      "source_library": "iconsax",
+      "source_icon_name": "ShieldTick",
       "style": {
         "default": "line",
         "active": "fill",
@@ -2336,13 +2398,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalShieldCheckIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalShieldTickIcon.tsx"
     },
     {
       "icon_key": "icon.system.settings",
@@ -2351,8 +2413,8 @@
       ],
       "category": "system",
       "meaning": "Settings, filters, product controls, sort",
-      "source_library": "lucide",
-      "source_icon_name": "SlidersHorizontal",
+      "source_library": "iconsax",
+      "source_icon_name": "Setting2",
       "style": {
         "default": "line",
         "active": "fill",
@@ -2396,13 +2458,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalSlidersHorizontalIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalSetting2Icon.tsx"
     },
     {
       "icon_key": "icon.promotion.ticket",
@@ -2411,7 +2473,7 @@
       ],
       "category": "promotion",
       "meaning": "Coupon, promotion, simulated contest badge",
-      "source_library": "phosphor",
+      "source_library": "iconsax",
       "source_icon_name": "Ticket",
       "style": {
         "default": "line",
@@ -2456,13 +2518,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalTicketIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalTicketIcon.tsx"
     },
     {
       "icon_key": "icon.promotion.achievement",
@@ -2471,8 +2533,8 @@
       ],
       "category": "promotion",
       "meaning": "Challenge, leaderboard, achievement",
-      "source_library": "phosphor",
-      "source_icon_name": "Trophy",
+      "source_library": "iconsax",
+      "source_icon_name": "Award",
       "style": {
         "default": "line",
         "active": "fill",
@@ -2516,13 +2578,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalTrophyIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalAwardIcon.tsx"
     },
     {
       "icon_key": "icon.account.user",
@@ -2531,8 +2593,8 @@
       ],
       "category": "account",
       "meaning": "User, client, account owner, profile preview",
-      "source_library": "phosphor",
-      "source_icon_name": "User",
+      "source_library": "iconsax",
+      "source_icon_name": "Profile",
       "style": {
         "default": "line",
         "active": "fill",
@@ -2576,13 +2638,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalUserIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalProfileIcon.tsx"
     },
     {
       "icon_key": "icon.account.avatar",
@@ -2591,8 +2653,8 @@
       ],
       "category": "account",
       "meaning": "Profile avatar placeholder and profile module",
-      "source_library": "phosphor",
-      "source_icon_name": "UserCircle",
+      "source_library": "iconsax",
+      "source_icon_name": "ProfileCircle",
       "style": {
         "default": "line",
         "active": "fill",
@@ -2636,13 +2698,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalUserCircleIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalProfileCircleIcon.tsx"
     },
     {
       "icon_key": "icon.account.add_user",
@@ -2651,8 +2713,8 @@
       ],
       "category": "account",
       "meaning": "Add account, add client, invite user",
-      "source_library": "phosphor",
-      "source_icon_name": "UserCirclePlus",
+      "source_library": "iconsax",
+      "source_icon_name": "ProfileAdd",
       "style": {
         "default": "line",
         "active": "fill",
@@ -2696,13 +2758,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalUserCirclePlusIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalProfileAddIcon.tsx"
     },
     {
       "icon_key": "icon.system.close",
@@ -2710,9 +2772,9 @@
         "closeX"
       ],
       "category": "system",
-      "meaning": "Close, cancel, dismiss, or destructive close when paired with danger tone",
-      "source_library": "lucide",
-      "source_icon_name": "X",
+      "meaning": "Close, cancel, or dismiss action",
+      "source_library": "custom",
+      "source_icon_name": "Close",
       "style": {
         "default": "line",
         "active": "fill",
@@ -2746,8 +2808,8 @@
         "size": "size.icon.md"
       },
       "usage": [
-        "Close, cancel, dismiss, delete when paired with danger tone.",
-        "Close, cancel, dismiss, or destructive close when paired with danger tone"
+        "Close, cancel, or dismiss action without status container semantics.",
+        "Close, cancel, or dismiss action"
       ],
       "forbidden": [
         "Do not use as failed status without label."
@@ -2758,13 +2820,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "custom-owned",
+        "url": "internal-custom-icon-request"
       },
-      "modified": false,
+      "modified": true,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalXIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalCloseIcon.tsx"
     },
     {
       "icon_key": "icon.wallet.balance",
@@ -2773,7 +2835,7 @@
       ],
       "category": "wallet",
       "meaning": "Account balance, available funds, equity snapshot, and wallet balance detail",
-      "source_library": "phosphor",
+      "source_library": "iconsax",
       "source_icon_name": "Wallet",
       "style": {
         "default": "line",
@@ -2819,13 +2881,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalWalletIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalWalletIcon.tsx"
     },
     {
       "icon_key": "icon.account.archive",
@@ -2834,7 +2896,7 @@
       ],
       "category": "account",
       "meaning": "Archive or hide a trading account from active lists",
-      "source_library": "lucide",
+      "source_library": "iconsax",
       "source_icon_name": "Archive",
       "style": {
         "default": "line",
@@ -2879,13 +2941,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalArchiveIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalArchiveIcon.tsx"
     },
     {
       "icon_key": "icon.system.delete",
@@ -2894,8 +2956,8 @@
       ],
       "category": "system",
       "meaning": "Delete, remove, or irreversible destructive action",
-      "source_library": "lucide",
-      "source_icon_name": "Trash2",
+      "source_library": "iconsax",
+      "source_icon_name": "Trash",
       "style": {
         "default": "line",
         "active": "fill",
@@ -2939,13 +3001,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalTrash2Icon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalTrashIcon.tsx"
     },
     {
       "icon_key": "icon.system.logout",
@@ -2954,8 +3016,8 @@
       ],
       "category": "system",
       "meaning": "Log out of the current session while preserving remembered account identity",
-      "source_library": "lucide",
-      "source_icon_name": "LogOut",
+      "source_library": "iconsax",
+      "source_icon_name": "Logout",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3000,13 +3062,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalLogOutIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalLogoutIcon.tsx"
     },
     {
       "icon_key": "icon.trading.order_ticket",
@@ -3015,8 +3077,8 @@
       ],
       "category": "trading",
       "meaning": "Trade ticket, market order entry, and order creation flow",
-      "source_library": "phosphor",
-      "source_icon_name": "Receipt",
+      "source_library": "iconsax",
+      "source_icon_name": "ReceiptText",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3062,13 +3124,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalReceiptIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalReceiptTextIcon.tsx"
     },
     {
       "icon_key": "icon.trading.group_by_symbol",
@@ -3077,8 +3139,8 @@
       ],
       "category": "trading",
       "meaning": "Sort or group positions by trading symbol",
-      "source_library": "phosphor",
-      "source_icon_name": "SortAscending",
+      "source_library": "iconsax",
+      "source_icon_name": "Sort",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3123,13 +3185,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalSortAscendingIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalSortIcon.tsx"
     },
     {
       "icon_key": "icon.trading.close_position",
@@ -3138,8 +3200,8 @@
       ],
       "category": "trading",
       "meaning": "Close all positions or cancel an active trading exposure",
-      "source_library": "phosphor",
-      "source_icon_name": "XCircle",
+      "source_library": "iconsax",
+      "source_icon_name": "CloseSquare",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3183,13 +3245,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalXCircleIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalCloseSquareIcon.tsx"
     },
     {
       "icon_key": "icon.trading.close_losing_position",
@@ -3198,7 +3260,7 @@
       ],
       "category": "trading",
       "meaning": "Close losing positions, stop-loss related action, or downside exposure reduction",
-      "source_library": "phosphor",
+      "source_library": "iconsax",
       "source_icon_name": "TrendDown",
       "style": {
         "default": "line",
@@ -3243,13 +3305,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalTrendDownIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalTrendDownIcon.tsx"
     },
     {
       "icon_key": "icon.trading.buy",
@@ -3258,8 +3320,8 @@
       ],
       "category": "trading",
       "meaning": "Buy direction marker in positions and order details",
-      "source_library": "phosphor",
-      "source_icon_name": "ChartLineUp",
+      "source_library": "iconsax",
+      "source_icon_name": "TrendUp",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3304,13 +3366,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalChartLineUpIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalTrendUpIcon.tsx"
     },
     {
       "icon_key": "icon.trading.sell",
@@ -3319,8 +3381,8 @@
       ],
       "category": "trading",
       "meaning": "Sell direction marker in positions and order details",
-      "source_library": "phosphor",
-      "source_icon_name": "ChartLineDown",
+      "source_library": "iconsax",
+      "source_icon_name": "TrendDown",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3365,13 +3427,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalChartLineDownIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalTrendDownIcon.tsx"
     },
     {
       "icon_key": "icon.status.rejected",
@@ -3380,8 +3442,8 @@
       ],
       "category": "status",
       "meaning": "Rejected, failed, or blocked status in financial workflows",
-      "source_library": "lucide",
-      "source_icon_name": "CircleX",
+      "source_library": "iconsax",
+      "source_icon_name": "Danger",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3425,13 +3487,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalCircleXIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalDangerIcon.tsx"
     },
     {
       "icon_key": "icon.feedback.rating",
@@ -3440,7 +3502,7 @@
       ],
       "category": "support",
       "meaning": "App rating or satisfaction scoring entry",
-      "source_library": "phosphor",
+      "source_library": "iconsax",
       "source_icon_name": "Star",
       "style": {
         "default": "line",
@@ -3485,13 +3547,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalStarIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalStarIcon.tsx"
     },
     {
       "icon_key": "icon.support.help_center",
@@ -3500,8 +3562,8 @@
       ],
       "category": "support",
       "meaning": "Help center, FAQ, and guided assistance",
-      "source_library": "lucide",
-      "source_icon_name": "CircleQuestionMark",
+      "source_library": "iconsax",
+      "source_icon_name": "MessageQuestion",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3544,13 +3606,13 @@
         "web"
       ],
       "license": {
-        "name": "ISC",
-        "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/lucide/LocalCircleQuestionMarkIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalMessageQuestionIcon.tsx"
     },
     {
       "icon_key": "icon.support.about",
@@ -3559,8 +3621,8 @@
       ],
       "category": "support",
       "meaning": "About app, product information, and company information entry",
-      "source_library": "phosphor",
-      "source_icon_name": "Info",
+      "source_library": "iconsax",
+      "source_icon_name": "Information",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3603,13 +3665,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalInfoIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalInformationIcon.tsx"
     },
     {
       "icon_key": "icon.navigation.function_center",
@@ -3618,8 +3680,8 @@
       ],
       "category": "navigation",
       "meaning": "Function center, app module dashboard, or shortcut hub",
-      "source_library": "phosphor",
-      "source_icon_name": "SquaresFour",
+      "source_library": "iconsax",
+      "source_icon_name": "Element4",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3663,13 +3725,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalSquaresFourIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalElement4Icon.tsx"
     },
     {
       "icon_key": "icon.trading.volume",
@@ -3678,8 +3740,8 @@
       ],
       "category": "trading",
       "meaning": "Trading volume, analytics volume metric, and aggregated activity size",
-      "source_library": "phosphor",
-      "source_icon_name": "ChartBar",
+      "source_library": "iconsax",
+      "source_icon_name": "ChartSquare",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3723,13 +3785,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalChartBarIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalChartSquareIcon.tsx"
     },
     {
       "icon_key": "icon.market.gold",
@@ -3738,8 +3800,8 @@
       ],
       "category": "trading",
       "meaning": "Gold, metals, and commodity instrument visual",
-      "source_library": "phosphor",
-      "source_icon_name": "Coins",
+      "source_library": "iconsax",
+      "source_icon_name": "Coin",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3782,13 +3844,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalCoinsIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalCoinIcon.tsx"
     },
     {
       "icon_key": "icon.market.index",
@@ -3797,8 +3859,8 @@
       ],
       "category": "trading",
       "meaning": "Index, futures, and benchmark market instrument visual",
-      "source_library": "phosphor",
-      "source_icon_name": "ChartLine",
+      "source_library": "iconsax",
+      "source_icon_name": "Chart",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3842,13 +3904,13 @@
         "web"
       ],
       "license": {
+        "attribution_required": false,
         "name": "MIT",
-        "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE",
-        "attribution_required": false
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/phosphor/LocalChartLineIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalChartIcon.tsx"
     },
     {
       "icon_key": "icon.market.stock",
@@ -3857,8 +3919,8 @@
       ],
       "category": "trading",
       "meaning": "Stock and equity instrument visual without brand-logo copying",
-      "source_library": "remix",
-      "source_icon_name": "stock-line",
+      "source_library": "iconsax",
+      "source_icon_name": "Chart21",
       "style": {
         "default": "line",
         "active": "fill",
@@ -3902,13 +3964,15 @@
         "web"
       ],
       "license": {
-        "name": "Remix Icon License v1.0",
-        "url": "https://github.com/Remix-Design/RemixIcon/blob/master/License",
-        "attribution_required": false
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
       },
       "modified": false,
       "status": "approved",
-      "local_asset_path": "src/icons/local/remix/LocalStockLineIcon.tsx"
+      "local_asset_path": "src/icons/local/iconsax/LocalChart21Icon.tsx"
     }
-  ]
+  ],
+  "package": "@dpf/icon-library",
+  "source_of_truth": "packages/icon-library"
 }

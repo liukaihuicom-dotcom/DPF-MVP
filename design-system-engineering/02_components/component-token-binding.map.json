@@ -34,6 +34,10 @@
     {
       "id": "label-role-bound",
       "description": "Labels, helper text, metadata, status text, badges, and compact control text must use AppText label.* variants with minimum text constrained to approved 12px roles."
+    },
+    {
+      "id": "screen-safe-bottom-bound",
+      "description": "Screen scroll content must combine layout.screenBottomPadding with the device bottom safe-area inset; page implementations must not remove the global bottom safety gap."
     }
   ],
   "componentBindings": {
@@ -54,6 +58,7 @@
       "palette.*"
     ],
     "forms": [
+      "layout.formFieldTextInset",
       "size.input.*",
       "spacing.*",
       "radius.*",
@@ -90,6 +95,14 @@
     ]
   },
   "componentTokenBindings": {
+    "Card": [
+      "layout.cardPaddingX",
+      "layout.cardPaddingY",
+      "layout.cardPaddingCompactX",
+      "layout.cardPaddingCompactY",
+      "radius.md",
+      "palette.panel"
+    ],
     "OrderInfoRow": [
       "palette.*",
       "spacing.*",
@@ -117,6 +130,12 @@
       "spacing.*",
       "lineWidth.*",
       "iconRegistry.*"
+    ],
+    "KeyValueList": [
+      "palette.*",
+      "spacing.*",
+      "typography.*",
+      "lineWidth.*"
     ],
     "LegendDot": [
       "palette.*",
@@ -149,13 +168,55 @@
     "SwitchControl": [
       "palette.*",
       "size.touch.*",
+      "size.control.*",
+      "size.icon.*",
       "radius.*",
       "lineWidth.*"
+    ],
+    "TextField": [
+      "palette.*",
+      "layout.formFieldTextInset",
+      "size.input.*",
+      "size.control.*",
+      "spacing.*",
+      "radius.*",
+      "lineWidth.*",
+      "typography.*",
+      "iconRegistry.*"
+    ],
+    "SelectField": [
+      "palette.*",
+      "layout.formFieldTextInset",
+      "size.input.*",
+      "size.control.*",
+      "spacing.*",
+      "radius.*",
+      "lineWidth.*",
+      "typography.*",
+      "iconRegistry.*"
+    ],
+    "RichTextField": [
+      "palette.*",
+      "layout.formFieldTextInset",
+      "size.input.*",
+      "size.control.*",
+      "spacing.*",
+      "radius.*",
+      "lineWidth.*",
+      "typography.*",
+      "iconRegistry.*"
     ],
     "SheetGroupTitle": [
       "palette.*",
       "spacing.*",
       "typography.*"
+    ],
+    "Screen": [
+      "layout.screenPaddingX",
+      "layout.screenGap",
+      "layout.screenBottomPadding",
+      "layout.bottomActionArea.*",
+      "palette.*"
     ]
   }
 }

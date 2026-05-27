@@ -3,7 +3,7 @@ const path = require('path');
 const ts = require('typescript');
 const { complete, fail, pass, read, root, walk } = require('./qa-utils.cjs');
 
-const manifestPath = 'design-system-engineering/02_components/component-manifest.json';
+const manifestPath = 'packages/component-library/registry/component-manifest.json';
 const manifest = JSON.parse(read(manifestPath));
 const componentEntries = manifest.components || {};
 const requiredFields = [
@@ -99,6 +99,46 @@ for (const [name, entry] of Object.entries(componentEntries)) {
   if (!entry.path || !fs.existsSync(path.join(root, entry.path))) {
     checks.push(fail('QA_COMPONENT_MANIFEST_PATH', `${name} manifest path does not exist: ${entry.path}`, manifestPath));
   }
+}
+
+const screenEntry = componentEntries.Screen;
+if (screenEntry) {
+  const screenManifestText = JSON.stringify(screenEntry);
+  checks.push(
+    !screenEntry.variants?.includes('flushNoBottomPadding') && screenManifestText.includes('device bottom safe-area inset')
+      ? pass('QA_COMPONENT_SCREEN_SAFE_BOTTOM', 'Screen manifest enforces the full-site bottom safe gap contract', manifestPath)
+      : fail('QA_COMPONENT_SCREEN_SAFE_BOTTOM', 'Screen manifest must remove flushNoBottomPadding and document device bottom safe-area composition', manifestPath),
+  );
+}
+
+const cardEntry = componentEntries.Card;
+if (cardEntry) {
+  const cardText = read('src/components/Card.tsx');
+  const cardManifestText = JSON.stringify(cardEntry);
+  checks.push(
+    /paddingHorizontal:\s*layout\.cardPaddingX/.test(cardText)
+      && /paddingVertical:\s*layout\.cardPaddingY/.test(cardText)
+      && /paddingHorizontal:\s*layout\.cardPaddingCompactX/.test(cardText)
+      && /paddingVertical:\s*layout\.cardPaddingCompactY/.test(cardText)
+      && !/padding:\s*spacing\.lg/.test(cardText)
+      && !/padding:\s*spacing\.md/.test(cardText)
+      && cardManifestText.includes('layout.cardPaddingX')
+      && cardManifestText.includes('12px horizontal padding')
+      ? pass('QA_COMPONENT_CARD_AXIS_PADDING', 'Card runtime and manifest use axis-specific card padding tokens', manifestPath)
+      : fail('QA_COMPONENT_CARD_AXIS_PADDING', 'Card must use layout.cardPaddingX/Y and compact axis tokens, and manifest must document the 12px horizontal contract', 'src/components/Card.tsx'),
+  );
+}
+
+const tradeOrderListEntry = componentEntries.TradeOrderList;
+if (tradeOrderListEntry) {
+  const tradeOrderListText = read('src/components/TradeOrderList.tsx');
+  const rowStyleMatch = tradeOrderListText.match(/row:\s*\{[\s\S]*?\n\s*\},/);
+  const tradeOrderListManifestText = JSON.stringify(tradeOrderListEntry);
+  checks.push(
+    rowStyleMatch && !/paddingHorizontal/.test(rowStyleMatch[0]) && tradeOrderListManifestText.includes('outer container controls the list left/right width')
+      ? pass('QA_COMPONENT_TRADE_ORDER_LIST_EXTERNAL_WIDTH', 'TradeOrderList rows do not own horizontal padding; outer containers control list width', manifestPath)
+      : fail('QA_COMPONENT_TRADE_ORDER_LIST_EXTERNAL_WIDTH', 'TradeOrderList must not add row-level horizontal padding and manifest must document external width ownership', 'src/components/TradeOrderList.tsx'),
+  );
 }
 
 complete('check-component-manifest', checks);

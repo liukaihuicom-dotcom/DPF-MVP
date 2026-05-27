@@ -33,13 +33,14 @@ export type IconTone =
   | 'panel'
   | 'primary'
   | 'success'
+  | 'tertiary'
   | 'text'
   | 'textDim'
   | 'textMuted'
   | 'up'
   | 'warning'
   | 'white';
-export type IconSourceLibrary = 'phosphor' | 'remix' | 'lucide' | 'custom';
+export type IconSourceLibrary = 'iconsax' | 'custom';
 export type IconState = 'default' | 'active' | 'disabled' | 'success' | 'warning' | 'danger' | 'inverse';
 export type IconStyleName = 'line' | 'fill' | 'duotone';
 
@@ -78,29 +79,29 @@ export type AppIconDefinition = {
 
 export const iconRegistry = {
   "icon.brand.apple": {
-    "category": "brand",
-    "defaultSize": 17,
-    "defaultTone": "text",
-    "forbidden": [
+    category: "brand",
+    defaultSize: 17,
+    defaultTone: "text",
+    forbidden: [
       "Do not recolor as risk or market status."
     ],
-    "legacyNames": [
+    legacyNames: [
       "appApple"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalAppleLogoIcon.tsx",
-    "meaning": "Apple sign-in provider mark",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalAppleIcon.tsx",
+    meaning: "Apple sign-in provider mark",
+    modified: true,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -111,55 +112,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "AppleLogo",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Apple",
+    sourceLibrary: "custom",
+    states: [
       "default"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.primary",
-      "size": "size.icon.sm"
+    tokenBinding: {
+      color: "color.icon.primary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text"
     ],
-    "usage": [
+    usage: [
       "Apple sign-in provider mark.",
       "Apple sign-in provider mark"
     ]
   },
   "icon.wallet.withdrawal": {
-    "category": "wallet",
-    "defaultSize": 24,
-    "defaultTone": "amber",
-    "forbidden": [
+    category: "wallet",
+    defaultSize: 24,
+    defaultTone: "amber",
+    forbidden: [
       "Do not use for price trend.",
       "Do not use for refresh, exchange, or internal transfer."
     ],
-    "legacyNames": [
+    legacyNames: [
       "actionRefresh",
       "walletWithdrawal"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalHandWithdrawIcon.tsx",
-    "meaning": "Withdrawal, outgoing funds, payout request, or send-money transaction",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalMoneySendIcon.tsx",
+    meaning: "Withdrawal, outgoing funds, payout request, or send-money transaction",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -170,58 +171,58 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "HandWithdraw",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "MoneySend",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "warning",
       "danger"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.warning",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.warning",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "amber",
       "danger",
       "text"
     ],
-    "usage": [
+    usage: [
       "Refresh or withdraw-style cyclical action when paired with label.",
       "Withdrawal, outgoing funds, payout request, or send-money transaction.",
       "Withdrawal, outgoing funds, payout request, or send-money transaction"
     ]
   },
   "icon.wallet.transfer": {
-    "category": "wallet",
-    "defaultSize": 24,
-    "defaultTone": "textDim",
-    "forbidden": [
+    category: "wallet",
+    defaultSize: 24,
+    defaultTone: "textDim",
+    forbidden: [
       "Do not use for market volatility."
     ],
-    "legacyNames": [
+    legacyNames: [
       "transferSwitch"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalArrowsLeftRightIcon.tsx",
-    "meaning": "Transfer, swap, or two-way movement between accounts",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalArrowSwapHorizontalIcon.tsx",
+    meaning: "Transfer, swap, or two-way movement between accounts",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -232,59 +233,59 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "ArrowsLeftRight",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "ArrowSwapHorizontal",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active",
       "disabled"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.info",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.info",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "blue",
       "text",
       "brand"
     ],
-    "usage": [
+    usage: [
       "Transfer, swap, or two-way movement between accounts.",
       "Transfer, swap, or two-way movement between accounts"
     ]
   },
   "icon.account.trading": {
-    "category": "trading_account",
-    "defaultSize": 24,
-    "defaultTone": "blue",
-    "forbidden": [
-      "Avoid for generic profile, user switching, or archive action.",
-      "Do not use for personal profile, bank institution, or one-off wallet balance."
+    category: "trading_account",
+    defaultSize: 24,
+    defaultTone: "blue",
+    forbidden: [
+      "Avoid for generic profile or archive action.",
+      "Do not use for personal profile, bank institution, deposit, withdrawal, archive action, or wallet balance."
     ],
-    "legacyNames": [
+    legacyNames: [
       "accountBank",
       "tradingAccount"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalVaultIcon.tsx",
-    "meaning": "Trading account asset container, margin account identity, account switcher, and account list entry",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalWalletIcon.tsx",
+    meaning: "Trading account workspace, account switcher, account list, and margin account identity",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -295,57 +296,58 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Vault",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Wallet",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active",
       "danger"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.info",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.info",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "blue",
       "text",
       "brand"
     ],
-    "usage": [
-      "Trading account asset container, margin account identity, account switcher, and account list entry.",
-      "Trading account asset container, margin account identity, account switcher, and account list entry"
+    usage: [
+      "Trading account entry points must visually match the bottom-navigation Accounts tab glyph.",
+      "Trading account workspace, account switcher, account list, and margin account identity.",
+      "Trading account workspace, account switcher, account list, and margin account identity"
     ]
   },
   "icon.notification.bell": {
-    "category": "notification",
-    "defaultSize": 24,
-    "defaultTone": "textMuted",
-    "forbidden": [
+    category: "notification",
+    defaultSize: 24,
+    defaultTone: "textMuted",
+    forbidden: [
       "Do not use for alert risk severity; use riskWarning/riskShield."
     ],
-    "legacyNames": [
+    legacyNames: [
       "notificationBell"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalBellIcon.tsx",
-    "meaning": "Notifications entry",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalNotificationIcon.tsx",
+    meaning: "Notifications entry",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -356,57 +358,57 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Bell",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "Notification",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active",
       "disabled"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.secondary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.secondary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "textMuted",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Notifications entry.",
       "Notifications entry"
     ]
   },
   "icon.system.chevron_down": {
-    "category": "system",
-    "defaultSize": 24,
-    "defaultTone": "textDim",
-    "forbidden": [
+    category: "system",
+    defaultSize: 24,
+    defaultTone: "textDim",
+    forbidden: [
       "Do not use as next navigation.",
       "Do not use shafted down arrows for dropdown controls."
     ],
-    "legacyNames": [
+    legacyNames: [
       "expandDown"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalChevronDownIcon.tsx",
-    "meaning": "Dropdown or expandable control",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalArrowDown2Icon.tsx",
+    meaning: "Dropdown or expandable control",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -417,55 +419,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "ChevronDown",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "ArrowDown2",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.tertiary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.tertiary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Dropdown or expandable control. Use the chevron-style down arrow without a shaft for global dropdown affordances.",
       "Dropdown or expandable control"
     ]
   },
   "icon.system.back": {
-    "category": "system",
-    "defaultSize": 24,
-    "defaultTone": "text",
-    "forbidden": [
+    category: "system",
+    defaultSize: 24,
+    defaultTone: "text",
+    forbidden: [
       "Do not use for previous market movement."
     ],
-    "legacyNames": [
+    legacyNames: [
       "navigateBack"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "custom-owned",
+      url: "internal-custom-icon-request"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalArrowLeftIcon.tsx",
-    "meaning": "Back navigation",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalArrowLeftLineIcon.tsx",
+    meaning: "Back navigation with a horizontal shaft",
+    modified: true,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -476,56 +478,56 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "ArrowLeft",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "ArrowLeftLine",
+    sourceLibrary: "custom",
+    states: [
       "default",
       "active",
       "disabled"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.primary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.primary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text",
       "textMuted"
     ],
-    "usage": [
-      "Back navigation.",
+    usage: [
+      "Back navigation with a horizontal shaft for app headers.",
       "Back navigation"
     ]
   },
   "icon.system.chevron_right": {
-    "category": "system",
-    "defaultSize": 24,
-    "defaultTone": "textDim",
-    "forbidden": [
+    category: "system",
+    defaultSize: 24,
+    defaultTone: "textDim",
+    forbidden: [
       "Do not use for market up/down state."
     ],
-    "legacyNames": [
+    legacyNames: [
       "navigateNext"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalChevronRightIcon.tsx",
-    "meaning": "Next row navigation and disclosure",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalArrowRight2Icon.tsx",
+    meaning: "Next row navigation and disclosure",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -536,57 +538,57 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "ChevronRight",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "ArrowRight2",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active",
       "disabled"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.tertiary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.tertiary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text",
       "textDim",
       "panel"
     ],
-    "usage": [
+    usage: [
       "Next row navigation and disclosure.",
       "Next row navigation and disclosure"
     ]
   },
   "icon.trading.market": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "textDim",
+    forbidden: [
       "Use up/down tones only when representing market direction."
     ],
-    "legacyNames": [
+    legacyNames: [
       "marketTrend"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "Remix Icon License v1.0",
-      "url": "https://github.com/Remix-Design/RemixIcon/blob/master/License"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/remix/LocalStockLineIcon.tsx",
-    "meaning": "Market trend, quote movement, chart entry, or trading direction",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalChartSquareIcon.tsx",
+    meaning: "Market trend, quote movement, chart entry, or trading direction",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -597,60 +599,60 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "stock-line",
-    "sourceLibrary": "remix",
-    "states": [
+    sourceIconName: "ChartSquare",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active",
       "success",
       "danger"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "up",
       "down",
       "text",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Market trend, quote movement, trading volume, or position direction.",
       "Market trend, quote movement, chart entry, or trading direction"
     ]
   },
   "icon.notification.feedback": {
-    "category": "notification",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "notification",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for community group."
     ],
-    "legacyNames": [
+    legacyNames: [
       "chatFeedback"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalChatCircleIcon.tsx",
-    "meaning": "Feedback or single conversation entry",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalMessageIcon.tsx",
+    meaning: "Feedback or single conversation entry",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -661,55 +663,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "ChatCircle",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Message",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "textMuted"
     ],
-    "usage": [
+    usage: [
       "Feedback or single conversation entry.",
       "Feedback or single conversation entry"
     ]
   },
   "icon.copy.community": {
-    "category": "copy_trading",
-    "defaultSize": 24,
-    "defaultTone": "textMuted",
-    "forbidden": [
+    category: "copy_trading",
+    defaultSize: 24,
+    defaultTone: "textMuted",
+    forbidden: [
       "Do not use for individual support ticket."
     ],
-    "legacyNames": [
+    legacyNames: [
       "communityChat"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalUsersThreeIcon.tsx",
-    "meaning": "Community, group chat, or social trading discussions",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalPeopleIcon.tsx",
+    meaning: "Community, group chat, or social trading discussions",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -720,56 +722,56 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "UsersThree",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "People",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.secondary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.secondary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "textMuted",
       "down",
       "brand"
     ],
-    "usage": [
+    usage: [
       "Community, group chat, or social trading discussions.",
       "Community, group chat, or social trading discussions"
     ]
   },
   "icon.status.check": {
-    "category": "status",
-    "defaultSize": 24,
-    "defaultTone": "textMuted",
-    "forbidden": [
+    category: "status",
+    defaultSize: 24,
+    defaultTone: "textMuted",
+    forbidden: [
       "Do not use as full verification badge."
     ],
-    "legacyNames": [
+    legacyNames: [
       "checkMark"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalCheckIcon.tsx",
-    "meaning": "Checkbox or compact selected indicator",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalTickIcon.tsx",
+    meaning: "Plain check mark for checkbox, single-select, or compact selected indicator",
+    modified: true,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -780,57 +782,57 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Check",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "Tick",
+    sourceLibrary: "custom",
+    states: [
       "default",
       "success"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "panel",
       "white",
       "brand",
       "down"
     ],
-    "usage": [
-      "Checkbox or compact selected indicator.",
-      "Checkbox or compact selected indicator"
+    usage: [
+      "Single-select selected indicator, checkbox selected indicator, or compact selected state.",
+      "Use this plain check mark instead of radio dots or circled check icons when a row selection already has a selected container state."
     ]
   },
   "icon.status.verified": {
-    "category": "status",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "status",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for generic checkbox when checkMark is enough."
     ],
-    "legacyNames": [
+    legacyNames: [
       "statusVerified"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalSealCheckIcon.tsx",
-    "meaning": "Verified state, selected account, completed status",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalVerifyIcon.tsx",
+    meaning: "Verified state, selected account, completed status",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -841,57 +843,57 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "SealCheck",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Verify",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "success",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "down",
       "text"
     ],
-    "usage": [
+    usage: [
       "Verified state, selected account, completed status.",
       "Verified state, selected account, completed status"
     ]
   },
   "icon.trading.history": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "text",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "text",
+    forbidden: [
       "Do not use for countdown risk unless paired with warning tone."
     ],
-    "legacyNames": [
+    legacyNames: [
       "historyClock"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalHistoryIcon.tsx",
-    "meaning": "Order history, transaction history, pending activity, or time filter",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalClockIcon.tsx",
+    meaning: "Order history, transaction history, pending activity, or time filter",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -902,56 +904,56 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "History",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "Clock",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "warning"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.primary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.primary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text",
       "textDim",
       "amber"
     ],
-    "usage": [
+    usage: [
       "Order history, pending review, recent activity, time filter.",
       "Order history, transaction history, pending activity, or time filter"
     ]
   },
   "icon.navigation.discover": {
-    "category": "navigation",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "navigation",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for location."
     ],
-    "legacyNames": [
+    legacyNames: [
       "discoverCompass"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalCompassIcon.tsx",
-    "meaning": "Discover and module exploration entry",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalDiscoverIcon.tsx",
+    meaning: "Discover and module exploration entry",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -962,55 +964,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Compass",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Discover",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Discover and module exploration entry.",
       "Discover and module exploration entry"
     ]
   },
   "icon.system.more": {
-    "category": "system",
-    "defaultSize": 24,
-    "defaultTone": "textMuted",
-    "forbidden": [
+    category: "system",
+    defaultSize: 24,
+    defaultTone: "textMuted",
+    forbidden: [
       "Do not use for loading."
     ],
-    "legacyNames": [
+    legacyNames: [
       "moreDots"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalEllipsisIcon.tsx",
-    "meaning": "More actions menu",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalMoreIcon.tsx",
+    meaning: "More actions menu",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1021,55 +1023,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Ellipsis",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "More",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.secondary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.secondary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text",
       "textMuted"
     ],
-    "usage": [
+    usage: [
       "More actions menu.",
       "More actions menu"
     ]
   },
   "icon.notification.email": {
-    "category": "notification",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "notification",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for app notifications."
     ],
-    "legacyNames": [
+    legacyNames: [
       "emailMessage"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalEnvelopeOpenIcon.tsx",
-    "meaning": "Email, inbox, password recovery",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalSmsIcon.tsx",
+    meaning: "Email, inbox, password recovery",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1080,54 +1082,54 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "EnvelopeOpen",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Sms",
+    sourceLibrary: "iconsax",
+    states: [
       "default"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "textMuted"
     ],
-    "usage": [
+    usage: [
       "Email, inbox, password recovery.",
       "Email, inbox, password recovery"
     ]
   },
   "icon.account.phone_verified": {
-    "category": "account",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "account",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for voice support or customer service headset."
     ],
-    "legacyNames": [
+    legacyNames: [
       "phoneVerified"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalSmartphoneNfcIcon.tsx",
-    "meaning": "Phone number entry, SMS verification, and confirmed phone contact",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalMobileIcon.tsx",
+    meaning: "Phone number entry, SMS verification, and confirmed phone contact",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1138,56 +1140,56 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "SmartphoneNfc",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "Mobile",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "success"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "textMuted",
       "down"
     ],
-    "usage": [
+    usage: [
       "Phone number entry, SMS verification, and confirmed phone contact.",
       "Phone number entry, SMS verification, and confirmed phone contact"
     ]
   },
   "icon.promotion.reward": {
-    "category": "promotion",
-    "defaultSize": 24,
-    "defaultTone": "amber",
-    "forbidden": [
+    category: "promotion",
+    defaultSize: 24,
+    defaultTone: "amber",
+    forbidden: [
       "Do not use for trading ticket or coupon unless promo-specific."
     ],
-    "legacyNames": [
+    legacyNames: [
       "rewardGift"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalGiftIcon.tsx",
-    "meaning": "Rewards, bonus, promotional gift",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalGiftIcon.tsx",
+    meaning: "Rewards, bonus, promotional gift",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1198,55 +1200,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Gift",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Gift",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.warning",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.warning",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "amber",
       "brand"
     ],
-    "usage": [
+    usage: [
       "Rewards, bonus, promotional gift.",
       "Rewards, bonus, promotional gift"
     ]
   },
   "icon.market.global": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "textDim",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for account identity."
     ],
-    "legacyNames": [
+    legacyNames: [
       "globalMarket"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalGlobeHemisphereWestIcon.tsx",
-    "meaning": "Global market, language, regional onboarding",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalGlobalIcon.tsx",
+    meaning: "Global market, language, regional onboarding",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1257,55 +1259,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "GlobeHemisphereWest",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Global",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "panel"
     ],
-    "usage": [
+    usage: [
       "Global market, language, regional onboarding.",
       "Global market, language, regional onboarding"
     ]
   },
   "icon.education.academy": {
-    "category": "education",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "education",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for KYC completion."
     ],
-    "legacyNames": [
+    legacyNames: [
       "educationCap"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalStudentIcon.tsx",
-    "meaning": "Education, academy, trading lessons",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalTeacherIcon.tsx",
+    meaning: "Education, academy, trading lessons",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1316,55 +1318,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Student",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Teacher",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "success"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Education, academy, trading lessons.",
       "Education, academy, trading lessons"
     ]
   },
   "icon.support.headset": {
-    "category": "support",
-    "defaultSize": 24,
-    "defaultTone": "textMuted",
-    "forbidden": [
+    category: "support",
+    defaultSize: 24,
+    defaultTone: "textMuted",
+    forbidden: [
       "Do not use for audio/media."
     ],
-    "legacyNames": [
+    legacyNames: [
       "supportHeadset"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalHeadsetIcon.tsx",
-    "meaning": "Support center or service contact",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalHeadphoneIcon.tsx",
+    meaning: "Support center or service contact",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1375,55 +1377,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Headset",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Headphone",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.secondary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.secondary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "textMuted",
       "brand"
     ],
-    "usage": [
+    usage: [
       "Support center or service contact.",
       "Support center or service contact"
     ]
   },
   "icon.kyc.identity": {
-    "category": "kyc_compliance",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "kyc_compliance",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for generic account tab."
     ],
-    "legacyNames": [
+    legacyNames: [
       "identityCard"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalIdentificationCardIcon.tsx",
-    "meaning": "Identity verification, onboarding KYC, profile document",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalPersonalcardIcon.tsx",
+    meaning: "Identity verification, onboarding KYC, profile document",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1434,57 +1436,57 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "IdentificationCard",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Personalcard",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "warning",
       "success"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "down",
       "brand",
       "text"
     ],
-    "usage": [
+    usage: [
       "Identity verification, onboarding KYC, profile document.",
       "Identity verification, onboarding KYC, profile document"
     ]
   },
   "icon.risk.info": {
-    "category": "status",
-    "defaultSize": 24,
-    "defaultTone": "textMuted",
-    "forbidden": [
+    category: "status",
+    defaultSize: 24,
+    defaultTone: "textMuted",
+    forbidden: [
       "Do not use as success status."
     ],
-    "legacyNames": [
+    legacyNames: [
       "infoCircle"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalInfoIcon.tsx",
-    "meaning": "Inline help, disclosure, risk explanation",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalInfoCircleIcon.tsx",
+    meaning: "Inline help, disclosure, risk explanation",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1495,57 +1497,57 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Info",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "InfoCircle",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "warning",
       "danger"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.secondary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.secondary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "textMuted",
       "blue",
       "danger"
     ],
-    "usage": [
+    usage: [
       "Inline help, disclosure, risk explanation.",
       "Inline help, disclosure, risk explanation"
     ]
   },
   "icon.market.watchlist": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "text",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "text",
+    forbidden: [
       "Do not use for task checklist."
     ],
-    "legacyNames": [
+    legacyNames: [
       "quoteList"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalListBulletsIcon.tsx",
-    "meaning": "Watchlist, quote list, list view",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalBookSavedIcon.tsx",
+    meaning: "Watchlist, quote list, list view",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1556,57 +1558,57 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "ListBullets",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "BookSaved",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.primary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.primary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Watchlist, quote list, list view.",
       "Watchlist, quote list, list view"
     ]
   },
   "icon.trading.order": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for plain market quote list.",
       "Do not use for task checklist or KYC checklist."
     ],
-    "legacyNames": [
+    legacyNames: [
       "taskChecklist",
       "orderList"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalListChecksIcon.tsx",
-    "meaning": "Order list, open orders, and order-based position grouping",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalClipboardTickIcon.tsx",
+    meaning: "Order list, open orders, and order-based position grouping",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1617,57 +1619,57 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "ListChecks",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "ClipboardTick",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "text",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Orders, trading journal, task checklist, execution list.",
       "Order list, open orders, and order-based position grouping.",
       "Order list, open orders, and order-based position grouping"
     ]
   },
   "icon.security.lock": {
-    "category": "security",
-    "defaultSize": 24,
-    "defaultTone": "textDim",
-    "forbidden": [
+    category: "security",
+    defaultSize: 24,
+    defaultTone: "textDim",
+    forbidden: [
       "Do not use for regulatory review."
     ],
-    "legacyNames": [
+    legacyNames: [
       "secureLock"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalLockKeyIcon.tsx",
-    "meaning": "Password, locked field, protected content",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalLockIcon.tsx",
+    meaning: "Password, locked field, protected content",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1678,57 +1680,57 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "LockKey",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Lock",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "danger",
       "success",
       "disabled"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.tertiary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.tertiary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "textDim",
       "brand"
     ],
-    "usage": [
+    usage: [
       "Password, locked field, protected content.",
       "Password, locked field, protected content"
     ]
   },
   "icon.security.password_rules": {
-    "category": "security",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "security",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for PIN keypad or account lock."
     ],
-    "legacyNames": [
+    legacyNames: [
       "passwordRules"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalPasswordIcon.tsx",
-    "meaning": "Password rule validation and credential setup guidance",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalPasswordCheckIcon.tsx",
+    meaning: "Password rule validation and credential setup guidance",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1739,57 +1741,57 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Password",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "PasswordCheck",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "warning",
       "success"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "textDim",
       "brand",
       "down"
     ],
-    "usage": [
+    usage: [
       "Password rule validation and credential setup guidance.",
       "Password rule validation and credential setup guidance"
     ]
   },
   "icon.security.key_access": {
-    "category": "security",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "security",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for password visibility toggle."
     ],
-    "legacyNames": [
+    legacyNames: [
       "keyAccess"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalKeyRoundIcon.tsx",
-    "meaning": "PIN setup, unlock, or access-key semantics",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalKeyIcon.tsx",
+    meaning: "PIN setup, unlock, or access-key semantics",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1800,55 +1802,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "KeyRound",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "Key",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "success"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "PIN setup, unlock, or access-key semantics.",
       "PIN setup, unlock, or access-key semantics"
     ]
   },
   "icon.system.keyboard_digits": {
-    "category": "system",
-    "defaultSize": 24,
-    "defaultTone": "textDim",
-    "forbidden": [
+    category: "system",
+    defaultSize: 24,
+    defaultTone: "textDim",
+    forbidden: [
       "Do not use for text search or trading keyboard shortcuts."
     ],
-    "legacyNames": [
+    legacyNames: [
       "keyboardDigits"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalKeyboardIcon.tsx",
-    "meaning": "Numeric keyboard, OTP input, or PIN keypad hint",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalKeyboardIcon.tsx",
+    meaning: "Numeric keyboard, OTP input, or PIN keypad hint",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1859,55 +1861,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Keyboard",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "Keyboard",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.tertiary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.tertiary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "textDim",
       "brand"
     ],
-    "usage": [
+    usage: [
       "Numeric keyboard, OTP input, or PIN keypad hint.",
       "Numeric keyboard, OTP input, or PIN keypad hint"
     ]
   },
   "icon.system.password_visible": {
-    "category": "system",
-    "defaultSize": 24,
-    "defaultTone": "textDim",
-    "forbidden": [
+    category: "system",
+    defaultSize: 24,
+    defaultTone: "textDim",
+    forbidden: [
       "Do not use for market watchlist visibility."
     ],
-    "legacyNames": [
+    legacyNames: [
       "showPassword"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalEyeIcon.tsx",
-    "meaning": "Toggle password visibility in credential fields",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalEyeIcon.tsx",
+    meaning: "Toggle password visibility in credential fields",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1918,55 +1920,56 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Eye",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "Eye",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.tertiary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.tertiary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "textDim",
       "text"
     ],
-    "usage": [
+    usage: [
       "Toggle password visibility in credential fields.",
       "Toggle password visibility in credential fields"
     ]
   },
-  "icon.system.search": {
-    "category": "system",
-    "defaultSize": 24,
-    "defaultTone": "text",
-    "forbidden": [
-      "Do not use for inspect/detail navigation."
+  "icon.system.password_hidden": {
+    category: "system",
+    defaultSize: 24,
+    defaultTone: "textDim",
+    forbidden: [
+      "Do not use for market watchlist visibility.",
+      "Do not use as a hidden-state placeholder outside credential fields."
     ],
-    "legacyNames": [
-      "searchGlass"
+    legacyNames: [
+      "hidePassword"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "custom-owned",
+      url: "internal-custom-icon-request"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalSearchIcon.tsx",
-    "meaning": "Search entry and field prefix",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalEyeSlashIcon.tsx",
+    meaning: "Toggle password hidden state in credential fields",
+    modified: true,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -1977,58 +1980,117 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Search",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "EyeSlash",
+    sourceLibrary: "custom",
+    states: [
+      "default",
+      "active"
+    ],
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
+    },
+    tokenBinding: {
+      color: "color.icon.tertiary",
+      size: "size.icon.md"
+    },
+    toneTokens: [
+      "textDim",
+      "text"
+    ],
+    usage: [
+      "Toggle password hidden state in credential fields.",
+      "Use when the password is currently visible and the next action will hide it."
+    ]
+  },
+  "icon.system.search": {
+    category: "system",
+    defaultSize: 24,
+    defaultTone: "text",
+    forbidden: [
+      "Do not use for inspect/detail navigation."
+    ],
+    legacyNames: [
+      "searchGlass"
+    ],
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+    },
+    localAssetPath: "src/icons/local/iconsax/LocalSearchNormalIcon.tsx",
+    meaning: "Search entry and field prefix",
+    modified: false,
+    platforms: [
+      "app",
+      "h5",
+      "web"
+    ],
+    sizes: [
+      8,
+      12,
+      16,
+      20,
+      24,
+      32,
+      40,
+      48,
+      64
+    ],
+    sourceIconName: "SearchNormal",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active",
       "disabled"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.primary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.primary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Search entry and field prefix.",
       "Search entry and field prefix"
     ]
   },
   "icon.wallet.deposit": {
-    "category": "wallet",
-    "defaultSize": 24,
-    "defaultTone": "down",
-    "forbidden": [
+    category: "wallet",
+    defaultSize: 24,
+    defaultTone: "down",
+    forbidden: [
       "Do not use for generic code/coupon.",
       "Do not use for account balance, wallet overview, or transfer between accounts."
     ],
-    "legacyNames": [
+    legacyNames: [
       "qrCode",
       "walletDeposit"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalHandDepositIcon.tsx",
-    "meaning": "Deposit, incoming funds, successful credit, or receive-money transaction",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalMoneyReciveIcon.tsx",
+    meaning: "Deposit, incoming funds, successful credit, or receive-money transaction",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2039,58 +2101,58 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "HandDeposit",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "MoneyRecive",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "success",
       "warning"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.success",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.success",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "down",
       "brand",
       "text"
     ],
-    "usage": [
+    usage: [
       "Deposit QR, account QR, scan code.",
       "Deposit, incoming funds, successful credit, or receive-money transaction.",
       "Deposit, incoming funds, successful credit, or receive-money transaction"
     ]
   },
   "icon.ib.network": {
-    "category": "ib_partner",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "ib_partner",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for transfer funds."
     ],
-    "legacyNames": [
+    legacyNames: [
       "partnerNetwork"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalShareNetworkIcon.tsx",
-    "meaning": "Partner network, sharing, referral graph",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalShareIcon.tsx",
+    meaning: "Partner network, sharing, referral graph",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2101,56 +2163,56 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "ShareNetwork",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Share",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "blue",
       "text"
     ],
-    "usage": [
+    usage: [
       "Partner network, sharing, referral graph.",
       "Partner network, sharing, referral graph"
     ]
   },
   "icon.security.risk_shield": {
-    "category": "security",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "security",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use as generic success when statusVerified is clearer."
     ],
-    "legacyNames": [
+    legacyNames: [
       "riskShield"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalShieldCheckIcon.tsx",
-    "meaning": "Security, fraud prevention, compliance protection",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalShieldTickIcon.tsx",
+    meaning: "Security, fraud prevention, compliance protection",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2161,57 +2223,57 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "ShieldCheck",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "ShieldTick",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "success",
       "warning"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "down",
       "textMuted"
     ],
-    "usage": [
+    usage: [
       "Security, fraud prevention, compliance protection.",
       "Security, fraud prevention, compliance protection"
     ]
   },
   "icon.system.settings": {
-    "category": "system",
-    "defaultSize": 24,
-    "defaultTone": "textDim",
-    "forbidden": [
+    category: "system",
+    defaultSize: 24,
+    defaultTone: "textDim",
+    forbidden: [
       "Do not use for market depth."
     ],
-    "legacyNames": [
+    legacyNames: [
       "settingsSliders"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalSlidersHorizontalIcon.tsx",
-    "meaning": "Settings, filters, product controls, sort",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalSetting2Icon.tsx",
+    meaning: "Settings, filters, product controls, sort",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2222,55 +2284,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "SlidersHorizontal",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "Setting2",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.tertiary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.tertiary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Settings, filters, product controls, sort.",
       "Settings, filters, product controls, sort"
     ]
   },
   "icon.promotion.ticket": {
-    "category": "promotion",
-    "defaultSize": 24,
-    "defaultTone": "amber",
-    "forbidden": [
+    category: "promotion",
+    defaultSize: 24,
+    defaultTone: "amber",
+    forbidden: [
       "Do not use for trading order ticket; use icon.trading.order."
     ],
-    "legacyNames": [
+    legacyNames: [
       "promoTicket"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalTicketIcon.tsx",
-    "meaning": "Coupon, promotion, simulated contest badge",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalTicketIcon.tsx",
+    meaning: "Coupon, promotion, simulated contest badge",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2281,55 +2343,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Ticket",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Ticket",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.warning",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.warning",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "amber",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Coupon, promotion, simulated contest badge.",
       "Coupon, promotion, simulated contest badge"
     ]
   },
   "icon.promotion.achievement": {
-    "category": "promotion",
-    "defaultSize": 24,
-    "defaultTone": "amber",
-    "forbidden": [
+    category: "promotion",
+    defaultSize: 24,
+    defaultTone: "amber",
+    forbidden: [
       "Do not use for account status."
     ],
-    "legacyNames": [
+    legacyNames: [
       "achievementTrophy"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalTrophyIcon.tsx",
-    "meaning": "Challenge, leaderboard, achievement",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalAwardIcon.tsx",
+    meaning: "Challenge, leaderboard, achievement",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2340,55 +2402,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Trophy",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Award",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.warning",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.warning",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "amber",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Challenge, leaderboard, achievement.",
       "Challenge, leaderboard, achievement"
     ]
   },
   "icon.account.user": {
-    "category": "account",
-    "defaultSize": 24,
-    "defaultTone": "text",
-    "forbidden": [
+    category: "account",
+    defaultSize: 24,
+    defaultTone: "text",
+    forbidden: [
       "Do not use for bank/funding account."
     ],
-    "legacyNames": [
+    legacyNames: [
       "userProfile"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalUserIcon.tsx",
-    "meaning": "User, client, account owner, profile preview",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalProfileIcon.tsx",
+    meaning: "User, client, account owner, profile preview",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2399,55 +2461,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "User",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Profile",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.primary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.primary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text",
       "blue"
     ],
-    "usage": [
+    usage: [
       "User, client, account owner, profile preview.",
       "User, client, account owner, profile preview"
     ]
   },
   "icon.account.avatar": {
-    "category": "account",
-    "defaultSize": 24,
-    "defaultTone": "text",
-    "forbidden": [
+    category: "account",
+    defaultSize: 24,
+    defaultTone: "text",
+    forbidden: [
       "Do not use for add-account action."
     ],
-    "legacyNames": [
+    legacyNames: [
       "userAvatar"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalUserCircleIcon.tsx",
-    "meaning": "Profile avatar placeholder and profile module",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalProfileCircleIcon.tsx",
+    meaning: "Profile avatar placeholder and profile module",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2458,55 +2520,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "UserCircle",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "ProfileCircle",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.primary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.primary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text",
       "textMuted"
     ],
-    "usage": [
+    usage: [
       "Profile avatar placeholder and profile module.",
       "Profile avatar placeholder and profile module"
     ]
   },
   "icon.account.add_user": {
-    "category": "account",
-    "defaultSize": 24,
-    "defaultTone": "text",
-    "forbidden": [
+    category: "account",
+    defaultSize: 24,
+    defaultTone: "text",
+    forbidden: [
       "Do not use for KYC verification."
     ],
-    "legacyNames": [
+    legacyNames: [
       "addUser"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalUserCirclePlusIcon.tsx",
-    "meaning": "Add account, add client, invite user",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalProfileAddIcon.tsx",
+    meaning: "Add account, add client, invite user",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2517,55 +2579,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "UserCirclePlus",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "ProfileAdd",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.primary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.primary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text",
       "brand"
     ],
-    "usage": [
+    usage: [
       "Add account, add client, invite user.",
       "Add account, add client, invite user"
     ]
   },
   "icon.system.close": {
-    "category": "system",
-    "defaultSize": 24,
-    "defaultTone": "textDim",
-    "forbidden": [
+    category: "system",
+    defaultSize: 24,
+    defaultTone: "textDim",
+    forbidden: [
       "Do not use as failed status without label."
     ],
-    "legacyNames": [
+    legacyNames: [
       "closeX"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "custom-owned",
+      url: "internal-custom-icon-request"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalXIcon.tsx",
-    "meaning": "Close, cancel, dismiss, or destructive close when paired with danger tone",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalCloseIcon.tsx",
+    meaning: "Close, cancel, or dismiss action",
+    modified: true,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2576,57 +2638,57 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "X",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "Close",
+    sourceLibrary: "custom",
+    states: [
       "default",
       "active",
       "danger"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.tertiary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.tertiary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "textDim",
       "danger",
       "panel"
     ],
-    "usage": [
-      "Close, cancel, dismiss, delete when paired with danger tone.",
-      "Close, cancel, dismiss, or destructive close when paired with danger tone"
+    usage: [
+      "Close, cancel, or dismiss action without status container semantics.",
+      "Close, cancel, or dismiss action"
     ]
   },
   "icon.wallet.balance": {
-    "category": "wallet",
-    "defaultSize": 24,
-    "defaultTone": "blue",
-    "forbidden": [
+    category: "wallet",
+    defaultSize: 24,
+    defaultTone: "blue",
+    forbidden: [
       "Do not use for bank institution, deposit action, or archive action."
     ],
-    "legacyNames": [
+    legacyNames: [
       "accountBalance"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalWalletIcon.tsx",
-    "meaning": "Account balance, available funds, equity snapshot, and wallet balance detail",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalWalletIcon.tsx",
+    meaning: "Account balance, available funds, equity snapshot, and wallet balance detail",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2637,56 +2699,56 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Wallet",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Wallet",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.info",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.info",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "blue",
       "text",
       "brand"
     ],
-    "usage": [
+    usage: [
       "Account balance, available funds, equity snapshot, and wallet balance detail.",
       "Account balance, available funds, equity snapshot, and wallet balance detail"
     ]
   },
   "icon.account.archive": {
-    "category": "account",
-    "defaultSize": 24,
-    "defaultTone": "text",
-    "forbidden": [
+    category: "account",
+    defaultSize: 24,
+    defaultTone: "text",
+    forbidden: [
       "Do not use for wallet, balance, delete, or download."
     ],
-    "legacyNames": [
+    legacyNames: [
       "archiveAccount"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalArchiveIcon.tsx",
-    "meaning": "Archive or hide a trading account from active lists",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalArchiveIcon.tsx",
+    meaning: "Archive or hide a trading account from active lists",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2697,55 +2759,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Archive",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "Archive",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.primary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.primary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Archive or hide a trading account from active lists.",
       "Archive or hide a trading account from active lists"
     ]
   },
   "icon.system.delete": {
-    "category": "system",
-    "defaultSize": 24,
-    "defaultTone": "danger",
-    "forbidden": [
+    category: "system",
+    defaultSize: 24,
+    defaultTone: "danger",
+    forbidden: [
       "Do not use for modal close or temporary dismiss."
     ],
-    "legacyNames": [
+    legacyNames: [
       "destructiveDelete"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalTrash2Icon.tsx",
-    "meaning": "Delete, remove, or irreversible destructive action",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalTrashIcon.tsx",
+    meaning: "Delete, remove, or irreversible destructive action",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2756,55 +2818,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Trash2",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "Trash",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "danger"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.danger",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.danger",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "danger",
       "text"
     ],
-    "usage": [
+    usage: [
       "Delete, remove, or irreversible destructive action.",
       "Delete, remove, or irreversible destructive action"
     ]
   },
   "icon.system.logout": {
-    "category": "system",
-    "defaultSize": 24,
-    "defaultTone": "danger",
-    "forbidden": [
+    category: "system",
+    defaultSize: 24,
+    defaultTone: "danger",
+    forbidden: [
       "Do not use for deleting account data or closing a modal."
     ],
-    "legacyNames": [
+    legacyNames: [
       "logoutSession"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalLogOutIcon.tsx",
-    "meaning": "Log out of the current session while preserving remembered account identity",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalLogoutIcon.tsx",
+    meaning: "Log out of the current session while preserving remembered account identity",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2815,56 +2877,56 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "LogOut",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "Logout",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "danger"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.danger",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.danger",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "danger",
       "textDim",
       "text"
     ],
-    "usage": [
+    usage: [
       "Log out of the current session while preserving remembered account identity.",
       "Log out of the current session while preserving remembered account identity"
     ]
   },
   "icon.trading.order_ticket": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for market watchlist or transaction history."
     ],
-    "legacyNames": [
+    legacyNames: [
       "tradeTicket"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalReceiptIcon.tsx",
-    "meaning": "Trade ticket, market order entry, and order creation flow",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalReceiptTextIcon.tsx",
+    meaning: "Trade ticket, market order entry, and order creation flow",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2875,57 +2937,57 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Receipt",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "ReceiptText",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "up",
       "down",
       "text"
     ],
-    "usage": [
+    usage: [
       "Trade ticket, market order entry, and order creation flow.",
       "Trade ticket, market order entry, and order creation flow"
     ]
   },
   "icon.trading.group_by_symbol": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "textDim",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "textDim",
+    forbidden: [
       "Do not use for QR code, scan, or payment address."
     ],
-    "legacyNames": [
+    legacyNames: [
       "groupBySymbol"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalSortAscendingIcon.tsx",
-    "meaning": "Sort or group positions by trading symbol",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalSortIcon.tsx",
+    meaning: "Sort or group positions by trading symbol",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2936,56 +2998,56 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "SortAscending",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Sort",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.tertiary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.tertiary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text",
       "textDim",
       "brand"
     ],
-    "usage": [
+    usage: [
       "Sort or group positions by trading symbol.",
       "Sort or group positions by trading symbol"
     ]
   },
   "icon.trading.close_position": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "danger",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "danger",
+    forbidden: [
       "Do not use for modal close; use icon.system.close for dismissal."
     ],
-    "legacyNames": [
+    legacyNames: [
       "closePosition"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalXCircleIcon.tsx",
-    "meaning": "Close all positions or cancel an active trading exposure",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalCloseSquareIcon.tsx",
+    meaning: "Close all positions or cancel an active trading exposure",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -2996,55 +3058,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "XCircle",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "CloseSquare",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "danger"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.danger",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.danger",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "danger",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Close all positions or cancel an active trading exposure.",
       "Close all positions or cancel an active trading exposure"
     ]
   },
   "icon.trading.close_losing_position": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "danger",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "danger",
+    forbidden: [
       "Do not use for successful verification or completed status."
     ],
-    "legacyNames": [
+    legacyNames: [
       "closeLosingPosition"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalTrendDownIcon.tsx",
-    "meaning": "Close losing positions, stop-loss related action, or downside exposure reduction",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalTrendDownIcon.tsx",
+    meaning: "Close losing positions, stop-loss related action, or downside exposure reduction",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -3055,55 +3117,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "TrendDown",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "TrendDown",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "danger"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.danger",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.danger",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "danger",
       "amber"
     ],
-    "usage": [
+    usage: [
       "Close losing positions, stop-loss related action, or downside exposure reduction.",
       "Close losing positions, stop-loss related action, or downside exposure reduction"
     ]
   },
   "icon.trading.buy": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "down",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "down",
+    forbidden: [
       "Do not use for generic market trend without an actual buy direction."
     ],
-    "legacyNames": [
+    legacyNames: [
       "tradeBuy"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalChartLineUpIcon.tsx",
-    "meaning": "Buy direction marker in positions and order details",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalTrendUpIcon.tsx",
+    meaning: "Buy direction marker in positions and order details",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -3114,56 +3176,56 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "ChartLineUp",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "TrendUp",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active",
       "success"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.success",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.success",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "down",
       "brand"
     ],
-    "usage": [
+    usage: [
       "Buy direction marker in positions and order details.",
       "Buy direction marker in positions and order details"
     ]
   },
   "icon.trading.sell": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "up",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "up",
+    forbidden: [
       "Do not use for generic market trend without an actual sell direction."
     ],
-    "legacyNames": [
+    legacyNames: [
       "tradeSell"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalChartLineDownIcon.tsx",
-    "meaning": "Sell direction marker in positions and order details",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalTrendDownIcon.tsx",
+    meaning: "Sell direction marker in positions and order details",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -3174,56 +3236,56 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "ChartLineDown",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "TrendDown",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active",
       "danger"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.danger",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.danger",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "up",
       "danger"
     ],
-    "usage": [
+    usage: [
       "Sell direction marker in positions and order details.",
       "Sell direction marker in positions and order details"
     ]
   },
   "icon.status.rejected": {
-    "category": "status",
-    "defaultSize": 24,
-    "defaultTone": "danger",
-    "forbidden": [
+    category: "status",
+    defaultSize: 24,
+    defaultTone: "danger",
+    forbidden: [
       "Do not use for user-close or dismiss actions."
     ],
-    "legacyNames": [
+    legacyNames: [
       "statusRejected"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalCircleXIcon.tsx",
-    "meaning": "Rejected, failed, or blocked status in financial workflows",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalDangerIcon.tsx",
+    meaning: "Rejected, failed, or blocked status in financial workflows",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -3234,55 +3296,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "CircleX",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "Danger",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "danger"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.danger",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.danger",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "danger",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Rejected, failed, or blocked status in financial workflows.",
       "Rejected, failed, or blocked status in financial workflows"
     ]
   },
   "icon.feedback.rating": {
-    "category": "support",
-    "defaultSize": 24,
-    "defaultTone": "amber",
-    "forbidden": [
+    category: "support",
+    defaultSize: 24,
+    defaultTone: "amber",
+    forbidden: [
       "Do not use for challenge award, promotion, or verified status."
     ],
-    "legacyNames": [
+    legacyNames: [
       "appRating"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalStarIcon.tsx",
-    "meaning": "App rating or satisfaction scoring entry",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalStarIcon.tsx",
+    meaning: "App rating or satisfaction scoring entry",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -3293,55 +3355,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Star",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Star",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.warning",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.warning",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "amber",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "App rating or satisfaction scoring entry.",
       "App rating or satisfaction scoring entry"
     ]
   },
   "icon.support.help_center": {
-    "category": "support",
-    "defaultSize": 24,
-    "defaultTone": "textMuted",
-    "forbidden": [
+    category: "support",
+    defaultSize: 24,
+    defaultTone: "textMuted",
+    forbidden: [
       "Do not use for regulatory disclosure; use icon.risk.info."
     ],
-    "legacyNames": [
+    legacyNames: [
       "helpCenter"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "ISC",
-      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/lucide/LocalCircleQuestionMarkIcon.tsx",
-    "meaning": "Help center, FAQ, and guided assistance",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalMessageQuestionIcon.tsx",
+    meaning: "Help center, FAQ, and guided assistance",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -3352,54 +3414,54 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "CircleQuestionMark",
-    "sourceLibrary": "lucide",
-    "states": [
+    sourceIconName: "MessageQuestion",
+    sourceLibrary: "iconsax",
+    states: [
       "default"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.secondary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.secondary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "textMuted",
       "brand"
     ],
-    "usage": [
+    usage: [
       "Help center, FAQ, and guided assistance.",
       "Help center, FAQ, and guided assistance"
     ]
   },
   "icon.support.about": {
-    "category": "support",
-    "defaultSize": 24,
-    "defaultTone": "textMuted",
-    "forbidden": [
+    category: "support",
+    defaultSize: 24,
+    defaultTone: "textMuted",
+    forbidden: [
       "Do not use for risk warning or inline disclosure."
     ],
-    "legacyNames": [
+    legacyNames: [
       "aboutApp"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalInfoIcon.tsx",
-    "meaning": "About app, product information, and company information entry",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalInformationIcon.tsx",
+    meaning: "About app, product information, and company information entry",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -3410,54 +3472,54 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Info",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Information",
+    sourceLibrary: "iconsax",
+    states: [
       "default"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.secondary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.secondary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "textMuted",
       "brand"
     ],
-    "usage": [
+    usage: [
       "About app, product information, and company information entry.",
       "About app, product information, and company information entry"
     ]
   },
   "icon.navigation.function_center": {
-    "category": "navigation",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "navigation",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for trading orders or task checklist."
     ],
-    "legacyNames": [
+    legacyNames: [
       "functionCenter"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalSquaresFourIcon.tsx",
-    "meaning": "Function center, app module dashboard, or shortcut hub",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalElement4Icon.tsx",
+    meaning: "Function center, app module dashboard, or shortcut hub",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -3468,55 +3530,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "SquaresFour",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Element4",
+    sourceLibrary: "iconsax",
+    states: [
       "default",
       "active"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Function center, app module dashboard, or shortcut hub.",
       "Function center, app module dashboard, or shortcut hub"
     ]
   },
   "icon.trading.volume": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "brand",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "brand",
+    forbidden: [
       "Do not use for price trend or market direction."
     ],
-    "legacyNames": [
+    legacyNames: [
       "tradeVolume"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalChartBarIcon.tsx",
-    "meaning": "Trading volume, analytics volume metric, and aggregated activity size",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalChartSquareIcon.tsx",
+    meaning: "Trading volume, analytics volume metric, and aggregated activity size",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -3527,55 +3589,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "ChartBar",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "ChartSquare",
+    sourceLibrary: "iconsax",
+    states: [
       "default"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.active",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.active",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "brand",
       "text",
       "textDim"
     ],
-    "usage": [
+    usage: [
       "Trading volume, analytics volume metric, and aggregated activity size.",
       "Trading volume, analytics volume metric, and aggregated activity size"
     ]
   },
   "icon.market.gold": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "amber",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "amber",
+    forbidden: [
       "Do not use for deposit, reward, or balance."
     ],
-    "legacyNames": [
+    legacyNames: [
       "goldCommodity"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalCoinsIcon.tsx",
-    "meaning": "Gold, metals, and commodity instrument visual",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalCoinIcon.tsx",
+    meaning: "Gold, metals, and commodity instrument visual",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -3586,54 +3648,54 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "Coins",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Coin",
+    sourceLibrary: "iconsax",
+    states: [
       "default"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.warning",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.warning",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "amber",
       "brand"
     ],
-    "usage": [
+    usage: [
       "Gold, metals, and commodity instrument visual.",
       "Gold, metals, and commodity instrument visual"
     ]
   },
   "icon.market.index": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "blue",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "blue",
+    forbidden: [
       "Do not use for account analytics or volume metric."
     ],
-    "legacyNames": [
+    legacyNames: [
       "indexMarket"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "MIT",
-      "url": "https://github.com/duongdev/phosphor-react-native/blob/main/LICENSE"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/phosphor/LocalChartLineIcon.tsx",
-    "meaning": "Index, futures, and benchmark market instrument visual",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalChartIcon.tsx",
+    meaning: "Index, futures, and benchmark market instrument visual",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -3644,55 +3706,55 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "ChartLine",
-    "sourceLibrary": "phosphor",
-    "states": [
+    sourceIconName: "Chart",
+    sourceLibrary: "iconsax",
+    states: [
       "default"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.info",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.info",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "blue",
       "brand",
       "text"
     ],
-    "usage": [
+    usage: [
       "Index, futures, and benchmark market instrument visual.",
       "Index, futures, and benchmark market instrument visual"
     ]
   },
   "icon.market.stock": {
-    "category": "trading",
-    "defaultSize": 24,
-    "defaultTone": "text",
-    "forbidden": [
+    category: "trading",
+    defaultSize: 24,
+    defaultTone: "text",
+    forbidden: [
       "Do not use proprietary company logos as functional instrument icons."
     ],
-    "legacyNames": [
+    legacyNames: [
       "stockAsset"
     ],
-    "license": {
-      "attributionRequired": false,
-      "name": "Remix Icon License v1.0",
-      "url": "https://github.com/Remix-Design/RemixIcon/blob/master/License"
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    "localAssetPath": "src/icons/local/remix/LocalStockLineIcon.tsx",
-    "meaning": "Stock and equity instrument visual without brand-logo copying",
-    "modified": false,
-    "platforms": [
+    localAssetPath: "src/icons/local/iconsax/LocalChart21Icon.tsx",
+    meaning: "Stock and equity instrument visual without brand-logo copying",
+    modified: false,
+    platforms: [
       "app",
       "h5",
       "web"
     ],
-    "sizes": [
+    sizes: [
       8,
       12,
       16,
@@ -3703,27 +3765,27 @@ export const iconRegistry = {
       48,
       64
     ],
-    "sourceIconName": "stock-line",
-    "sourceLibrary": "remix",
-    "states": [
+    sourceIconName: "Chart21",
+    sourceLibrary: "iconsax",
+    states: [
       "default"
     ],
-    "status": "approved",
-    "style": {
-      "default": "line",
-      "active": "fill",
-      "disabled": "line"
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
     },
-    "tokenBinding": {
-      "color": "color.icon.primary",
-      "size": "size.icon.md"
+    tokenBinding: {
+      color: "color.icon.primary",
+      size: "size.icon.md"
     },
-    "toneTokens": [
+    toneTokens: [
       "text",
       "brand",
       "blue"
     ],
-    "usage": [
+    usage: [
       "Stock and equity instrument visual without brand-logo copying.",
       "Stock and equity instrument visual without brand-logo copying"
     ]
@@ -3761,6 +3823,7 @@ export const legacyIconNameMap = {
   "keyAccess": "icon.security.key_access",
   "keyboardDigits": "icon.system.keyboard_digits",
   "showPassword": "icon.system.password_visible",
+  "hidePassword": "icon.system.password_hidden",
   "searchGlass": "icon.system.search",
   "qrCode": "icon.wallet.deposit",
   "partnerNetwork": "icon.ib.network",
@@ -3834,9 +3897,11 @@ export function resolveIconTone(colors: ThemeColors, tone: IconTone | string): s
     case 'cyan':
     case 'primary':
     case 'text':
+      return colors.icon.primary;
+    case 'tertiary':
     case 'textDim':
     case 'textMuted':
-      return colors.icon.primary;
+      return colors.icon.tertiary;
     default:
       return tone;
   }

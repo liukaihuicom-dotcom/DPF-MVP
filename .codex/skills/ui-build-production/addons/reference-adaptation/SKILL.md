@@ -10,18 +10,18 @@ description: >
 
 # UI Reference Adaptation Add-on Skill v1.0.0-L5
 
-> File: `skills/ui-build-production/addons/reference-adaptation/SKILL.md`  
-> Version: `v1.0.0-L5`  
-> Level: `L5 Add-on / Production Reference Adaptation Skill`  
-> Parent Skill: `UI Build Production Skill v3.0.0-L5`  
+> File: `.codex/skills/ui-build-production/addons/reference-adaptation/SKILL.md`
+> Version: `v1.0.0-L5`
+> Level: `L5 Add-on / Production Reference Adaptation Skill`
+> Parent Skill: `UI Build Production Skill v3.0.0-L5`
 > Depends on:
 > - `AI Product Production Delivery Skill v3.0.0-L5`
 > - `Design System Engineering Skill v3.0.0-L5`
 > - `UI Build Production Skill v3.0.0-L5`
 >
-> Purpose: 将 Mobbin / App Screenshot / Web Reference / Dribbble / Behance / Figma Community / 竞品截图等参考案例，转化为符合项目 Page Contract、Design System、Token、Component Manifest、Pattern Registry 和业务规则的生产级 UI 参考输入。  
+> Purpose: 将 Mobbin / App Screenshot / Web Reference / Dribbble / Behance / Figma Community / 竞品截图等参考案例，转化为符合项目 Page Contract、Design System、Token、Component Manifest、Pattern Registry 和业务规则的生产级 UI 参考输入。
 >
-> Core Flow:  
+> Core Flow:
 > `Reference Input → Visual DNA → Similarity Risk → Token Mapping → Component Mapping → Pattern Mapping → Business Adaptation → UI Build Input`
 
 ---
@@ -73,7 +73,7 @@ description: >
 ## 2. 标准目录
 
 ```text
-skills/ui-build-production/addons/reference-adaptation/
+.codex/skills/ui-build-production/addons/reference-adaptation/
 ├── SKILL.md
 ├── schemas/
 │   ├── reference-input.schema.json

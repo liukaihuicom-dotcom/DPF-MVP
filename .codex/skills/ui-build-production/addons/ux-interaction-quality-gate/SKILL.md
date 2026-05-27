@@ -1,11 +1,6 @@
 ---
 name: ux-interaction-quality-gate
-description: >
-  Use only as a UI Build Production add-on for UX review, task-path validation, interaction quality, feedback states,
-  error recovery, platform interaction conventions, accessibility, financial UX risk, App/H5/Web/Admin usability acceptance, and release decisions.
-  Inputs include Page Contract, UI implementation or prototype, state matrix, interaction/event map, platform rules, risk scenarios, copy, and QA evidence.
-  Outputs UX Gate report, Blocker/Critical/Major/Minor issues, recovery and interaction fixes, accessibility findings, release decision, and next-stage allowance.
-  Do not use to redefine business rules, replace Design System or Page Contracts, create visual style, analyze references, or approve legal/compliance risk alone.
+description: 当任务涉及 UX review、任务路径、交互质量、错误恢复、平台交互规范、无障碍、金融 UX 风险、App/H5/Web/Admin 页面可用性验收、Release Decision 时使用。本 Skill 是 UI Build Production Skill 的 UX 交互质量门禁 Add-on。
 ---
 
 # UX Interaction Quality Gate Skill v1.0.0-L5 中文版

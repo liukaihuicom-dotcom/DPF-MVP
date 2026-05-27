@@ -5,6 +5,7 @@ export * from '../KeyValueList';
 export * from '../Metric';
 export * from '../Sparkline';
 export * from '../TradeDirectionIcon';
+export * from '../TradeOrderList';
 export * from '../quoteVisuals';
 export * from './DetailInline';
 export * from './DetailRow';

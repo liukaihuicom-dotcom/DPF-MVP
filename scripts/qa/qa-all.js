@@ -3,7 +3,9 @@ const { spawnSync } = require('child_process');
 
 const scripts = [
   'check-hardcoded-style.js',
+  'check-tokens.js',
   'check-page-delivery.js',
+  'check-navigation-registry.js',
   'check-state-coverage.js',
   'check-handoff-docs.js',
   'check-api-contract.js',
@@ -11,6 +13,7 @@ const scripts = [
   'check-accessibility-baseline.js',
   'check-security-rules.js',
   'check-version-record.js',
+  'check-workspace-boundary.js',
   'check-icons.js',
   'check-component-boundary.js',
   'check-component-manifest.js',

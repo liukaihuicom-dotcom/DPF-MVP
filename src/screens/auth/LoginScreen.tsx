@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 
-import { isValidEmail, maskDisplayAccount, safeRedirect, sanitizePhone } from '@/src/auth/authFlow';
+import { buildAuthRoute, isValidEmail, maskDisplayAccount, safeRedirect, sanitizePhone } from '@/src/auth/authFlow';
 import { ActionButton } from '@/src/components/ActionButton';
 import { AuthDescriptionAction, AuthLanguageAction, AuthShell, AuthTextField } from '@/src/components/AuthShell';
 import { AuthErrorSheet } from '@/src/components/AuthFlowControls';
@@ -29,6 +29,7 @@ export default function LoginScreen() {
     colors,
     profileAvatarId,
     profileNickname,
+    setAuthStatus,
     setPinGateStatus,
     setPinStatus,
     rememberedLoginSnapshot,
@@ -72,16 +73,18 @@ export default function LoginScreen() {
       lastLoginMethod: 'password',
       nickname: profileNickname.trim() || undefined,
     });
+    setAuthStatus('signedIn');
     void notifySuccess();
     if (localPinCode.length === 6) {
-      setPinGateStatus('locked');
+      setPinGateStatus('unlocked');
       setPinStatus('set');
-      router.replace(`/auth/pin-setup?mode=unlock&redirect=${encodeURIComponent(String(redirect))}` as never);
+      router.replace(redirect);
       return;
     }
 
-    setPinStatus('unset');
-    router.replace(`/auth/pin-setup?mode=setup&redirect=${encodeURIComponent(String(redirect))}` as never);
+    setPinGateStatus('unlocked');
+    setPinStatus('skipped');
+    router.replace(redirect);
   };
 
   const submit = () => {
@@ -104,13 +107,13 @@ export default function LoginScreen() {
   };
   return (
     <AuthShell
-      closeToLaunch
+      navMode="close"
       descriptionAction={
         !remembered ? (
           <AuthDescriptionAction
             actionLabel={t('auth.login.createAccountAction')}
             label={t('auth.login.noAccountPrefix')}
-            onPress={() => router.push(`/auth/register?redirect=${encodeURIComponent(String(redirect))}` as never)}
+            onPress={() => router.push(buildAuthRoute('/auth/register', redirect, { entry: 'login' }) as never)}
           />
         ) : null
       }
@@ -120,7 +123,7 @@ export default function LoginScreen() {
           <HeaderIconButton
             accessibilityLabel={t('auth.forgotPassword')}
             icon="icon.support.help_center"
-            onPress={() => router.push('/auth/forgot-password' as never)}
+            onPress={() => router.push(buildAuthRoute('/auth/forgot-password', redirect) as never)}
             variant="ghost"
           />
           <AuthLanguageAction />
@@ -157,7 +160,7 @@ export default function LoginScreen() {
             minTouch={40}
             onPress={switchAccount}
             style={StyleSheet.flatten([styles.switchAccountButton, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-            <AppIcon name="icon.account.add_user" size={20} />
+            <AppIcon name="icon.account.add_user" sizeVariant="sm" />
           </NativePressable>
         </View>
       ) : null}

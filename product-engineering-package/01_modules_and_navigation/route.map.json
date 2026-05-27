@@ -1,15 +1,78 @@
 {
-  "route_policy": "Draft route ids for future implementation. No runtime routes are added by this contract.",
-  "app_h5_routes": {
+  "route_policy": "Runtime route inventory for the Expo Router app. The code source of truth is src/navigation/routeRegistry.ts.",
+  "source_of_truth": "src/navigation/routeRegistry.ts",
+  "runtime": {
+    "expo_sdk": "54",
+    "router": "expo-router 6",
+    "root_stack": "app/_layout.tsx",
+    "tab_layout": "app/(tabs)/_layout.tsx"
+  },
+  "app_routes": {
+    "index_redirect": "/",
+    "brand_splash": "/brand-splash",
+    "launch": "/launch",
+    "markets": "/markets",
+    "trade": "/trade",
+    "accounts": "/accounts",
+    "discover": "/discover",
+    "quick": "/quick",
+    "portfolio_alias": "/portfolio",
+    "account_alias": "/account",
+    "partner_tools": "/partner-tools",
+    "instrument_detail": "/instrument/[id]",
+    "order_ticket": "/order/[id]",
+    "client_profile": "/client/[id]",
+    "partner_client_orders": "/partner/client-orders",
+    "partner_commission": "/partner/commission",
+    "discover_entry": "/discover-entry/[id]",
+    "discover_layout": "/discover-layout",
+    "account_details": "/account-details/[id]",
+    "account_basic": "/account-basic/[id]",
+    "account_balance": "/account-balance/[id]",
+    "account_orders": "/account-orders/[id]",
     "funding_home": "/funding",
     "deposit_form": "/funding/deposit",
-    "deposit_detail": "/funding/deposit/:id",
     "withdrawal_form": "/funding/withdrawal",
-    "withdrawal_detail": "/funding/withdrawal/:id",
     "transfer_form": "/funding/transfer",
-    "transfer_detail": "/funding/transfer/:id",
     "funding_transaction_list": "/funding/transactions",
-    "funding_transaction_detail": "/funding/transactions/:id"
+    "funding_transaction_detail": "/funding/transactions/[id]",
+    "settings": "/settings",
+    "security_login_log": "/settings/security-log",
+    "appearance": "/appearance",
+    "onboarding": "/auth/onboarding",
+    "login": "/auth",
+    "register_phone": "/auth/register",
+    "register_email_code": "/auth/register-email-code",
+    "register_email": "/auth/register-phone",
+    "register_phone_code": "/auth/register-phone-code",
+    "register_password": "/auth/register-password",
+    "forgot_password": "/auth/forgot-password",
+    "pin_setup": "/auth/pin-setup",
+    "verify_legacy_redirect": "/auth/verify",
+    "not_found": "/(not-found)"
+  },
+  "routeable_modals": {
+    "order_ticket": {
+      "path": "/order/[id]",
+      "presentation": "transparentModal",
+      "risk_level": "high",
+      "reason": "Trading ticket is a transaction flow that benefits from refresh recovery, deep links, and external task entry."
+    },
+    "discover_layout": {
+      "path": "/discover-layout",
+      "presentation": "transparentModal",
+      "risk_level": "low",
+      "reason": "Current route-backed configuration layer; consider demoting if deep link or recovery is not required."
+    }
+  },
+  "hidden_tab_routes": {
+    "portfolio_alias": "/portfolio",
+    "account_alias": "/account",
+    "partner_tools": "/partner-tools"
+  },
+  "legacy_or_compatibility_routes": {
+    "index_redirect": "/",
+    "verify_legacy_redirect": "/auth/verify"
   },
   "admin_routes": {
     "admin_funding_review_list": "/admin/funding/reviews",
@@ -17,6 +80,12 @@
     "admin_funding_channel_config": "/admin/funding/channels",
     "admin_funding_limit_fee_config": "/admin/funding/rules",
     "admin_funding_exception_reconciliation": "/admin/funding/exceptions"
-  }
+  },
+  "governance_rules": [
+    "Every app/**/*.tsx product page must be registered in src/navigation/routeRegistry.ts.",
+    "Ordinary confirmation, success, failure, toast, tips, delete confirmation, and picker sheets must stay in src/navigation/modalRegistry.ts with routeable false.",
+    "Routeable modals must map to a real route path and match RootLayout transparentModal presentation when applicable.",
+    "Routeable false modal entries must not define routePath.",
+    "Partner client orders and commission settlement are secondary Partner detail routes; primary tabs /trade and /accounts remain trader workspace routes."
+  ]
 }
-

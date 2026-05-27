@@ -67,7 +67,7 @@ export function KeyValueList({
             numberOfLines={1}
             style={styles.value}
             tone={item.tone ?? 'default'}
-            variant="subtitle"
+            variant={isDetail ? 'subtitle' : 'label.default'}
           >
             {item.value}
           </AppText>
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   list: {
-    gap: spacing.sm,
+    gap: spacing.xs,
   },
   row: {
     alignItems: 'center',

@@ -9,6 +9,7 @@ import { OrderInfoRow, RiskPriceRow } from '@/src/components/business';
 import { Card } from '@/src/components/Card';
 import { StepperButton, SwitchControl } from '@/src/components/forms';
 import { InstrumentIcon } from '@/src/components/InstrumentIcon';
+import { useKeyboardVisible } from '@/src/components/layout/useKeyboardVisible';
 import { NativePressable } from '@/src/components/NativePressable';
 import { Screen } from '@/src/components/Screen';
 import { SegmentedTabs } from '@/src/components/SegmentedTabs';
@@ -20,6 +21,7 @@ import type { Direction, Instrument, OrderType } from '@/src/domain/types';
 import type { Locale } from '@/src/i18n/translations';
 import { useToast } from '@/src/feedback/Toast';
 import { impactLight, notifySuccess, notifyWarning } from '@/src/feedback/haptics';
+import { navigateBackOrReplace, safeRouteTargets } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { useBroker } from '@/src/state/BrokerStore';
 import { lineWidth, layout, radius, spacing, typography } from '@/src/theme/tokens';
@@ -31,6 +33,7 @@ export default function OrderTicketScreen() {
   const { account, findInstrument, placeOrder } = useBroker();
   const { locale, colors, t } = useProductSettings();
   const toast = useToast();
+  const keyboardVisible = useKeyboardVisible();
   const [side, setSide] = useState<Direction>(direction === 'sell' ? 'sell' : 'buy');
   const [orderType, setOrderType] = useState<OrderType>(type === 'limit' || type === 'stop' ? type : 'market');
   const [lotsText, setLotsText] = useState('0.10');
@@ -57,7 +60,7 @@ export default function OrderTicketScreen() {
 
   if (!instrument) {
     return (
-      <Screen back title={t('common.invalidInstrument')}>
+      <Screen back backHref="/trade" title={t('common.invalidInstrument')}>
         <AppText variant="title">{t('common.invalidInstrument')}</AppText>
       </Screen>
     );
@@ -98,12 +101,7 @@ export default function OrderTicketScreen() {
   };
 
   const closeTicket = () => {
-    if (router.canGoBack()) {
-      router.back();
-      return;
-    }
-
-    router.replace('/trade');
+    navigateBackOrReplace(safeRouteTargets.trade);
   };
 
   return (
@@ -111,7 +109,7 @@ export default function OrderTicketScreen() {
       <Stack.Screen options={{ title: `${instrument.symbol} ${t('order.titleSuffix')}` }} />
       <Pressable accessibilityLabel={t('common.cancel')} onPress={closeTicket} style={styles.modalBackdrop} />
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.keyboardPanel}>
-        <SafeAreaView edges={['bottom']} style={StyleSheet.flatten([styles.ticketSheet, { backgroundColor: colors.surface.canvas, borderColor: colors.border.subtle }])}>
+        <SafeAreaView edges={keyboardVisible ? [] : ['bottom']} style={StyleSheet.flatten([styles.ticketSheet, { backgroundColor: colors.surface.canvas, borderColor: colors.border.subtle }])}>
           <View style={styles.handleWrap}>
             <View style={StyleSheet.flatten([styles.handle, { backgroundColor: colors.border.default }])} />
           </View>
@@ -175,8 +173,6 @@ export default function OrderTicketScreen() {
               <View style={StyleSheet.flatten([styles.sideSwitch, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
                 {(['buy', 'sell'] as Direction[]).map((item) => {
                   const selected = side === item;
-                  const color = item === 'buy' ? colors.market.down.fg : colors.market.up.fg;
-                  const tone = item === 'buy' ? 'down' : 'up';
 
                   return (
                     <NativePressable
@@ -189,9 +185,9 @@ export default function OrderTicketScreen() {
                       }}
                       style={StyleSheet.flatten([
                         styles.sideSwitchButton,
-                        selected && { backgroundColor: `${color}14`, borderColor: color },
+                        selected && { borderColor: colors.text.primary },
                       ])}>
-                      <AppText tone={selected ? tone : 'muted'} variant="subtitle">
+                      <AppText tone={selected ? 'default' : 'muted'} variant="subtitle">
                         {directionLabel(item, locale)}
                       </AppText>
                     </NativePressable>
@@ -259,7 +255,7 @@ export default function OrderTicketScreen() {
             <Card>
               <View style={styles.cardHeaderRow}>
                 <View style={styles.riskTitle}>
-                  <AppIcon name="icon.security.risk_shield" size={18} />
+                  <AppIcon name="icon.security.risk_shield" sizeVariant="sm" />
                   <View>
                     <AppText variant="subtitle">{t('order.riskManagement')}</AppText>
                     <AppText tone="muted" variant="caption">
@@ -296,14 +292,18 @@ export default function OrderTicketScreen() {
             </Card>
 
             <Card compact style={styles.riskNotice}>
-              <AppIcon name="icon.risk.info" size={16} tone="amber" />
+              <AppIcon name="icon.risk.info" sizeVariant="xs" tone="amber" />
               <AppText numberOfLines={3} tone="amber" variant="caption">
                 {t('risk.order')}
               </AppText>
             </Card>
           </ScrollView>
 
-          <View style={StyleSheet.flatten([styles.footerStack, { backgroundColor: colors.surface.canvas, borderTopColor: colors.border.subtle }])}>
+          <View style={StyleSheet.flatten([
+            styles.footerStack,
+            keyboardVisible && styles.footerStackKeyboard,
+            { backgroundColor: colors.surface.canvas, borderTopColor: colors.border.subtle },
+          ])}>
             {errorText ? (
               <AppText numberOfLines={2} tone="danger" variant="caption">
                 {errorText}
@@ -368,6 +368,9 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.md,
     paddingHorizontal: layout.screenPaddingX,
     paddingTop: spacing.md,
+  },
+  footerStackKeyboard: {
+    paddingBottom: layout.bottomActionArea.keyboardPaddingBottom,
   },
   handle: {
     borderRadius: radius.full,
@@ -474,7 +477,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: 'transparent',
     borderRadius: radius.full,
-    borderWidth: lineWidth.hairline,
+    borderWidth: lineWidth.selected,
     flex: 1,
     justifyContent: 'center',
     minHeight: 42,

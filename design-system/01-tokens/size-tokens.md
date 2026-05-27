@@ -40,6 +40,10 @@ Size tokens define component dimensions and layout constraints. They are separat
 | `size.tag.mdMinHeight` | 30 | Default status pill |
 | `size.tab.barHeight` | 68 | Bottom tab bar height |
 | `size.tab.itemMinHeight` | 44 | Minimum tab item touch height |
+| `size.tab.pillMinHeight` | 40 | In-page pill tab visual height |
+| `size.tab.underlineMinHeight` | 56 | In-page underline tab visual height |
+| `size.tab.indicatorHeight` | 2 | Underline selected indicator height |
+| `size.tab.indicatorWidth` | 64 | Underline selected indicator width |
 | `size.icon.micro/mini/xs/sm/md/lg/xl/xxl/display` | 8 / 12 / 16 / 20 / 24 / 32 / 40 / 48 / 64 | Governed icon size variants; 24px is the default |
 | `size.touch.min` | 44 | Minimum touch target |
 | `size.sheet.headerHeight` | 56 | Global BottomSheet title bar and spacer |
@@ -65,7 +69,7 @@ Size tokens define component dimensions and layout constraints. They are separat
 | Button | `size.button.minHeight`, `size.button.icon`, `size.touch.min` |
 | Text field / select | `size.input.*`, `size.control.*` |
 | Status pill / chip / badge | `size.tag.*` |
-| Tabs | `size.tab.barHeight`, `size.tab.itemMinHeight`, `size.tab.icon` |
+| Tabs | `size.tab.barHeight`, `size.tab.itemMinHeight`, `size.tab.pillMinHeight`, `size.tab.underlineMinHeight`, `size.tab.indicatorHeight`, `size.tab.indicatorWidth`, `size.tab.icon` |
 | BottomSheet | `size.sheet.headerHeight`, `size.sheet.handleWidth`, dynamic content max-height policy |
 | App viewport | `size.viewport.appMaxWidth` |
 | Toast / floating feedback | `size.viewport.toastMaxWidth`, `size.surface.toastMinHeight` |

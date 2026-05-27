@@ -1,9 +1,9 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack, useNavigationContainerRef, usePathname, useRouter } from 'expo-router';
+import { Stack, type ErrorBoundaryProps, useNavigationContainerRef, usePathname, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
 import { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -11,17 +11,55 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppViewport } from '@/src/components/AppViewport';
 import { BottomSheetProvider, GlobalBottomSheetHost } from '@/src/components/BottomSheet';
 import { ProductControlPanel } from '@/src/components/ProductControlPanel';
+import { AppText } from '@/src/components/Typography';
 import { ToastProvider } from '@/src/feedback/Toast';
 import { ProductSettingsProvider, useProductSettings } from '@/src/settings/ProductSettings';
 import { BrokerProvider } from '@/src/state/BrokerStore';
-
-export { ErrorBoundary } from 'expo-router';
+import { layout, spacing } from '@/src/theme/tokens';
 
 SplashScreen.setOptions({
   duration: 300,
   fade: true,
 });
 SplashScreen.preventAutoHideAsync();
+
+export function ErrorBoundary(props: ErrorBoundaryProps) {
+  return (
+    <ProductSettingsProvider>
+      <RootErrorBoundaryContent {...props} />
+    </ProductSettingsProvider>
+  );
+}
+
+function RootErrorBoundaryContent({ error, retry }: ErrorBoundaryProps) {
+  const { colors } = useProductSettings();
+
+  return (
+    <View style={[styles.errorContainer, { backgroundColor: colors.surface.canvas }]}>
+      <View style={[styles.errorPanel, { backgroundColor: colors.surface.panel, borderColor: colors.border.default }]}>
+        <AppText variant="title">Something went wrong</AppText>
+        <AppText tone="muted" variant="body.secondary">
+          {error.message}
+        </AppText>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => {
+            void retry();
+          }}
+          style={({ pressed }) => [
+            styles.retryButton,
+            {
+              backgroundColor: pressed ? colors.brand.active : colors.brand.fg,
+            },
+          ]}>
+          <AppText tone="white" variant="caption">
+            Retry
+          </AppText>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
 
 export default function RootLayout() {
   useEffect(() => {
@@ -60,6 +98,7 @@ function RootLayoutNav() {
       pathname === '/brand-splash' ||
       pathname === '/launch' ||
       pathname === '/discover' ||
+      pathname === '/quick' ||
       pathname === '/auth' ||
       pathname === '/auth/register' ||
       pathname === '/auth/register-email-code' ||
@@ -71,11 +110,6 @@ function RootLayoutNav() {
 
     if (authStatus === 'guest' && !isPublicRoute) {
       router.replace(`/auth?redirect=${encodeURIComponent(pathname)}`);
-      return;
-    }
-
-    if (authStatus === 'signedIn' && pinStatus === 'unset' && pathname !== '/auth/pin-setup') {
-      router.replace(`/auth/pin-setup?mode=setup&redirect=${encodeURIComponent(pathname)}`);
       return;
     }
 
@@ -135,6 +169,8 @@ function RootLayoutNav() {
                   }}
                 />
                 <Stack.Screen name="client/[id]" />
+                <Stack.Screen name="partner/client-orders" />
+                <Stack.Screen name="partner/commission" />
                 <Stack.Screen name="account-basic/[id]" />
                 <Stack.Screen name="account-balance/[id]" />
                 <Stack.Screen name="account-details/[id]" />
@@ -162,6 +198,29 @@ function RootLayoutNav() {
 }
 
 const styles = StyleSheet.create({
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: spacing.lg,
+  },
+  errorPanel: {
+    borderRadius: 8,
+    borderWidth: StyleSheet.hairlineWidth,
+    gap: spacing.md,
+    marginHorizontal: 'auto',
+    maxWidth: layout.appMaxWidth,
+    paddingHorizontal: layout.cardPaddingX,
+    paddingVertical: layout.cardPaddingY,
+    width: '100%',
+  },
+  retryButton: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    borderRadius: 8,
+    minHeight: layout.touchTargetMin,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
   root: {
     flex: 1,
   },

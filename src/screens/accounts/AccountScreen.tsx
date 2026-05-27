@@ -5,6 +5,7 @@ import { Card } from '@/src/components/Card';
 import { CurrencyFlag } from '@/src/components/CurrencyFlag';
 import { DescribedLabel } from '@/src/components/DescribedLabel';
 import { FundActionGrid } from '@/src/components/FundActionGrid';
+import { IconSurface } from '@/src/components/IconSurface';
 import { Metric } from '@/src/components/Metric';
 import { NativePressable } from '@/src/components/NativePressable';
 import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
@@ -24,12 +25,10 @@ import { getFundingOperationActions } from '@/src/domain/funding';
 import { commissions, partnerMetrics } from '@/src/domain/mockData';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { useBroker } from '@/src/state/BrokerStore';
-import { lineWidth, spacing, typography } from '@/src/theme/tokens';
+import { lineWidth, layout, radius, spacing, typography } from '@/src/theme/tokens';
 
 export default function AccountScreen() {
-  const { role } = useBroker();
-
-  return role === 'partner' ? <CommissionScreen /> : <TraderAccountsScreen />;
+  return <TraderAccountsScreen />;
 }
 
 function TraderAccountsScreen() {
@@ -56,23 +55,27 @@ function TraderAccountsScreen() {
     <Screen title={t('tabs.accounts')}>
       <AccountOverviewCard overview={overview} />
       <FundActionGrid items={fundingActions} />
-      {tradingAccountStatusGroups.map((group) => {
-        const groupedAccounts = accounts.filter((item) => item.group === group);
-        if (groupedAccounts.length === 0) {
-          return null;
-        }
+      <View style={styles.accountGroups}>
+        {tradingAccountStatusGroups.map((group) => {
+          const groupedAccounts = accounts.filter((item) => item.group === group);
+          if (groupedAccounts.length === 0) {
+            return null;
+          }
 
-        return (
-          <View key={group} style={styles.accountGroup}>
-            <AppText tone="muted" variant="caption">
-              {getAccountStatusLabel(group, locale)} ({groupedAccounts.length})
-            </AppText>
-            {groupedAccounts.map((profile) => (
-              <AccountListCard key={profile.id} profile={profile} />
-            ))}
-          </View>
-        );
-      })}
+          return (
+            <View key={group} style={styles.accountGroup}>
+              <View style={styles.accountGroupTitle}>
+                <AppText style={styles.accountGroupTitleText} tone="muted">
+                  {getAccountStatusLabel(group, locale)} ({groupedAccounts.length})
+                </AppText>
+              </View>
+              {groupedAccounts.map((profile) => (
+                <AccountListCard key={profile.id} profile={profile} />
+              ))}
+            </View>
+          );
+        })}
+      </View>
     </Screen>
   );
 }
@@ -88,9 +91,7 @@ function AccountListCard({ profile }: { profile: TradingAccountProfile }) {
       minTouch={86}
       onPress={() => router.push(`/account-details/${profile.id}`)}
       style={StyleSheet.flatten([styles.accountCard, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-      <View style={StyleSheet.flatten([styles.walletIcon, { backgroundColor: colors.surface.subtle }])}>
-        <AppIcon name="icon.account.trading" size={18} />
-      </View>
+      <IconSurface icon="icon.account.trading" sizeVariant="md" />
       <View style={styles.accountCardBody}>
         <View style={styles.accountCardTop}>
           <View style={styles.accountTitleBlock}>
@@ -105,22 +106,22 @@ function AccountListCard({ profile }: { profile: TradingAccountProfile }) {
               </AppText>
             </View>
           </View>
-          <AppIcon name="icon.system.chevron_right" size={16} />
+          <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
         </View>
 
         <View style={StyleSheet.flatten([styles.accountDivider, { backgroundColor: colors.border.subtle }])} />
         <View style={styles.accountValues}>
           <View style={styles.accountValueCell}>
-            <AppText variant="subtitle">{formatMoney(profile.equity, profile.currency, 2, locale)}</AppText>
-            <AppText tone="muted" variant="caption">
+            <AppText style={styles.accountValueAmount}>{formatMoney(profile.equity, profile.currency, 2, locale)}</AppText>
+            <AppText style={styles.accountValueLabel} tone="muted">
               {t('account.equity')}
             </AppText>
           </View>
           <View style={styles.accountValueCell}>
-            <AppText tone={profile.unrealizedPnl >= 0 ? 'down' : 'up'} variant="subtitle">
+            <AppText style={styles.accountValueAmount} tone={profile.unrealizedPnl >= 0 ? 'down' : 'up'}>
               {formatMoney(profile.unrealizedPnl, profile.currency, 2, locale)}
             </AppText>
-            <AppText tone="muted" variant="caption">
+            <AppText style={styles.accountValueLabel} tone="muted">
               {t('portfolio.unrealizedPnl')}
             </AppText>
           </View>
@@ -234,7 +235,7 @@ function MetricDescriptionSheet({ description, label, value }: { description: st
 function OverviewSideMetric({ label, tone, value }: { label: string; tone?: 'down' | 'up'; value: string }) {
   return (
     <View style={styles.overviewSideMetric}>
-      <AppText tone="muted" variant="caption">{label}</AppText>
+      <AppText style={styles.overviewSideMetricLabel} tone="muted">{label}</AppText>
       <AppText adjustsFontSizeToFit numberOfLines={1} tone={tone} variant="subtitle">
         {value}
       </AppText>
@@ -242,11 +243,11 @@ function OverviewSideMetric({ label, tone, value }: { label: string; tone?: 'dow
   );
 }
 
-function CommissionScreen() {
+export function CommissionScreen({ showBack = false }: { showBack?: boolean }) {
   const { locale, colors, t } = useProductSettings();
 
   return (
-    <Screen title={t('commission.title')}>
+    <Screen back={showBack} backHref="/quick" title={t('commission.title')}>
       <Card highlight>
         <View style={styles.metricRow}>
           <Metric label={t('commission.pending')} tone="amber" value={formatCompactMoney(partnerMetrics.pendingCommission, 'USD', locale)} />
@@ -296,6 +297,10 @@ function CommissionScreen() {
   );
 }
 
+export function PartnerCommissionRoute() {
+  return <CommissionScreen showBack />;
+}
+
 function buildAccountOverview(accounts: TradingAccountProfile[], openPositionCount: number): AccountOverview {
   const activeAccounts = accounts.filter((profile) => profile.group === 'active' || profile.group === 'demo');
   const totalRealizedPnl = accounts.reduce((total, profile) => total + profile.realizedPnl, 0);
@@ -328,11 +333,12 @@ function buildOverviewTrend(totalEquity: number, totalReturn: number) {
 const styles = StyleSheet.create({
   accountCard: {
     alignItems: 'flex-start',
-    borderRadius: 8,
+    borderRadius: radius.md,
     borderWidth: lineWidth.none,
     flexDirection: 'row',
-    gap: 12,
-    padding: 14,
+    gap: spacing.md,
+    paddingHorizontal: layout.cardPaddingX,
+    paddingVertical: layout.cardPaddingY,
   },
   accountCardBody: {
     flex: 1,
@@ -349,7 +355,17 @@ const styles = StyleSheet.create({
     height: lineWidth.hairline,
   },
   accountGroup: {
-    gap: 8,
+    gap: spacing.md,
+  },
+  accountGroups: {
+    gap: spacing.xxl,
+    paddingTop: spacing.md,
+  },
+  accountGroupTitle: {
+    paddingHorizontal: spacing.lg,
+  },
+  accountGroupTitleText: {
+    ...typography.caption,
   },
   accountMetaRow: {
     alignItems: 'center',
@@ -371,6 +387,12 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 1,
     minWidth: 0,
+  },
+  accountValueAmount: {
+    ...typography.displayLg,
+  },
+  accountValueLabel: {
+    ...typography.caption,
   },
   accountValues: {
     flexDirection: 'row',
@@ -426,6 +448,9 @@ const styles = StyleSheet.create({
     gap: 3,
     minWidth: 0,
   },
+  overviewSideMetricLabel: {
+    ...typography.captionRegular,
+  },
   overviewTrend: {
     alignItems: 'flex-end',
     height: 56,
@@ -463,13 +488,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 4,
-  },
-  walletIcon: {
-    alignItems: 'center',
-    borderRadius: 999,
-    flexShrink: 0,
-    height: 42,
-    justifyContent: 'center',
-    width: 42,
   },
 });

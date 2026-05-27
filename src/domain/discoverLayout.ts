@@ -53,7 +53,7 @@ export const discoverLayoutDefinitions: DiscoverLayoutDefinition[] = [
     title: { 'en-US': 'Dupoin Academy', 'zh-CN': 'Dupoin 学堂' },
   },
   {
-    body: { 'en-US': 'Simulated leaderboard with weekly ROI, drawdown, and trade discipline.', 'zh-CN': '按周展示模拟收益、回撤和交易纪律的挑战榜。' },
+    body: { 'en-US': 'Leaderboard with weekly ROI, drawdown, and trade discipline.', 'zh-CN': '按周展示收益、回撤和交易纪律的挑战榜。' },
     defaultViewMode: 'medium',
     icon: 'icon.promotion.achievement',
     id: 'challenge',
@@ -69,7 +69,7 @@ export const discoverLayoutDefinitions: DiscoverLayoutDefinition[] = [
     title: { 'en-US': 'Support desk', 'zh-CN': '客服中心' },
   },
   {
-    body: { 'en-US': 'Risk acknowledgement stays visible before every simulated trade flow.', 'zh-CN': '每条模拟交易路径都保留风险确认和提示。' },
+    body: { 'en-US': 'Risk acknowledgement stays visible before every trade flow.', 'zh-CN': '每条交易路径都保留风险确认和提示。' },
     defaultViewMode: 'medium',
     icon: 'icon.security.risk_shield',
     id: 'risk',

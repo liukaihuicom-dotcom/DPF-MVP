@@ -4,13 +4,13 @@
   "version": "1.0.0",
   "packageManager": "pnpm@10.25.0",
   "scripts": {
-    "start": "node scripts/dev/dev-with-quotes.cjs --lan --port 8081",
-    "start:expo": "expo start --lan --port 8081",
-    "dev:app": "node scripts/dev/dev-with-quotes.cjs --lan --port 8081",
-    "dev:app:local": "node scripts/dev/dev-with-quotes.cjs --localhost --port 8081",
-    "start:lan": "node scripts/dev/dev-with-quotes.cjs --lan --port 8081",
-    "start:tunnel": "node scripts/dev/dev-with-quotes.cjs --tunnel --port 8081",
-    "start:clear": "node scripts/dev/dev-with-quotes.cjs --lan --port 8081 --clear",
+    "start": "npx expo start --go --port 8081",
+    "start:expo": "npx expo start --go --port 8081",
+    "dev:app": "npx expo start --go --port 8081",
+    "dev:app:local": "npx expo start --go --localhost --port 8081",
+    "start:lan": "npx expo start --go --port 8081",
+    "start:tunnel": "npx expo start --go --tunnel --port 8081",
+    "start:clear": "npx expo start --go --port 8081 --clear",
     "check:expo": "lsof -i :8081 -P -n",
     "check:ports": "lsof -i :5173 -P -n; lsof -i :8081 -P -n",
     "quote-proxy": "node scripts/dev/quote-proxy.cjs",
@@ -27,8 +27,11 @@
     "qa:security": "node scripts/qa/check-security-rules.js",
     "qa:version": "node scripts/qa/check-version-record.js",
     "qa:icons": "node scripts/qa/check-icons.js",
+    "qa:navigation": "node scripts/qa/check-navigation-registry.js",
     "qa:components": "node scripts/qa/check-component-boundary.js && node scripts/qa/check-component-manifest.js",
-    "qa:all": "node scripts/qa/qa-all.js"
+    "qa:all": "node scripts/qa/qa-all.js",
+    "qa:tokens": "node scripts/qa/check-tokens.js",
+    "qa:workspace-boundary": "node scripts/qa/check-workspace-boundary.js"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "5.2.14",

@@ -1,0 +1,3978 @@
+{
+  "version": "4.1.7",
+  "generated_at": "2026-05-26",
+  "governance_skill": "icon-asset-library-governance v1.1.0-L5",
+  "source_policy": {
+    "primary_library": "iconsax",
+    "supplement_libraries": [],
+    "custom_policy": "custom icons are limited to retained brand assets or approved owned glyphs with registry metadata and QA approval",
+    "approved_libraries": [
+      {
+        "library": "iconsax",
+        "role": "primary-functional-source",
+        "package": "iconsax-react-native",
+        "license": "MIT",
+        "license_url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE",
+        "attribution_required": false
+      },
+      {
+        "library": "custom",
+        "role": "retained-brand-or-approved-custom-only",
+        "package": "internal",
+        "license": "custom-owned",
+        "license_url": "internal-custom-icon-request",
+        "attribution_required": false
+      }
+    ],
+    "blocked_libraries": [
+      {
+        "library": "phosphor-react-native",
+        "reason": "replaced by local Iconsax functional icon source policy"
+      },
+      {
+        "library": "lucide-react-native",
+        "reason": "replaced by local Iconsax functional icon source policy"
+      },
+      {
+        "library": "react-native-remix-icon",
+        "reason": "replaced by local Iconsax functional icon source policy"
+      },
+      {
+        "library": "iconsax-react-native",
+        "reason": "allowed only as temporary extraction source; runtime dependency is blocked"
+      },
+      {
+        "library": "hugeicons-free-stroke-rounded",
+        "reason": "blocked by icon source policy"
+      },
+      {
+        "library": "hugeicons-pro-duotone-rounded",
+        "reason": "blocked by icon source policy"
+      }
+    ],
+    "forbidden_sources": [
+      "unknown SVG",
+      "competitor icons",
+      "emoji",
+      "bitmap functional icons",
+      "page-local functional SVG",
+      "AI-generated icon without ownership review"
+    ],
+    "runtime_policy": {
+      "delivery": "local-vendored-assets",
+      "asset_root": "src/icons/local/iconsax",
+      "renderer": "src/components/AppIcon.tsx",
+      "blocked_runtime_dependencies": [
+        "iconsax-react-native",
+        "phosphor-react-native",
+        "react-native-remix-icon",
+        "lucide-react-native",
+        "@expo/vector-icons",
+        "@hugeicons/core-free-icons",
+        "@hugeicons/react-native"
+      ],
+      "package_asset_root": "packages/icon-library/local/iconsax",
+      "package_renderer": "packages/icon-library/src/index.ts"
+    }
+  },
+  "taxonomy": [
+    "navigation",
+    "system",
+    "account",
+    "trading_account",
+    "wallet",
+    "banking",
+    "trading",
+    "copy_trading",
+    "ib_partner",
+    "kyc_compliance",
+    "review",
+    "status",
+    "notification",
+    "security",
+    "data",
+    "support",
+    "promotion",
+    "education",
+    "brand"
+  ],
+  "token_contract": {
+    "color": [
+      "color.icon.primary",
+      "color.icon.secondary",
+      "color.icon.tertiary",
+      "color.icon.inverse",
+      "color.icon.disabled",
+      "color.icon.success",
+      "color.icon.warning",
+      "color.icon.danger",
+      "color.icon.info",
+      "color.icon.active"
+    ],
+    "size": [
+      "size.icon.micro",
+      "size.icon.mini",
+      "size.icon.xs",
+      "size.icon.sm",
+      "size.icon.md",
+      "size.icon.lg",
+      "size.icon.xl",
+      "size.icon.xxl",
+      "size.icon.display"
+    ]
+  },
+  "migration": {
+    "appApple": "icon.brand.apple",
+    "actionRefresh": "icon.wallet.withdrawal",
+    "transferSwitch": "icon.wallet.transfer",
+    "accountBank": "icon.account.trading",
+    "notificationBell": "icon.notification.bell",
+    "expandDown": "icon.system.chevron_down",
+    "navigateBack": "icon.system.back",
+    "navigateNext": "icon.system.chevron_right",
+    "marketTrend": "icon.trading.market",
+    "chatFeedback": "icon.notification.feedback",
+    "communityChat": "icon.copy.community",
+    "checkMark": "icon.status.check",
+    "statusVerified": "icon.status.verified",
+    "historyClock": "icon.trading.history",
+    "discoverCompass": "icon.navigation.discover",
+    "moreDots": "icon.system.more",
+    "emailMessage": "icon.notification.email",
+    "phoneVerified": "icon.account.phone_verified",
+    "rewardGift": "icon.promotion.reward",
+    "globalMarket": "icon.market.global",
+    "educationCap": "icon.education.academy",
+    "supportHeadset": "icon.support.headset",
+    "identityCard": "icon.kyc.identity",
+    "quoteList": "icon.market.watchlist",
+    "taskChecklist": "icon.trading.order",
+    "secureLock": "icon.security.lock",
+    "passwordRules": "icon.security.password_rules",
+    "keyAccess": "icon.security.key_access",
+    "keyboardDigits": "icon.system.keyboard_digits",
+    "showPassword": "icon.system.password_visible",
+    "hidePassword": "icon.system.password_hidden",
+    "searchGlass": "icon.system.search",
+    "qrCode": "icon.wallet.deposit",
+    "partnerNetwork": "icon.ib.network",
+    "riskShield": "icon.security.risk_shield",
+    "settingsSliders": "icon.system.settings",
+    "promoTicket": "icon.promotion.ticket",
+    "achievementTrophy": "icon.promotion.achievement",
+    "userProfile": "icon.account.user",
+    "userAvatar": "icon.account.avatar",
+    "addUser": "icon.account.add_user",
+    "walletDeposit": "icon.wallet.deposit",
+    "walletWithdrawal": "icon.wallet.withdrawal",
+    "accountBalance": "icon.wallet.balance",
+    "tradingAccount": "icon.account.trading",
+    "archiveAccount": "icon.account.archive",
+    "destructiveDelete": "icon.system.delete",
+    "logoutSession": "icon.system.logout",
+    "tradeTicket": "icon.trading.order_ticket",
+    "orderList": "icon.trading.order",
+    "groupBySymbol": "icon.trading.group_by_symbol",
+    "closePosition": "icon.trading.close_position",
+    "closeLosingPosition": "icon.trading.close_losing_position",
+    "tradeBuy": "icon.trading.buy",
+    "tradeSell": "icon.trading.sell",
+    "statusRejected": "icon.status.rejected",
+    "appRating": "icon.feedback.rating",
+    "helpCenter": "icon.support.help_center",
+    "aboutApp": "icon.support.about",
+    "functionCenter": "icon.navigation.function_center",
+    "tradeVolume": "icon.trading.volume",
+    "goldCommodity": "icon.market.gold",
+    "indexMarket": "icon.market.index",
+    "stockAsset": "icon.market.stock",
+    "infoCircle": "icon.risk.info",
+    "closeX": "icon.system.close"
+  },
+  "brand_assets": {
+    "launcherIcon": "assets/images/icon.png",
+    "adaptiveIcon": "assets/images/adaptive-icon.png",
+    "splashIcon": "assets/images/splash-icon.png",
+    "favicon": "assets/images/favicon.png",
+    "contentLogo": "assets/images/dupoin-logo.png",
+    "brandSplashLogo": "assets/images/dupoin-logo-white.png"
+  },
+  "icons": [
+    {
+      "icon_key": "icon.brand.apple",
+      "legacy_names": [
+        "appApple"
+      ],
+      "category": "brand",
+      "meaning": "Apple sign-in provider mark",
+      "source_library": "custom",
+      "source_icon_name": "Apple",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 17,
+      "states": [
+        "default"
+      ],
+      "tone_tokens": [
+        "text"
+      ],
+      "default_tone": "text",
+      "token_binding": {
+        "color": "color.icon.primary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Apple sign-in provider mark.",
+        "Apple sign-in provider mark"
+      ],
+      "forbidden": [
+        "Do not recolor as risk or market status."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": true,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalAppleIcon.tsx"
+    },
+    {
+      "icon_key": "icon.wallet.withdrawal",
+      "legacy_names": [
+        "actionRefresh",
+        "walletWithdrawal"
+      ],
+      "category": "wallet",
+      "meaning": "Withdrawal, outgoing funds, payout request, or send-money transaction",
+      "source_library": "iconsax",
+      "source_icon_name": "MoneySend",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "warning",
+        "danger"
+      ],
+      "tone_tokens": [
+        "amber",
+        "danger",
+        "text"
+      ],
+      "default_tone": "amber",
+      "token_binding": {
+        "color": "color.icon.warning",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Refresh or withdraw-style cyclical action when paired with label.",
+        "Withdrawal, outgoing funds, payout request, or send-money transaction.",
+        "Withdrawal, outgoing funds, payout request, or send-money transaction"
+      ],
+      "forbidden": [
+        "Do not use for price trend.",
+        "Do not use for refresh, exchange, or internal transfer."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalMoneySendIcon.tsx"
+    },
+    {
+      "icon_key": "icon.wallet.transfer",
+      "legacy_names": [
+        "transferSwitch"
+      ],
+      "category": "wallet",
+      "meaning": "Transfer, swap, or two-way movement between accounts",
+      "source_library": "iconsax",
+      "source_icon_name": "ArrowSwapHorizontal",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active",
+        "disabled"
+      ],
+      "tone_tokens": [
+        "blue",
+        "text",
+        "brand"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.info",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Transfer, swap, or two-way movement between accounts.",
+        "Transfer, swap, or two-way movement between accounts"
+      ],
+      "forbidden": [
+        "Do not use for market volatility."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalArrowSwapHorizontalIcon.tsx"
+    },
+    {
+      "icon_key": "icon.account.trading",
+      "legacy_names": [
+        "accountBank",
+        "tradingAccount"
+      ],
+      "category": "trading_account",
+      "meaning": "Trading account workspace, account switcher, account list, and margin account identity",
+      "source_library": "iconsax",
+      "source_icon_name": "Wallet",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active",
+        "danger"
+      ],
+      "tone_tokens": [
+        "blue",
+        "text",
+        "brand"
+      ],
+      "default_tone": "blue",
+      "token_binding": {
+        "color": "color.icon.info",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Trading account entry points must visually match the bottom-navigation Accounts tab glyph.",
+        "Trading account workspace, account switcher, account list, and margin account identity.",
+        "Trading account workspace, account switcher, account list, and margin account identity"
+      ],
+      "forbidden": [
+        "Avoid for generic profile or archive action.",
+        "Do not use for personal profile, bank institution, deposit, withdrawal, archive action, or wallet balance."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalWalletIcon.tsx"
+    },
+    {
+      "icon_key": "icon.notification.bell",
+      "legacy_names": [
+        "notificationBell"
+      ],
+      "category": "notification",
+      "meaning": "Notifications entry",
+      "source_library": "iconsax",
+      "source_icon_name": "Notification",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active",
+        "disabled"
+      ],
+      "tone_tokens": [
+        "textMuted",
+        "textDim"
+      ],
+      "default_tone": "textMuted",
+      "token_binding": {
+        "color": "color.icon.secondary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Notifications entry.",
+        "Notifications entry"
+      ],
+      "forbidden": [
+        "Do not use for alert risk severity; use riskWarning/riskShield."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalNotificationIcon.tsx"
+    },
+    {
+      "icon_key": "icon.system.chevron_down",
+      "legacy_names": [
+        "expandDown"
+      ],
+      "category": "system",
+      "meaning": "Dropdown or expandable control",
+      "source_library": "iconsax",
+      "source_icon_name": "ArrowDown2",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "text",
+        "textDim"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.tertiary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Dropdown or expandable control. Use the chevron-style down arrow without a shaft for global dropdown affordances.",
+        "Dropdown or expandable control"
+      ],
+      "forbidden": [
+        "Do not use as next navigation.",
+        "Do not use shafted down arrows for dropdown controls."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalArrowDown2Icon.tsx"
+    },
+    {
+      "icon_key": "icon.system.back",
+      "legacy_names": [
+        "navigateBack"
+      ],
+      "category": "system",
+      "meaning": "Back navigation with a horizontal shaft",
+      "source_library": "custom",
+      "source_icon_name": "ArrowLeftLine",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active",
+        "disabled"
+      ],
+      "tone_tokens": [
+        "text",
+        "textMuted"
+      ],
+      "default_tone": "text",
+      "token_binding": {
+        "color": "color.icon.primary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Back navigation with a horizontal shaft for app headers.",
+        "Back navigation"
+      ],
+      "forbidden": [
+        "Do not use for previous market movement."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "custom-owned",
+        "url": "internal-custom-icon-request"
+      },
+      "modified": true,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalArrowLeftLineIcon.tsx"
+    },
+    {
+      "icon_key": "icon.system.chevron_right",
+      "legacy_names": [
+        "navigateNext"
+      ],
+      "category": "system",
+      "meaning": "Next row navigation and disclosure",
+      "source_library": "iconsax",
+      "source_icon_name": "ArrowRight2",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active",
+        "disabled"
+      ],
+      "tone_tokens": [
+        "text",
+        "textDim",
+        "panel"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.tertiary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Next row navigation and disclosure.",
+        "Next row navigation and disclosure"
+      ],
+      "forbidden": [
+        "Do not use for market up/down state."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalArrowRight2Icon.tsx"
+    },
+    {
+      "icon_key": "icon.trading.market",
+      "legacy_names": [
+        "marketTrend"
+      ],
+      "category": "trading",
+      "meaning": "Market trend, quote movement, chart entry, or trading direction",
+      "source_library": "iconsax",
+      "source_icon_name": "Chart21",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active",
+        "success",
+        "danger"
+      ],
+      "tone_tokens": [
+        "brand",
+        "up",
+        "down",
+        "text",
+        "textDim"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Market trend, quote movement, trading volume, or position direction.",
+        "Market trend, quote movement, chart entry, or trading direction"
+      ],
+      "forbidden": [
+        "Use up/down tones only when representing market direction."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalChart21Icon.tsx"
+    },
+    {
+      "icon_key": "icon.notification.feedback",
+      "legacy_names": [
+        "chatFeedback"
+      ],
+      "category": "notification",
+      "meaning": "Feedback or single conversation entry",
+      "source_library": "iconsax",
+      "source_icon_name": "Message",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "brand",
+        "textMuted"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Feedback or single conversation entry.",
+        "Feedback or single conversation entry"
+      ],
+      "forbidden": [
+        "Do not use for community group."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalMessageIcon.tsx"
+    },
+    {
+      "icon_key": "icon.copy.community",
+      "legacy_names": [
+        "communityChat"
+      ],
+      "category": "copy_trading",
+      "meaning": "Community, group chat, or social trading discussions",
+      "source_library": "iconsax",
+      "source_icon_name": "People",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "textMuted",
+        "down",
+        "brand"
+      ],
+      "default_tone": "textMuted",
+      "token_binding": {
+        "color": "color.icon.secondary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Community, group chat, or social trading discussions.",
+        "Community, group chat, or social trading discussions"
+      ],
+      "forbidden": [
+        "Do not use for individual support ticket."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalPeopleIcon.tsx"
+    },
+    {
+      "icon_key": "icon.status.check",
+      "legacy_names": [
+        "checkMark"
+      ],
+      "category": "status",
+      "meaning": "Plain check mark for checkbox, single-select, or compact selected indicator",
+      "source_library": "custom",
+      "source_icon_name": "Tick",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "success"
+      ],
+      "tone_tokens": [
+        "panel",
+        "white",
+        "brand",
+        "down"
+      ],
+      "default_tone": "textMuted",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Single-select selected indicator, checkbox selected indicator, or compact selected state.",
+        "Use this plain check mark instead of radio dots or circled check icons when a row selection already has a selected container state."
+      ],
+      "forbidden": [
+        "Do not use as full verification badge."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "custom-owned",
+        "url": "internal-custom-icon-request"
+      },
+      "modified": true,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalTickIcon.tsx"
+    },
+    {
+      "icon_key": "icon.status.verified",
+      "legacy_names": [
+        "statusVerified"
+      ],
+      "category": "status",
+      "meaning": "Verified state, selected account, completed status",
+      "source_library": "iconsax",
+      "source_icon_name": "Verify",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "success",
+        "active"
+      ],
+      "tone_tokens": [
+        "brand",
+        "down",
+        "text"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Verified state, selected account, completed status.",
+        "Verified state, selected account, completed status"
+      ],
+      "forbidden": [
+        "Do not use for generic checkbox when checkMark is enough."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalVerifyIcon.tsx"
+    },
+    {
+      "icon_key": "icon.trading.history",
+      "legacy_names": [
+        "historyClock"
+      ],
+      "category": "trading",
+      "meaning": "Order history, transaction history, pending activity, or time filter",
+      "source_library": "iconsax",
+      "source_icon_name": "Clock",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "warning"
+      ],
+      "tone_tokens": [
+        "text",
+        "textDim",
+        "amber"
+      ],
+      "default_tone": "text",
+      "token_binding": {
+        "color": "color.icon.primary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Order history, pending review, recent activity, time filter.",
+        "Order history, transaction history, pending activity, or time filter"
+      ],
+      "forbidden": [
+        "Do not use for countdown risk unless paired with warning tone."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalClockIcon.tsx"
+    },
+    {
+      "icon_key": "icon.navigation.discover",
+      "legacy_names": [
+        "discoverCompass"
+      ],
+      "category": "navigation",
+      "meaning": "Discover and module exploration entry",
+      "source_library": "iconsax",
+      "source_icon_name": "Discover",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "brand",
+        "textDim"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Discover and module exploration entry.",
+        "Discover and module exploration entry"
+      ],
+      "forbidden": [
+        "Do not use for location."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalDiscoverIcon.tsx"
+    },
+    {
+      "icon_key": "icon.system.more",
+      "legacy_names": [
+        "moreDots"
+      ],
+      "category": "system",
+      "meaning": "More actions menu",
+      "source_library": "iconsax",
+      "source_icon_name": "More",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "text",
+        "textMuted"
+      ],
+      "default_tone": "textMuted",
+      "token_binding": {
+        "color": "color.icon.secondary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "More actions menu.",
+        "More actions menu"
+      ],
+      "forbidden": [
+        "Do not use for loading."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalMoreIcon.tsx"
+    },
+    {
+      "icon_key": "icon.notification.email",
+      "legacy_names": [
+        "emailMessage"
+      ],
+      "category": "notification",
+      "meaning": "Email, inbox, password recovery",
+      "source_library": "iconsax",
+      "source_icon_name": "Sms",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default"
+      ],
+      "tone_tokens": [
+        "brand",
+        "textMuted"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Email, inbox, password recovery.",
+        "Email, inbox, password recovery"
+      ],
+      "forbidden": [
+        "Do not use for app notifications."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalSmsIcon.tsx"
+    },
+    {
+      "icon_key": "icon.account.phone_verified",
+      "legacy_names": [
+        "phoneVerified"
+      ],
+      "category": "account",
+      "meaning": "Phone number entry, SMS verification, and confirmed phone contact",
+      "source_library": "iconsax",
+      "source_icon_name": "Mobile",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "success"
+      ],
+      "tone_tokens": [
+        "brand",
+        "textMuted",
+        "down"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Phone number entry, SMS verification, and confirmed phone contact.",
+        "Phone number entry, SMS verification, and confirmed phone contact"
+      ],
+      "forbidden": [
+        "Do not use for voice support or customer service headset."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalMobileIcon.tsx"
+    },
+    {
+      "icon_key": "icon.promotion.reward",
+      "legacy_names": [
+        "rewardGift"
+      ],
+      "category": "promotion",
+      "meaning": "Rewards, bonus, promotional gift",
+      "source_library": "iconsax",
+      "source_icon_name": "Gift",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "amber",
+        "brand"
+      ],
+      "default_tone": "amber",
+      "token_binding": {
+        "color": "color.icon.warning",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Rewards, bonus, promotional gift.",
+        "Rewards, bonus, promotional gift"
+      ],
+      "forbidden": [
+        "Do not use for trading ticket or coupon unless promo-specific."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalGiftIcon.tsx"
+    },
+    {
+      "icon_key": "icon.market.global",
+      "legacy_names": [
+        "globalMarket"
+      ],
+      "category": "trading",
+      "meaning": "Global market, language, regional onboarding",
+      "source_library": "iconsax",
+      "source_icon_name": "Global",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "brand",
+        "panel"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Global market, language, regional onboarding.",
+        "Global market, language, regional onboarding"
+      ],
+      "forbidden": [
+        "Do not use for account identity."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalGlobalIcon.tsx"
+    },
+    {
+      "icon_key": "icon.education.academy",
+      "legacy_names": [
+        "educationCap"
+      ],
+      "category": "education",
+      "meaning": "Education, academy, trading lessons",
+      "source_library": "iconsax",
+      "source_icon_name": "Teacher",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "success"
+      ],
+      "tone_tokens": [
+        "brand",
+        "textDim"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Education, academy, trading lessons.",
+        "Education, academy, trading lessons"
+      ],
+      "forbidden": [
+        "Do not use for KYC completion."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalTeacherIcon.tsx"
+    },
+    {
+      "icon_key": "icon.support.headset",
+      "legacy_names": [
+        "supportHeadset"
+      ],
+      "category": "support",
+      "meaning": "Support center or service contact",
+      "source_library": "iconsax",
+      "source_icon_name": "Headphone",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "textMuted",
+        "brand"
+      ],
+      "default_tone": "textMuted",
+      "token_binding": {
+        "color": "color.icon.secondary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Support center or service contact.",
+        "Support center or service contact"
+      ],
+      "forbidden": [
+        "Do not use for audio/media."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalHeadphoneIcon.tsx"
+    },
+    {
+      "icon_key": "icon.kyc.identity",
+      "legacy_names": [
+        "identityCard"
+      ],
+      "category": "kyc_compliance",
+      "meaning": "Identity verification, onboarding KYC, profile document",
+      "source_library": "iconsax",
+      "source_icon_name": "Personalcard",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "warning",
+        "success"
+      ],
+      "tone_tokens": [
+        "down",
+        "brand",
+        "text"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Identity verification, onboarding KYC, profile document.",
+        "Identity verification, onboarding KYC, profile document"
+      ],
+      "forbidden": [
+        "Do not use for generic account tab."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalPersonalcardIcon.tsx"
+    },
+    {
+      "icon_key": "icon.risk.info",
+      "legacy_names": [
+        "infoCircle"
+      ],
+      "category": "status",
+      "meaning": "Inline help, disclosure, risk explanation",
+      "source_library": "iconsax",
+      "source_icon_name": "InfoCircle",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "warning",
+        "danger"
+      ],
+      "tone_tokens": [
+        "textMuted",
+        "blue",
+        "danger"
+      ],
+      "default_tone": "textMuted",
+      "token_binding": {
+        "color": "color.icon.secondary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Inline help, disclosure, risk explanation.",
+        "Inline help, disclosure, risk explanation"
+      ],
+      "forbidden": [
+        "Do not use as success status."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalInfoCircleIcon.tsx"
+    },
+    {
+      "icon_key": "icon.market.watchlist",
+      "legacy_names": [
+        "quoteList"
+      ],
+      "category": "trading",
+      "meaning": "Watchlist, quote list, list view",
+      "source_library": "iconsax",
+      "source_icon_name": "BookSaved",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "text",
+        "textDim"
+      ],
+      "default_tone": "text",
+      "token_binding": {
+        "color": "color.icon.primary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Watchlist, quote list, list view.",
+        "Watchlist, quote list, list view"
+      ],
+      "forbidden": [
+        "Do not use for task checklist."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalBookSavedIcon.tsx"
+    },
+    {
+      "icon_key": "icon.trading.order",
+      "legacy_names": [
+        "taskChecklist",
+        "orderList"
+      ],
+      "category": "trading",
+      "meaning": "Order list, open orders, and order-based position grouping",
+      "source_library": "iconsax",
+      "source_icon_name": "ClipboardTick",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "brand",
+        "text",
+        "textDim"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Orders, trading journal, task checklist, execution list.",
+        "Order list, open orders, and order-based position grouping.",
+        "Order list, open orders, and order-based position grouping"
+      ],
+      "forbidden": [
+        "Do not use for plain market quote list.",
+        "Do not use for task checklist or KYC checklist."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalClipboardTickIcon.tsx"
+    },
+    {
+      "icon_key": "icon.security.lock",
+      "legacy_names": [
+        "secureLock"
+      ],
+      "category": "security",
+      "meaning": "Password, locked field, protected content",
+      "source_library": "iconsax",
+      "source_icon_name": "Lock",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "danger",
+        "success",
+        "disabled"
+      ],
+      "tone_tokens": [
+        "textDim",
+        "brand"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.tertiary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Password, locked field, protected content.",
+        "Password, locked field, protected content"
+      ],
+      "forbidden": [
+        "Do not use for regulatory review."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalLockIcon.tsx"
+    },
+    {
+      "icon_key": "icon.security.password_rules",
+      "legacy_names": [
+        "passwordRules"
+      ],
+      "category": "security",
+      "meaning": "Password rule validation and credential setup guidance",
+      "source_library": "iconsax",
+      "source_icon_name": "PasswordCheck",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "warning",
+        "success"
+      ],
+      "tone_tokens": [
+        "textDim",
+        "brand",
+        "down"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Password rule validation and credential setup guidance.",
+        "Password rule validation and credential setup guidance"
+      ],
+      "forbidden": [
+        "Do not use for PIN keypad or account lock."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalPasswordCheckIcon.tsx"
+    },
+    {
+      "icon_key": "icon.security.key_access",
+      "legacy_names": [
+        "keyAccess"
+      ],
+      "category": "security",
+      "meaning": "PIN setup, unlock, or access-key semantics",
+      "source_library": "iconsax",
+      "source_icon_name": "Key",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "success"
+      ],
+      "tone_tokens": [
+        "brand",
+        "textDim"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "PIN setup, unlock, or access-key semantics.",
+        "PIN setup, unlock, or access-key semantics"
+      ],
+      "forbidden": [
+        "Do not use for password visibility toggle."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalKeyIcon.tsx"
+    },
+    {
+      "icon_key": "icon.system.keyboard_digits",
+      "legacy_names": [
+        "keyboardDigits"
+      ],
+      "category": "system",
+      "meaning": "Numeric keyboard, OTP input, or PIN keypad hint",
+      "source_library": "iconsax",
+      "source_icon_name": "Keyboard",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "textDim",
+        "brand"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.tertiary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Numeric keyboard, OTP input, or PIN keypad hint.",
+        "Numeric keyboard, OTP input, or PIN keypad hint"
+      ],
+      "forbidden": [
+        "Do not use for text search or trading keyboard shortcuts."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalKeyboardIcon.tsx"
+    },
+    {
+      "icon_key": "icon.system.password_visible",
+      "legacy_names": [
+        "showPassword"
+      ],
+      "category": "system",
+      "meaning": "Toggle password visibility in credential fields",
+      "source_library": "iconsax",
+      "source_icon_name": "Eye",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "textDim",
+        "text"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.tertiary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Toggle password visibility in credential fields.",
+        "Toggle password visibility in credential fields"
+      ],
+      "forbidden": [
+        "Do not use for market watchlist visibility."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalEyeIcon.tsx"
+    },
+    {
+      "icon_key": "icon.system.password_hidden",
+      "legacy_names": [
+        "hidePassword"
+      ],
+      "category": "system",
+      "meaning": "Toggle password hidden state in credential fields",
+      "source_library": "custom",
+      "source_icon_name": "EyeSlash",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "textDim",
+        "text"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.tertiary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Toggle password hidden state in credential fields.",
+        "Use when the password is currently visible and the next action will hide it."
+      ],
+      "forbidden": [
+        "Do not use for market watchlist visibility.",
+        "Do not use as a hidden-state placeholder outside credential fields."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "custom-owned",
+        "url": "internal-custom-icon-request"
+      },
+      "modified": true,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalEyeSlashIcon.tsx"
+    },
+    {
+      "icon_key": "icon.system.search",
+      "legacy_names": [
+        "searchGlass"
+      ],
+      "category": "system",
+      "meaning": "Search entry and field prefix",
+      "source_library": "iconsax",
+      "source_icon_name": "SearchNormal",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active",
+        "disabled"
+      ],
+      "tone_tokens": [
+        "text",
+        "textDim"
+      ],
+      "default_tone": "text",
+      "token_binding": {
+        "color": "color.icon.primary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Search entry and field prefix.",
+        "Search entry and field prefix"
+      ],
+      "forbidden": [
+        "Do not use for inspect/detail navigation."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalSearchNormalIcon.tsx"
+    },
+    {
+      "icon_key": "icon.wallet.deposit",
+      "legacy_names": [
+        "qrCode",
+        "walletDeposit"
+      ],
+      "category": "wallet",
+      "meaning": "Deposit, incoming funds, successful credit, or receive-money transaction",
+      "source_library": "iconsax",
+      "source_icon_name": "MoneyRecive",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "success",
+        "warning"
+      ],
+      "tone_tokens": [
+        "down",
+        "brand",
+        "text"
+      ],
+      "default_tone": "down",
+      "token_binding": {
+        "color": "color.icon.success",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Deposit QR, account QR, scan code.",
+        "Deposit, incoming funds, successful credit, or receive-money transaction.",
+        "Deposit, incoming funds, successful credit, or receive-money transaction"
+      ],
+      "forbidden": [
+        "Do not use for generic code/coupon.",
+        "Do not use for account balance, wallet overview, or transfer between accounts."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalMoneyReciveIcon.tsx"
+    },
+    {
+      "icon_key": "icon.ib.network",
+      "legacy_names": [
+        "partnerNetwork"
+      ],
+      "category": "ib_partner",
+      "meaning": "Partner network, sharing, referral graph",
+      "source_library": "iconsax",
+      "source_icon_name": "Share",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "brand",
+        "blue",
+        "text"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Partner network, sharing, referral graph.",
+        "Partner network, sharing, referral graph"
+      ],
+      "forbidden": [
+        "Do not use for transfer funds."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalShareIcon.tsx"
+    },
+    {
+      "icon_key": "icon.security.risk_shield",
+      "legacy_names": [
+        "riskShield"
+      ],
+      "category": "security",
+      "meaning": "Security, fraud prevention, compliance protection",
+      "source_library": "iconsax",
+      "source_icon_name": "ShieldTick",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "success",
+        "warning"
+      ],
+      "tone_tokens": [
+        "brand",
+        "down",
+        "textMuted"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Security, fraud prevention, compliance protection.",
+        "Security, fraud prevention, compliance protection"
+      ],
+      "forbidden": [
+        "Do not use as generic success when statusVerified is clearer."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalShieldTickIcon.tsx"
+    },
+    {
+      "icon_key": "icon.system.settings",
+      "legacy_names": [
+        "settingsSliders"
+      ],
+      "category": "system",
+      "meaning": "Settings, filters, product controls, sort",
+      "source_library": "iconsax",
+      "source_icon_name": "Setting2",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "brand",
+        "textDim"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.tertiary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Settings, filters, product controls, sort.",
+        "Settings, filters, product controls, sort"
+      ],
+      "forbidden": [
+        "Do not use for market depth."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalSetting2Icon.tsx"
+    },
+    {
+      "icon_key": "icon.promotion.ticket",
+      "legacy_names": [
+        "promoTicket"
+      ],
+      "category": "promotion",
+      "meaning": "Coupon, promotion, simulated contest badge",
+      "source_library": "iconsax",
+      "source_icon_name": "Ticket",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "amber",
+        "textDim"
+      ],
+      "default_tone": "amber",
+      "token_binding": {
+        "color": "color.icon.warning",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Coupon, promotion, simulated contest badge.",
+        "Coupon, promotion, simulated contest badge"
+      ],
+      "forbidden": [
+        "Do not use for trading order ticket; use icon.trading.order."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalTicketIcon.tsx"
+    },
+    {
+      "icon_key": "icon.promotion.achievement",
+      "legacy_names": [
+        "achievementTrophy"
+      ],
+      "category": "promotion",
+      "meaning": "Challenge, leaderboard, achievement",
+      "source_library": "iconsax",
+      "source_icon_name": "Award",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "amber",
+        "textDim"
+      ],
+      "default_tone": "amber",
+      "token_binding": {
+        "color": "color.icon.warning",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Challenge, leaderboard, achievement.",
+        "Challenge, leaderboard, achievement"
+      ],
+      "forbidden": [
+        "Do not use for account status."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalAwardIcon.tsx"
+    },
+    {
+      "icon_key": "icon.account.user",
+      "legacy_names": [
+        "userProfile"
+      ],
+      "category": "account",
+      "meaning": "User, client, account owner, profile preview",
+      "source_library": "iconsax",
+      "source_icon_name": "Profile",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "text",
+        "blue"
+      ],
+      "default_tone": "text",
+      "token_binding": {
+        "color": "color.icon.primary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "User, client, account owner, profile preview.",
+        "User, client, account owner, profile preview"
+      ],
+      "forbidden": [
+        "Do not use for bank/funding account."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalProfileIcon.tsx"
+    },
+    {
+      "icon_key": "icon.account.avatar",
+      "legacy_names": [
+        "userAvatar"
+      ],
+      "category": "account",
+      "meaning": "Profile avatar placeholder and profile module",
+      "source_library": "iconsax",
+      "source_icon_name": "ProfileCircle",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "text",
+        "textMuted"
+      ],
+      "default_tone": "text",
+      "token_binding": {
+        "color": "color.icon.primary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Profile avatar placeholder and profile module.",
+        "Profile avatar placeholder and profile module"
+      ],
+      "forbidden": [
+        "Do not use for add-account action."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalProfileCircleIcon.tsx"
+    },
+    {
+      "icon_key": "icon.account.add_user",
+      "legacy_names": [
+        "addUser"
+      ],
+      "category": "account",
+      "meaning": "Add account, add client, invite user",
+      "source_library": "iconsax",
+      "source_icon_name": "ProfileAdd",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "text",
+        "brand"
+      ],
+      "default_tone": "text",
+      "token_binding": {
+        "color": "color.icon.primary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Add account, add client, invite user.",
+        "Add account, add client, invite user"
+      ],
+      "forbidden": [
+        "Do not use for KYC verification."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalProfileAddIcon.tsx"
+    },
+    {
+      "icon_key": "icon.system.close",
+      "legacy_names": [
+        "closeX"
+      ],
+      "category": "system",
+      "meaning": "Close, cancel, or dismiss action",
+      "source_library": "custom",
+      "source_icon_name": "Close",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active",
+        "danger"
+      ],
+      "tone_tokens": [
+        "textDim",
+        "danger",
+        "panel"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.tertiary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Close, cancel, or dismiss action without status container semantics.",
+        "Close, cancel, or dismiss action"
+      ],
+      "forbidden": [
+        "Do not use as failed status without label."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "custom-owned",
+        "url": "internal-custom-icon-request"
+      },
+      "modified": true,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalCloseIcon.tsx"
+    },
+    {
+      "icon_key": "icon.wallet.balance",
+      "legacy_names": [
+        "accountBalance"
+      ],
+      "category": "wallet",
+      "meaning": "Account balance, available funds, equity snapshot, and wallet balance detail",
+      "source_library": "iconsax",
+      "source_icon_name": "Wallet",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "blue",
+        "text",
+        "brand"
+      ],
+      "default_tone": "blue",
+      "token_binding": {
+        "color": "color.icon.info",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Account balance, available funds, equity snapshot, and wallet balance detail.",
+        "Account balance, available funds, equity snapshot, and wallet balance detail"
+      ],
+      "forbidden": [
+        "Do not use for bank institution, deposit action, or archive action."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalWalletIcon.tsx"
+    },
+    {
+      "icon_key": "icon.account.archive",
+      "legacy_names": [
+        "archiveAccount"
+      ],
+      "category": "account",
+      "meaning": "Archive or hide a trading account from active lists",
+      "source_library": "iconsax",
+      "source_icon_name": "Archive",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "text",
+        "textDim"
+      ],
+      "default_tone": "text",
+      "token_binding": {
+        "color": "color.icon.primary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Archive or hide a trading account from active lists.",
+        "Archive or hide a trading account from active lists"
+      ],
+      "forbidden": [
+        "Do not use for wallet, balance, delete, or download."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalArchiveIcon.tsx"
+    },
+    {
+      "icon_key": "icon.system.delete",
+      "legacy_names": [
+        "destructiveDelete"
+      ],
+      "category": "system",
+      "meaning": "Delete, remove, or irreversible destructive action",
+      "source_library": "iconsax",
+      "source_icon_name": "Trash",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "danger"
+      ],
+      "tone_tokens": [
+        "danger",
+        "text"
+      ],
+      "default_tone": "danger",
+      "token_binding": {
+        "color": "color.icon.danger",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Delete, remove, or irreversible destructive action.",
+        "Delete, remove, or irreversible destructive action"
+      ],
+      "forbidden": [
+        "Do not use for modal close or temporary dismiss."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalTrashIcon.tsx"
+    },
+    {
+      "icon_key": "icon.system.logout",
+      "legacy_names": [
+        "logoutSession"
+      ],
+      "category": "system",
+      "meaning": "Log out of the current session while preserving remembered account identity",
+      "source_library": "iconsax",
+      "source_icon_name": "Logout",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "danger"
+      ],
+      "tone_tokens": [
+        "danger",
+        "textDim",
+        "text"
+      ],
+      "default_tone": "danger",
+      "token_binding": {
+        "color": "color.icon.danger",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Log out of the current session while preserving remembered account identity.",
+        "Log out of the current session while preserving remembered account identity"
+      ],
+      "forbidden": [
+        "Do not use for deleting account data or closing a modal."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalLogoutIcon.tsx"
+    },
+    {
+      "icon_key": "icon.trading.order_ticket",
+      "legacy_names": [
+        "tradeTicket"
+      ],
+      "category": "trading",
+      "meaning": "Trade ticket, market order entry, and order creation flow",
+      "source_library": "iconsax",
+      "source_icon_name": "ReceiptText",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "brand",
+        "up",
+        "down",
+        "text"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Trade ticket, market order entry, and order creation flow.",
+        "Trade ticket, market order entry, and order creation flow"
+      ],
+      "forbidden": [
+        "Do not use for market watchlist or transaction history."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalReceiptTextIcon.tsx"
+    },
+    {
+      "icon_key": "icon.trading.group_by_symbol",
+      "legacy_names": [
+        "groupBySymbol"
+      ],
+      "category": "trading",
+      "meaning": "Sort or group positions by trading symbol",
+      "source_library": "iconsax",
+      "source_icon_name": "Sort",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "text",
+        "textDim",
+        "brand"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.tertiary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Sort or group positions by trading symbol.",
+        "Sort or group positions by trading symbol"
+      ],
+      "forbidden": [
+        "Do not use for QR code, scan, or payment address."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalSortIcon.tsx"
+    },
+    {
+      "icon_key": "icon.trading.close_position",
+      "legacy_names": [
+        "closePosition"
+      ],
+      "category": "trading",
+      "meaning": "Close all positions or cancel an active trading exposure",
+      "source_library": "iconsax",
+      "source_icon_name": "CloseSquare",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "danger"
+      ],
+      "tone_tokens": [
+        "danger",
+        "textDim"
+      ],
+      "default_tone": "danger",
+      "token_binding": {
+        "color": "color.icon.danger",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Close all positions or cancel an active trading exposure.",
+        "Close all positions or cancel an active trading exposure"
+      ],
+      "forbidden": [
+        "Do not use for modal close; use icon.system.close for dismissal."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalCloseSquareIcon.tsx"
+    },
+    {
+      "icon_key": "icon.trading.close_losing_position",
+      "legacy_names": [
+        "closeLosingPosition"
+      ],
+      "category": "trading",
+      "meaning": "Close losing positions, stop-loss related action, or downside exposure reduction",
+      "source_library": "iconsax",
+      "source_icon_name": "TrendDown",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "danger"
+      ],
+      "tone_tokens": [
+        "danger",
+        "amber"
+      ],
+      "default_tone": "danger",
+      "token_binding": {
+        "color": "color.icon.danger",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Close losing positions, stop-loss related action, or downside exposure reduction.",
+        "Close losing positions, stop-loss related action, or downside exposure reduction"
+      ],
+      "forbidden": [
+        "Do not use for successful verification or completed status."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalTrendDownIcon.tsx"
+    },
+    {
+      "icon_key": "icon.trading.buy",
+      "legacy_names": [
+        "tradeBuy"
+      ],
+      "category": "trading",
+      "meaning": "Buy direction marker in positions and order details",
+      "source_library": "iconsax",
+      "source_icon_name": "TrendUp",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active",
+        "success"
+      ],
+      "tone_tokens": [
+        "down",
+        "brand"
+      ],
+      "default_tone": "down",
+      "token_binding": {
+        "color": "color.icon.success",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Buy direction marker in positions and order details.",
+        "Buy direction marker in positions and order details"
+      ],
+      "forbidden": [
+        "Do not use for generic market trend without an actual buy direction."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalTrendUpIcon.tsx"
+    },
+    {
+      "icon_key": "icon.trading.sell",
+      "legacy_names": [
+        "tradeSell"
+      ],
+      "category": "trading",
+      "meaning": "Sell direction marker in positions and order details",
+      "source_library": "iconsax",
+      "source_icon_name": "TrendDown",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active",
+        "danger"
+      ],
+      "tone_tokens": [
+        "up",
+        "danger"
+      ],
+      "default_tone": "up",
+      "token_binding": {
+        "color": "color.icon.danger",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Sell direction marker in positions and order details.",
+        "Sell direction marker in positions and order details"
+      ],
+      "forbidden": [
+        "Do not use for generic market trend without an actual sell direction."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalTrendDownIcon.tsx"
+    },
+    {
+      "icon_key": "icon.status.rejected",
+      "legacy_names": [
+        "statusRejected"
+      ],
+      "category": "status",
+      "meaning": "Rejected, failed, or blocked status in financial workflows",
+      "source_library": "iconsax",
+      "source_icon_name": "Danger",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "danger"
+      ],
+      "tone_tokens": [
+        "danger",
+        "textDim"
+      ],
+      "default_tone": "danger",
+      "token_binding": {
+        "color": "color.icon.danger",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Rejected, failed, or blocked status in financial workflows.",
+        "Rejected, failed, or blocked status in financial workflows"
+      ],
+      "forbidden": [
+        "Do not use for user-close or dismiss actions."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalDangerIcon.tsx"
+    },
+    {
+      "icon_key": "icon.feedback.rating",
+      "legacy_names": [
+        "appRating"
+      ],
+      "category": "support",
+      "meaning": "App rating or satisfaction scoring entry",
+      "source_library": "iconsax",
+      "source_icon_name": "Star",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "amber",
+        "textDim"
+      ],
+      "default_tone": "amber",
+      "token_binding": {
+        "color": "color.icon.warning",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "App rating or satisfaction scoring entry.",
+        "App rating or satisfaction scoring entry"
+      ],
+      "forbidden": [
+        "Do not use for challenge award, promotion, or verified status."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalStarIcon.tsx"
+    },
+    {
+      "icon_key": "icon.support.help_center",
+      "legacy_names": [
+        "helpCenter"
+      ],
+      "category": "support",
+      "meaning": "Help center, FAQ, and guided assistance",
+      "source_library": "iconsax",
+      "source_icon_name": "MessageQuestion",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default"
+      ],
+      "tone_tokens": [
+        "textMuted",
+        "brand"
+      ],
+      "default_tone": "textMuted",
+      "token_binding": {
+        "color": "color.icon.secondary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Help center, FAQ, and guided assistance.",
+        "Help center, FAQ, and guided assistance"
+      ],
+      "forbidden": [
+        "Do not use for regulatory disclosure; use icon.risk.info."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalMessageQuestionIcon.tsx"
+    },
+    {
+      "icon_key": "icon.support.about",
+      "legacy_names": [
+        "aboutApp"
+      ],
+      "category": "support",
+      "meaning": "About app, product information, and company information entry",
+      "source_library": "iconsax",
+      "source_icon_name": "Information",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default"
+      ],
+      "tone_tokens": [
+        "textMuted",
+        "brand"
+      ],
+      "default_tone": "textMuted",
+      "token_binding": {
+        "color": "color.icon.secondary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "About app, product information, and company information entry.",
+        "About app, product information, and company information entry"
+      ],
+      "forbidden": [
+        "Do not use for risk warning or inline disclosure."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalInformationIcon.tsx"
+    },
+    {
+      "icon_key": "icon.navigation.function_center",
+      "legacy_names": [
+        "functionCenter"
+      ],
+      "category": "navigation",
+      "meaning": "Function center, app module dashboard, or shortcut hub",
+      "source_library": "iconsax",
+      "source_icon_name": "Element4",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "brand",
+        "textDim"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Function center, app module dashboard, or shortcut hub.",
+        "Function center, app module dashboard, or shortcut hub"
+      ],
+      "forbidden": [
+        "Do not use for trading orders or task checklist."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalElement4Icon.tsx"
+    },
+    {
+      "icon_key": "icon.trading.volume",
+      "legacy_names": [
+        "tradeVolume"
+      ],
+      "category": "trading",
+      "meaning": "Trading volume, analytics volume metric, and aggregated activity size",
+      "source_library": "iconsax",
+      "source_icon_name": "ChartSquare",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default"
+      ],
+      "tone_tokens": [
+        "brand",
+        "text",
+        "textDim"
+      ],
+      "default_tone": "brand",
+      "token_binding": {
+        "color": "color.icon.active",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Trading volume, analytics volume metric, and aggregated activity size.",
+        "Trading volume, analytics volume metric, and aggregated activity size"
+      ],
+      "forbidden": [
+        "Do not use for price trend or market direction."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalChartSquareIcon.tsx"
+    },
+    {
+      "icon_key": "icon.market.gold",
+      "legacy_names": [
+        "goldCommodity"
+      ],
+      "category": "trading",
+      "meaning": "Gold, metals, and commodity instrument visual",
+      "source_library": "iconsax",
+      "source_icon_name": "Coin",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default"
+      ],
+      "tone_tokens": [
+        "amber",
+        "brand"
+      ],
+      "default_tone": "amber",
+      "token_binding": {
+        "color": "color.icon.warning",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Gold, metals, and commodity instrument visual.",
+        "Gold, metals, and commodity instrument visual"
+      ],
+      "forbidden": [
+        "Do not use for deposit, reward, or balance."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalCoinIcon.tsx"
+    },
+    {
+      "icon_key": "icon.market.index",
+      "legacy_names": [
+        "indexMarket"
+      ],
+      "category": "trading",
+      "meaning": "Index, futures, and benchmark market instrument visual",
+      "source_library": "iconsax",
+      "source_icon_name": "Chart",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default"
+      ],
+      "tone_tokens": [
+        "blue",
+        "brand",
+        "text"
+      ],
+      "default_tone": "blue",
+      "token_binding": {
+        "color": "color.icon.info",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Index, futures, and benchmark market instrument visual.",
+        "Index, futures, and benchmark market instrument visual"
+      ],
+      "forbidden": [
+        "Do not use for account analytics or volume metric."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalChartIcon.tsx"
+    },
+    {
+      "icon_key": "icon.market.stock",
+      "legacy_names": [
+        "stockAsset"
+      ],
+      "category": "trading",
+      "meaning": "Stock and equity instrument visual without brand-logo copying",
+      "source_library": "iconsax",
+      "source_icon_name": "Chart21",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default"
+      ],
+      "tone_tokens": [
+        "text",
+        "brand",
+        "blue"
+      ],
+      "default_tone": "text",
+      "token_binding": {
+        "color": "color.icon.primary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Stock and equity instrument visual without brand-logo copying.",
+        "Stock and equity instrument visual without brand-logo copying"
+      ],
+      "forbidden": [
+        "Do not use proprietary company logos as functional instrument icons."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalChart21Icon.tsx"
+    }
+  ],
+  "package": "@dpf/icon-library",
+  "source_of_truth": "packages/icon-library"
+}

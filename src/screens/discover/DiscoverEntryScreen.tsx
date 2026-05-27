@@ -2,15 +2,14 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { ActionButton } from '@/src/components/ActionButton';
-import { AppIcon } from '@/src/components/AppIcon';
 import { Card } from '@/src/components/Card';
+import { IconSurface } from '@/src/components/IconSurface';
 import { Screen } from '@/src/components/Screen';
-import { StatusPill, type StatusPillTone } from '@/src/components/StatusPill';
 import { AppText } from '@/src/components/Typography';
-import { getDiscoverEntryById, type DiscoverEntryDefinition, type DiscoverEntryStatus } from '@/src/domain/discoverEntries';
+import { getDiscoverEntryById, type DiscoverEntryDefinition } from '@/src/domain/discoverEntries';
 import { localizeText } from '@/src/domain/format';
 import { useProductSettings } from '@/src/settings/ProductSettings';
-import { lineWidth, radius, size, spacing } from '@/src/theme/tokens';
+import { lineWidth, spacing } from '@/src/theme/tokens';
 
 export default function DiscoverEntryScreen({ entryId }: { entryId?: string } = {}) {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -19,7 +18,7 @@ export default function DiscoverEntryScreen({ entryId }: { entryId?: string } = 
 
   if (!entry) {
     return (
-      <Screen back title={locale !== 'zh-CN' ? 'Entry unavailable' : '入口不可用'}>
+      <Screen back backHref="/discover" title={locale !== 'zh-CN' ? 'Entry Unavailable' : '入口不可用'}>
         <Card>
           <AppText variant="subtitle">{locale !== 'zh-CN' ? 'This entry is not configured.' : '该入口尚未配置。'}</AppText>
           <AppText tone="muted" variant="caption">
@@ -34,18 +33,15 @@ export default function DiscoverEntryScreen({ entryId }: { entryId?: string } = 
   const details = getEntryDetails(entry, textLocale);
 
   return (
-    <Screen back title={localizeText(entry.title, locale)}>
+    <Screen back backHref="/discover" title={localizeText(entry.title, locale)}>
       <Card highlight>
         <View style={styles.heroTop}>
-          <View style={StyleSheet.flatten([styles.heroIcon, { backgroundColor: `${colors.brand.fg}12`, borderColor: `${colors.brand.fg}55` }])}>
-            <AppIcon name={entry.icon} size={24} />
-          </View>
+          <IconSurface icon={entry.icon} sizeVariant="lg" />
           <View style={styles.flex}>
             <View style={styles.titleRow}>
               <AppText numberOfLines={1} variant="subtitle">
                 {localizeText(entry.title, locale)}
               </AppText>
-              <EntryStatusPill status={entry.status} />
             </View>
             <AppText numberOfLines={3} tone="muted" variant="caption">
               {localizeText(entry.subtitle, locale)}
@@ -68,11 +64,11 @@ export default function DiscoverEntryScreen({ entryId }: { entryId?: string } = 
       </Card>
 
       <Card>
-        <AppText variant="subtitle">{locale !== 'zh-CN' ? 'Production note' : '生产说明'}</AppText>
+        <AppText variant="subtitle">{locale !== 'zh-CN' ? 'Production Note' : '生产说明'}</AppText>
         <AppText tone="muted" variant="caption">
           {locale === 'en-US'
-            ? 'This page is a local product preview. It does not connect live trading, funding, KYC, support, rewards, or CMS services.'
-            : '该页面是本地产品预览，未接入真实交易、资金、KYC、客服、奖励或 CMS 服务。'}
+            ? 'This entry opens in the rightmost bottom tab and keeps the current module state there.'
+            : '该入口会在底部最右侧标签中打开，并在该标签内保持当前模块状态。'}
         </AppText>
         <ActionButton label={locale !== 'zh-CN' ? 'Back to Discover' : '返回发现'} onPress={() => router.push('/discover' as never)} style={styles.action} tone="neutral" />
       </Card>
@@ -80,27 +76,11 @@ export default function DiscoverEntryScreen({ entryId }: { entryId?: string } = 
   );
 }
 
-function EntryStatusPill({ status }: { status: DiscoverEntryStatus }) {
-  const { locale } = useProductSettings();
-  const labelByStatus: Record<DiscoverEntryStatus, { label: string; tone: StatusPillTone }> = {
-    demo: { label: locale !== 'zh-CN' ? 'Demo' : '演示', tone: 'neutral' },
-    placeholder: { label: locale !== 'zh-CN' ? 'Preview' : '预览', tone: 'warning' },
-    ready: { label: locale !== 'zh-CN' ? 'Ready' : '可用', tone: 'brand' },
-  };
-  const statusConfig = labelByStatus[status];
-
-  return <StatusPill compact label={statusConfig.label} tone={statusConfig.tone} />;
-}
-
 function getEntryDetails(entry: DiscoverEntryDefinition, locale: 'en-US' | 'zh-CN') {
   const common = [
     {
-      label: locale !== 'zh-CN' ? 'Entry type' : '入口类型',
-      value: statusText(entry.status, locale),
-    },
-    {
-      label: locale !== 'zh-CN' ? 'Host tab' : '承载标签',
-      value: locale !== 'zh-CN' ? 'Rightmost bottom tab' : '底部导航最右侧',
+      label: locale !== 'zh-CN' ? 'Host Tab' : '承载标签',
+      value: locale !== 'zh-CN' ? 'Rightmost Bottom Tab' : '底部导航最右侧',
     },
   ];
 
@@ -125,18 +105,6 @@ function getEntryDetails(entry: DiscoverEntryDefinition, locale: 'en-US' | 'zh-C
   ];
 }
 
-function statusText(status: DiscoverEntryStatus, locale: 'en-US' | 'zh-CN') {
-  if (status === 'ready') {
-    return locale !== 'zh-CN' ? 'Connected to an existing local page.' : '已连接到现有本地页面。';
-  }
-
-  if (status === 'demo') {
-    return locale !== 'zh-CN' ? 'Demo flow. Live services are not connected.' : '演示流程，未接入真实服务。';
-  }
-
-  return locale !== 'zh-CN' ? 'Preview placeholder for a future independent page.' : '未来独立页面的预览占位。';
-}
-
 const styles = StyleSheet.create({
   action: {
     marginTop: spacing.md,
@@ -152,14 +120,6 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
     minWidth: 0,
-  },
-  heroIcon: {
-    alignItems: 'center',
-    borderRadius: radius.md,
-    borderWidth: lineWidth.hairline,
-    height: size.sheet.headerHeight - spacing.xs,
-    justifyContent: 'center',
-    width: size.sheet.headerHeight - spacing.xs,
   },
   heroTop: {
     alignItems: 'center',

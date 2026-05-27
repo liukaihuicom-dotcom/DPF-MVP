@@ -13,7 +13,7 @@ import { AppText } from '@/src/components/Typography';
 import { closedOrderHistory, getCloseDateTitle, type ClosedOrder } from '@/src/domain/closedOrders';
 import { directionLabel, formatMoney, formatNumber } from '@/src/domain/format';
 import { useProductSettings } from '@/src/settings/ProductSettings';
-import { lineWidth, radius, size, spacing } from '@/src/theme/tokens';
+import { lineWidth, layout, radius, size, spacing } from '@/src/theme/tokens';
 
 export default function AccountOrdersScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -22,7 +22,7 @@ export default function AccountOrdersScreen() {
   const realized = closedOrderHistory.reduce((total, order) => total + order.pnl, 0);
 
   return (
-    <Screen align="center" back title={t('portfolio.orderRecords')}>
+    <Screen align="center" back backHref="/accounts" title={t('portfolio.orderRecords')}>
       <Card compact>
         <View style={styles.summaryHeader}>
           <View style={styles.summaryCopy}>
@@ -70,7 +70,7 @@ function ClosedOrderRow({ order, showDivider }: { order: ClosedOrder; showDivide
       minTouch={76}
       style={StyleSheet.flatten([styles.orderRow, showDivider && { borderBottomColor: colors.border.subtle, borderBottomWidth: lineWidth.hairline }])}>
       <View style={styles.orderTop}>
-        <TradeDirectionIcon direction={order.direction} size={40} />
+        <TradeDirectionIcon direction={order.direction} sizeVariant="md" />
         <View style={styles.orderMain}>
           <View style={styles.orderTitleRow}>
             <AppText numberOfLines={1} variant="subtitle">{order.symbol}</AppText>
@@ -84,7 +84,7 @@ function ClosedOrderRow({ order, showDivider }: { order: ClosedOrder; showDivide
           <AppText tone={order.pnl >= 0 ? 'down' : 'up'} variant="subtitle">{formatNumber(order.pnl, 2, locale)}</AppText>
           <AppText tone="muted" variant="caption">{t('portfolio.ticket')} {order.dealId}</AppText>
         </View>
-        <AppIcon name="icon.system.chevron_right" size={14} />
+        <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
       </View>
       <View style={StyleSheet.flatten([styles.detailBox, { borderColor: colors.border.subtle }])}>
         <DetailRow row={{ label: t('portfolio.openTime'), value: order.openTime }} showDivider />

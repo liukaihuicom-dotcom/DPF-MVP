@@ -540,8 +540,8 @@ export function BrokerProvider({ children }: PropsWithChildren) {
           {
             author: 'superior',
             body: {
-              'en-US': 'Approved. Your Partner workspace is now enabled in this local demo.',
-              'zh-CN': '已批准。你的 Partner 工作台已在本地演示中启用。',
+              'en-US': 'Approved. Your Partner workspace is now enabled for this session.',
+              'zh-CN': '已批准。你的 Partner 工作台已在当前会话中启用。',
             },
             createdAt: new Date().toLocaleString('zh-CN', {
               month: '2-digit',

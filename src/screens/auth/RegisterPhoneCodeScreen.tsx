@@ -13,7 +13,7 @@ import { spacing } from '@/src/theme/tokens';
 const MAX_RESENDS = 3;
 
 export default function RegisterPhoneCodeScreen() {
-  const params = useLocalSearchParams<{ email?: string; phone?: string; redirect?: string }>();
+  const params = useLocalSearchParams<{ phone?: string; redirect?: string }>();
   const { t } = useProductSettings();
   const toast = useToast();
   const [code, setCode] = useState('');
@@ -21,7 +21,6 @@ export default function RegisterPhoneCodeScreen() {
   const [resendCount, setResendCount] = useState(0);
   const { reset, secondsLeft } = useCountdown(15);
   const redirect = safeRedirect(typeof params.redirect === 'string' ? params.redirect : undefined);
-  const email = typeof params.email === 'string' ? params.email : '';
   const phone = typeof params.phone === 'string' ? params.phone : '';
   const codeError = submitted && code !== DEMO_OTP ? t('auth.verify.errorCodeShort') : '';
   const canResend = secondsLeft === 0 && resendCount < MAX_RESENDS;
@@ -43,7 +42,7 @@ export default function RegisterPhoneCodeScreen() {
 
     void notifySuccess();
     router.push(
-      `/auth/register-password?email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}&redirect=${encodeURIComponent(String(redirect))}` as never,
+      `/auth/register-phone?phone=${encodeURIComponent(phone)}&redirect=${encodeURIComponent(String(redirect))}` as never,
     );
   };
 
@@ -81,7 +80,9 @@ export default function RegisterPhoneCodeScreen() {
 
   return (
     <AuthShell
-      progressStep={2}
+      backTarget={`/auth/register?redirect=${encodeURIComponent(String(redirect))}`}
+      navMode="back"
+      progressStep={1}
       subtitle={t('auth.register.phoneCodeSubtitle', { phone })}
       title={t('auth.register.phoneCodeTitle')}>
       <View style={styles.codeStack}>
@@ -90,7 +91,7 @@ export default function RegisterPhoneCodeScreen() {
           canResend={canResend}
           changeTargetLabel={t('auth.verify.changePhone')}
           maxResends={MAX_RESENDS}
-          onChangeTarget={() => router.replace(`/auth/register-phone?email=${encodeURIComponent(email)}&redirect=${encodeURIComponent(String(redirect))}` as never)}
+          onChangeTarget={() => router.replace(`/auth/register?redirect=${encodeURIComponent(String(redirect))}` as never)}
           onOpenHelp={openRecoveryHelp}
           onResend={resendCode}
           resendCount={resendCount}

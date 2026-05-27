@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { useThemeColors } from '@/src/settings/ProductSettings';
-import { lineWidth, spacing } from '@/src/theme/tokens';
+import { lineWidth, spacing, typography } from '@/src/theme/tokens';
 
 import { NativePressable } from './NativePressable';
 import { AppText } from './Typography';
@@ -16,7 +16,7 @@ export function DescribedLabel({ accessibilityLabel, label, onPress }: Described
   const colors = useThemeColors();
   const content = (
     <View style={styles.wrap} testID="described-label">
-      <AppText tone="muted" variant="caption">
+      <AppText style={styles.label} tone="muted">
         {label}
       </AppText>
       <View style={StyleSheet.flatten([styles.underline, { borderBottomColor: colors.text.tertiary }])} testID="described-label-underline" />
@@ -43,5 +43,8 @@ const styles = StyleSheet.create({
   },
   wrap: {
     alignSelf: 'flex-start',
+  },
+  label: {
+    ...typography.titleSm,
   },
 });

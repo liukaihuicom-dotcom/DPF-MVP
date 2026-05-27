@@ -1,10 +1,11 @@
-import { router, useLocalSearchParams } from 'expo-router';
+import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { safeRedirect } from '@/src/auth/authFlow';
 import { AuthErrorDialog } from '@/src/components/AuthFlowControls';
+import { AuthLanguageAction } from '@/src/components/AuthShell';
 import { AppIcon } from '@/src/components/AppIcon';
 import { HeaderIconSlot } from '@/src/components/HeaderIconButton';
 import { NativePressable } from '@/src/components/NativePressable';
@@ -18,7 +19,7 @@ const keypadItems = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'empty', '0', 
 
 export default function PinSetupScreen() {
   const params = useLocalSearchParams<{ mode?: string; redirect?: string }>();
-  const { localPinCode, colors, resolvedThemeMode, setAuthStatus, setLocalPinCode, setPinGateStatus, setPinStatus, t } = useProductSettings();
+  const { localPinCode, colors, pinGateStatus, resolvedThemeMode, setAuthStatus, setLocalPinCode, setPinGateStatus, setPinStatus, t } = useProductSettings();
   const flowMode = params.mode === 'unlock' && localPinCode.length === pinLength ? 'unlock' : 'setup';
   const [phase, setPhase] = useState<'create' | 'confirm' | 'unlock'>(flowMode === 'unlock' ? 'unlock' : 'create');
   const [pin, setPin] = useState('');
@@ -28,6 +29,7 @@ export default function PinSetupScreen() {
   const redirect = safeRedirect(typeof params.redirect === 'string' ? params.redirect : undefined);
   const currentValue = phase === 'create' ? pin : phase === 'confirm' ? confirmPin : unlockPin;
   const backgroundColor = resolvedThemeMode === 'lightBroker' ? colors.surface.panel : colors.surface.canvas;
+  const shouldBypassUnlock = params.mode === 'unlock' && pinGateStatus !== 'locked';
 
   const prompt = useMemo(
     () => ({
@@ -115,26 +117,32 @@ export default function PinSetupScreen() {
   };
 
   const skipPinSetup = () => {
+    setLocalPinCode('');
     setPinStatus('skipped');
     setPinGateStatus('unlocked');
     setAuthStatus('signedIn');
     router.replace(redirect);
   };
 
+  if (shouldBypassUnlock) {
+    return <Redirect href={redirect} />;
+  }
+
   return (
     <SafeAreaView edges={['top', 'bottom']} style={StyleSheet.flatten([styles.safe, { backgroundColor }])}>
       <View style={styles.screen}>
         <View style={styles.topBar}>
           <HeaderIconSlot />
-          {flowMode === 'setup' ? (
-            <NativePressable accessibilityLabel={t('auth.pin.skip')} accessibilityRole="button" minTouch={size.touch.min} onPress={skipPinSetup} style={styles.skipButton}>
-              <AppText style={styles.skipText} tone="dim" variant="caption">
-                {t('auth.pin.skip')}
-              </AppText>
-            </NativePressable>
-          ) : (
-            <HeaderIconSlot />
-          )}
+          <View style={styles.topActions}>
+            {flowMode === 'setup' ? (
+              <NativePressable accessibilityLabel={t('auth.pin.skip')} accessibilityRole="button" minTouch={size.touch.min} onPress={skipPinSetup} style={styles.skipButton}>
+                <AppText style={styles.skipText} tone="dim" variant="label.control">
+                  {t('auth.pin.skip')}
+                </AppText>
+              </NativePressable>
+            ) : null}
+            <AuthLanguageAction />
+          </View>
         </View>
 
         <View style={styles.header}>
@@ -176,7 +184,7 @@ export default function PinSetupScreen() {
                   onPress={deleteDigit}
                   pressedStyle={styles.keyPressed}
                   style={StyleSheet.flatten([styles.key, styles.keyButton, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-                  <AppIcon name="icon.system.back" size={22} />
+                  <AppIcon name="icon.system.back" sizeVariant="md" />
                 </NativePressable>
               );
             }
@@ -284,5 +292,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     minHeight: layout.sheetHeaderHeight,
     paddingVertical: spacing.sm,
+  },
+  topActions: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.xs,
   },
 });

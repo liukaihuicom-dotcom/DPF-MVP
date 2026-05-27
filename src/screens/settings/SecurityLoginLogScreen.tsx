@@ -5,6 +5,8 @@ import { ActionButton } from '@/src/components/ActionButton';
 import { AppIcon, type AppIconName, type IconTone } from '@/src/components/AppIcon';
 import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
 import { Card } from '@/src/components/Card';
+import { ConfirmActionSheet } from '@/src/components/ConfirmActionSheet';
+import { IconSurface, type IconSurfaceTone } from '@/src/components/IconSurface';
 import { NativePressable } from '@/src/components/NativePressable';
 import { Screen } from '@/src/components/Screen';
 import { StatusPill, type StatusPillTone } from '@/src/components/StatusPill';
@@ -72,6 +74,7 @@ export default function SecurityLoginLogScreen() {
         content: (
           <ConfirmActionSheet
             body={session.isCurrentSession ? t('securityLog.revoke.currentBlockedBody') : t('securityLog.revoke.confirmBody', { app: session.appName })}
+            cancelLabel={t('securityLog.action.cancel')}
             confirmDisabled={session.isCurrentSession || session.status === 'revoked'}
             confirmLabel={t('securityLog.action.revokeSession')}
             confirmTone="danger"
@@ -128,6 +131,7 @@ export default function SecurityLoginLogScreen() {
         content: (
           <ConfirmActionSheet
             body={t('securityLog.report.confirmBody', { device: device.deviceName })}
+            cancelLabel={t('securityLog.action.cancel')}
             confirmDisabled={event.status === 'reported'}
             confirmLabel={t('securityLog.action.reportNotMe')}
             confirmTone="danger"
@@ -165,12 +169,10 @@ export default function SecurityLoginLogScreen() {
   };
 
   return (
-    <Screen align="center" back rightActions={[]} subtitle={t('securityLog.subtitle')} title={t('securityLog.title')}>
+    <Screen align="center" back backHref="/settings" rightActions={[]} subtitle={t('securityLog.subtitle')} title={t('securityLog.title')}>
       <Card highlight>
         <View style={styles.summaryHeader}>
-          <View style={StyleSheet.flatten([styles.summaryIcon, { backgroundColor: `${colors.status.info.fg}14`, borderColor: `${colors.status.info.fg}44` }])}>
-            <AppIcon name="icon.security.risk_shield" size={24} />
-          </View>
+          <IconSurface icon="icon.security.risk_shield" sizeVariant="lg" tone="info" />
           <View style={styles.flex}>
             <AppText variant="subtitle">{t('securityLog.summary.title')}</AppText>
             <AppText tone="muted" variant="caption">
@@ -225,9 +227,7 @@ function SecurityDeviceCard({ device, formatDate, onPress }: { device: SecurityD
       minTouch={96}
       onPress={onPress}
       style={StyleSheet.flatten([styles.deviceCard, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-      <View style={StyleSheet.flatten([styles.deviceIcon, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
-        <AppIcon name={deviceIcon(device.deviceType)} size={22} tone={device.riskLevel === 'high' ? 'danger' : device.riskLevel === 'medium' ? 'amber' : undefined} />
-      </View>
+      <IconSurface icon={deviceIcon(device.deviceType)} sizeVariant="md" tone={resolveRiskIconSurfaceTone(device.riskLevel)} />
       <View style={styles.deviceBody}>
         <View style={styles.deviceTopRow}>
           <View style={styles.flex}>
@@ -253,7 +253,7 @@ function SecurityDeviceCard({ device, formatDate, onPress }: { device: SecurityD
           </AppText>
         </View>
       </View>
-      <AppIcon name="icon.system.chevron_right" size={16} />
+      <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
     </NativePressable>
   );
 }
@@ -300,7 +300,7 @@ function DeviceDetailSheet({
         {device.sessions.map((session) => (
           <View key={session.sessionId} style={StyleSheet.flatten([styles.recordRow, { borderColor: colors.border.subtle }])}>
             <View style={styles.recordIcon}>
-              <AppIcon name={session.status === 'revoked' ? 'icon.system.logout' : 'icon.security.lock'} size={18} />
+              <AppIcon name={session.status === 'revoked' ? 'icon.system.logout' : 'icon.security.lock'} sizeVariant="sm" />
             </View>
             <View style={styles.recordBody}>
               <View style={styles.inlineRow}>
@@ -336,7 +336,7 @@ function DeviceDetailSheet({
         {device.events.map((event) => (
           <View key={event.eventId} style={StyleSheet.flatten([styles.recordRow, { borderColor: colors.border.subtle }])}>
             <View style={styles.recordIcon}>
-              <AppIcon name={event.riskLevel === 'low' ? 'icon.trading.history' : 'icon.security.risk_shield'} size={18} tone={event.riskLevel === 'high' ? 'danger' : event.riskLevel === 'medium' ? 'amber' : undefined} />
+              <AppIcon name={event.riskLevel === 'low' ? 'icon.trading.history' : 'icon.security.risk_shield'} sizeVariant="sm" tone={event.riskLevel === 'high' ? 'danger' : event.riskLevel === 'medium' ? 'amber' : undefined} />
             </View>
             <View style={styles.recordBody}>
               <View style={styles.inlineRow}>
@@ -375,46 +375,6 @@ function DeviceDetailSheet({
   );
 }
 
-function ConfirmActionSheet({
-  body,
-  confirmDisabled,
-  confirmLabel,
-  confirmTone,
-  icon,
-  onCancel,
-  onConfirm,
-  title,
-}: {
-  body: string;
-  confirmDisabled?: boolean;
-  confirmLabel: string;
-  confirmTone: 'danger' | 'brand';
-  icon: AppIconName;
-  onCancel: () => void;
-  onConfirm: () => void;
-  title: string;
-}) {
-  const { colors, t } = useProductSettings();
-
-  return (
-    <View style={styles.confirmContent}>
-      <View style={StyleSheet.flatten([styles.confirmIcon, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
-        <AppIcon name={icon} size={24} tone={confirmTone === 'danger' ? 'danger' : undefined} />
-      </View>
-      <AppText style={styles.centerText} variant="subtitle">
-        {title}
-      </AppText>
-      <AppText style={styles.centerText} tone="muted" variant="body">
-        {body}
-      </AppText>
-      <View style={styles.confirmActions}>
-        <ActionButton label={t('securityLog.action.cancel')} onPress={onCancel} tone="neutral" variant="outline" />
-        <ActionButton disabled={confirmDisabled} label={confirmLabel} onPress={onConfirm} tone={confirmTone} variant="filled" />
-      </View>
-    </View>
-  );
-}
-
 function deviceIcon(deviceType: SecurityDeviceType): AppIconName {
   if (deviceType === 'phone') {
     return 'icon.security.key_access';
@@ -425,6 +385,18 @@ function deviceIcon(deviceType: SecurityDeviceType): AppIconName {
   }
 
   return 'icon.security.lock';
+}
+
+function resolveRiskIconSurfaceTone(riskLevel: SecurityRiskLevel): IconSurfaceTone {
+  if (riskLevel === 'high') {
+    return 'danger';
+  }
+
+  if (riskLevel === 'medium') {
+    return 'warning';
+  }
+
+  return 'neutral';
 }
 
 function riskTone(riskLevel: SecurityRiskLevel): StatusPillTone {
@@ -455,28 +427,6 @@ function formatSecurityDate(value: string, locale: string) {
 }
 
 const styles = StyleSheet.create({
-  centerText: {
-    textAlign: 'center',
-  },
-  confirmActions: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    justifyContent: 'center',
-    width: '100%',
-  },
-  confirmContent: {
-    alignItems: 'center',
-    gap: spacing.md,
-    paddingBottom: spacing.lg,
-  },
-  confirmIcon: {
-    alignItems: 'center',
-    borderRadius: radius.full,
-    borderWidth: lineWidth.hairline,
-    height: size.control.lg,
-    justifyContent: 'center',
-    width: size.control.lg,
-  },
   detailHeaderCard: {
     borderRadius: radius.md,
     borderWidth: lineWidth.none,
@@ -495,14 +445,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.md,
     padding: spacing.md,
-  },
-  deviceIcon: {
-    alignItems: 'center',
-    borderRadius: radius.md,
-    borderWidth: lineWidth.hairline,
-    height: layout.touchTargetMin,
-    justifyContent: 'center',
-    width: layout.touchTargetMin,
   },
   deviceMetaRow: {
     gap: spacing.xs,
@@ -562,14 +504,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.md,
     marginBottom: spacing.md,
-  },
-  summaryIcon: {
-    alignItems: 'center',
-    borderRadius: radius.full,
-    borderWidth: lineWidth.hairline,
-    height: size.control.md,
-    justifyContent: 'center',
-    width: size.control.md,
   },
   summaryMetric: {
     borderRadius: radius.md,

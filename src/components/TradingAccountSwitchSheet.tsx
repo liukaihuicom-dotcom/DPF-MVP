@@ -3,10 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import { buildTradingAccountProfiles, getAccountStatusLabel, tradingAccountStatusGroups, type TradingAccountProfile } from '@/src/domain/accountProfiles';
 import { formatMoney } from '@/src/domain/format';
 import { useProductSettings } from '@/src/settings/ProductSettings';
-import { lineWidth, radius, spacing } from '@/src/theme/tokens';
+import { layout, lineWidth, radius, spacing, typography } from '@/src/theme/tokens';
 
-import { AppIcon } from './AppIcon';
 import { CurrencyFlag } from './CurrencyFlag';
+import { IconSurface } from './IconSurface';
 import { NativePressable } from './NativePressable';
 import { StatusPill, type StatusPillTone } from './StatusPill';
 import { AppText } from './Typography';
@@ -40,7 +40,7 @@ export function TradingAccountSwitchSheet({
 
           return (
             <View key={group} style={styles.group}>
-              <AppText tone="muted" variant="subtitle">
+              <AppText style={styles.groupTitle} tone="muted" variant="body">
                 {getAccountStatusLabel(group, locale)} ({groupedAccounts.length})
               </AppText>
               {groupedAccounts.map((profile) => (
@@ -59,6 +59,25 @@ export function TradingAccountSwitchSheet({
       </View>
     </View>
   );
+}
+
+export function createTradingAccountSwitchHeader({
+  locale,
+  onAddAccount,
+  title,
+}: {
+  locale: ReturnType<typeof useProductSettings>['locale'];
+  onAddAccount: () => void;
+  title: string;
+}) {
+  return {
+    rightAction: {
+      accessibilityLabel: locale !== 'zh-CN' ? 'Add Account' : '添加账户',
+      icon: 'icon.account.add_user' as const,
+      onPress: onAddAccount,
+    },
+    title,
+  };
 }
 
 function SwitchAccountCard({
@@ -81,6 +100,7 @@ function SwitchAccountCard({
   const borderWidth = selected ? lineWidth.selected : lineWidth.none;
   const paddingOffset = borderWidth - lineWidth.none;
   const disabled = Boolean(disabledReason);
+  const selectedBorderColor = colors.text.primary;
 
   return (
     <NativePressable
@@ -94,14 +114,13 @@ function SwitchAccountCard({
         mode === 'compact' && styles.compactCard,
         {
           backgroundColor: disabled ? colors.surface.disabled : colors.surface.panel,
-          borderColor: selected ? colors.text.tertiary : disabled ? colors.border.disabled : colors.border.subtle,
+          borderColor: selected ? selectedBorderColor : disabled ? colors.border.disabled : colors.border.subtle,
           borderWidth,
-          padding: spacing.lg - paddingOffset,
+          paddingHorizontal: (mode === 'compact' ? layout.cardPaddingCompactX : layout.cardPaddingX) - paddingOffset,
+          paddingVertical: (mode === 'compact' ? layout.cardPaddingCompactY : layout.cardPaddingY) - paddingOffset,
         },
       ])}>
-      <View style={StyleSheet.flatten([styles.iconWrap, { backgroundColor: disabled ? colors.surface.panel : colors.surface.subtle }])}>
-        <AppIcon tone={disabled ? 'disabled' : undefined} name="icon.account.trading" size={18} />
-      </View>
+      <IconSurface icon="icon.wallet.balance" sizeVariant="md" />
       <View style={styles.cardBody}>
         <View style={styles.topRow}>
           <View style={styles.titleBlock}>
@@ -119,8 +138,8 @@ function SwitchAccountCard({
             </View>
           </View>
           {mode === 'detailed' ? (
-            <View style={StyleSheet.flatten([styles.radio, { borderColor: selected ? colors.text.primary : colors.text.tertiary }])}>
-              {selected ? <View style={StyleSheet.flatten([styles.radioDot, { backgroundColor: colors.text.primary }])} /> : null}
+            <View style={StyleSheet.flatten([styles.radio, { borderColor: selected ? selectedBorderColor : colors.text.tertiary }])}>
+              {selected ? <View style={StyleSheet.flatten([styles.radioDot, { backgroundColor: selectedBorderColor }])} /> : null}
             </View>
           ) : (
             <AppText numberOfLines={1} tone="muted" variant="caption">
@@ -216,7 +235,8 @@ const styles = StyleSheet.create({
     borderWidth: lineWidth.none,
     flexDirection: 'row',
     gap: spacing.md,
-    padding: spacing.lg,
+    paddingHorizontal: layout.cardPaddingX,
+    paddingVertical: layout.cardPaddingY,
   },
   cardBody: {
     flex: 1,
@@ -224,7 +244,8 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   compactCard: {
-    padding: spacing.lg,
+    paddingHorizontal: layout.cardPaddingCompactX,
+    paddingVertical: layout.cardPaddingCompactY,
   },
   divider: {
     height: lineWidth.hairline,
@@ -232,15 +253,12 @@ const styles = StyleSheet.create({
   group: {
     gap: 10,
   },
+  groupTitle: {
+    ...typography.caption,
+    paddingLeft: spacing.md,
+  },
   groups: {
     gap: 18,
-  },
-  iconWrap: {
-    alignItems: 'center',
-    borderRadius: radius.full,
-    height: 48,
-    justifyContent: 'center',
-    width: 48,
   },
   metaRow: {
     alignItems: 'center',

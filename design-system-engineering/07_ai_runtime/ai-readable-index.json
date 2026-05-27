@@ -1,24 +1,28 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "readOrder": [
     "product-engineering-package/00_product_kernel/product.kernel.json",
     "product-engineering-package/04_page_contracts/page-contract.index.md",
     "design-system-engineering/00_principles/l5-acceptance-standard.md",
-    "design-system-engineering/01_tokens/tokens.json",
-    "design-system-engineering/02_components/component-manifest.json",
+    "design-system-engineering/dependency-contract.md",
+    "design-system-engineering/release-map.json",
+    "packages/design-tokens/registry/tokens.json",
+    "packages/design-tokens/registry/tokens.color.json",
+    "packages/design-tokens/registry/token-mode.matrix.json",
+    "packages/component-library/registry/component-manifest.json",
     "design-system-engineering/03_business_components/business-component-manifest.json",
-    "design-system-engineering/04_icons/icon-registry.json",
+    "packages/icon-library/registry/icon-registry.json",
     "design-system-engineering/05_patterns/pattern-registry.json",
     "design-system-engineering/06_platform_modes/mode-matrix.json",
-    "design-system-engineering/08_code_mapping/css-variable.mapping.css",
-    "design-system-engineering/08_code_mapping/tailwind.mapping.js",
+    "packages/design-tokens/mappings/css-variable.mapping.css",
+    "packages/design-tokens/mappings/tailwind.mapping.js",
     "qa/production-gates.json"
   ],
   "blockedWithout": [
     "page contract",
-    "token mapping",
-    "component manifest",
-    "icon registry for functional icons",
+    "design-token package source",
+    "component-library package manifest",
+    "icon-library package registry for functional icons",
     "pattern registry",
     "QA gate decision"
   ],
@@ -28,5 +32,12 @@
     "Pattern Usage Report",
     "Icon Usage Report when icons are involved",
     "QA Gate result"
-  ]
+  ],
+  "sourceOfTruth": "workspace-packages",
+  "compatibilityPaths": {
+    "tokens": "design-system-engineering/01_tokens mirrors packages/design-tokens during migration",
+    "components": "design-system-engineering/02_components mirrors packages/component-library during migration",
+    "icons": "design-system-engineering/04_icons mirrors packages/icon-library during migration",
+    "runtime": "src/theme, src/components, and src/icons remain runtime compatibility surfaces until imports migrate"
+  }
 }

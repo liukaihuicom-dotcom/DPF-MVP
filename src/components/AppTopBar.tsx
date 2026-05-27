@@ -1,9 +1,8 @@
-import { router } from 'expo-router';
-import type { Href } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { useToast } from '@/src/feedback/Toast';
 import { impactLight } from '@/src/feedback/haptics';
+import { navigateBackOrReplace, safeRouteTargets, type NavigationTarget } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { lineWidth } from '@/src/theme/tokens';
 
@@ -21,7 +20,7 @@ type AppTopBarProps = {
   actions?: AppTopBarAction[];
   align?: 'left' | 'center';
   back?: boolean;
-  backHref?: Href;
+  backHref?: NavigationTarget;
   subtitle?: string;
   title: string;
 };
@@ -61,17 +60,7 @@ export function AppTopBar({ actions, align = 'left', back, backHref, subtitle, t
             icon="icon.system.back"
             onPress={() => {
               void impactLight();
-              if (router.canGoBack()) {
-                router.back();
-                return;
-              }
-
-              if (backHref) {
-                router.replace(backHref);
-                return;
-              }
-
-              router.back();
+              navigateBackOrReplace(backHref ?? safeRouteTargets.launch);
             }}
             tone="default"
           />
@@ -79,7 +68,7 @@ export function AppTopBar({ actions, align = 'left', back, backHref, subtitle, t
       </HeaderIconSlot>
 
       <View style={StyleSheet.flatten([styles.titleWrap, align === 'center' && styles.titleCenter, !back && styles.rootTitleWrap])}>
-        <AppText adjustsFontSizeToFit numberOfLines={1} variant={back ? 'title.pageCompact' : 'title.page'}>
+        <AppText numberOfLines={back ? 1 : 2} variant={back ? 'title.pageCompact' : 'title.page'}>
           {title}
         </AppText>
         {subtitle ? (
@@ -96,7 +85,7 @@ export function AppTopBar({ actions, align = 'left', back, backHref, subtitle, t
             icon={action.icon}
             key={`${action.icon}-${action.label}`}
             onPress={action.onPress ?? (() => showPlaceholder(action.label))}
-            tone={action.icon === 'icon.system.search' ? 'default' : 'muted'}
+            tone="default"
           />
         ))}
       </View>

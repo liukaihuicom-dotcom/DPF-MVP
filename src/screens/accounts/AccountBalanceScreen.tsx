@@ -4,11 +4,12 @@ import { StyleSheet, View } from 'react-native';
 
 import { AppIcon, type AppIconName, type IconTone } from '@/src/components/AppIcon';
 import { ActionButton } from '@/src/components/ActionButton';
-import { useBottomSheet } from '@/src/components/BottomSheet';
+import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
 import { TransactionRow } from '@/src/components/business';
 import { Card } from '@/src/components/Card';
 import { DetailRow, LegendDot, MiniMetric } from '@/src/components/data-display';
 import { EmptyState } from '@/src/components/feedback';
+import { IconSurface, type IconSurfaceTone } from '@/src/components/IconSurface';
 import { NativePressable } from '@/src/components/NativePressable';
 import { Screen } from '@/src/components/Screen';
 import { StatusPill, type StatusPillTone } from '@/src/components/StatusPill';
@@ -19,7 +20,7 @@ import type { Locale } from '@/src/i18n/translations';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { useBroker } from '@/src/state/BrokerStore';
 import { resolveThemeTone } from '@/src/theme/colors';
-import { lineWidth, radius, spacing } from '@/src/theme/tokens';
+import { layout, lineWidth, radius, spacing } from '@/src/theme/tokens';
 import type { Transaction, TransactionStatus } from '@/src/domain/types';
 
 type BalanceFilter = 'all' | 'deposit' | 'withdrawal';
@@ -68,19 +69,18 @@ export default function AccountBalanceScreen() {
   const netCashFlow = depositTotal - withdrawalTotal;
   const nextFilter = () => setFilter((current) => filterOrder[(filterOrder.indexOf(current) + 1) % filterOrder.length]);
   const openTransactionDetail = (transaction: BalanceTransaction) => {
-    bottomSheet.show({
+    bottomSheet.show(bottomSheetPresets.detail({
       content: <TransactionDetailSheet currency={profile.currency} onClose={bottomSheet.hide} profile={profile} transaction={transaction} />,
-      header: {
-        leftIcon: getTransactionIcon(transaction),
-        title: t('balance.detail.title'),
-      },
-    });
+      leftIcon: getTransactionIcon(transaction),
+      title: t('balance.detail.title'),
+    }));
   };
 
   return (
     <Screen
       align="center"
       back
+      backHref="/accounts"
       rightActions={[{ icon: 'icon.system.settings', label: t('balance.filter'), onPress: nextFilter }]}
       title={t('balance.title')}>
       <Card style={styles.periodCard}>
@@ -98,7 +98,7 @@ export default function AccountBalanceScreen() {
             minTouch={36}
             style={StyleSheet.flatten([styles.periodButton, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
             <AppText variant="caption">{t('balance.period.last7')}</AppText>
-            <AppIcon name="icon.system.chevron_down" size={13} />
+            <AppIcon name="icon.system.chevron_down" sizeVariant="xs" />
           </NativePressable>
         </View>
         <View style={StyleSheet.flatten([styles.snapshotGrid, { borderTopColor: colors.border.subtle }])}>
@@ -246,9 +246,9 @@ function FilterButton({ current, item, onPress }: { current: BalanceFilter; item
       onPress={onPress}
       style={StyleSheet.flatten([
         styles.filterButton,
-        { backgroundColor: selected ? colors.text.primary : colors.surface.subtle, borderColor: selected ? colors.text.primary : colors.border.subtle },
+        { backgroundColor: colors.surface.subtle, borderColor: selected ? colors.text.primary : colors.border.subtle },
       ])}>
-      <AppText tone={selected ? 'panel' : 'muted'} variant="caption">
+      <AppText tone={selected ? 'default' : 'muted'} variant="caption">
         {t(`balance.filter.${item}`)}
       </AppText>
     </NativePressable>
@@ -290,9 +290,7 @@ function TransactionDetailSheet({
   return (
     <View style={styles.detailSheet}>
       <View style={StyleSheet.flatten([styles.detailHero, { backgroundColor: statusOverlay.muted, borderColor: statusOverlay.strong }])}>
-        <View style={StyleSheet.flatten([styles.detailStatusIcon, { backgroundColor: statusOverlay.subtle, borderColor: statusOverlay.strong }])}>
-          <AppIcon name={getDetailStatusIcon(transaction.status)} size={22} tone={resolveStatusIconTone(transaction.status)} />
-        </View>
+        <IconSurface icon={getDetailStatusIcon(transaction.status)} sizeVariant="lg" tone={resolveStatusSurfaceTone(transaction.status)} />
         <StatusPill icon={getDetailStatusIcon(transaction.status)} label={t(`balance.detail.status.${transaction.status}`)} tone={statusTone} />
         <AppText adjustsFontSizeToFit numberOfLines={1} style={styles.detailAmount} tone={transaction.amount >= 0 ? 'down' : 'up'} variant="displayXl">
           {formatSignedMoney(transaction.amount, currency, locale)}
@@ -432,6 +430,18 @@ function resolveStatusIconTone(status: TransactionStatus): IconTone {
   }
 
   return 'amber';
+}
+
+function resolveStatusSurfaceTone(status: TransactionStatus): IconSurfaceTone {
+  if (status === 'completed') {
+    return 'down';
+  }
+
+  if (status === 'rejected') {
+    return 'danger';
+  }
+
+  return 'warning';
 }
 
 function resolveTransactionColor(transaction: Transaction, colors: ReturnType<typeof useProductSettings>['colors']) {
@@ -583,7 +593,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     borderWidth: lineWidth.none,
     gap: spacing.sm,
-    padding: spacing.lg,
+    paddingHorizontal: layout.cardPaddingX,
+    paddingVertical: layout.cardPaddingY,
   },
   detailRows: {
     borderRadius: radius.md,
@@ -593,14 +604,6 @@ const styles = StyleSheet.create({
   detailSheet: {
     gap: spacing.md,
     paddingBottom: spacing.sm,
-  },
-  detailStatusIcon: {
-    alignItems: 'center',
-    borderRadius: radius.full,
-    borderWidth: lineWidth.hairline,
-    height: 48,
-    justifyContent: 'center',
-    width: 48,
   },
   filterButton: {
     alignItems: 'center',

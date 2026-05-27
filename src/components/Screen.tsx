@@ -1,17 +1,19 @@
 import { PropsWithChildren, ReactNode } from 'react';
-import type { Href } from 'expo-router';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useThemeColors } from '@/src/settings/ProductSettings';
 import { lineWidth, layout, spacing } from '@/src/theme/tokens';
+import type { NavigationTarget } from '@/src/navigation/navigationPolicy';
 
 import { AppTopBar, type AppTopBarAction } from './AppTopBar';
+import { useKeyboardVisible } from './layout/useKeyboardVisible';
 
 type ScreenProps = PropsWithChildren<{
   align?: 'left' | 'center';
   back?: boolean;
-  backHref?: Href;
+  backHref?: NavigationTarget;
+  contentBottomPadding?: 'default' | 'none';
   contentInsetBottom?: number;
   contentPadding?: 'default' | 'flush';
   dismissKeyboardOnTap?: boolean;
@@ -45,8 +47,15 @@ export function Screen({
   topBar,
 }: ScreenProps) {
   const colors = useThemeColors();
+  const insets = useSafeAreaInsets();
+  const keyboardVisible = useKeyboardVisible(keyboardAware);
   const header = topBar ?? (title ? <AppTopBar actions={rightActions} align={align} back={back} backHref={backHref} subtitle={subtitle} title={title} /> : null);
-  const bottomPadding = stickyFooter ? 122 + contentInsetBottom : layout.screenBottomPadding + contentInsetBottom;
+  const compactFooterForKeyboard = keyboardVisible;
+  const bottomActionInset = compactFooterForKeyboard ? layout.bottomActionArea.keyboardContentInset : layout.bottomActionArea.contentInset;
+  const bottomActionPadding = compactFooterForKeyboard ? layout.bottomActionArea.keyboardPaddingBottom : layout.bottomActionArea.paddingBottom;
+  const screenContentBottomPadding = layout.screenBottomPadding + insets.bottom;
+  const baseBottomPadding = stickyFooter ? bottomActionInset : screenContentBottomPadding;
+  const bottomPadding = baseBottomPadding + contentInsetBottom;
   const stickyFooterBackgroundColor = stickyFooterBackground === 'page' ? colors.surface.canvas : colors.surface.raised;
   const wrapDismiss = (node: ReactNode) =>
     dismissKeyboardOnTap ? (
@@ -80,8 +89,8 @@ export function Screen({
         {header}
         {wrapDismiss(body)}
         {stickyFooter ? (
-          <SafeAreaView edges={['bottom']} style={StyleSheet.flatten([styles.footerSafe, { backgroundColor: stickyFooterBackgroundColor, borderTopColor: colors.border.subtle }])}>
-            <View style={styles.footer}>{stickyFooter}</View>
+          <SafeAreaView edges={compactFooterForKeyboard ? [] : ['bottom']} style={StyleSheet.flatten([styles.footerSafe, { backgroundColor: stickyFooterBackgroundColor, borderTopColor: colors.border.subtle }])}>
+            <View style={StyleSheet.flatten([styles.footer, { paddingBottom: bottomActionPadding }])}>{stickyFooter}</View>
           </SafeAreaView>
         ) : null}
       </SafeAreaView>
@@ -121,10 +130,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   footer: {
-    gap: spacing.sm,
-    paddingBottom: 18,
-    paddingHorizontal: layout.screenPaddingX,
-    paddingTop: spacing.md,
+    gap: layout.bottomActionArea.gap,
+    paddingHorizontal: layout.bottomActionArea.paddingX,
+    paddingTop: layout.bottomActionArea.paddingTop,
   },
   footerSafe: {
     borderTopWidth: lineWidth.hairline,

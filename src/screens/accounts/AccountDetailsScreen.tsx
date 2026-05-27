@@ -2,12 +2,13 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Line, Path, Polyline } from 'react-native-svg';
 
-import { lineWidth, radius, spacing } from '@/src/theme/tokens';
+import { lineWidth, layout, radius, spacing } from '@/src/theme/tokens';
 import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
 import { Card } from '@/src/components/Card';
 import { FundActionGrid, type FundActionGridItem } from '@/src/components/FundActionGrid';
 import { GlobalMenuList } from '@/src/components/GlobalMenuList';
 import { AppIcon } from '@/src/components/AppIcon';
+import { IconSurface } from '@/src/components/IconSurface';
 import { Screen } from '@/src/components/Screen';
 import { Sparkline } from '@/src/components/Sparkline';
 import { StatusPill, type StatusPillTone } from '@/src/components/StatusPill';
@@ -66,13 +67,12 @@ export default function AccountDetailsScreen() {
     <Screen
       align="center"
       back
+      backHref="/accounts"
       rightActions={[{ icon: 'icon.system.more', label: t('top.more'), onPress: openMoreMenu }]}
       title={t('accountDetails.title')}>
       <Card compact>
         <View style={styles.detailHeader}>
-          <View style={StyleSheet.flatten([styles.walletIcon, { backgroundColor: colors.surface.subtle }])}>
-            <AppIcon name="icon.account.trading" size={18} />
-          </View>
+          <IconSurface icon="icon.account.trading" sizeVariant="sm" />
           <View style={styles.detailTitleBlock}>
             <View style={styles.detailTitleRow}>
               <AppText variant="subtitle">{profile.accountNo}</AppText>
@@ -140,11 +140,11 @@ export default function AccountDetailsScreen() {
       <Card compact>
         <View style={styles.cardTitleRow}>
           <AppText variant="subtitle">{t('portfolio.current')}</AppText>
-          <AppIcon name="icon.system.chevron_right" size={14} />
+          <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
         </View>
         {positionRows.map((position, index) => (
           <View key={position.id} style={StyleSheet.flatten([styles.positionRow, index < positionRows.length - 1 && { borderBottomColor: colors.border.subtle, borderBottomWidth: lineWidth.hairline }])}>
-            <TradeDirectionIcon direction={position.direction} size={30} />
+            <TradeDirectionIcon direction={position.direction} sizeVariant="sm" />
             <View style={styles.positionMain}>
               <View style={styles.positionTitle}>
                 <AppText variant="caption">{position.symbol}</AppText>
@@ -199,7 +199,7 @@ export default function AccountDetailsScreen() {
       <Card>
         <View style={styles.cardTitleRow}>
           <AppText variant="subtitle">{t('portfolio.pnlCalendar')}</AppText>
-          <AppIcon name="icon.system.chevron_right" size={14} />
+          <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
         </View>
         <View style={styles.calendarGrid}>
           {Array.from({ length: 31 }).map((_, index) => {
@@ -459,7 +459,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     borderWidth: lineWidth.none,
     overflow: 'hidden',
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: layout.cardPaddingX,
   },
   performanceChart: {
     alignItems: 'center',
@@ -511,13 +511,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     marginTop: 2,
-  },
-  walletIcon: {
-    alignItems: 'center',
-    borderRadius: 999,
-    flexShrink: 0,
-    height: 36,
-    justifyContent: 'center',
-    width: 36,
   },
 });

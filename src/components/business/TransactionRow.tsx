@@ -3,9 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import { formatMoney, localizeText } from '@/src/domain/format';
 import type { Locale } from '@/src/i18n/translations';
 import { useProductSettings } from '@/src/settings/ProductSettings';
-import { lineWidth, radius, size, spacing } from '@/src/theme/tokens';
+import { lineWidth, layout, size, spacing } from '@/src/theme/tokens';
 
 import { AppIcon, type AppIconName, type IconTone } from '../AppIcon';
+import { IconSurface, type IconSurfaceTone } from '../IconSurface';
 import { NativePressable } from '../NativePressable';
 import { StatusPill, type StatusPillTone } from '../StatusPill';
 import { AppText } from '../Typography';
@@ -46,7 +47,7 @@ export function TransactionRow<T extends TransactionListRow>({
 }: TransactionRowProps<T>) {
   const { locale, colors, t } = useProductSettings();
   const icon = getIcon(transaction);
-  const color = resolveColor(transaction, colors);
+  const surfaceTone = resolveIconSurfaceTone(resolveIconTone(transaction));
 
   return (
     <NativePressable
@@ -55,9 +56,7 @@ export function TransactionRow<T extends TransactionListRow>({
       minTouch={58}
       onPress={onPress}
       style={StyleSheet.flatten([styles.row, showDivider && { borderBottomColor: colors.border.subtle, borderBottomWidth: lineWidth.hairline }])}>
-      <View style={StyleSheet.flatten([styles.icon, { backgroundColor: `${color}14` }])}>
-        <AppIcon name={icon} size={18} tone={resolveIconTone(transaction)} />
-      </View>
+      <IconSurface icon={icon} sizeVariant="sm" tone={surfaceTone} />
       <View style={styles.main}>
         <AppText numberOfLines={1} variant="subtitle">
           {localizeText(transaction.note, locale)}
@@ -72,9 +71,18 @@ export function TransactionRow<T extends TransactionListRow>({
         </AppText>
         <StatusPill compact label={getStatusLabel(transaction)} tone={getTone(transaction)} />
       </View>
-      <AppIcon name="icon.system.chevron_right" size={14} />
+      <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
     </NativePressable>
   );
+}
+
+function resolveIconSurfaceTone(tone: IconTone): IconSurfaceTone {
+  if (tone === 'down' || tone === 'success') return 'down';
+  if (tone === 'up' || tone === 'danger') return 'up';
+  if (tone === 'amber' || tone === 'warning') return 'warning';
+  if (tone === 'blue' || tone === 'info') return 'info';
+  if (tone === 'brand') return 'brand';
+  return 'neutral';
 }
 
 function formatSignedMoney(value: number, currency: string, locale: Locale, digits = 2) {
@@ -83,13 +91,6 @@ function formatSignedMoney(value: number, currency: string, locale: Locale, digi
 }
 
 const styles = StyleSheet.create({
-  icon: {
-    alignItems: 'center',
-    borderRadius: radius.full,
-    height: size.control.sm - spacing.xxs,
-    justifyContent: 'center',
-    width: size.control.sm - spacing.xxs,
-  },
   main: {
     flex: 1,
     gap: spacing.xs,

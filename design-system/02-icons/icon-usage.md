@@ -15,4 +15,10 @@ Linear icons use a 1.5px stroke through `lineWidth.icon.default`.
 
 Use `line` as the default style. Use `fill` only for selected, active, state-emphasis, or business-emphasis scenarios.
 
+Pure icons use `AppIcon` and have no background by default. Icons that need a visible background must use `IconSurface`; `IconSurface background="hidden"` is only for alignment slots that intentionally reserve the surface size without painting a background.
+
+Whether an icon is rendered as a pure `AppIcon` or inside `IconSurface`, the icon itself defaults to `color.icon.primary`. Use `tone="tertiary"` only for explicit low-emphasis metadata, passive helper, or disclosure icons.
+
+Single-select selected rows use the plain check mark `icon.status.check`. Do not use radio dots or circled check icons when the row container already communicates selected state.
+
 Do not use icons as the only indicator for financial up/down movement.

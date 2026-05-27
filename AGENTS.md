@@ -17,11 +17,15 @@ Before starting any task, Codex must classify the task and output:
 5. Missing Inputs
 6. Expected Outputs
 
+# Codex Automation Language Rule
+
+Codex 创建或更新计划任务、提醒、监控、定时执行任务时，任务名称和任务描述必须统一使用中文描述，不要使用英文描述，除非用户明确要求英文。
+
 ## 0. Quick Local Expo Demo Startup Skill
 
 Use:
 
-`/skills/quick-local-expo-demo-startup-skill.v1.2.0.md`
+`.codex/skills/quick-local-expo-demo-startup/SKILL.md`
 
 Priority:
 
@@ -555,4 +559,5 @@ Codex must report:
 - Do not place Add-on Skills as peer Core Skills.
 - Do not use Add-on Skills to replace Product Kernel, Page Contract, Design System, or UI Build output.
 - Do not silently invent missing product, compliance, legal, risk, localization, or design-system inputs.
+- Codex 创建、更新或提议任何自动化、周期任务、提醒、监控、计划任务时，任务名称、任务描述、Prompt 摘要、状态说明和面向用户的解释默认必须使用中文。除非用户明确要求英文，否则不要输出英文描述。
 - For Expo code changes, read the exact versioned docs at `https://docs.expo.dev/versions/v54.0.0/` before writing code.

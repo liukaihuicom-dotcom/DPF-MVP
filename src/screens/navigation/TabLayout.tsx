@@ -4,7 +4,7 @@ import type { AppIconName } from '@/src/components/AppIcon';
 import { TabBarIcon } from '@/src/components/navigation';
 import type { DiscoverModuleId } from '@/src/domain/types';
 import { useProductSettings } from '@/src/settings/ProductSettings';
-import { titleTypography } from '@/src/theme/tokens';
+import { lineWidth, titleTypography } from '@/src/theme/tokens';
 
 export default function TabLayout() {
   const { colors, selectedDiscoverModuleId, t } = useProductSettings();
@@ -22,6 +22,7 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: colors.surface.panel,
           borderTopColor: colors.border.default,
+          borderTopWidth: lineWidth.hairline,
           height: 68,
           paddingBottom: 7,
           paddingTop: 6,
@@ -34,28 +35,28 @@ export default function TabLayout() {
         name="markets"
         options={{
           title: t('tabs.markets'),
-          tabBarIcon: ({ focused }) => <TabBarIcon name="icon.trading.market" tone={focused ? 'brand' : 'textDim'} />,
+          tabBarIcon: ({ focused }) => <TabBarIcon name="icon.trading.market" selected={focused} tone={focused ? colors.brand.fg : 'textDim'} />,
         }}
       />
       <Tabs.Screen
         name="trade"
         options={{
           title: t('tabs.trade'),
-          tabBarIcon: ({ focused }) => <TabBarIcon name="icon.trading.order_ticket" tone={focused ? 'brand' : 'textDim'} />,
+          tabBarIcon: ({ focused }) => <TabBarIcon name="icon.trading.order_ticket" selected={focused} tone={focused ? colors.brand.fg : 'textDim'} />,
         }}
       />
       <Tabs.Screen
         name="accounts"
         options={{
           title: t('tabs.accounts'),
-          tabBarIcon: ({ focused }) => <TabBarIcon name="icon.account.trading" tone={focused ? 'brand' : 'textDim'} />,
+          tabBarIcon: ({ focused }) => <TabBarIcon name="icon.wallet.balance" selected={focused} tone={focused ? colors.brand.fg : 'textDim'} />,
         }}
       />
       <Tabs.Screen
         name="discover"
         options={{
           title: t('tabs.discover'),
-          tabBarIcon: ({ focused }) => <TabBarIcon name="icon.navigation.discover" tone={focused ? 'brand' : 'textDim'} />,
+          tabBarIcon: ({ focused }) => <TabBarIcon name="icon.navigation.discover" selected={focused} tone={focused ? colors.brand.fg : 'textDim'} />,
         }}
       />
       <Tabs.Screen
@@ -63,7 +64,7 @@ export default function TabLayout() {
         options={{
           title: t(`discover.module.${selectedDiscoverModuleId}.short`),
           tabBarAccessibilityLabel: `${t('tabs.status')}: ${t(`discover.module.${selectedDiscoverModuleId}.short`)}`,
-          tabBarIcon: ({ focused }) => <TabBarIcon name={selectedModule.icon} tone={focused ? 'brand' : 'textDim'} />,
+          tabBarIcon: ({ focused }) => <TabBarIcon name={selectedModule.icon} selected={focused} tone={focused ? colors.brand.fg : 'textDim'} />,
         }}
       />
       <Tabs.Screen name="portfolio" options={{ href: null }} />

@@ -10,12 +10,12 @@ description: >
 
 # AI Product Production Delivery Skill v3.0.0-L5
 
-> File: `skills/ai-product-production-delivery/SKILL.md`  
-> Version: `v3.0.0-L5`  
-> Level: `L5 Complete / Production Product Engineering Delivery Skill`  
-> Purpose: 将业务需求转化为 AI 可执行、机器可校验、跨团队可消费、可追踪、可测试、可交付开发的生产级产品工程资产。  
-> Target: Codex / Claude / Cursor / 产品设计工程师 / 前端 / 后端 / QA / 合规 / 项目负责人。  
-> Scope: App / H5 / Web / Admin / Broker / KYC / Wallet / Trading / CRM / SaaS。  
+> File: `.codex/skills/ai-product-production-delivery/SKILL.md`
+> Version: `v3.0.0-L5`
+> Level: `L5 Complete / Production Product Engineering Delivery Skill`
+> Purpose: 将业务需求转化为 AI 可执行、机器可校验、跨团队可消费、可追踪、可测试、可交付开发的生产级产品工程资产。
+> Target: Codex / Claude / Cursor / 产品设计工程师 / 前端 / 后端 / QA / 合规 / 项目负责人。
+> Scope: App / H5 / Web / Admin / Broker / KYC / Wallet / Trading / CRM / SaaS。
 
 ---
 
@@ -1368,5 +1368,5 @@ AI Product Production Delivery Skill v3.0.0-L5
 
 它不是写 PRD 的 Skill，也不是让 AI 直接画页面的 Skill。
 
-它是 **AI 产品工程总控 Skill**：  
+它是 **AI 产品工程总控 Skill**：
 负责把业务需求转成可执行、可校验、可追踪、可测试、可交付的生产级产品工程资产。只有通过契约、校验、追踪、测试和发布决策的产物，才允许进入 Design System、UI Build 与开发交付阶段。

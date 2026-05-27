@@ -24,7 +24,7 @@ export default function ClientProfileScreen() {
 
   if (!client) {
     return (
-      <Screen back subtitle={t('notFound.title')} title={t('upgrade.clientProfile')}>
+      <Screen back backHref="/trade" subtitle={t('notFound.title')} title={t('upgrade.clientProfile')}>
         <Card>
           <AppText tone="muted">{t('common.invalidInstrument')}</AppText>
         </Card>
@@ -44,6 +44,7 @@ export default function ClientProfileScreen() {
   return (
     <Screen
       back
+      backHref="/trade"
       contentInsetBottom={canApprove ? 18 : 0}
       stickyFooter={
         canApprove ? <ActionButton accessibilityLabel={t('upgrade.approve')} label={t('upgrade.approve')} onPress={approve} tone="brand" /> : undefined

@@ -32,6 +32,69 @@
       "platforms": ["app", "h5", "web"],
       "qaGate": ["Status visibility", "Bottom sheet preset usage", "No page-local account switcher"]
     },
+    "ConfirmActionSheet": {
+      "component": "ConfirmActionSheet",
+      "businessDomain": "risk-confirmation",
+      "states": ["default", "disabled-confirm", "cancelled", "confirmed"],
+      "riskRules": [
+        "High-risk trading, funding, security, and account actions must expose explicit cancel and confirm paths.",
+        "Confirm actions must be registered in modalRegistry with risk level, close behavior, and confirm behavior."
+      ],
+      "permissions": ["Caller owns role, account, and entitlement checks before opening the confirmation."],
+      "dataInputs": ["title", "body", "semantic icon", "cancel label", "confirm label", "confirm tone", "onCancel", "onConfirm"],
+      "platforms": ["app", "h5", "web"],
+      "qaGate": ["No Alert.alert or window.confirm for governed flows", "Registered icon only", "Token-bound actions and icon surface", "Recovery path visible"]
+    },
+    "PortfolioOrderWorkspace": {
+      "component": "PortfolioScreen order and position composition",
+      "businessDomain": "trading",
+      "states": ["positions", "pending", "history", "empty", "restricted"],
+      "riskRules": ["Close-position and order mutations must use registered confirmation or feedback flows."],
+      "permissions": ["Trader role plus production account and order entitlement checks."],
+      "dataInputs": ["positions", "orders", "selected trading account", "instrument formatters"],
+      "platforms": ["app", "h5", "web"],
+      "qaGate": ["Uses Card, KeyValueList, TradeOrderList, GlobalMenuList, ConfirmActionSheet, and ToastProvider instead of page-local primitives"]
+    },
+    "TradeOrderList": {
+      "component": "TradeOrderList",
+      "businessDomain": "trading-order-list",
+      "states": ["position", "pending-order", "history-order", "pressed", "buy", "sell"],
+      "riskRules": ["Order direction, quantity, price/range, and P/L or status values must remain visible and text-based for auditability."],
+      "permissions": ["Caller controls account scope, order entitlement, and mutation permissions."],
+      "dataInputs": ["TradeOrderListRow[]", "direction", "quantity label", "price or price range", "right-side value", "optional disclosure state"],
+      "platforms": ["app", "h5", "web"],
+      "qaGate": ["Uses TradeDirectionIcon sizeVariant instead of raw icon size", "Registered disclosure icon only", "Row accessibilityLabel required", "No page-local trading order row loops", "No row-level horizontal padding; outer container controls list width", "Registered edge-to-edge exception; do not restore row-level or card-level horizontal padding"]
+    },
+    "AccountLedgerWorkspace": {
+      "component": "AccountBalanceScreen and AccountDetailsScreen data-display composition",
+      "businessDomain": "accounts-ledger",
+      "states": ["default", "filtered", "empty", "transaction-detail", "restricted"],
+      "riskRules": ["Ledger data must remain textual and auditable; charts are supplemental only."],
+      "permissions": ["Trader role plus production account ownership and ledger scope checks."],
+      "dataInputs": ["account profile", "ledger transactions", "metric summaries", "filter state"],
+      "platforms": ["app", "h5", "web"],
+      "qaGate": ["Uses registered DetailRow, KeyValueList, TransactionRow, MiniBarChart, StatusPill, and BottomSheet presets"]
+    },
+    "FundingOperationWorkspace": {
+      "component": "FundingScreens operation and transaction composition",
+      "businessDomain": "funding",
+      "states": ["default", "inputting", "validating", "submitting", "reviewing", "success", "failed", "restricted"],
+      "riskRules": ["Deposit, withdrawal, and transfer flows must keep fees, FX, eligibility, and recovery feedback visible."],
+      "permissions": ["Trader role plus production KYC, jurisdiction, limit, account, and payout eligibility checks."],
+      "dataInputs": ["eligible accounts", "funding rules", "payment methods", "transaction history"],
+      "platforms": ["app", "h5", "web"],
+      "qaGate": ["Uses TextField, SelectField, TradingAccountSwitchSheet, FundActionGrid, TransactionRow, funding feedback toast, and default-tone IconSurface backgrounds for form selector left icons"]
+    },
+    "InstrumentDetailWorkspace": {
+      "component": "InstrumentDetailScreen market-detail composition",
+      "businessDomain": "markets-trading-entry",
+      "states": ["default", "loading", "not_found", "restricted"],
+      "riskRules": ["Trading entry must route through order ticket and must not bypass quote/account entitlement checks."],
+      "permissions": ["Trader role plus production quote entitlement and trading account checks."],
+      "dataInputs": ["instrument quote", "chart summary", "market stats", "order ticket route params"],
+      "platforms": ["app", "h5", "web"],
+      "qaGate": ["Uses registered InstrumentIcon, HeaderIconButton, AppIcon, and order ticket route modal"]
+    },
     "UpgradeChatCard": {
       "component": "UpgradeChatCard",
       "businessDomain": "partner-upgrade",

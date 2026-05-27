@@ -1,20 +1,22 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { DEMO_OTP, buildAccount, defaultCountry, isStrongPassword, isValidEmail, sanitizePhone } from '@/src/auth/authFlow';
+import { DEMO_OTP, buildAccount, buildAuthRoute, defaultCountry, isStrongPassword, isValidEmail, safeRedirect, sanitizePhone } from '@/src/auth/authFlow';
 import { ActionButton } from '@/src/components/ActionButton';
 import { AuthDescriptionAction, AuthLink, AuthShell, AuthTextField } from '@/src/components/AuthShell';
 import { AuthErrorSheet, CountryPhoneField, OtpInput, PasswordRuleList, useCountdown } from '@/src/components/AuthFlowControls';
 import { AppText } from '@/src/components/Typography';
 import type { AuthChannel } from '@/src/domain/types';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
+import { navigateBackOrReplace } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { spacing } from '@/src/theme/tokens';
 
 type ResetStep = 'account' | 'code' | 'password';
 
 export default function ForgotPasswordScreen() {
+  const params = useLocalSearchParams<{ redirect?: string }>();
   const { setLastLoginAccount, setLastLoginChannel, t } = useProductSettings();
   const [step, setStep] = useState<ResetStep>('account');
   const [channel, setChannel] = useState<AuthChannel>('email');
@@ -27,6 +29,7 @@ export default function ForgotPasswordScreen() {
   const [submitted, setSubmitted] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
   const { reset, secondsLeft } = useCountdown(15);
+  const redirect = safeRedirect(typeof params.redirect === 'string' ? params.redirect : undefined);
   const account = buildAccount(channel, channel === 'email' ? email : phone, country.dialCode);
   const accountValid = channel === 'email' ? isValidEmail(email) : phone.length >= 6;
   const passwordValid = isStrongPassword(password);
@@ -34,7 +37,8 @@ export default function ForgotPasswordScreen() {
   const accountError = submitted && !accountValid ? (channel === 'email' ? t('auth.error.email') : t('auth.error.phone')) : '';
   const codeError = submitted && code !== DEMO_OTP ? t('auth.verify.errorCodeShort') : '';
   const passwordError = submitted && !passwordValid ? t('auth.error.passwordStrong') : '';
-  const confirmError = submitted && !confirmValid ? t('auth.error.confirmPassword') : '';
+  const confirmTouched = confirmPassword.length > 0;
+  const confirmError = passwordValid && (submitted || confirmTouched) && !confirmValid ? t('auth.error.confirmPassword') : '';
   const canContinue = step === 'account' ? accountValid : passwordValid && confirmValid;
   const resetProgressStep = step === 'account' ? 1 : step === 'code' ? 2 : 3;
 
@@ -62,7 +66,7 @@ export default function ForgotPasswordScreen() {
     setLastLoginAccount(account);
     setLastLoginChannel(channel);
     void notifySuccess();
-    router.replace(`/auth?account=${encodeURIComponent(account)}&channel=${channel}` as never);
+    router.replace(`${buildAuthRoute('/auth', redirect)}&account=${encodeURIComponent(account)}&channel=${channel}` as never);
   };
 
   const switchChannel = () => {
@@ -71,6 +75,22 @@ export default function ForgotPasswordScreen() {
   };
   const accountSubtitle =
     channel === 'email' ? t('auth.reset.emailSubtitle') : t('auth.reset.phoneSubtitle');
+  const handleBack = () => {
+    if (step === 'password') {
+      setStep('code');
+      setSubmitted(false);
+      return;
+    }
+
+    if (step === 'code') {
+      setStep('account');
+      setCode('');
+      setSubmitted(false);
+      return;
+    }
+
+    navigateBackOrReplace(buildAuthRoute('/auth', redirect));
+  };
 
   const verifyCode = (next: string) => {
     setCode(next);
@@ -104,6 +124,8 @@ export default function ForgotPasswordScreen() {
         ) : null
       }
       footer={step === 'code' ? null : <ActionButton disabled={!canContinue} label={step === 'password' ? t('auth.reset.finish') : t('auth.action.continue')} onPress={submit} tone="brand" variant="filled" />}
+      navMode="back"
+      onBackPress={handleBack}
       progressStep={resetProgressStep}
       progressTotal={3}
       subtitle={step === 'account' ? accountSubtitle : step === 'code' ? t('auth.reset.codeSubtitle', { account }) : t('auth.reset.passwordSubtitle')}
@@ -157,18 +179,20 @@ export default function ForgotPasswordScreen() {
 
       {step === 'password' ? (
         <>
-          <AuthTextField
-            autoFocus
-            autoComplete="new-password"
-            error={passwordError}
-            label={t('auth.password.new')}
-            onChangeText={setPassword}
-            placeholder={t('auth.password.newPlaceholder')}
-            secureTextEntry
-            textContentType="newPassword"
-            value={password}
-          />
-          <PasswordRuleList password={password} />
+          <View style={styles.passwordGroup}>
+            <AuthTextField
+              autoFocus
+              autoComplete="new-password"
+              error={passwordError}
+              label={t('auth.password.new')}
+              onChangeText={setPassword}
+              placeholder={t('auth.password.newPlaceholder')}
+              secureTextEntry
+              textContentType="newPassword"
+              value={password}
+            />
+            <PasswordRuleList password={password} />
+          </View>
           <AuthTextField
             autoComplete="new-password"
             error={confirmError}
@@ -190,5 +214,9 @@ export default function ForgotPasswordScreen() {
 const styles = StyleSheet.create({
   codeStack: {
     gap: spacing.md,
+  },
+  passwordGroup: {
+    gap: spacing.sm,
+    marginBottom: spacing.md,
   },
 });

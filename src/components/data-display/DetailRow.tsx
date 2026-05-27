@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { useThemeColors } from '@/src/settings/ProductSettings';
-import { lineWidth, spacing } from '@/src/theme/tokens';
+import { lineWidth, layout, spacing } from '@/src/theme/tokens';
 
 import { AppIcon, type AppIconName } from '../AppIcon';
 import { AppText, type AppTextTone } from '../Typography';
@@ -31,7 +31,7 @@ export function DetailRow({ row, showDivider }: DetailRowProps) {
         <AppText adjustsFontSizeToFit numberOfLines={2} style={styles.value} tone={row.valueTone} variant="caption">
           {row.value}
         </AppText>
-        {trailingIcon ? <AppIcon name={trailingIcon} size={13} /> : null}
+        {trailingIcon ? <AppIcon name={trailingIcon} size={layout.menuDisclosureIconSize} tone="tertiary" /> : null}
       </View>
     </View>
   );

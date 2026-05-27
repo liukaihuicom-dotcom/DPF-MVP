@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { lineWidth, radius, size, spacing } from '@/src/theme/tokens';
 import { ActionButton } from '@/src/components/ActionButton';
 import { AuthLink, AuthShell } from '@/src/components/AuthShell';
+import { IconSurface } from '@/src/components/IconSurface';
 import { NativePressable } from '@/src/components/NativePressable';
 import { AppIcon, type AppIconName } from '@/src/components/AppIcon';
 import { AppText } from '@/src/components/Typography';
@@ -33,14 +34,13 @@ export default function OnboardingScreen() {
         </View>
       }
       kicker={t('onboarding.kicker')}
+      navMode="close"
       step={t('onboarding.stepLabel')}
       subtitle={t('onboarding.subtitle')}
       title={t('onboarding.title')}>
       <View style={StyleSheet.flatten([styles.heroPanel, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
         <View style={styles.heroRow}>
-          <View style={StyleSheet.flatten([styles.heroIcon, { backgroundColor: colors.text.primary, borderColor: colors.text.primary }])}>
-            <AppIcon tone="panel" name="icon.market.global" size={19} />
-          </View>
+          <IconSurface icon="icon.market.global" sizeVariant="md" tone="neutral" />
           <View style={styles.flex}>
             <AppText variant="subtitle">{t('onboarding.heroTitle')}</AppText>
             <AppText numberOfLines={3} tone="muted" variant="caption">
@@ -52,7 +52,7 @@ export default function OnboardingScreen() {
           {steps.map(([icon, title, hint], index) => (
             <View key={title} style={styles.stepRow}>
               <View style={StyleSheet.flatten([styles.stepIndex, { backgroundColor: index === 0 ? colors.brand.fg : colors.surface.subtle }])}>
-                <AppIcon name={icon as AppIconName} size={13} tone={index === 0 ? 'white' : undefined} />
+                <AppIcon name={icon as AppIconName} sizeVariant="xs" tone={index === 0 ? 'white' : undefined} />
               </View>
               <View style={styles.flex}>
                 <AppText variant="body">{title}</AppText>
@@ -110,9 +110,7 @@ export default function OnboardingScreen() {
               router.push('/auth/register');
             }}
             style={StyleSheet.flatten([styles.choiceCard, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-            <View style={StyleSheet.flatten([styles.choiceIcon, { backgroundColor: `${colors.brand.fg}12`, borderColor: `${colors.brand.fg}55` }])}>
-              <AppIcon name={icon as AppIconName} size={15} />
-            </View>
+            <IconSurface icon={icon as AppIconName} sizeVariant="xs" />
             <AppText variant="body">{title}</AppText>
             <AppText numberOfLines={3} tone="muted" variant="caption">
               {hint}
@@ -122,7 +120,7 @@ export default function OnboardingScreen() {
       </View>
 
       <View style={StyleSheet.flatten([styles.notice, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
-        <AppIcon name="icon.risk.info" size={15} />
+        <AppIcon name="icon.risk.info" sizeVariant="xs" />
         <AppText numberOfLines={3} tone="muted" variant="caption">
           {t('onboarding.notice')}
         </AppText>
@@ -178,14 +176,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: radius.md - spacing.xxs,
   },
-  choiceIcon: {
-    alignItems: 'center',
-    borderRadius: radius.sm,
-    borderWidth: lineWidth.hairline,
-    height: spacing.xxl,
-    justifyContent: 'center',
-    width: spacing.xxl,
-  },
   flex: {
     flex: 1,
     gap: spacing.xs,
@@ -193,14 +183,6 @@ const styles = StyleSheet.create({
   },
   footerActions: {
     gap: radius.md - spacing.xxs,
-  },
-  heroIcon: {
-    alignItems: 'center',
-    borderRadius: radius.md,
-    borderWidth: lineWidth.hairline,
-    height: size.touch.min,
-    justifyContent: 'center',
-    width: size.touch.min,
   },
   heroPanel: {
     borderRadius: radius.xl,

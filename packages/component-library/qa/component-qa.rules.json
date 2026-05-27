@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "checks": [
+    {
+      "id": "COMPONENT_BOUNDARY",
+      "script": "scripts/qa/check-component-boundary.js",
+      "severity": "blocker",
+      "pass": "app/**/*.tsx contains no local uppercase reusable component definitions outside route defaults and Expo special files."
+    },
+    {
+      "id": "COMPONENT_MANIFEST",
+      "script": "scripts/qa/check-component-manifest.js",
+      "severity": "blocker",
+      "pass": "Every exported component in src/components has a component manifest entry with required governance fields."
+    },
+    {
+      "id": "ICON_BOUNDARY",
+      "script": "scripts/qa/check-icons.js",
+      "severity": "blocker",
+      "pass": "Functional icons use AppIcon and registered semantic names."
+    }
+  ]
+}

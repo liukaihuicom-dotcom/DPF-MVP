@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "exports": {
+    "reactNative": {
+      "runtimeTokens": "src/theme/tokens.ts",
+      "runtimeColors": "src/theme/colors.ts",
+      "semanticSpacing": "layout.* spacing roles",
+      "tabSize": "size.tab.* component sizing roles"
+    },
+    "cssVariables": {
+      "file": "design-system-engineering/08_code_mapping/css-variable.mapping.css",
+      "prefix": "--color-"
+    },
+    "tailwind": {
+      "file": "design-system-engineering/08_code_mapping/tailwind.mapping.js",
+      "colorKeyTransform": "dot-to-kebab"
+    },
+    "figma": {
+      "file": "design-system-engineering/08_code_mapping/figma-variable.mapping.md",
+      "status": "mapped-for-handoff"
+    }
+  },
+  "blockedExports": [
+    "Page-local hardcoded colors",
+    "Page-local spacing scales",
+    "Page-local semantic spacing aliases",
+    "Unmapped icon colors"
+  ],
+  "package": "@dpf/design-tokens",
+  "compatibilityRuntime": {
+    "runtimeTokens": "src/theme/tokens.ts",
+    "runtimeColors": "src/theme/colors.ts",
+    "semanticSpacing": "layout.moduleGap, layout.sectionGap, layout.cardPaddingX, layout.cardPaddingY, layout.cardPaddingCompactX, layout.cardPaddingCompactY, layout.cardPadding, layout.cardPaddingCompact, layout.listRowPaddingX, layout.formFieldTextInset, layout.formGroupGap",
+    "tabSize": "size.tab.indicatorHeight, size.tab.indicatorWidth, size.tab.pillMinHeight, size.tab.underlineMinHeight"
+  }
+}

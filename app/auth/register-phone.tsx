@@ -1,1 +1,1 @@
-export { default } from '@/src/screens/auth/RegisterPhoneScreen';
+export { default } from '@/src/screens/auth/RegisterEmailScreen';

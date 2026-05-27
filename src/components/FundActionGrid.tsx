@@ -4,10 +4,10 @@ import { StyleSheet, View } from 'react-native';
 import { getFundingOperationActions, type FundingOperation, type FundingOperationTone } from '@/src/domain/funding';
 import type { TranslationKey } from '@/src/i18n/translations';
 import { useProductSettings } from '@/src/settings/ProductSettings';
-import type { ThemeColors } from '@/src/theme/colors';
-import { lineWidth, layout, radius, size, spacing } from '@/src/theme/tokens';
+import { lineWidth, radius, size, spacing } from '@/src/theme/tokens';
 
-import { AppIcon, type AppIconName, type IconTone } from './AppIcon';
+import type { AppIconName } from './AppIcon';
+import { IconSurface, type IconSurfaceTone } from './IconSurface';
 import { NativePressable } from './NativePressable';
 import { AppText } from './Typography';
 
@@ -31,14 +31,13 @@ type FundActionGridProps = {
 export function FundActionGrid({ accountId, items }: FundActionGridProps) {
   const { colors, t } = useProductSettings();
   const actionItems = items ?? getDefaultFundActions(t, accountId);
-  const businessToneMap = getFundActionToneMap(colors);
-  const iconToneByTone: Record<FundActionTone, IconTone | string> = {
-    blue: 'blue',
+  const iconToneByTone: Record<FundActionTone, IconSurfaceTone> = {
+    blue: 'info',
     brand: 'brand',
-    deposit: businessToneMap.deposit,
-    transfer: businessToneMap.transfer,
+    deposit: 'down',
+    transfer: 'info',
     up: 'up',
-    withdraw: businessToneMap.withdraw,
+    withdraw: 'warning',
   };
 
   return (
@@ -53,9 +52,7 @@ export function FundActionGrid({ accountId, items }: FundActionGridProps) {
             minTouch={72}
             onPress={onPress}
             style={StyleSheet.flatten([styles.tile, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-            <View style={styles.icon}>
-              <AppIcon name={item.icon} size={layout.fundActionIconSize} tone={iconToneByTone[item.tone]} />
-            </View>
+            <IconSurface background="hidden" icon={item.icon} sizeVariant="md" tone={iconToneByTone[item.tone]} />
             <AppText adjustsFontSizeToFit numberOfLines={1} variant="buttonMd">
               {item.label}
             </AppText>
@@ -70,25 +67,11 @@ export function getDefaultFundActions(t: (key: TranslationKey) => string, accoun
   return getFundingOperationActions(t, accountId);
 }
 
-function getFundActionToneMap(colors: ThemeColors): Record<FundingOperationTone, string> {
-  return {
-    deposit: colors.market.down.fg,
-    transfer: colors.status.info.fg,
-    withdraw: colors.status.warning.fg,
-  };
-}
-
 const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.sm,
-  },
-  icon: {
-    alignItems: 'center',
-    height: layout.fundActionIconBoxSize,
-    justifyContent: 'center',
-    width: layout.fundActionIconBoxSize,
   },
   tile: {
     alignItems: 'center',

@@ -23,7 +23,7 @@ export default function PartnerToolsScreen() {
     { group: 'account', icon: 'icon.kyc.identity', id: 'onboarding', tone: 'down' },
     { group: 'account', icon: 'icon.ib.network', id: 'partner', tone: 'brand' },
     { group: 'trading', icon: 'icon.trading.market', id: 'markets', tone: 'up' },
-    { group: 'trading', icon: 'icon.account.trading', id: 'accounts', tone: 'blue' },
+    { group: 'trading', icon: 'icon.account.trading', id: 'accounts', tone: 'textMuted' },
     { group: 'service', icon: 'icon.support.headset', id: 'support', tone: 'textMuted' },
     { group: 'service', icon: 'icon.promotion.reward', id: 'rewards', tone: 'amber' },
   ];
@@ -60,6 +60,39 @@ export default function PartnerToolsScreen() {
           <StatusPill icon={selectedTile.icon} label={t(`discover.module.${selectedDiscoverModuleId}.short`)} tone="brand" />
         </View>
       </Card>
+
+      {role === 'partner' ? (
+        <Card compact>
+          <View style={styles.partnerShortcutGrid}>
+            <NativePressable
+              accessibilityRole="button"
+              minTouch={72}
+              onPress={() => router.push('/partner/client-orders' as never)}
+              style={StyleSheet.flatten([styles.partnerShortcut, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
+              <AppIcon name="icon.trading.order_ticket" sizeVariant="sm" tone="up" />
+              <View style={styles.copyBlock}>
+                <AppText variant="subtitle">{t('portfolio.partnerTitle')}</AppText>
+                <AppText numberOfLines={2} tone="muted" variant="caption">
+                  {t('portfolio.partnerSubtitle')}
+                </AppText>
+              </View>
+            </NativePressable>
+            <NativePressable
+              accessibilityRole="button"
+              minTouch={72}
+              onPress={() => router.push('/partner/commission' as never)}
+              style={StyleSheet.flatten([styles.partnerShortcut, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
+              <AppIcon name="icon.wallet.balance" sizeVariant="sm" tone="tertiary" />
+              <View style={styles.copyBlock}>
+                <AppText variant="subtitle">{t('commission.title')}</AppText>
+                <AppText numberOfLines={2} tone="muted" variant="caption">
+                  {t('commission.subtitle')}
+                </AppText>
+              </View>
+            </NativePressable>
+          </View>
+        </Card>
+      ) : null}
 
       <View style={styles.sectionTitle}>
         <AppText variant="subtitle">{t('discover.functionCenter')}</AppText>
@@ -120,7 +153,7 @@ function DiscoverSelectableTile({ onPress, selected, tile }: { onPress: () => vo
         styles.selectableTile,
         {
           backgroundColor: colors.surface.panel,
-          borderColor: selected ? colors.brand.fg : colors.border.subtle,
+          borderColor: selected ? colors.text.primary : colors.border.subtle,
         },
       ])}>
       <View style={styles.tileHead}>
@@ -128,13 +161,13 @@ function DiscoverSelectableTile({ onPress, selected, tile }: { onPress: () => vo
           style={StyleSheet.flatten([
             styles.tileIcon,
             {
-              backgroundColor: selected ? `${colors.brand.fg}12` : `${tileColor}12`,
-              borderColor: selected ? colors.brand.fg : `${tileColor}55`,
+              backgroundColor: `${tileColor}12`,
+              borderColor: selected ? colors.text.primary : `${tileColor}55`,
             },
           ])}>
-          <AppIcon name={tile.icon} size={18} tone={tile.tone} />
+          <AppIcon name={tile.icon} sizeVariant="sm" tone={tile.tone} />
         </View>
-        <View style={StyleSheet.flatten([styles.selectedDot, { backgroundColor: selected ? colors.brand.fg : colors.border.subtle }])} />
+        <View style={StyleSheet.flatten([styles.selectedDot, { backgroundColor: selected ? colors.text.primary : colors.border.subtle }])} />
       </View>
       <AppText numberOfLines={1} variant="subtitle">
         {t(`discover.module.${tile.id}.title`)}
@@ -178,7 +211,7 @@ const styles = StyleSheet.create({
   },
   selectableTile: {
     borderRadius: 12,
-    borderWidth: lineWidth.none,
+    borderWidth: lineWidth.selected,
     flexBasis: '30.5%',
     flexGrow: 1,
     gap: 8,
@@ -190,6 +223,21 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     height: 8,
     width: 8,
+  },
+  partnerShortcut: {
+    alignItems: 'center',
+    borderRadius: 12,
+    borderWidth: lineWidth.hairline,
+    flex: 1,
+    flexDirection: 'row',
+    gap: 10,
+    minWidth: 152,
+    padding: 12,
+  },
+  partnerShortcutGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
   },
   selectedSummary: {
     alignItems: 'center',

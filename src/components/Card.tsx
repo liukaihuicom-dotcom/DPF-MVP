@@ -3,7 +3,7 @@ import { StyleSheet, View, ViewStyle } from 'react-native';
 
 import { useThemeColors } from '@/src/settings/ProductSettings';
 import { shadows } from '@/src/theme/colors';
-import { lineWidth, radius, spacing } from '@/src/theme/tokens';
+import { layout, radius } from '@/src/theme/tokens';
 
 type CardProps = PropsWithChildren<{
   compact?: boolean;
@@ -20,7 +20,6 @@ export function Card({ children, compact, highlight, style }: CardProps) {
         styles.card,
         {
           backgroundColor: highlight ? colors.surface.raised : colors.surface.panel,
-          borderColor: highlight ? colors.border.default : colors.border.subtle,
         },
         highlight && shadows.panel,
         compact && styles.compact,
@@ -34,10 +33,11 @@ export function Card({ children, compact, highlight, style }: CardProps) {
 const styles = StyleSheet.create({
   card: {
     borderRadius: radius.md,
-    borderWidth: lineWidth.hairline,
-    padding: spacing.lg,
+    paddingHorizontal: layout.cardPaddingX,
+    paddingVertical: layout.cardPaddingY,
   },
   compact: {
-    padding: spacing.md,
+    paddingHorizontal: layout.cardPaddingCompactX,
+    paddingVertical: layout.cardPaddingCompactY,
   },
 });

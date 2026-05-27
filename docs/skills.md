@@ -6,6 +6,8 @@
 
 ```text
 .codex/skills/
+├── quick-local-expo-demo-startup/
+│   └── SKILL.md
 ├── ai-product-production-delivery/
 │   └── SKILL.md
 ├── design-system-engineering/
@@ -34,6 +36,12 @@ Before starting any task, Codex must output:
 4. Skills Not Needed
 5. Missing Inputs
 6. Expected Outputs
+
+## Quick Local Startup Skill
+
+| Skill | Path | Trigger | Required Outputs | Hard Rules |
+|---|---|---|---|---|
+| Quick Local Expo Demo Startup Skill | `.codex/skills/quick-local-expo-demo-startup/SKILL.md` | Quick Expo/Metro startup, local app demo startup, mobile phone demo, QR scan preview, `start expo`, `run app`, `local demo`, `phone preview` | Project root and Expo dependency check, port `8081` check, existing service decision, startup script audit, default command `npm run dev:app`, LAN mode, local Metro address, phone demo instructions, blockers and next-stage decision | Check port `8081` before startup. Reuse existing Expo/Metro service. Use `npm run dev:app` when no Expo/Metro service is running. Default to LAN. Do not allow automatic port drift, default to tunnel, silently kill port owners, or treat LAN/tunnel URLs as stable fixed links. |
 
 ## Core Skills
 
@@ -132,4 +140,5 @@ Codex must report:
 - Do not place Add-on Skills as peer Core Skills.
 - Do not use Add-on Skills to replace Product Kernel, Page Contract, Design System, or UI Build output.
 - Do not silently invent missing product, compliance, legal, risk, localization, or design-system inputs.
+- When Codex creates, updates, or proposes any automation / recurring task / scheduled task, the task name, description, prompt summary, status note, and user-facing explanation must be written in Chinese by default. Do not output English descriptions unless the user explicitly asks for English.
 - For Expo code changes, read the exact versioned docs at `https://docs.expo.dev/versions/v54.0.0/` before writing code.

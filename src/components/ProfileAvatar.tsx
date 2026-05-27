@@ -47,7 +47,7 @@ export function ProfileAvatar({ id, selected, size = 58, style }: ProfileAvatarP
         styles.frame,
         {
           backgroundColor: colors.surface.subtle,
-          borderColor: selected ? colors.brand.fg : colors.border.subtle,
+          borderColor: selected ? colors.text.primary : colors.border.subtle,
           borderRadius: size / 2,
           borderWidth,
           height: size,

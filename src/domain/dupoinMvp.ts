@@ -25,8 +25,8 @@ export type DupoinProfileItem = {
 
 export const dupoinHeroStats = [
   { id: 'quotes', label: { 'en-US': 'Live markets', 'zh-CN': '实时行情' }, value: '42' },
-  { id: 'wallet', label: { 'en-US': 'Demo equity', 'zh-CN': '模拟净值' }, value: '$50K' },
-  { id: 'risk', label: { 'en-US': 'Risk mode', 'zh-CN': '风控模式' }, value: 'Demo' },
+  { id: 'wallet', label: { 'en-US': 'Practice equity', 'zh-CN': '练习净值' }, value: '$50K' },
+  { id: 'risk', label: { 'en-US': 'Risk mode', 'zh-CN': '风控模式' }, value: 'Practice' },
 ];
 
 export const dupoinQuickActions: DupoinMvpAction[] = [
@@ -42,7 +42,7 @@ export const dupoinQuickActions: DupoinMvpAction[] = [
     icon: 'icon.trading.order_ticket',
     route: '/order/eur-usd',
     subtitle: { 'en-US': 'EUR/USD ticket', 'zh-CN': 'EUR/USD 下单票' },
-    title: { 'en-US': 'Trade demo', 'zh-CN': '模拟交易' },
+    title: { 'en-US': 'Practice trade', 'zh-CN': '练习交易' },
   },
   {
     id: 'wallet',
@@ -73,7 +73,7 @@ export const dupoinOnboardingSteps = [
   },
   {
     id: 'trade',
-    label: { 'en-US': 'First demo trade', 'zh-CN': '首笔模拟交易' },
+    label: { 'en-US': 'First practice trade', 'zh-CN': '首笔练习交易' },
     state: { 'en-US': 'Next', 'zh-CN': '下一步' },
   },
 ];
@@ -81,8 +81,8 @@ export const dupoinOnboardingSteps = [
 export const dupoinInsights: DupoinMarketInsight[] = [
   {
     body: {
-      'en-US': 'Gold volatility remains elevated ahead of the US session. Keep lot size small in demo orders.',
-      'zh-CN': '美盘前黄金波动仍高，模拟下单建议控制手数。',
+      'en-US': 'Gold volatility remains elevated ahead of the US session. Keep lot size small for practice orders.',
+      'zh-CN': '美盘前黄金波动仍高，练习下单建议控制手数。',
     },
     category: { 'en-US': 'Market brief', 'zh-CN': '市场简报' },
     id: 'gold-vol',
@@ -91,8 +91,8 @@ export const dupoinInsights: DupoinMarketInsight[] = [
   },
   {
     body: {
-      'en-US': 'EUR/USD spread is stable in the simulated feed. Good pair for first order practice.',
-      'zh-CN': '模拟报价中 EUR/USD 点差稳定，适合首单练习。',
+      'en-US': 'EUR/USD spread is stable. Good pair for first order practice.',
+      'zh-CN': '当前 EUR/USD 点差稳定，适合首单练习。',
     },
     category: { 'en-US': 'Beginner path', 'zh-CN': '新手路径' },
     id: 'eur-spread',
@@ -104,7 +104,7 @@ export const dupoinInsights: DupoinMarketInsight[] = [
 export const dupoinProfileItems: DupoinProfileItem[] = [
   {
     id: 'demo-account',
-    label: { 'en-US': 'Demo trading account', 'zh-CN': '模拟交易账户' },
+    label: { 'en-US': 'Practice trading account', 'zh-CN': '练习交易账户' },
     status: 'ready',
     value: { 'en-US': 'Active', 'zh-CN': '已启用' },
   },
@@ -124,6 +124,6 @@ export const dupoinProfileItems: DupoinProfileItem[] = [
     id: 'partner',
     label: { 'en-US': 'Partner program', 'zh-CN': 'Partner 计划' },
     status: 'review',
-    value: { 'en-US': 'Demo preview', 'zh-CN': '演示预览' },
+    value: { 'en-US': 'Under review', 'zh-CN': '审核中' },
   },
 ];

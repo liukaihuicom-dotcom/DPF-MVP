@@ -5,7 +5,7 @@ import { iconRegistry, resolveIconName, resolveIconTone, type AppIconName, type 
 import { useThemeColors } from '@/src/settings/ProductSettings';
 import { lineWidth, size as sizeTokens } from '@/src/theme/tokens';
 
-export type AppIconSizeVariant = 'micro' | 'mini' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'display';
+export type AppIconSizeVariant = 'nano' | 'micro' | 'mini' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'display';
 export type AppIconStyleVariant = 'line' | 'fill';
 
 type AppIconProps = {

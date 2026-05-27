@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Keyboard, Modal, StyleSheet, TextInput, View } from 'react-native';
 
 import { countryOptions, getPasswordChecks, sanitizeOtp, type CountryOption } from '@/src/auth/authFlow';
-import { layout, lineWidth, radius, size, spacing } from '@/src/theme/tokens';
+import { layout, lineWidth, radius, size, spacing, typography } from '@/src/theme/tokens';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 
 import { ActionButton } from './ActionButton';
@@ -10,6 +10,7 @@ import { AppIcon } from './AppIcon';
 import { AuthTextField } from './AuthShell';
 import { bottomSheetPresets, useBottomSheet } from './BottomSheet';
 import { FlagIcon } from './FlagIcon';
+import { IconSurface } from './IconSurface';
 import { NativePressable } from './NativePressable';
 import { AppText } from './Typography';
 
@@ -32,6 +33,8 @@ export function CountryPhoneField({
 }) {
   const { colors, t } = useProductSettings();
   const [pickerOpen, setPickerOpen] = useState(false);
+  const chipBorderWidth = pickerOpen ? lineWidth.selected : lineWidth.strong;
+  const chipPaddingOffset = chipBorderWidth - lineWidth.strong;
   const openCountryPicker = () => {
     Keyboard.dismiss();
     setPickerOpen(true);
@@ -45,12 +48,20 @@ export function CountryPhoneField({
           accessibilityRole="button"
           minTouch={56}
           onPress={openCountryPicker}
-          style={StyleSheet.flatten([styles.countryChip, { backgroundColor: colors.surface.panel, borderColor: colors.border.default }])}>
+          style={StyleSheet.flatten([
+            styles.countryChip,
+            {
+              backgroundColor: colors.surface.panel,
+              borderColor: pickerOpen ? colors.text.primary : colors.border.default,
+              borderWidth: chipBorderWidth,
+              paddingHorizontal: spacing.md - chipPaddingOffset,
+            },
+          ])}>
           <FlagBadge code={country.flag} />
           <AppText numberOfLines={1} style={styles.countryChipDial} tone="default" variant="titleMd">
             {country.dialCode}
           </AppText>
-          <AppIcon name="icon.system.chevron_down" size={14} />
+          <AppIcon name="icon.system.chevron_down" sizeVariant="xs" />
         </NativePressable>
         <AuthTextField
           autoFocus={autoFocus}
@@ -169,7 +180,7 @@ function CountryPickerSheetContent({
               <AppText numberOfLines={1} style={styles.countryName} variant="body">
                 {country.name}
               </AppText>
-              {active ? <AppIcon name="icon.status.check" size={14} /> : null}
+              {active ? <AppIcon name="icon.status.check" sizeVariant="sm" /> : null}
             </NativePressable>
           );
         })}
@@ -228,6 +239,7 @@ export function OtpInput({
         {digits.map((digit, index) => {
           const active = focused && index === value.length;
           const completed = Boolean(digit);
+          const borderWidth = error || active ? lineWidth.selected : lineWidth.strong;
 
           return (
             <View
@@ -237,7 +249,7 @@ export function OtpInput({
                 {
                   backgroundColor: colors.surface.panel,
                   borderColor: error ? colors.status.danger.fg : active || completed ? colors.text.primary : colors.border.subtle,
-                  borderWidth: error || active || completed ? lineWidth.selected : lineWidth.strong,
+                  borderWidth,
                 },
               ])}>
               <AppText variant="titleSm">
@@ -368,7 +380,7 @@ export function AuthContactConfirmDialog({
                   {target}
                 </AppText>
               </View>
-              <AppText style={styles.centerText} tone="muted" variant="bodyMd">
+              <AppText style={styles.centerText} tone="muted" variant="bodyLg">
                 {t(channel === 'phone' ? 'auth.confirmContact.phoneBody' : 'auth.confirmContact.emailBody')}
               </AppText>
             </View>
@@ -412,7 +424,7 @@ export function AuthLeaveVerifiedStepDialog({
             accessibilityRole="alert"
             style={StyleSheet.flatten([styles.confirmDialog, { backgroundColor: colors.surface.raised, borderColor: colors.border.subtle }])}>
             <View style={styles.errorCopy}>
-              <AppText style={styles.centerText} variant="subtitle">
+              <AppText numberOfLines={2} style={styles.centerText} variant="title.dialog">
                 {title}
               </AppText>
               <AppText style={styles.centerText} tone="muted" variant="bodyMd">
@@ -431,7 +443,7 @@ export function AuthLeaveVerifiedStepDialog({
 }
 
 export function PasswordRuleList({ password }: { password: string }) {
-  const { colors, t } = useProductSettings();
+  const { t } = useProductSettings();
   const checks = getPasswordChecks(password);
   const rules = [
     ['length', t('auth.password.rule.length')],
@@ -447,10 +459,10 @@ export function PasswordRuleList({ password }: { password: string }) {
 
         return (
           <View key={key} style={styles.ruleRow}>
-            <View style={StyleSheet.flatten([styles.ruleIcon, { backgroundColor: passed ? colors.market.down.fg : colors.text.secondary }])}>
-              <AppIcon tone="white" name="icon.status.check" size={10} />
+            <View style={styles.ruleIconSlot}>
+              <AppIcon tone={passed ? 'success' : 'textMuted'} name="icon.status.check" sizeVariant="xs" />
             </View>
-            <AppText tone={passed ? 'default' : 'muted'} variant="caption">
+            <AppText tone={passed ? 'down' : 'muted'} variant="caption">
               {label}
             </AppText>
           </View>
@@ -482,11 +494,9 @@ export function AuthErrorSheet({
     bottomSheet.show(bottomSheetPresets.actionMenu({
       content: (
         <View style={styles.errorFeedbackContent}>
-          <View style={StyleSheet.flatten([styles.errorIcon, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
-            <AppIcon tone="danger" name="icon.system.close" size={22} />
-          </View>
+          <IconSurface icon="icon.system.close" sizeVariant="md" tone="danger" />
           <View style={styles.errorCopy}>
-            <AppText style={styles.centerText} variant="subtitle">
+            <AppText numberOfLines={2} style={styles.centerText} variant="title.dialog">
               {title}
             </AppText>
             <AppText style={styles.centerText} tone="muted" variant="caption">
@@ -507,7 +517,7 @@ export function AuthErrorSheet({
     }));
 
     return undefined;
-  }, [body, bottomSheet, onClose, open, colors.status.danger.fg, colors.border.subtle, colors.surface.subtle, t, title]);
+  }, [body, bottomSheet, onClose, open, t, title]);
 
   return null;
 }
@@ -539,11 +549,9 @@ export function AuthErrorDialog({
             accessibilityRole="alert"
             style={StyleSheet.flatten([styles.confirmDialog, { backgroundColor: colors.surface.raised, borderColor: colors.border.subtle }])}>
             <View style={styles.errorFeedbackContent}>
-              <View style={StyleSheet.flatten([styles.errorIcon, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
-                <AppIcon tone="danger" name="icon.system.close" size={22} />
-              </View>
+              <IconSurface icon="icon.system.close" sizeVariant="md" tone="danger" />
               <View style={styles.errorCopy}>
-                <AppText style={styles.centerText} variant="subtitle">
+                <AppText numberOfLines={2} style={styles.centerText} variant="title.dialog">
                   {title}
                 </AppText>
                 <AppText style={styles.centerText} tone="muted" variant="caption">
@@ -624,6 +632,8 @@ const styles = StyleSheet.create({
   },
   confirmTargetText: {
     flexShrink: 1,
+    fontSize: typography.sheetTitle.fontSize,
+    lineHeight: typography.sheetTitle.lineHeight,
     minWidth: 0,
   },
   countryChip: {
@@ -667,14 +677,6 @@ const styles = StyleSheet.create({
     gap: spacing.lg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.lg,
-  },
-  errorIcon: {
-    alignItems: 'center',
-    borderRadius: radius.full,
-    borderWidth: lineWidth.hairline,
-    height: size.button.icon,
-    justifyContent: 'center',
-    width: size.button.icon,
   },
   flagBadge: {
     alignItems: 'center',
@@ -734,15 +736,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.sm,
   },
-  ruleIcon: {
-    alignItems: 'center',
-    borderRadius: radius.full,
-    height: size.input.badgeSm,
-    justifyContent: 'center',
-    width: size.input.badgeSm,
-  },
   ruleList: {
     gap: spacing.sm,
+    paddingLeft: layout.formFieldTextInset,
+  },
+  ruleIconSlot: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: size.icon.xs,
   },
   ruleRow: {
     alignItems: 'center',

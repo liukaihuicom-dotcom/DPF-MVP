@@ -1,6 +1,6 @@
 import { router, type Href } from 'expo-router';
-import { useMemo, useState } from 'react';
-import { Image, Platform, ScrollView, StyleSheet, View, type DimensionValue } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Image, PanResponder, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import {
   buildTradingAccountProfiles,
@@ -32,11 +32,12 @@ import { impactLight, notifySuccess, notifyWarning } from '@/src/feedback/haptic
 import { localeOptions, type Locale, type TranslationKey } from '@/src/i18n/translations';
 import { tradeWorkspaceDataPresets, useProductSettings } from '@/src/settings/ProductSettings';
 import { useBroker } from '@/src/state/BrokerStore';
-import { resolveThemeTone, shadows, themeColors, type ThemeMode, type ThemeColors } from '@/src/theme/colors';
-import { lineWidth, radius, spacing, size } from '@/src/theme/tokens';
+import { shadows, themeColors, type ThemeMode } from '@/src/theme/colors';
+import { layout, lineWidth, radius, spacing, size, typography } from '@/src/theme/tokens';
 
 import { AppIcon, type AppIconName, type IconTone } from './AppIcon';
 import { HeaderIconButton } from './HeaderIconButton';
+import { IconSurface } from './IconSurface';
 import { NativePressable } from './NativePressable';
 import { SelectField } from './TextField';
 import { AppText } from './Typography';
@@ -65,6 +66,11 @@ type QuickScenario = {
   tone: ScenarioTone;
 };
 
+type DevConsoleFabOffset = {
+  bottom: number;
+  right: number;
+};
+
 const themeModes = ['system', ...Object.keys(themeColors)] as ThemeMode[];
 const authStatuses: AuthStatus[] = ['guest', 'signedIn'];
 const authChannels: AuthChannel[] = ['email', 'phone'];
@@ -78,6 +84,10 @@ const upgradeStatuses: UpgradeStatus[] = ['none', 'pending', 'approved', 'reject
 const fundingPresets: FundingDevPreset[] = ['default', 'awaitingPayment', 'reviewing', 'cancelled'];
 const pageGroups: PageConsoleGroup[] = ['markets', 'trading', 'accounts', 'funding', 'growth', 'auth'];
 const maxVisibleScenarios = 6;
+const devConsoleFabDragThreshold = spacing.xs;
+const devConsoleFabEdgeInset = spacing.sm;
+const devConsoleFabInitialOffset: DevConsoleFabOffset = { bottom: 82, right: spacing.lg };
+const devConsoleFabSize = size.control.md;
 
 const scenarioToneKeys: Record<ScenarioTone, IconTone> = {
   amber: 'amber',
@@ -118,9 +128,19 @@ const primaryScenarioIds: DevScenarioId[] = ['login', 'markets', 'trade', 'order
 
 export function ProductControlPanel() {
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [fabOffset, setFabOffset] = useState<DevConsoleFabOffset>(devConsoleFabInitialOffset);
   const [open, setOpen] = useState(false);
   const [resetArmed, setResetArmed] = useState(false);
   const [screen, setScreen] = useState<ConsoleScreen>('home');
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const fabDragMovedRef = useRef(false);
+  const fabDragStartRef = useRef<DevConsoleFabOffset>(devConsoleFabInitialOffset);
+  const fabMaxBottomRef = useRef(devConsoleFabInitialOffset.bottom);
+  const fabMaxRightRef = useRef(devConsoleFabInitialOffset.right);
+  const fabOffsetRef = useRef<DevConsoleFabOffset>(devConsoleFabInitialOffset);
+  const fabResponderHandledPressRef = useRef(false);
+  const openRef = useRef(open);
+  openRef.current = open;
   const settings = useProductSettings();
   const {
     authStatus,
@@ -181,6 +201,10 @@ export function ProductControlPanel() {
   const anchor = instruments.find((instrument) => instrument.symbol === 'EUR/USD') ?? instruments[0];
   const pageEntries = useMemo(() => buildPageEntries(anchor?.id ?? 'eur-usd'), [anchor?.id]);
   const quickScenarios = useMemo(() => buildQuickScenarios(anchor?.id ?? 'eur-usd'), [anchor?.id]);
+  const maxFabBottom = Math.max(devConsoleFabEdgeInset, windowHeight - devConsoleFabSize - devConsoleFabEdgeInset);
+  const maxFabRight = Math.max(devConsoleFabEdgeInset, windowWidth - devConsoleFabSize - devConsoleFabEdgeInset);
+  fabMaxBottomRef.current = maxFabBottom;
+  fabMaxRightRef.current = maxFabRight;
   const tradingAccounts = buildTradingAccountProfiles(account, positions, tradingAccountScenario, {
     countPreset: tradingAccountCountPreset,
     dataPreset: tradingAccountDataPreset,
@@ -188,11 +212,79 @@ export function ProductControlPanel() {
   });
   const visibleScenarios = quickScenarios.filter((scenario) => primaryScenarioIds.includes(scenario.id)).slice(0, maxVisibleScenarios);
 
-  const closePanel = () => {
+  const updateFabOffset = useCallback((nextOffset: DevConsoleFabOffset) => {
+    const clampedOffset = clampDevConsoleFabOffset(nextOffset, fabMaxRightRef.current, fabMaxBottomRef.current);
+    fabOffsetRef.current = clampedOffset;
+    setFabOffset(clampedOffset);
+  }, []);
+
+  const closePanel = useCallback(() => {
     setOpen(false);
     setScreen('home');
     setResetArmed(false);
-  };
+  }, []);
+
+  const togglePanelFromFab = useCallback(() => {
+    if (fabResponderHandledPressRef.current) {
+      fabResponderHandledPressRef.current = false;
+      return;
+    }
+    if (fabDragMovedRef.current) {
+      fabDragMovedRef.current = false;
+      return;
+    }
+    if (openRef.current) {
+      closePanel();
+      return;
+    }
+    setOpen(true);
+  }, [closePanel]);
+
+  const fabPanResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponderCapture: (_, gestureState) =>
+          Math.abs(gestureState.dx) > devConsoleFabDragThreshold || Math.abs(gestureState.dy) > devConsoleFabDragThreshold,
+        onStartShouldSetPanResponder: () => true,
+        onStartShouldSetPanResponderCapture: () => true,
+        onMoveShouldSetPanResponder: (_, gestureState) =>
+          Math.abs(gestureState.dx) > devConsoleFabDragThreshold || Math.abs(gestureState.dy) > devConsoleFabDragThreshold,
+        onPanResponderGrant: () => {
+          fabDragMovedRef.current = false;
+          fabDragStartRef.current = fabOffsetRef.current;
+        },
+        onPanResponderMove: (_, gestureState) => {
+          if (Math.abs(gestureState.dx) > devConsoleFabDragThreshold || Math.abs(gestureState.dy) > devConsoleFabDragThreshold) {
+            fabDragMovedRef.current = true;
+          }
+          updateFabOffset({
+            bottom: fabDragStartRef.current.bottom - gestureState.dy,
+            right: fabDragStartRef.current.right - gestureState.dx,
+          });
+        },
+        onPanResponderRelease: () => {
+          if (!fabDragMovedRef.current) {
+            togglePanelFromFab();
+          }
+          fabResponderHandledPressRef.current = true;
+          setTimeout(() => {
+            fabResponderHandledPressRef.current = false;
+          }, 0);
+        },
+        onPanResponderTerminate: () => {
+          setTimeout(() => {
+            fabDragMovedRef.current = false;
+            fabResponderHandledPressRef.current = false;
+          }, 0);
+        },
+        onPanResponderTerminationRequest: () => true,
+      }),
+    [togglePanelFromFab, updateFabOffset],
+  );
+
+  useEffect(() => {
+    updateFabOffset(fabOffsetRef.current);
+  }, [maxFabBottom, maxFabRight, updateFabOffset]);
 
   const applySignedIn = () => {
     setAuthStatus('signedIn');
@@ -445,7 +537,7 @@ export function ProductControlPanel() {
             const next = value as PinStatus;
             setPinStatus(next);
             setLocalPinCode(next === 'set' ? '123456' : '');
-            setPinGateStatus(next === 'set' ? 'locked' : 'unlocked');
+            setPinGateStatus('unlocked');
           }}
           options={pinStatuses.map((item) => ({ label: t(`auth.pin.status.${item}`), value: item }))}
           value={pinStatus}
@@ -542,14 +634,42 @@ export function ProductControlPanel() {
     </View>
   );
 
-  if (Platform.OS !== 'web') {
-    return null;
-  }
+  const panelFrameStyle = {
+    maxHeight: Math.max(320, windowHeight - 120),
+    maxWidth: Math.max(280, windowWidth - spacing.lg * 2),
+  };
+  const visibleFabOffset = clampDevConsoleFabOffset(fabOffset, maxFabRight, maxFabBottom);
+
+  const panelFooter =
+    screen === 'home' ? (
+      <View style={StyleSheet.flatten([styles.panelFooter, { borderTopColor: colors.border.subtle }])}>
+        <NativePressable
+          accessibilityRole="button"
+          minTouch={40}
+          onPress={() => setScreen('pages')}
+          style={StyleSheet.flatten([styles.secondaryButton, { borderColor: colors.border.subtle }])}>
+          <AppIcon name="icon.navigation.function_center" sizeVariant="sm" />
+          <AppText numberOfLines={1} variant="caption">
+            {t('control.pageConsole.menu.pages')}
+          </AppText>
+        </NativePressable>
+        <NativePressable
+          accessibilityRole="button"
+          minTouch={40}
+          onPress={handleReset}
+          style={StyleSheet.flatten([styles.resetButton, { borderColor: resetArmed ? colors.status.danger.fg : colors.border.subtle }])}>
+          <AppIcon name="icon.system.settings" sizeVariant="sm" tone={resetArmed ? 'danger' : undefined} />
+          <AppText numberOfLines={1} tone={resetArmed ? 'danger' : 'default'} variant="caption">
+            {resetArmed ? t('control.devConsole.resetConfirm') : t('control.devConsole.reset')}
+          </AppText>
+        </NativePressable>
+      </View>
+    ) : null;
 
   return (
-    <View style={styles.host}>
+    <View style={StyleSheet.flatten([styles.host, { bottom: visibleFabOffset.bottom, right: visibleFabOffset.right }])}>
       {open ? (
-        <View style={StyleSheet.flatten([styles.panel, shadows.dialog, { backgroundColor: colors.surface.canvas, borderColor: colors.border.default }])}>
+        <View style={StyleSheet.flatten([styles.panel, panelFrameStyle, shadows.dialog, { backgroundColor: colors.surface.canvas, borderColor: colors.border.default }])}>
           <View style={StyleSheet.flatten([styles.panelTop, { borderBottomColor: colors.border.subtle }])}>
             {screen !== 'home' ? (
               <HeaderIconButton accessibilityLabel={t('top.back')} icon="icon.system.back" onPress={() => setScreen('home')} variant="ghost" />
@@ -569,13 +689,13 @@ export function ProductControlPanel() {
             <HeaderIconButton accessibilityLabel={t('common.cancel')} icon="icon.system.close" onPress={closePanel} variant="ghost" />
           </View>
 
-          <ScrollView contentContainerStyle={styles.panelContent} showsVerticalScrollIndicator={false}>
+          <ScrollView contentContainerStyle={styles.panelContent} showsVerticalScrollIndicator={false} style={styles.panelScroller}>
             {screen === 'home' ? (
               <>
                 {contextControls}
 
                 <SectionTitle title={t('control.pageConsole.menu.pages')} />
-                <View style={StyleSheet.flatten([styles.moduleBlock, { backgroundColor: colors.surface.raised, borderColor: colors.border.subtle }])}>
+                <View style={StyleSheet.flatten([styles.formSurface, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
                   <ModuleAction
                     body={t('control.pageConsole.menu.pagesBody')}
                     icon="icon.navigation.function_center"
@@ -598,12 +718,12 @@ export function ProductControlPanel() {
                   accessibilityRole="button"
                   minTouch={40}
                   onPress={() => setAdvancedOpen((value) => !value)}
-                  style={StyleSheet.flatten([styles.foldButton, { borderColor: colors.border.subtle }])}>
+                  style={StyleSheet.flatten([styles.foldButton, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
                   <View style={styles.foldTitle}>
-                    <AppIcon name="icon.system.settings" size={size.icon.sm} />
+                    <AppIcon name="icon.system.settings" sizeVariant="sm" tone="tertiary" />
                     <AppText variant="caption">{t('control.devConsole.advanced')}</AppText>
                   </View>
-                  <AppIcon name={advancedOpen ? 'icon.system.chevron_down' : 'icon.system.chevron_right'} size={size.icon.sm} />
+                  <AppIcon name={advancedOpen ? 'icon.system.chevron_down' : 'icon.system.chevron_right'} sizeVariant="sm" tone="tertiary" />
                 </NativePressable>
 
                 {advancedOpen ? (
@@ -611,7 +731,7 @@ export function ProductControlPanel() {
                 ) : null}
 
                 <SectionTitle title={t('control.devConsole.quickScenarios')} />
-                <View style={StyleSheet.flatten([styles.scenarioPanel, { backgroundColor: colors.surface.raised, borderColor: colors.border.subtle }])}>
+                <View style={StyleSheet.flatten([styles.formSurface, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
                   <View style={styles.scenarioGrid}>
                     {visibleScenarios.map((scenario) => (
                       <ScenarioTile key={scenario.id} onPress={() => applyScenario(scenario)} scenario={scenario} />
@@ -620,34 +740,11 @@ export function ProductControlPanel() {
                 </View>
 
                 <SectionTitle title={t('control.pageConsole.menu.runtime')} />
-                <View style={StyleSheet.flatten([styles.statusLine, { backgroundColor: colors.surface.raised, borderColor: colors.border.subtle }])}>
+                <View style={StyleSheet.flatten([styles.statusLine, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
                   <CompactMetric label={t('control.pageConsole.quoteState')} value={quoteStatus} />
                   <CompactMetric label={t('control.tradingUsage.positions')} value={formatNumber(positions.length, 0, locale)} />
                   <CompactMetric label={t('control.tradingUsage.orders')} value={formatNumber(orders.length, 0, locale)} />
                   <CompactMetric label={t('control.pageConsole.partnerState')} value={t(`upgrade.status.${upgradeRequest.status}`)} />
-                </View>
-
-                <View style={styles.footerActions}>
-                  <NativePressable
-                    accessibilityRole="button"
-                    minTouch={40}
-                    onPress={() => setScreen('pages')}
-                    style={StyleSheet.flatten([styles.secondaryButton, { borderColor: colors.border.subtle }])}>
-                    <AppIcon name="icon.navigation.function_center" size={size.icon.sm} />
-                    <AppText numberOfLines={1} variant="caption">
-                      {t('control.pageConsole.menu.pages')}
-                    </AppText>
-                  </NativePressable>
-                  <NativePressable
-                    accessibilityRole="button"
-                    minTouch={40}
-                    onPress={handleReset}
-                    style={StyleSheet.flatten([styles.resetButton, { borderColor: resetArmed ? colors.status.danger.fg : colors.border.subtle }])}>
-                    <AppIcon name="icon.system.settings" size={size.icon.sm} tone={resetArmed ? 'danger' : undefined} />
-                    <AppText numberOfLines={1} tone={resetArmed ? 'danger' : 'default'} variant="caption">
-                      {resetArmed ? t('control.devConsole.resetConfirm') : t('control.devConsole.reset')}
-                    </AppText>
-                  </NativePressable>
                 </View>
               </>
             ) : screen === 'pages' ? (
@@ -667,10 +764,8 @@ export function ProductControlPanel() {
               </View>
             ) : (
               <View style={styles.detailStack}>
-                <View style={StyleSheet.flatten([styles.stateSummary, { backgroundColor: colors.surface.raised, borderColor: colors.border.subtle }])}>
-                  <View style={StyleSheet.flatten([styles.compactIconBox, { backgroundColor: `${colors.status.warning.fg}12` }])}>
-                    <AppIcon name="icon.security.risk_shield" size={size.icon.sm} tone="amber" />
-                  </View>
+                <View style={StyleSheet.flatten([styles.stateSummary, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+                  <IconSurface background="hidden" icon="icon.security.risk_shield" sizeVariant="xs" tone="neutral" />
                   <View style={styles.rowText}>
                     <AppText numberOfLines={1} variant="caption">
                       {t('control.pageConsole.menu.state')}
@@ -685,19 +780,40 @@ export function ProductControlPanel() {
               </View>
             )}
           </ScrollView>
+          {panelFooter}
         </View>
       ) : null}
 
-      <NativePressable
-        accessibilityLabel={open ? t('common.cancel') : t('control.devConsole.title')}
-        accessibilityRole="button"
-        minTouch={48}
-        onPress={open ? closePanel : () => setOpen(true)}
-        style={StyleSheet.flatten([styles.fab, shadows.panel, { backgroundColor: colors.surface.raised, borderColor: colors.brand.fg }])}>
-        <AppIcon name={open ? 'icon.system.close' : 'icon.system.settings'} size={size.icon.md} />
-      </NativePressable>
+      <View {...fabPanResponder.panHandlers} style={styles.fabDragHandle}>
+        <NativePressable
+          accessibilityLabel={open ? t('common.cancel') : t('control.devConsole.title')}
+          accessibilityRole="button"
+          minTouch={layout.touchTargetMin}
+          onPress={togglePanelFromFab}
+          onPressIn={() => {
+            if (fabDragMovedRef.current) {
+              fabDragMovedRef.current = false;
+            }
+          }}
+          style={StyleSheet.flatten([
+            styles.fab,
+            shadows.toast,
+            {
+              backgroundColor: open ? colors.surface.panel : colors.surface.raised,
+            },
+          ])}>
+          <AppIcon name={open ? 'icon.system.close' : 'icon.system.settings'} sizeVariant="lg" tone={open ? 'tertiary' : 'brand'} />
+        </NativePressable>
+      </View>
     </View>
   );
+}
+
+function clampDevConsoleFabOffset(offset: DevConsoleFabOffset, maxRight: number, maxBottom: number): DevConsoleFabOffset {
+  return {
+    bottom: Math.min(Math.max(offset.bottom, devConsoleFabEdgeInset), maxBottom),
+    right: Math.min(Math.max(offset.right, devConsoleFabEdgeInset), maxRight),
+  };
 }
 
 function buildQuickScenarios(anchorId: string): QuickScenario[] {
@@ -828,14 +944,18 @@ function TopSelectControl({
   options: { label: string; value: string }[];
   value: string;
 }) {
+  const { colors } = useProductSettings();
+
   return (
     <SelectField
       containerStyle={styles.topSelectField}
       icon={icon}
       label={label}
+      menuStyle={StyleSheet.flatten([styles.devSelectMenu, shadows.toast, { backgroundColor: colors.surface.panel, borderColor: colors.border.default }])}
       onChangeValue={onChange}
+      optionTextStyle={styles.devSelectOptionText}
       options={options}
-      shellStyle={styles.topSelectShell}
+      shellStyle={StyleSheet.flatten([styles.devSelectShell, { backgroundColor: colors.surface.panel }])}
       value={value}
     />
   );
@@ -843,18 +963,14 @@ function TopSelectControl({
 
 function ScenarioTile({ onPress, scenario }: { onPress: () => void; scenario: QuickScenario }) {
   const { colors, t } = useProductSettings();
-  const tone = scenarioToneKeys[scenario.tone];
-  const color = resolvePaletteIconTone(colors, tone);
 
   return (
     <NativePressable
       accessibilityRole="button"
       minTouch={40}
       onPress={onPress}
-      style={StyleSheet.flatten([styles.scenarioTile, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-      <View style={StyleSheet.flatten([styles.compactIconBox, { backgroundColor: `${color}12` }])}>
-        <AppIcon name={scenario.icon} size={size.icon.sm} tone={tone} />
-      </View>
+      style={StyleSheet.flatten([styles.scenarioTile, { borderColor: colors.border.subtle }])}>
+      <IconSurface background="hidden" icon={scenario.icon} sizeVariant="xs" tone="neutral" />
       <View style={styles.rowText}>
         <AppText numberOfLines={1} variant="caption">
           {t(scenario.titleKey)}
@@ -883,7 +999,7 @@ function ModuleAction({
   tone: IconTone;
 }) {
   const { colors } = useProductSettings();
-  const color = resolvePaletteIconTone(colors, tone);
+  const surfaceTone = tone === 'brand' ? 'brand' : 'neutral';
 
   return (
     <NativePressable
@@ -891,10 +1007,8 @@ function ModuleAction({
       accessibilityRole="button"
       minTouch={44}
       onPress={onPress}
-      style={StyleSheet.flatten([styles.moduleAction, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-      <View style={StyleSheet.flatten([styles.moduleIcon, { backgroundColor: `${color}12`, borderColor: `${color}44` }])}>
-        <AppIcon name={icon} size={size.icon.md} tone={tone} />
-      </View>
+      style={StyleSheet.flatten([styles.moduleAction, { borderColor: colors.border.subtle }])}>
+      <IconSurface background="hidden" icon={icon} sizeVariant="md" tone={surfaceTone} />
       <View style={styles.rowText}>
         <View style={styles.moduleActionHeader}>
           <AppText numberOfLines={1} variant="caption">
@@ -908,15 +1022,13 @@ function ModuleAction({
           {body}
         </AppText>
       </View>
-      <AppIcon name="icon.system.chevron_right" size={size.icon.sm} />
+      <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
     </NativePressable>
   );
 }
 
 function PageRow({ entry, onClose }: { entry: PageConsoleEntry; onClose: () => void }) {
   const { colors, t } = useProductSettings();
-  const tone = scenarioToneKeys[entry.tone];
-  const color = resolvePaletteIconTone(colors, tone);
 
   return (
     <NativePressable
@@ -928,9 +1040,7 @@ function PageRow({ entry, onClose }: { entry: PageConsoleEntry; onClose: () => v
         router.push(entry.route);
       }}
       style={StyleSheet.flatten([styles.row, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-      <View style={StyleSheet.flatten([styles.rowIcon, { backgroundColor: `${color}12`, borderColor: `${color}44` }])}>
-        <AppIcon name={entry.icon} size={size.icon.sm} tone={tone} />
-      </View>
+      <IconSurface background="hidden" icon={entry.icon} sizeVariant="xs" tone="neutral" />
       <View style={styles.rowText}>
         <AppText numberOfLines={1} variant="caption">
           {t(entry.titleKey)}
@@ -946,10 +1056,6 @@ function PageRow({ entry, onClose }: { entry: PageConsoleEntry; onClose: () => v
   );
 }
 
-function resolvePaletteIconTone(colors: ThemeColors, tone: IconTone) {
-  return resolveThemeTone(colors, tone);
-}
-
 function SectionTitle({ title }: { title: string }) {
   return (
     <AppText tone="dim" variant="eyebrow">
@@ -962,7 +1068,7 @@ function CompactMetric({ label, value }: { label: string; value: string }) {
   const { colors } = useProductSettings();
 
   return (
-    <View style={StyleSheet.flatten([styles.compactMetric, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+    <View style={StyleSheet.flatten([styles.compactMetric, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
       <AppText numberOfLines={1} tone="dim" variant="eyebrow">
         {label}
       </AppText>
@@ -1004,23 +1110,24 @@ function ControlSelect({
   options: { label: string; value: string }[];
   value: string;
 }) {
+  const { colors } = useProductSettings();
+
   return (
     <SelectField
       containerStyle={styles.field}
       icon={icon}
       label={label}
+      menuStyle={StyleSheet.flatten([styles.devSelectMenu, shadows.toast, { backgroundColor: colors.surface.panel, borderColor: colors.border.default }])}
       onChangeValue={onChange}
+      optionTextStyle={styles.devSelectOptionText}
       options={options}
-      shellStyle={styles.compactSelect}
+      shellStyle={StyleSheet.flatten([styles.devSelectShell, { backgroundColor: colors.surface.panel }])}
       value={value}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  compactSelect: {
-    minHeight: size.control.sm,
-  },
   compactMetric: {
     borderRadius: radius.sm,
     borderWidth: lineWidth.none,
@@ -1039,20 +1146,23 @@ const styles = StyleSheet.create({
   detailStack: {
     gap: spacing.sm,
   },
-  compactIconBox: {
-    alignItems: 'center',
-    borderRadius: radius.sm,
-    height: size.control.xs,
-    justifyContent: 'center',
-    width: size.control.xs,
+  devSelectMenu: {
+    shadowOpacity: 0.18,
   },
+  devSelectOptionText: {
+    ...typography.bodyMd,
+  },
+  devSelectShell: {},
   fab: {
     alignItems: 'center',
     borderRadius: radius.full,
-    borderWidth: lineWidth.hairline,
-    height: size.button.icon,
+    borderWidth: lineWidth.none,
+    height: devConsoleFabSize,
     justifyContent: 'center',
-    width: size.button.icon,
+    width: devConsoleFabSize,
+  },
+  fabDragHandle: {
+    borderRadius: radius.full,
   },
   field: {
     flexBasis: '48%',
@@ -1074,15 +1184,17 @@ const styles = StyleSheet.create({
     gap: spacing.sm - spacing.xxs,
     minWidth: 0,
   },
-  footerActions: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-  },
   formGrid: {
     columnGap: spacing.sm,
     flexDirection: 'row',
     flexWrap: 'wrap',
     rowGap: spacing.sm,
+  },
+  formSurface: {
+    borderRadius: radius.md,
+    borderWidth: lineWidth.hairline,
+    gap: spacing.xs,
+    padding: spacing.xs,
   },
   groupBlock: {
     gap: spacing.sm - spacing.xxs,
@@ -1102,11 +1214,9 @@ const styles = StyleSheet.create({
   },
   host: {
     alignItems: 'flex-end',
-    bottom: 82,
     gap: spacing.sm,
     pointerEvents: 'box-none',
     position: 'absolute',
-    right: spacing.lg,
     zIndex: 50,
   },
   list: {
@@ -1115,7 +1225,7 @@ const styles = StyleSheet.create({
   moduleAction: {
     alignItems: 'center',
     borderRadius: radius.sm,
-    borderWidth: lineWidth.hairline,
+    borderWidth: lineWidth.none,
     flexDirection: 'row',
     gap: spacing.sm,
     minHeight: size.control.lg,
@@ -1134,24 +1244,25 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     padding: spacing.sm,
   },
-  moduleIcon: {
-    alignItems: 'center',
-    borderRadius: radius.sm,
-    borderWidth: lineWidth.hairline,
-    height: size.control.sm,
-    justifyContent: 'center',
-    width: size.control.sm,
-  },
   panel: {
     borderRadius: radius.md,
     borderWidth: lineWidth.none,
-    maxHeight: 'min(560px, calc(100vh - 120px))' as DimensionValue,
-    maxWidth: 'calc(100vw - 24px)' as DimensionValue,
+    overflow: 'hidden',
     width: 360,
   },
   panelContent: {
     gap: spacing.sm,
     padding: spacing.sm,
+  },
+  panelFooter: {
+    borderTopWidth: lineWidth.hairline,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    padding: spacing.sm,
+  },
+  panelScroller: {
+    flexGrow: 0,
+    flexShrink: 1,
   },
   panelTop: {
     alignItems: 'center',
@@ -1176,19 +1287,11 @@ const styles = StyleSheet.create({
   row: {
     alignItems: 'center',
     borderRadius: radius.sm,
-    borderWidth: lineWidth.none,
+    borderWidth: lineWidth.hairline,
     flexDirection: 'row',
     gap: spacing.sm,
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.sm,
-  },
-  rowIcon: {
-    alignItems: 'center',
-    borderRadius: radius.sm,
-    borderWidth: lineWidth.hairline,
-    height: size.control.xs,
-    justifyContent: 'center',
-    width: size.control.xs,
   },
   rowText: {
     flex: 1,
@@ -1232,7 +1335,7 @@ const styles = StyleSheet.create({
   },
   statusLine: {
     borderRadius: radius.md,
-    borderWidth: lineWidth.none,
+    borderWidth: lineWidth.hairline,
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.xs,
@@ -1255,12 +1358,5 @@ const styles = StyleSheet.create({
     flexBasis: '48%',
     flexGrow: 1,
     minWidth: 0,
-  },
-  topSelectShell: {
-    borderRadius: radius.sm,
-    gap: spacing.xs,
-    minHeight: size.control.sm,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
   },
 });

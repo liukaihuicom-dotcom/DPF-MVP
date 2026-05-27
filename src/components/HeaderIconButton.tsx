@@ -12,7 +12,7 @@ type HeaderIconButtonProps = {
   icon: AppIconName;
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
-  tone?: 'default' | 'muted' | IconTone;
+  tone?: 'default' | IconTone;
   variant?: 'filled' | 'ghost';
 };
 
@@ -22,11 +22,11 @@ export function HeaderIconButton({
   icon,
   onPress,
   style,
-  tone = 'muted',
+  tone = 'default',
   variant = 'filled',
 }: HeaderIconButtonProps) {
   const colors = useThemeColors();
-  const iconTone = tone === 'default' ? 'text' : tone === 'muted' ? 'textDim' : tone;
+  const iconTone = tone === 'default' ? undefined : tone;
   const buttonStyle = StyleSheet.flatten([
     styles.button,
     variant === 'filled' && {

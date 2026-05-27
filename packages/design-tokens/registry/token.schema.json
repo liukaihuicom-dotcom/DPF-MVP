@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dupoin Design Token Index Schema",
+  "type": "object",
+  "required": ["version", "sources", "tokenLayers", "families", "requiredModes", "releaseStatus"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "$description": { "type": "string" },
+    "version": { "type": "string" },
+    "sources": {
+      "type": "object",
+      "required": ["color", "modeMatrix", "runtime", "documentation"],
+      "additionalProperties": { "type": "string" }
+    },
+    "tokenLayers": {
+      "type": "object",
+      "required": ["L1", "L2", "L3"]
+    },
+    "families": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "requiredModes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "releaseStatus": {
+      "type": "string",
+      "enum": ["draft", "active", "deprecated"]
+    }
+  },
+  "additionalProperties": true
+}

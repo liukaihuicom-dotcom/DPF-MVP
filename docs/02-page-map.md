@@ -1,53 +1,61 @@
-# Page Map
+# Site Page Map
 
-This page is the implementation-facing index for the product brain in `docs/01-product-modules.md`. It maps each route to the current runtime component, user-facing capability, state source, and known product gap.
+Source of truth: `src/navigation/routeRegistry.ts`.
 
-## Primary Pages
+This document is the review map for all current Expo Router page files. Layout and HTML infrastructure files are not product pages: `app/_layout.tsx`, `app/(tabs)/_layout.tsx`, and `app/+html.tsx`.
 
-| Page | Route | Module | Runtime Component | Role Behavior | Main Capabilities | State Source | Current Gap |
+## Runtime Page Inventory
+
+| Route path | Page component | Module | Permission | Navigation level | Primary actions | Related modals | Empty / loading / error states |
 |---|---|---|---|---|---|---|---|
-| Brand Splash | `/brand-splash` | Auth & Onboarding | `app/brand-splash.tsx` | cold-start brand entry for guest, trader, and partner in local demo | Brand color background, centered white logo, restrained logo intro, automatic handoff to `/launch` | local animation timer | Release build required to verify native splash parity |
-| Launch | `/launch` | Auth & Onboarding | `app/launch.tsx` | welcome and auth entry for guest, trader, and partner in local demo | Branded welcome page, login/register shortcuts, Apple sign-in unavailable feedback | static content, toast feedback | No production identity provider or Apple sign-in service |
-| Home Markets | `/markets` | Markets & Instruments | `app/(tabs)/markets.tsx` | trader and partner see market context | Dupoin hero, quote status, account strip, top movers, copy signal preview, favorites, market brief | `BrokerStore`, `dupoinMvp` | No live CMS or production instrument service |
-| Trade Workspace | `/trade` | Trading / Partner Tools | `app/(tabs)/trade.tsx` re-exports `app/(tabs)/portfolio.tsx` | trader sees positions/orders/history; partner sees client workspace | Position list, pending orders, history charts, close position, modify/delete pending order, Partner client list by role | `orders`, `positions`, `partnerClients` | No live execution, audit, or real client API |
-| Account Workspace | `/accounts` | Account Assets / Partner Tools | `app/(tabs)/accounts.tsx` re-exports `app/(tabs)/account.tsx` | trader sees account list; partner sees commission workspace | Account overview, grouped account profiles, commission summary, commission details | `initialAccount`, `buildTradingAccountProfiles`, `commissions` | No real account, payment, or settlement API |
-| Discover | `/discover` | Discover & Growth | `app/(tabs)/discover.tsx` | trader and partner share discovery surface | Function entries, selected module state, copy signals, academy/challenge/support/risk cards, Partner preview | `dupoinMvp`, product settings | Placeholder modules are not backed by services |
-| Instrument Detail | `/instrument/[id]` | Markets & Instruments | `app/instrument/[id].tsx` | trader and partner can inspect; trade buttons open ticket | Bid/ask, sparkline, day change, spread, leverage, margin sample, buy/sell footer | `findInstrument`, quote updates | No production quote freshness or session validation |
-| Order Ticket | `/order/[id]` | Trading | `app/order/[id].tsx` | trader flow; guest/partner restrictions must be defined before production | Direction, order type, lot input, presets, notional/margin estimate, validation, local submit | `placeOrder`, `calculateMargin`, `calculateNotional` | No live order endpoint or server-side validation |
-| Account Details | `/account-details/[id]` | Account Assets | `app/account-details/[id].tsx` | trader account drilldown; partner access must be scoped before production | Account metrics, margin gauge, action tiles, menu, position preview, closed PnL chart, PnL calendar | `buildTradingAccountProfiles`, `positions` | Actions are demo-only; no real ledger or mutation |
-| Partner Tools | `/partner-tools` | Partner Tools / Discover & Growth | `app/(tabs)/partner-tools.tsx` | partner-focused function center, also accessible as hidden route | Growth/account/trading/service module grid, selected module summary, navigation shortcuts | selected discover module settings | No production permission or Partner service |
-| Client Profile | `/client/[id]` | Partner Tools | `app/client/[id].tsx` | partner review page | Client status, role, net deposit, volume, open positions, upgrade request chat, approve action | `partnerClients`, `upgradeRequest` | No audit log, PII controls, or server persistence |
-| Onboarding | `/auth/onboarding` | Auth & Onboarding | `app/auth/onboarding.tsx` | guest entry; signed-in users can still view in local demo | Activation path, trader/partner choices, risk notice, register/login links | static onboarding content | No production onboarding/KYC workflow |
-| Login | `/auth` | Auth & Onboarding | `app/auth/index.tsx` | guest sign-in page | Email/password validation, verification handoff, social unavailable toast, register/reset links | form state, verify route params | No real identity provider |
-| Register | `/auth/register` | Auth & Onboarding | `app/auth/register.tsx` | guest account creation page | Email/password/confirm validation, invite code, risk checkbox, verification handoff | form state, verify route params | No account creation API or risk record |
-| Auth Verification | `/auth/verify` | Auth & Onboarding | `app/auth/verify.tsx` | guest login/register verification step | Six-digit local OTP, retry, resend countdown, login or account-review routing | route params, local code state, `setAuthStatus` | No real email/SMS/MFA provider |
-| Account Review | `/auth/account-review` | Auth & Onboarding | `app/auth/account-review.tsx` | guest account-opening confirmation | Email verified state, risk confirmation, KYC placeholder, activate demo account | route params, `setAuthStatus` | No real KYC, suitability, or account-opening service |
-| Forgot Password | `/auth/forgot-password` | Auth & Onboarding | `app/auth/forgot-password.tsx` | guest password help page | Email validation, reset sent state, back to login | form state | No reset email service |
+| `/` | `IndexRoute` | Launch | `guest` | root | Redirect to brand splash | None | Redirecting, error |
+| `/brand-splash` | `BrandSplashScreen` | Launch | `guest` | root | Show brand intro, continue to launch | None | Default, redirecting, error |
+| `/launch` | `LaunchScreen` | Launch | `guest` | root | Start login, start registration | `global.toastFeedback` | Default, loading, error |
+| `/markets` | `MarketsScreen` | Markets | `signedIn.trader` | primary tab | Search instruments, switch trading account, open instrument detail | `tradingAccount.switchSheet`, `global.toastFeedback`, `global.webSelectMenu` | Loading, empty, error, permission denied, restricted |
+| `/trade` | `PortfolioScreen` | Trading | `signedIn.trader` | primary tab | Review positions, close position, modify or delete order | `portfolio.accountMenuSheet`, `portfolio.closePositionConfirm`, `portfolio.pendingOrderDetailSheet`, `portfolio.pendingOrderFeedbackToast`, `portfolio.positionDetailSheet`, `tradingAccount.switchSheet`, `global.toastFeedback` | Loading, empty, error, permission denied, restricted |
+| `/accounts` | `AccountScreen` | Accounts | `signedIn.trader` | primary tab | Inspect trading accounts, open account detail, review funding shortcuts | `account.metricDescriptionSheet`, `global.bottomSheet`, `global.toastFeedback` | Loading, empty, error, permission denied, restricted |
+| `/discover` | `DupoinDiscoverScreen` | Discover | `guest` | primary tab | Browse discovery modules, open function entry, open layout settings | `discover.layout.route`, `global.toastFeedback` | Loading, empty, error |
+| `/quick` | `DiscoverModuleScreen` | Discover | `signedIn.any` | primary tab | Show selected module, open order ticket, open partner tools, open PIN security setup from Me | `order.ticket.route`, `global.toastFeedback` | Loading, empty, error, permission denied, restricted |
+| `/portfolio` | `PortfolioScreen` | Trading | `signedIn.trader` | hidden tab | Compatibility entry for trade workspace | `portfolio.accountMenuSheet`, `portfolio.closePositionConfirm`, `portfolio.pendingOrderDetailSheet`, `portfolio.pendingOrderFeedbackToast`, `portfolio.positionDetailSheet`, `tradingAccount.switchSheet`, `global.toastFeedback` | Loading, empty, error, permission denied, restricted |
+| `/account` | `AccountScreen` | Accounts | `signedIn.trader` | hidden tab | Compatibility entry for account workspace | `account.metricDescriptionSheet`, `global.bottomSheet`, `global.toastFeedback` | Loading, empty, error, permission denied, restricted |
+| `/partner-tools` | `PartnerToolsScreen` | Partner | `signedIn.partner` | hidden tab | Open partner module, review growth tools, open client workspace | `global.toastFeedback` | Loading, empty, error, permission denied, restricted |
+| `/instrument/[id]` | `InstrumentDetailScreen` | Markets | `signedIn.trader` | detail | Review quote detail, switch detail tab, open buy or sell ticket | `order.ticket.route`, `global.toastFeedback` | Loading, error, not found, restricted |
+| `/order/[id]` | `OrderTicketScreen` | Trading | `signedIn.trader` | modal route | Select side, edit lots, toggle risk controls, submit order | `order.ticket.route`, `global.toastFeedback` | Inputting, validating, submitting, success, failed, error, not found, restricted |
+| `/client/[id]` | `ClientProfileScreen` | Partner | `signedIn.partner` | detail | Review client profile, approve upgrade request demo | `global.toastFeedback` | Loading, error, not found, permission denied, restricted, reviewing |
+| `/partner/client-orders` | `PartnerClientsScreen` | Partner | `signedIn.partner` | detail | Review partner client order summary, open client profile, review upgrade request status | `global.toastFeedback` | Loading, empty, error, permission denied, restricted |
+| `/partner/commission` | `CommissionScreen` | Partner | `signedIn.partner` | detail | Review pending rebates, settled rebates, and monthly commission details | None | Loading, empty, error, permission denied, restricted |
+| `/discover-entry/[id]` | `DiscoverEntryScreen` | Discover | `guest` | detail | Review discovery entry details, return to Discover | `global.toastFeedback` | Loading, empty, error, not found |
+| `/discover-layout` | `DiscoverLayoutScreen` | Discover | `signedIn.any` | modal route | Reorder modules, change display mode, save layout | `discover.layout.route` | Inputting, submitting, success, failed, error |
+| `/account-details/[id]` | `AccountDetailsScreen` | Accounts | `signedIn.trader` | detail | Review metrics, open menu, open funding and account child pages | `account.moreActionSheet`, `global.toastFeedback` | Loading, empty, error, permission denied, restricted |
+| `/account-basic/[id]` | `AccountBasicScreen` | Accounts | `signedIn.trader` | detail | Review basic profile, open metric description | `account.metricDescriptionSheet` | Loading, empty, error, permission denied, restricted |
+| `/account-balance/[id]` | `AccountBalanceScreen` | Accounts | `signedIn.trader` | detail | Review balance trend, filter transactions, open transaction detail | `account.balanceTransactionDetailSheet` | Loading, empty, error, permission denied, restricted |
+| `/account-orders/[id]` | `AccountOrdersScreen` | Accounts | `signedIn.trader` | detail | Review account order records | None | Loading, empty, error, permission denied, restricted |
+| `/funding` | `FundingHomeScreen` | Funding | `signedIn.trader` | detail | Open deposit, withdrawal, transfer, transaction history | `global.toastFeedback` | Loading, empty, error, permission denied, restricted, reviewing |
+| `/funding/deposit` | `DepositScreen` | Funding | `signedIn.trader` | detail | Select account, enter amount, select payment method, submit deposit | `tradingAccount.switchSheet`, `funding.paymentMethodSheet`, `funding.submitFeedbackToast`, `global.toastFeedback` | Inputting, validating, submitting, success, failed, error |
+| `/funding/withdrawal` | `WithdrawalScreen` | Funding | `signedIn.trader` | detail | Select payout method, enter amount, select account, submit withdrawal | `tradingAccount.switchSheet`, `funding.paymentMethodSheet`, `funding.submitFeedbackToast`, `global.toastFeedback` | Inputting, validating, submitting, reviewing, success, failed, error, restricted |
+| `/funding/transfer` | `TransferScreen` | Funding | `signedIn.trader` | detail | Select source account, enter amount, select target account, submit transfer | `tradingAccount.switchSheet`, `funding.submitFeedbackToast`, `global.toastFeedback` | Inputting, validating, submitting, success, failed, error, restricted |
+| `/funding/transactions` | `FundingTransactionsScreen` | Funding | `signedIn.trader` | detail | Filter funding transactions, open detail | None | Loading, empty, error, permission denied, restricted |
+| `/funding/transactions/[id]` | `FundingTransactionDetailScreen` | Funding | `signedIn.trader` | detail | Review status, timeline, support context | `global.toastFeedback` | Loading, error, not found, reviewing, restricted |
+| `/settings` | `SettingsScreen` | Settings | `signedIn.any` | detail | Review profile module, open PIN security setup, open profile settings | `global.toastFeedback` | Loading, empty, error, permission denied, restricted |
+| `/settings/security-log` | `SecurityLoginLogScreen` | Settings | `signedIn.any` | detail | Open device detail, revoke session, report suspicious event | `security.deviceDetailSheet`, `security.revokeConfirmSheet`, `security.reportConfirmSheet`, `global.toastFeedback` | Loading, empty, error, submitting, success, failed, restricted |
+| `/appearance` | `AppearanceScreen` | Settings | `signedIn.any` | detail | Select system, light, or dark theme | None | Inputting, success, error |
+| `/auth/onboarding` | `OnboardingScreen` | Auth | `guest` | root | Choose trader or partner onboarding, start registration, open login | `global.toastFeedback` | Loading, empty, error |
+| `/auth` | `LoginScreen` | Auth | `guest` | root | Enter account, enter password, submit login, open forgot password | `auth.errorSheet`, `global.toastFeedback` | Inputting, validating, submitting, success, failed, error |
+| `/auth/register` | `RegisterPhoneScreen` | Auth | `guest` | root | Select country, enter phone, confirm contact, continue to phone code | `auth.countryPicker`, `auth.contactConfirm`, `auth.errorSheet`, `global.toastFeedback` | Inputting, validating, submitting, success, failed, error |
+| `/auth/register-email-code` | `RegisterEmailCodeScreen` | Auth | `guest` | root | Enter OTP, resend code, change email, open recovery help | `global.toastFeedback` | Inputting, validating, success, failed, expired, timeout, error |
+| `/auth/register-phone` | `RegisterEmailScreen` | Auth | `guest` | root | Enter email after phone verification, confirm contact, continue to email code | `auth.contactConfirm`, `auth.errorSheet`, `auth.leaveVerifiedStep`, `global.toastFeedback` | Inputting, validating, submitting, success, failed, error |
+| `/auth/register-phone-code` | `RegisterPhoneCodeScreen` | Auth | `guest` | root | Enter OTP, resend code, change phone, open recovery help | `global.toastFeedback` | Inputting, validating, success, failed, expired, timeout, error |
+| `/auth/register-password` | `RegisterPasswordScreen` | Auth | `guest` | root | Enter password, confirm password, continue to optional PIN setup, leave verified step | `auth.errorSheet`, `auth.leaveVerifiedStep`, `global.toastFeedback` | Inputting, validating, submitting, success, failed, error |
+| `/auth/forgot-password` | `ForgotPasswordScreen` | Auth | `guest` | root | Choose reset channel, verify code, set new password | `auth.countryPicker`, `auth.errorSheet`, `global.toastFeedback` | Inputting, validating, submitting, success, failed, expired, timeout, error |
+| `/auth/pin-setup` | `PinSetupScreen` | Auth | `guest / signedIn.optional` | root | Create optional local PIN after registration, confirm PIN, unlock only after explicit local lock, skip setup, open from Me settings menu | `auth.errorDialog` | Inputting, validating, success, failed, restricted, bypassed |
+| `/auth/verify` | `VerifyDeprecatedScreen` | Auth | `guest` | root | Redirect legacy verification entry to login | None | Redirecting, error |
+| `/(not-found)` | `NotFoundScreen` | Navigation | `guest` | system | Explain missing route, return to app | None | Not found |
 
-## Hidden Redirects And Compatibility Routes
+## Governance Notes
 
-| Route | Runtime Component | Redirect / Behavior | Product Purpose |
-|---|---|---|---|
-| `/` | `app/(tabs)/index.tsx` | redirects to `/brand-splash` | Default cold-start brand entry alias |
-| `/portfolio` | `app/(tabs)/portfolio.tsx` | hidden tab route used by `/trade` export | Compatibility alias for trader portfolio workspace |
-| `/account` | `app/(tabs)/account.tsx` | hidden tab route used by `/accounts` export | Compatibility alias for account workspace |
-| `/quick` | `app/(tabs)/quick.tsx` | redirects to `/`; tab button is status-only and prevents tab press | Bottom-tab status slot, not a standalone feature page |
-| `/partner-tools` | `app/(tabs)/partner-tools.tsx` | hidden tab route | Partner/function-center entry outside visible tab bar |
-
-## Page Delivery Notes
-
-- Runtime components must match actual Expo Router files, including re-export files and redirects.
-- Pages with role-dependent behavior must document both trader and partner behavior before production release.
-- Guest access to trading, account, and Partner data must define redirect, restricted, or disabled behavior in the page spec.
-- Demo-only action sheets and placeholders must stay labeled as local simulation until backed by APIs.
-
-## Required For New Pages
-
-Each new production page must include:
-
-- Page spec in `handoff/`.
-- State spec with default, loading, empty, error, disabled, success, failed, permission, and restricted cases as applicable.
-- Component usage mapping to `design-system/`.
-- API contract or explicit local mock source.
-- i18n key list.
-- A11y, performance, security, and acceptance notes.
+- All new page files under `app/**/*.tsx` must be represented in `routeRegistry`, except layout and HTML infrastructure.
+- Every route entry must declare `topNavBehavior`; `back` routes must declare `backTarget`, and `close` routes must declare `closeTarget`.
+- Page-level close/back behavior is governed in `docs/page-navigation-policy.md`.
+- `relatedModals` must reference existing `modalRegistry` ids.
+- Ordinary confirmation dialogs, error sheets, success feedback, toast, tips, and delete confirmations must stay in `modalRegistry` and must not become independent routes.
+- Production RBAC is not yet connected; route entries with role-sensitive behavior use `permissionGap` until server-side entitlement and data-scope checks exist.

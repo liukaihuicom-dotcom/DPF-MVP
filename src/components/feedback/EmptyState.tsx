@@ -1,11 +1,12 @@
 import { StyleSheet, View } from 'react-native';
 
 import { useThemeColors } from '@/src/settings/ProductSettings';
-import { radius, size, spacing } from '@/src/theme/tokens';
+import { layout, radius, spacing } from '@/src/theme/tokens';
 
 import { ActionButton } from '../ActionButton';
-import { AppIcon, type AppIconName } from '../AppIcon';
+import type { AppIconName } from '../AppIcon';
 import { Card } from '../Card';
+import { IconSurface } from '../IconSurface';
 import { AppText } from '../Typography';
 
 type EmptyStateProps = {
@@ -36,9 +37,7 @@ export function EmptyState({
       <Card compact style={styles.card}>
         <View style={styles.row}>
           {icon ? (
-            <View style={StyleSheet.flatten([styles.icon, { backgroundColor: colors.surface.subtle }])}>
-              <AppIcon name={icon} size={24} />
-            </View>
+            <IconSurface icon={icon} sizeVariant="lg" />
           ) : null}
           <View style={styles.text}>
             {title ? <AppText variant="title.card">{title}</AppText> : null}
@@ -83,17 +82,11 @@ const styles = StyleSheet.create({
   card: {
     gap: spacing.md,
   },
-  icon: {
-    alignItems: 'center',
-    borderRadius: radius.full,
-    height: size.control.md,
-    justifyContent: 'center',
-    width: size.control.md,
-  },
   plain: {
     alignItems: 'center',
     borderRadius: radius.md,
-    padding: spacing.lg,
+    paddingHorizontal: layout.cardPaddingX,
+    paddingVertical: layout.cardPaddingY,
   },
   row: {
     alignItems: 'center',

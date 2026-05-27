@@ -247,7 +247,7 @@ export function ActionButton({
       ? styles.disabledTextButton
       : resolvedVariant === 'outline'
         ? { backgroundColor: 'transparent', borderColor: colors.border.disabled }
-        : { backgroundColor: colors.surface.disabled, borderColor: colors.border.disabled };
+        : { backgroundColor: colors.surface.disabled, borderColor: 'transparent' };
 
   return (
     <NativePressable
@@ -260,6 +260,7 @@ export function ActionButton({
       style={StyleSheet.flatten([
         styles.button,
         sizePreset === 'lg' && styles.buttonLg,
+        resolvedVariant === 'filled' && styles.filledButton,
         resolvedVariant === 'text' && styles.textButton,
         toneStyles[tone],
         disabled && styles.disabledButton,
@@ -270,7 +271,7 @@ export function ActionButton({
         <ActivityIndicator color={spinnerColor} />
       ) : (
         <View style={styles.buttonContent}>
-          {icon ? <AppIcon name={icon} size={17} tone={iconTone} /> : null}
+          {icon ? <AppIcon name={icon} sizeVariant="sm" tone={iconTone} /> : null}
           <AppText adjustsFontSizeToFit numberOfLines={1} tone={foregroundTone} variant={sizePreset === 'lg' ? 'buttonLg' : 'buttonMd'}>
             {label}
           </AppText>
@@ -293,6 +294,9 @@ const styles = StyleSheet.create({
   buttonLg: {
     minHeight: size.control.lg,
     paddingHorizontal: spacing.xl,
+  },
+  filledButton: {
+    borderWidth: lineWidth.none,
   },
   buttonContent: {
     alignItems: 'center',

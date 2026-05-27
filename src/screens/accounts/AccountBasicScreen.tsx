@@ -80,7 +80,7 @@ export default function AccountBasicScreen() {
   };
 
   return (
-    <Screen align="center" back rightActions={[]} title={t('accountDetails.menuBasicInfo')}>
+    <Screen align="center" back backHref="/accounts" rightActions={[]} title={t('accountDetails.menuBasicInfo')}>
       <Card compact>
         <View style={styles.summaryHeader}>
           <View style={styles.summaryCopy}>

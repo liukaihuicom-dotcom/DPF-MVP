@@ -1,27 +1,43 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { isValidEmail, safeRedirect } from '@/src/auth/authFlow';
 import { ActionButton } from '@/src/components/ActionButton';
-import { AuthDescriptionAction, AuthLanguageAction, AuthShell, AuthTextField } from '@/src/components/AuthShell';
-import { AuthContactConfirmDialog, AuthErrorSheet } from '@/src/components/AuthFlowControls';
+import { AuthShell, AuthTextField } from '@/src/components/AuthShell';
+import { AuthContactConfirmDialog, AuthErrorSheet, AuthLeaveVerifiedStepDialog } from '@/src/components/AuthFlowControls';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
+import type { NavigationTarget } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 
 export default function RegisterEmailScreen() {
-  const params = useLocalSearchParams<{ redirect?: string }>();
+  const params = useLocalSearchParams<{ phone?: string; redirect?: string }>();
   const { t } = useProductSettings();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [leaveOpen, setLeaveOpen] = useState(false);
   const redirect = safeRedirect(typeof params.redirect === 'string' ? params.redirect : undefined);
+  const phone = typeof params.phone === 'string' ? params.phone : '';
   const trimmedEmail = email.trim();
   const emailError = submitted && !isValidEmail(email) ? t('auth.error.email') : '';
   const canSubmit = isValidEmail(email);
+  const phoneStepTarget = `/auth/register?redirect=${encodeURIComponent(String(redirect))}` as NavigationTarget;
+
+  useEffect(() => {
+    if (!phone) {
+      router.replace(phoneStepTarget as never);
+    }
+  }, [phone, phoneStepTarget]);
 
   const submit = () => {
     setSubmitted(true);
+
+    if (!phone) {
+      void notifyWarning();
+      router.replace(phoneStepTarget as never);
+      return;
+    }
 
     if (!isValidEmail(email)) {
       void notifyWarning();
@@ -35,22 +51,18 @@ export default function RegisterEmailScreen() {
   const confirmEmail = () => {
     setConfirmOpen(false);
     void notifySuccess();
-    router.push(`/auth/register-email-code?email=${encodeURIComponent(trimmedEmail)}&redirect=${encodeURIComponent(String(redirect))}` as never);
+    router.push(
+      `/auth/register-email-code?phone=${encodeURIComponent(phone)}&email=${encodeURIComponent(trimmedEmail)}&redirect=${encodeURIComponent(String(redirect))}` as never,
+    );
   };
 
   return (
     <AuthShell
-      closeToLaunch
-      descriptionAction={
-        <AuthDescriptionAction
-          actionLabel={t('auth.register.loginAction')}
-          label={t('auth.register.haveAccountPrefix')}
-          onPress={() => router.replace('/auth' as never)}
-        />
-      }
+      backTarget={phoneStepTarget}
       footer={<ActionButton disabled={!canSubmit} label={t('auth.action.continue')} onPress={submit} tone="brand" variant="filled" />}
-      progressStep={1}
-      rightAction={<AuthLanguageAction />}
+      navMode="back"
+      onBackPress={() => setLeaveOpen(true)}
+      progressStep={2}
       subtitle={t('auth.register.emailEntrySubtitle')}
       title={t('auth.register.emailEntryTitle')}>
       <AuthTextField
@@ -65,6 +77,13 @@ export default function RegisterEmailScreen() {
         value={email}
       />
       <AuthErrorSheet body={t('auth.error.fixFields')} onClose={() => setErrorOpen(false)} open={errorOpen} title={t('auth.register.blocked')} />
+      <AuthLeaveVerifiedStepDialog
+        body={t('auth.register.leaveAfterPhoneBody')}
+        onCancel={() => setLeaveOpen(false)}
+        onConfirm={() => router.replace(phoneStepTarget as never)}
+        open={leaveOpen}
+        title={t('auth.register.leaveAfterPhoneTitle')}
+      />
       <AuthContactConfirmDialog
         channel="email"
         onCancel={() => setConfirmOpen(false)}

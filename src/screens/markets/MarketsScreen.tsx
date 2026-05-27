@@ -2,15 +2,17 @@ import { useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { useBottomSheet } from '@/src/components/BottomSheet';
+import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
 import { Card } from '@/src/components/Card';
 import { CurrencyFlag } from '@/src/components/CurrencyFlag';
+import { FeaturedInstrumentCard } from '@/src/components/FeaturedInstrumentCard';
 import { InstrumentRow } from '@/src/components/InstrumentRow';
 import { NativePressable } from '@/src/components/NativePressable';
 import { AppIcon } from '@/src/components/AppIcon';
 import { Screen } from '@/src/components/Screen';
+import { SegmentedTabs } from '@/src/components/SegmentedTabs';
 import { TextField } from '@/src/components/TextField';
-import { TradingAccountSwitchSheet } from '@/src/components/TradingAccountSwitchSheet';
+import { createTradingAccountSwitchHeader, TradingAccountSwitchSheet } from '@/src/components/TradingAccountSwitchSheet';
 import { AppText } from '@/src/components/Typography';
 import { getAccountStatusLabel } from '@/src/domain/accountProfiles';
 import { formatCompactMoney, formatMoney, localizeText } from '@/src/domain/format';
@@ -31,6 +33,8 @@ const marketTabs: { key: MarketTabKey; labelKey: 'markets.tab.watchlist' | 'mark
   { key: 'stocks', labelKey: 'markets.tab.stocks' },
 ];
 
+const featuredInstrumentIds = ['eur-usd', 'gbp-usd', 'usd-jpy', 'xau-usd', 'us30'] as const;
+
 export default function HomeScreen() {
   const { account, instruments, positions } = useBroker();
   const { t } = useProductSettings();
@@ -44,8 +48,35 @@ export default function HomeScreen() {
       title="Dupoin">
       <AccountMiniCard account={account} positions={positions} />
 
+      <FeaturedMarketCards instruments={instruments} />
+
       <MarketList instruments={instruments} />
     </Screen>
+  );
+}
+
+function FeaturedMarketCards({ instruments }: { instruments: Instrument[] }) {
+  const featuredInstruments = useMemo(
+    () =>
+      featuredInstrumentIds
+        .map((instrumentId) => instruments.find((instrument) => instrument.id === instrumentId))
+        .filter((instrument): instrument is Instrument => Boolean(instrument))
+        .slice(0, 5),
+    [instruments],
+  );
+
+  if (!featuredInstruments.length) {
+    return null;
+  }
+
+  return (
+    <View style={styles.featuredSection}>
+      <ScrollView contentContainerStyle={styles.featuredRail} horizontal showsHorizontalScrollIndicator={false}>
+        {featuredInstruments.map((instrument) => (
+          <FeaturedInstrumentCard instrument={instrument} key={instrument.id} />
+        ))}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -74,21 +105,19 @@ function AccountMiniCard({ account, positions }: { account: ReturnType<typeof us
   );
   const selectedAccount = accounts.find((profile) => profile.id === selectedTradingAccountId) ?? accounts[0];
   const statusLabel = getAccountStatusLabel(selectedAccount.group, locale);
+  const showAddAccountFeedback = () => {
+    toast.show({
+      message: locale !== 'zh-CN' ? 'Action unavailable. No account was created.' : '当前操作暂不可用，未创建新账户。',
+      title: locale !== 'zh-CN' ? 'Add Account' : '添加账户',
+    });
+  };
   const openAccountPicker = () => {
-    bottomSheet.show({
-      header: {
-        rightAction: {
-          accessibilityLabel: locale !== 'zh-CN' ? 'Add account' : '添加账户',
-          icon: 'icon.account.add_user',
-          onPress: () => {
-            toast.show({
-              message: locale !== 'zh-CN' ? 'Demo action only. No account was created.' : '当前为演示操作，未创建新账户。',
-              title: locale !== 'zh-CN' ? 'Add account' : '添加账户',
-            });
-          },
-        },
-        title: locale !== 'zh-CN' ? 'Switch trading account' : '切换交易账号',
-      },
+    bottomSheet.show(bottomSheetPresets.selection({
+      ...createTradingAccountSwitchHeader({
+        locale,
+        onAddAccount: showAddAccountFeedback,
+        title: locale !== 'zh-CN' ? 'Switch Trading Account' : '切换交易账号',
+      }),
       content: (
         <TradingAccountSwitchSheet
           accounts={accounts}
@@ -100,7 +129,7 @@ function AccountMiniCard({ account, positions }: { account: ReturnType<typeof us
           selectedId={selectedAccount.id}
         />
       ),
-    });
+    }));
   };
   const metrics = [
     { label: t('account.equity'), value: formatMoney(selectedAccount.equity, selectedAccount.currency, 0, locale) },
@@ -115,9 +144,9 @@ function AccountMiniCard({ account, positions }: { account: ReturnType<typeof us
   return (
     <Card compact style={styles.accountCard}>
       <View style={styles.accountCardHeader}>
-        <NativePressable accessibilityLabel={locale !== 'zh-CN' ? 'Switch trading account' : '切换交易账号'} minTouch={40} onPress={openAccountPicker} style={styles.accountSwitcher}>
+        <NativePressable accessibilityLabel={locale !== 'zh-CN' ? 'Switch Trading Account' : '切换交易账号'} minTouch={40} onPress={openAccountPicker} style={styles.accountSwitcher}>
           <View style={StyleSheet.flatten([styles.accountAvatar, { backgroundColor: colors.surface.subtle }])}>
-            <AppIcon name="icon.account.trading" size={17} />
+            <AppIcon name="icon.account.trading" sizeVariant="sm" />
           </View>
           <View style={styles.accountIdentity}>
             <AppText numberOfLines={1} variant="subtitle">
@@ -130,7 +159,7 @@ function AccountMiniCard({ account, positions }: { account: ReturnType<typeof us
               </AppText>
             </View>
           </View>
-          <AppIcon name="icon.system.chevron_down" size={15} />
+          <AppIcon name="icon.system.chevron_down" sizeVariant="xs" />
         </NativePressable>
       </View>
 
@@ -203,44 +232,31 @@ function MarketList({ instruments }: { instruments: Instrument[] }) {
               minTouch={38}
               onPress={closeSearch}
               style={StyleSheet.flatten([styles.marketSearchClose, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
-              <AppIcon name="icon.system.close" size={14} />
+              <AppIcon name="icon.system.close" sizeVariant="xs" />
             </NativePressable>
           </View>
         ) : (
           <>
-            <ScrollView contentContainerStyle={styles.marketTabs} horizontal showsHorizontalScrollIndicator={false} style={styles.marketTabsRail}>
-              {marketTabs.map((tab) => {
-                const selected = selectedTab === tab.key;
-
-                return (
-                  <NativePressable
-                    accessibilityLabel={t(tab.labelKey)}
-                    accessibilityRole="tab"
-                    accessibilityState={{ selected }}
-                    key={tab.key}
-                    minTouch={38}
-                    onPress={() => setSelectedTab(tab.key)}
-                    style={StyleSheet.flatten([
-                      styles.marketTab,
-                      {
-                        backgroundColor: selected ? colors.text.primary : colors.surface.subtle,
-                        borderColor: selected ? colors.text.primary : colors.border.subtle,
-                      },
-                    ])}>
-                    <AppText numberOfLines={1} tone={selected ? 'bg' : 'muted'} variant="caption">
-                      {t(tab.labelKey)}
-                    </AppText>
-                  </NativePressable>
-                );
-              })}
-            </ScrollView>
+            <SegmentedTabs
+              containerStyle={styles.marketTabsRail}
+              items={marketTabs.map((tab) => ({
+                accessibilityLabel: t(tab.labelKey),
+                label: t(tab.labelKey),
+                value: tab.key,
+              }))}
+              onValueChange={setSelectedTab}
+              scrollable
+              style={styles.marketTabs}
+              value={selectedTab}
+              variant="pill"
+            />
             <NativePressable
               accessibilityLabel={t('markets.search')}
               accessibilityRole="button"
               minTouch={38}
               onPress={() => setSearchOpen(true)}
               style={StyleSheet.flatten([styles.marketSearchTrigger, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
-              <AppIcon name="icon.system.search" size={17} />
+              <AppIcon name="icon.system.search" sizeVariant="sm" />
             </NativePressable>
           </>
         )}
@@ -315,6 +331,13 @@ const styles = StyleSheet.create({
     gap: 8,
     minWidth: 0,
   },
+  featuredRail: {
+    gap: 10,
+    paddingRight: 12,
+  },
+  featuredSection: {
+    gap: 8,
+  },
   emptyMarketRows: {
     alignItems: 'center',
     borderRadius: 12,
@@ -368,16 +391,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 38,
   },
-  marketTab: {
-    alignItems: 'center',
-    borderRadius: 999,
-    borderWidth: lineWidth.hairline,
-    height: 38,
-    justifyContent: 'center',
-    paddingHorizontal: 13,
-  },
   marketTabs: {
-    gap: 7,
     paddingRight: 8,
   },
   marketTabsRail: {

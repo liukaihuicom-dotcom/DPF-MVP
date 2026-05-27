@@ -10,11 +10,11 @@ description: >
 
 # UI Build Production Skill v3.0.0-L5
 
-> File: `skills/ui-build-production/SKILL.md`  
-> Version: `v3.0.0-L5`  
-> Level: `L5 Complete / Production UI Build Delivery Skill`  
-> Status: `Executable / Verifiable / Handoff-ready / Design-System-bound`  
-> Purpose: 基于 `Page Contract`、`Design System`、`Component Manifest`、`Pattern Registry`、`State Matrix` 与 `QA Gate`，生成高质量、可运行、可验收、可持续维护、可交付开发的生产级 UI 页面。  
+> File: `.codex/skills/ui-build-production/SKILL.md`
+> Version: `v3.0.0-L5`
+> Level: `L5 Complete / Production UI Build Delivery Skill`
+> Status: `Executable / Verifiable / Handoff-ready / Design-System-bound`
+> Purpose: 基于 `Page Contract`、`Design System`、`Component Manifest`、`Pattern Registry`、`State Matrix` 与 `QA Gate`，生成高质量、可运行、可验收、可持续维护、可交付开发的生产级 UI 页面。
 > Target: Codex / Claude / Cursor / AI Coding Agent / 产品设计工程师 / 前端开发 / QA / PM。
 
 ---

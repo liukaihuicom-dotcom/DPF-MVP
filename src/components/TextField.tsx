@@ -3,7 +3,7 @@ import { Modal, Platform, StyleProp, StyleSheet, TextInput, TextInputProps, Text
 
 import { useThemeColors } from '@/src/settings/ProductSettings';
 import type { ThemeColors } from '@/src/theme/colors';
-import { lineWidth, radius, size, spacing, typography } from '@/src/theme/tokens';
+import { layout, lineWidth, radius, size, spacing, typography } from '@/src/theme/tokens';
 
 import { AppIcon, type AppIconName, type IconTone } from './AppIcon';
 import { NativePressable } from './NativePressable';
@@ -11,7 +11,7 @@ import { AppText, type AppTextTone } from './Typography';
 
 export type FormFieldState = 'default' | 'focused' | 'inputting' | 'validating' | 'success' | 'error' | 'disabled' | 'readonly';
 export type FormFieldShape = 'default' | 'pill';
-export type FormFieldSizePreset = 'default' | 'sm' | 'md';
+export type FormFieldSizePreset = 'default' | 'sm' | 'md' | 'lg';
 export type FormFieldVariant = 'neutral' | 'stage';
 
 export type TextFieldProps = Omit<TextInputProps, 'style'> & {
@@ -26,6 +26,7 @@ export type TextFieldProps = Omit<TextInputProps, 'style'> & {
   labelHidden?: boolean;
   readonly?: boolean;
   rightSlot?: ReactNode;
+  rightSlotFlush?: boolean;
   shape?: FormFieldShape;
   shellStyle?: StyleProp<ViewStyle>;
   sizePreset?: FormFieldSizePreset;
@@ -47,7 +48,9 @@ export type SelectFieldProps = {
   helperText?: string;
   icon?: AppIconName | ReactNode;
   label: string;
+  menuStyle?: StyleProp<ViewStyle>;
   onChangeValue: (value: string) => void;
+  optionTextStyle?: StyleProp<TextStyle>;
   options: SelectFieldOption[];
   placeholder?: string;
   readonly?: boolean;
@@ -75,6 +78,18 @@ const selectMenuViewportInset = 8;
 const selectMenuOffset = spacing.xs;
 const selectMenuZIndex = 100000;
 const fieldBaseBorderWidth = lineWidth.strong;
+const fieldActiveBorderWidth = lineWidth.selected;
+const fieldHorizontalPadding = layout.formFieldTextInset;
+const fieldFloatingPaddingY = spacing.sm - lineWidth.strong;
+const fieldMultilinePaddingY = spacing.md;
+const fieldSelectOptionMinTouch = size.control.sm;
+const centeredLabelTop = (contentHeight: number) => Math.max(0, (contentHeight - typography.bodyLg.lineHeight) / 2);
+const fieldEmptyLabelDefaultTop = centeredLabelTop(size.input.contentMinHeight);
+const fieldEmptyLabelSmTop = centeredLabelTop(size.control.sm - lineWidth.selected * 2);
+const fieldEmptyLabelMdTop = centeredLabelTop(size.control.md - lineWidth.selected * 2);
+const fieldEmptyLabelLgTop = centeredLabelTop(size.input.largeContentMinHeight);
+const fieldRightSlotMinTouch = layout.touchTargetMin;
+const fieldRightSlotFlushOffset = spacing.sm;
 
 export function TextField({
   containerStyle,
@@ -94,6 +109,7 @@ export function TextField({
   placeholderTextColor,
   readonly,
   rightSlot,
+  rightSlotFlush,
   shape = 'default',
   shellStyle,
   sizePreset = 'default',
@@ -106,22 +122,22 @@ export function TextField({
   const inputRef = useRef<TextInput>(null);
   const [focused, setFocused] = useState(false);
   const fieldEditable = editable !== false && !disabled && !readonly;
+  const filled = hasTextValue(value) || hasTextValue(props.defaultValue);
   const resolvedState = resolveFieldState({
     disabled,
     error,
     fieldState,
     focused,
     readonly,
-    value,
   });
-  const active = labelHidden || focused || hasTextValue(value) || hasTextValue(props.defaultValue);
+  const active = labelHidden || focused || filled;
   const stateColors = getFieldStateColors(colors, resolvedState);
   const stateTones = getFieldStateTextTones(resolvedState);
   const stateBorderWidth = getFieldBorderWidth(resolvedState);
   const statePaddingOffset = stateBorderWidth - fieldBaseBorderWidth;
   const iconTone = getFieldStateIconTone(resolvedState);
   const iconNode =
-    typeof icon === 'string' ? <AppIcon name={icon as AppIconName} size={15} tone={iconTone} /> : icon ?? null;
+    typeof icon === 'string' ? <AppIcon name={icon as AppIconName} sizeVariant="xs" tone={iconTone} /> : icon ?? null;
   const inputPlaceholder = labelHidden || active ? placeholder : undefined;
   const focusInput = () => {
     if (fieldEditable) {
@@ -152,16 +168,17 @@ export function TextField({
           shape === 'pill' && styles.shellPill,
           sizePreset === 'sm' && styles.shellSizeSm,
           sizePreset === 'md' && styles.shellSizeMd,
+          sizePreset === 'lg' && styles.shellSizeLg,
           multiline && styles.shellMultiline,
           variant === 'stage' && styles.stageShell,
           {
             backgroundColor: stateColors.background,
             borderColor: stateColors.border,
             borderWidth: stateBorderWidth,
-            paddingHorizontal: 14 - statePaddingOffset,
+            paddingHorizontal: fieldHorizontalPadding - statePaddingOffset,
           },
-          !labelHidden && { paddingVertical: 7 - statePaddingOffset },
-          multiline && { paddingVertical: 12 - statePaddingOffset },
+          !labelHidden && { paddingVertical: fieldFloatingPaddingY - statePaddingOffset },
+          multiline && { paddingVertical: fieldMultilinePaddingY - statePaddingOffset },
           shellStyle,
         ])}>
         {iconNode}
@@ -172,9 +189,11 @@ export function TextField({
               style={StyleSheet.flatten([
                 styles.floatingLabel,
                 active && styles.floatingLabelActive,
+                !active && styles.floatingLabelEmpty,
+                !active && getEmptyLabelSizeStyle(sizePreset, multiline),
               ])}
               tone={stateTones.label}
-              variant={active ? 'eyebrow' : 'body'}>
+              variant={active ? 'label.default' : 'body.prominent'}>
               {label}
             </AppText>
           )}
@@ -200,8 +219,10 @@ export function TextField({
               !labelHidden && !active && styles.inputEmpty,
               sizePreset === 'sm' && styles.inputSizeSm,
               sizePreset === 'md' && styles.inputSizeMd,
+              sizePreset === 'lg' && styles.inputSizeLg,
               multiline && styles.inputMultiline,
               variant === 'stage' && styles.stageInput,
+              (resolvedState === 'focused' || filled) && styles.inputEmphasized,
               { color: stateColors.input },
               inputStyle,
             ])}
@@ -210,7 +231,7 @@ export function TextField({
             {...props}
           />
         </View>
-        {rightSlot ? <View style={styles.rightSlot}>{rightSlot}</View> : null}
+        {rightSlot ? <View style={StyleSheet.flatten([styles.rightSlot, rightSlotFlush && styles.rightSlotFlush])}>{rightSlot}</View> : null}
       </NativePressable>
       <FieldMessage error={error} helperText={helperText} successText={successText} />
     </View>
@@ -225,7 +246,9 @@ export function SelectField({
   helperText,
   icon,
   label,
+  menuStyle,
   onChangeValue,
+  optionTextStyle,
   options,
   placeholder,
   readonly,
@@ -240,7 +263,8 @@ export function SelectField({
   const [open, setOpen] = useState(false);
   const [menuFrame, setMenuFrame] = useState<SelectMenuFrame | null>(null);
   const selected = options.find((item) => item.value === value);
-  const resolvedState = resolveFieldState({ disabled, error, fieldState, focused: focused || open, readonly, value });
+  const filled = hasTextValue(value);
+  const resolvedState = resolveFieldState({ disabled, error, fieldState, focused: focused || open, readonly });
   const stateColors = getFieldStateColors(colors, resolvedState);
   const stateTones = getFieldStateTextTones(resolvedState);
   const stateBorderWidth = getFieldBorderWidth(resolvedState);
@@ -248,7 +272,7 @@ export function SelectField({
   const iconTone = getFieldStateIconTone(resolvedState);
   const active = focused || open || hasTextValue(value);
   const iconNode =
-    typeof icon === 'string' ? <AppIcon name={icon as AppIconName} size={15} tone={iconTone} /> : icon ?? null;
+    typeof icon === 'string' ? <AppIcon name={icon as AppIconName} sizeVariant="xs" tone={iconTone} /> : icon ?? null;
   const fieldText = selected?.label ?? (active ? value : '');
   const canEdit = !disabled && !readonly;
   const usesWebMenu = Platform.OS === 'web' && canEdit;
@@ -277,9 +301,9 @@ export function SelectField({
             backgroundColor: stateColors.background,
             borderColor: stateColors.border,
             borderWidth: stateBorderWidth,
-            paddingHorizontal: 14 - statePaddingOffset,
+            paddingHorizontal: fieldHorizontalPadding - statePaddingOffset,
           },
-          { paddingVertical: 7 - statePaddingOffset },
+          { paddingVertical: fieldFloatingPaddingY - statePaddingOffset },
           shellStyle,
         ])}>
         {iconNode}
@@ -289,23 +313,27 @@ export function SelectField({
             style={StyleSheet.flatten([
               styles.floatingLabel,
               active && styles.floatingLabelActive,
+              !active && styles.floatingLabelEmpty,
+              !active && styles.floatingLabelEmptyDefault,
             ])}
             tone={stateTones.label}
-            variant={active ? 'eyebrow' : 'body'}>
+            variant={active ? 'label.default' : 'body.prominent'}>
             {label}
           </AppText>
           <AppText
             numberOfLines={1}
             style={StyleSheet.flatten([
               styles.selectText,
+              styles.selectValueText,
+              (resolvedState === 'focused' || filled) && styles.inputEmphasized,
               !active && styles.inputEmpty,
             ])}
             tone={stateTones.input}
-            variant="body">
+            variant="body.prominent">
             {fieldText || placeholder}
           </AppText>
         </View>
-        <AppIcon name="icon.system.chevron_down" size={15} />
+        <AppIcon name="icon.system.chevron_down" sizeVariant="xs" />
         {usesWebMenu ? (
           <NativePressable
             accessibilityLabel={label}
@@ -363,6 +391,7 @@ export function SelectField({
                 styles.webSelectMenu,
                 menuFrame ? getWebSelectMenuFrameStyle(menuFrame) : null,
                 { backgroundColor: colors.surface.raised, borderColor: colors.border.default },
+                menuStyle,
               ])}>
               {placeholder ? (
                 <SelectOptionRow
@@ -373,6 +402,7 @@ export function SelectField({
                     closeWebMenu();
                   }}
                   selected={value === ''}
+                  textStyle={optionTextStyle}
                 />
               ) : null}
               {options.map((item) => (
@@ -385,6 +415,7 @@ export function SelectField({
                     closeWebMenu();
                   }}
                   selected={item.value === value}
+                  textStyle={optionTextStyle}
                 />
               ))}
             </View>
@@ -442,11 +473,13 @@ function SelectOptionRow({
   label,
   onPress,
   selected,
+  textStyle,
 }: {
   disabled?: boolean;
   label: string;
   onPress: () => void;
   selected: boolean;
+  textStyle?: StyleProp<TextStyle>;
 }) {
   const colors = useThemeColors();
 
@@ -456,16 +489,16 @@ function SelectOptionRow({
       accessibilityRole="button"
       accessibilityState={{ disabled, selected }}
       disabled={disabled}
-      minTouch={40}
+      minTouch={fieldSelectOptionMinTouch}
       onPress={onPress}
       style={StyleSheet.flatten([
         styles.webSelectOption,
         {
-          backgroundColor: selected ? `${colors.brand.fg}14` : 'transparent',
-          borderColor: selected ? colors.brand.fg : 'transparent',
+          backgroundColor: 'transparent',
+          borderColor: selected ? colors.text.primary : 'transparent',
         },
       ])}>
-      <AppText numberOfLines={1} tone={selected ? 'brand' : disabled ? 'dim' : 'default'} variant="caption">
+      <AppText numberOfLines={1} style={textStyle} tone={disabled ? 'dim' : 'default'} variant="caption">
         {label}
       </AppText>
     </NativePressable>
@@ -528,14 +561,12 @@ function resolveFieldState({
   fieldState,
   focused,
   readonly,
-  value,
 }: {
   disabled?: boolean;
   error?: string;
   fieldState: FormFieldState;
   focused: boolean;
   readonly?: boolean;
-  value: unknown;
 }): FormFieldState {
   if (disabled || fieldState === 'disabled') {
     return 'disabled';
@@ -553,12 +584,8 @@ function resolveFieldState({
     return 'focused';
   }
 
-  if (fieldState === 'validating' || fieldState === 'success') {
+  if (fieldState === 'inputting' || fieldState === 'validating' || fieldState === 'success') {
     return fieldState;
-  }
-
-  if (fieldState === 'inputting' || hasTextValue(value)) {
-    return 'inputting';
   }
 
   return 'default';
@@ -566,11 +593,11 @@ function resolveFieldState({
 
 function getFieldStateColors(colors: ThemeColors, state: FormFieldState) {
   const base = {
-    background: colors.surface.panel,
+    background: 'transparent',
     border: colors.border.default,
     icon: colors.text.tertiary,
     input: colors.text.primary,
-    label: colors.text.tertiary,
+    label: colors.text.primary,
   };
 
   if (state === 'disabled') {
@@ -580,7 +607,18 @@ function getFieldStateColors(colors: ThemeColors, state: FormFieldState) {
       border: colors.border.subtle,
       icon: colors.text.tertiary,
       input: colors.text.tertiary,
-      label: colors.text.tertiary,
+      label: colors.text.primary,
+    };
+  }
+
+  if (state === 'readonly') {
+    return {
+      ...base,
+      background: colors.surface.subtle,
+      border: colors.border.subtle,
+      icon: colors.text.tertiary,
+      input: colors.text.secondary,
+      label: colors.text.primary,
     };
   }
 
@@ -611,11 +649,11 @@ function getFieldStateColors(colors: ThemeColors, state: FormFieldState) {
     };
   }
 
-  if (state === 'focused' || state === 'readonly') {
+  if (state === 'focused') {
     return {
       ...base,
-      border: state === 'readonly' ? colors.border.default : colors.text.primary,
-      label: colors.text.secondary,
+      border: colors.text.primary,
+      label: colors.text.primary,
     };
   }
 
@@ -632,10 +670,10 @@ function getFieldStateTextTones(state: FormFieldState): { input: AppTextTone; la
   }
 
   if (state === 'validating' || state === 'success' || state === 'focused' || state === 'readonly') {
-    return { input: 'default', label: 'muted' };
+    return { input: 'default', label: 'default' };
   }
 
-  return { input: 'default', label: 'dim' };
+  return { input: 'default', label: 'default' };
 }
 
 function getFieldStateIconTone(state: FormFieldState): IconTone {
@@ -647,11 +685,31 @@ function getFieldStateIconTone(state: FormFieldState): IconTone {
 }
 
 function getFieldBorderWidth(state: FormFieldState) {
-  if (state === 'focused' || state === 'error' || state === 'success') {
-    return lineWidth.selected;
+  if (state === 'focused' || state === 'inputting' || state === 'error') {
+    return fieldActiveBorderWidth;
   }
 
   return fieldBaseBorderWidth;
+}
+
+function getEmptyLabelSizeStyle(sizePreset: FormFieldSizePreset, multiline?: boolean) {
+  if (multiline) {
+    return styles.floatingLabelEmptyMultiline;
+  }
+
+  if (sizePreset === 'sm') {
+    return styles.floatingLabelEmptySm;
+  }
+
+  if (sizePreset === 'md') {
+    return styles.floatingLabelEmptyMd;
+  }
+
+  if (sizePreset === 'lg') {
+    return styles.floatingLabelEmptyLg;
+  }
+
+  return styles.floatingLabelEmptyDefault;
 }
 
 const styles = StyleSheet.create({
@@ -659,18 +717,42 @@ const styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
     right: 0,
-    top: 14,
   },
   floatingLabelActive: {
-    top: 0,
+    top: spacing.none,
+    transform: [{ translateY: spacing.none }],
+  },
+  floatingLabelEmpty: {
+    ...typography.bodyLg,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
+  },
+  floatingLabelEmptyDefault: {
+    top: fieldEmptyLabelDefaultTop,
+  },
+  floatingLabelEmptyLg: {
+    top: fieldEmptyLabelLgTop,
+  },
+  floatingLabelEmptyMd: {
+    top: fieldEmptyLabelMdTop,
+  },
+  floatingLabelEmptyMultiline: {
+    top: '50%',
+    transform: [{ translateY: -typography.bodyLg.lineHeight / 2 }],
+  },
+  floatingLabelEmptySm: {
+    top: fieldEmptyLabelSmTop,
   },
   input: {
     flex: 1,
-    ...typography.bodySm,
+    ...typography.bodyLg,
     minHeight: size.input.contentMinHeight,
     minWidth: 0,
     ...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as object) : null),
     padding: 0,
+  },
+  inputEmphasized: {
+    fontWeight: typography.titleSm.fontWeight,
   },
   inputEmpty: {
     opacity: 0,
@@ -697,23 +779,31 @@ const styles = StyleSheet.create({
   rightSlot: {
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: fieldRightSlotMinTouch,
+    minWidth: fieldRightSlotMinTouch,
+  },
+  rightSlotFlush: {
+    marginRight: -fieldRightSlotFlushOffset,
   },
   selectText: {
     paddingTop: 16,
+  },
+  selectValueText: {
+    ...typography.bodyLg,
   },
   shell: {
     alignItems: 'center',
     borderRadius: radius.md,
     borderWidth: fieldBaseBorderWidth,
     flexDirection: 'row',
-    gap: 10,
+    gap: spacing.sm,
     minHeight: size.input.singleLineMinHeight,
-    paddingHorizontal: 14,
+    paddingHorizontal: fieldHorizontalPadding,
     position: 'relative',
   },
   shellFloating: {
     minHeight: size.input.floatingMinHeight,
-    paddingVertical: 7,
+    paddingVertical: fieldFloatingPaddingY,
   },
   shellPill: {
     borderRadius: radius.full,
@@ -724,16 +814,22 @@ const styles = StyleSheet.create({
   shellSizeSm: {
     minHeight: size.control.sm,
   },
+  shellSizeLg: {
+    minHeight: size.input.largeFloatingMinHeight,
+  },
   shellMultiline: {
     alignItems: 'flex-start',
     minHeight: size.input.multilineMinHeight,
-    paddingVertical: 12,
+    paddingVertical: fieldMultilinePaddingY,
   },
   inputSizeMd: {
     minHeight: size.control.md - lineWidth.selected * 2,
   },
   inputSizeSm: {
     minHeight: size.control.sm - lineWidth.selected * 2,
+  },
+  inputSizeLg: {
+    minHeight: size.input.largeContentMinHeight,
   },
   stageInput: {
     ...typography.quoteLg,
@@ -782,8 +878,8 @@ const styles = StyleSheet.create({
   },
   webSelectOption: {
     borderRadius: radius.xs,
-    borderWidth: lineWidth.hairline,
-    minHeight: 40,
+    borderWidth: lineWidth.selected,
+    minHeight: fieldSelectOptionMinTouch,
     minWidth: 0,
     paddingHorizontal: spacing.sm,
   },

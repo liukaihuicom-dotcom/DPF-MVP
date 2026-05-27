@@ -1,10 +1,10 @@
-import { router } from 'expo-router';
 import { PropsWithChildren, ReactNode } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInputProps, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { layout, lineWidth, radius, size, spacing, typography } from '@/src/theme/tokens';
 import { impactLight } from '@/src/feedback/haptics';
+import { navigateBackOrReplace, navigateReplace, safeRouteTargets, type NavigationTarget } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { localeOptions, type Locale } from '@/src/i18n/translations';
 
@@ -14,14 +14,21 @@ import type { AppIconName } from './AppIcon';
 import { bottomSheetPresets, useBottomSheet } from './BottomSheet';
 import { FlagIcon } from './FlagIcon';
 import { HeaderIconButton } from './HeaderIconButton';
+import { useKeyboardVisible } from './layout/useKeyboardVisible';
 import { TextField } from './TextField';
 import { AppText } from './Typography';
 
 type AuthShellProps = PropsWithChildren<{
+  backTarget?: NavigationTarget;
+  closeTarget?: NavigationTarget;
   descriptionAction?: ReactNode;
+  /**
+   * @deprecated Use navMode="close" with closeTarget instead.
+   */
   closeToLaunch?: boolean;
   footer?: ReactNode;
   kicker?: string;
+  navMode?: 'close' | 'back' | 'none';
   onBackPress?: () => void;
   progressStep?: number;
   progressTotal?: number;
@@ -34,21 +41,26 @@ type AuthShellProps = PropsWithChildren<{
 type AuthTextFieldProps = TextInputProps & {
   containerStyle?: React.ComponentProps<typeof TextField>['containerStyle'];
   error?: string;
+  fieldState?: React.ComponentProps<typeof TextField>['fieldState'];
   helperText?: string;
   icon?: AppIconName;
   label: string;
   labelHidden?: React.ComponentProps<typeof TextField>['labelHidden'];
   rightSlot?: ReactNode;
+  rightSlotFlush?: React.ComponentProps<typeof TextField>['rightSlotFlush'];
   shape?: React.ComponentProps<typeof TextField>['shape'];
   sizePreset?: React.ComponentProps<typeof TextField>['sizePreset'];
 };
 
 export function AuthShell({
+  backTarget,
   children,
+  closeTarget = safeRouteTargets.launch,
   closeToLaunch,
   descriptionAction,
   footer,
   kicker: _kicker,
+  navMode,
   onBackPress,
   progressStep,
   progressTotal = 3,
@@ -58,39 +70,43 @@ export function AuthShell({
   title,
 }: AuthShellProps) {
   const { colors, resolvedThemeMode, t } = useProductSettings();
+  const keyboardVisible = useKeyboardVisible();
   const backgroundColor = resolvedThemeMode === 'lightBroker' ? colors.surface.panel : colors.surface.canvas;
+  const resolvedNavMode = navMode ?? (closeToLaunch ? 'close' : 'back');
+  const bottomActionInset = keyboardVisible ? layout.bottomActionArea.keyboardContentInset : layout.bottomActionArea.contentInset;
+  const bottomActionPadding = keyboardVisible ? layout.bottomActionArea.keyboardPaddingBottom : layout.bottomActionArea.paddingBottom;
 
   const body = (
     <SafeAreaView edges={['top']} style={StyleSheet.flatten([styles.safe, { backgroundColor }])}>
       <View style={styles.topBar}>
-        <HeaderIconButton
-          accessibilityLabel={closeToLaunch ? t('common.cancel') : t('top.back')}
-          icon={closeToLaunch ? 'icon.system.close' : 'icon.system.back'}
-          onPress={() => {
-            void impactLight();
-            if (onBackPress) {
-              onBackPress();
-              return;
-            }
+        {resolvedNavMode === 'none' ? (
+          <View style={styles.topSpacer} />
+        ) : (
+          <HeaderIconButton
+            accessibilityLabel={resolvedNavMode === 'close' ? t('common.cancel') : t('top.back')}
+            icon={resolvedNavMode === 'close' ? 'icon.system.close' : 'icon.system.back'}
+            onPress={() => {
+              void impactLight();
+              if (onBackPress) {
+                onBackPress();
+                return;
+              }
 
-            if (closeToLaunch) {
-              router.replace('/launch');
-              return;
-            }
+              if (resolvedNavMode === 'close') {
+                navigateReplace(closeTarget);
+                return;
+              }
 
-            if (router.canGoBack()) {
-              router.back();
-            } else {
-              router.replace('/launch');
-            }
-          }}
-          tone="default"
-        />
-        {rightAction ? <View style={styles.rightAction}>{rightAction}</View> : <View style={styles.topSpacer} />}
+              navigateBackOrReplace(backTarget ?? safeRouteTargets.launch);
+            }}
+            tone="default"
+          />
+        )}
+        <View style={styles.rightAction}>{rightAction ?? <AuthLanguageAction />}</View>
       </View>
 
       <ScrollView
-        contentContainerStyle={StyleSheet.flatten([styles.content, { paddingBottom: footer ? 118 : spacing.xl }])}
+        contentContainerStyle={StyleSheet.flatten([styles.content, { paddingBottom: footer ? bottomActionInset : spacing.xl }])}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
         {progressStep ? <AuthProgressBar current={progressStep} total={progressTotal} /> : null}
@@ -107,8 +123,8 @@ export function AuthShell({
       </ScrollView>
 
       {footer ? (
-        <SafeAreaView edges={['bottom']} style={StyleSheet.flatten([styles.footerSafe, { backgroundColor }])}>
-          <View style={styles.footer}>{footer}</View>
+        <SafeAreaView edges={keyboardVisible ? [] : ['bottom']} style={StyleSheet.flatten([styles.footerSafe, { backgroundColor }])}>
+          <View style={StyleSheet.flatten([styles.footer, { paddingBottom: bottomActionPadding }])}>{footer}</View>
         </SafeAreaView>
       ) : null}
     </SafeAreaView>
@@ -144,18 +160,20 @@ function AuthProgressBar({ current, total }: { current: number; total: number })
   );
 }
 
-export function AuthTextField({ containerStyle, error, helperText, icon, label, labelHidden, rightSlot, shape, sizePreset, style, ...props }: AuthTextFieldProps) {
+export function AuthTextField({ containerStyle, error, fieldState, helperText, icon, label, labelHidden, rightSlot, rightSlotFlush, shape, sizePreset, style, ...props }: AuthTextFieldProps) {
   return (
     <TextField
       autoCapitalize="none"
       containerStyle={containerStyle}
       error={error}
+      fieldState={fieldState}
       helperText={helperText}
       icon={icon}
       inputStyle={StyleSheet.flatten([styles.authInputText, style])}
       label={label}
       labelHidden={labelHidden}
       rightSlot={rightSlot}
+      rightSlotFlush={rightSlotFlush}
       shape={shape}
       sizePreset={sizePreset}
       {...props}
@@ -254,7 +272,7 @@ function AuthLanguageSheetContent({
             <AppText numberOfLines={1} style={styles.languageName} variant={active ? 'titleMd' : 'bodyLg'}>
               {option.label}
             </AppText>
-            {active ? <AppIcon name="icon.status.check" /> : null}
+            {active ? <AppIcon name="icon.status.check" sizeVariant="sm" styleVariant="fill" /> : null}
           </NativePressable>
         );
       })}
@@ -294,7 +312,6 @@ export function AuthDescriptionAction({
 
 const styles = StyleSheet.create({
   authInputText: {
-    ...typography.bodyLg,
     ...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as object) : null),
   },
   authLinkText: {
@@ -330,10 +347,9 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   footer: {
-    gap: spacing.sm,
-    paddingBottom: spacing.md,
-    paddingHorizontal: layout.screenPaddingX,
-    paddingTop: spacing.sm,
+    gap: layout.bottomActionArea.gap,
+    paddingHorizontal: layout.bottomActionArea.paddingX,
+    paddingTop: layout.bottomActionArea.paddingTop,
   },
   footerSafe: {},
   form: {
@@ -345,13 +361,13 @@ const styles = StyleSheet.create({
   inlineSwitch: {
     alignItems: 'flex-start',
     alignSelf: 'flex-start',
-    gap: 2,
+    gap: spacing.xxs,
     justifyContent: 'center',
     paddingHorizontal: 0,
   },
   linkButton: {
     alignItems: 'center',
-    gap: 2,
+    gap: spacing.xxs,
     justifyContent: 'center',
     paddingHorizontal: spacing.xs,
   },
@@ -382,7 +398,7 @@ const styles = StyleSheet.create({
   },
   rightAction: {
     alignItems: 'center',
-    minWidth: 44,
+    minWidth: size.input.authOtpCellWidth,
   },
   safe: {
     flex: 1,
@@ -391,12 +407,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    minHeight: 58,
+    minHeight: size.input.floatingMinHeight,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
   },
   topSpacer: {
-    width: 44,
+    width: size.input.authOtpCellWidth,
   },
   titleText: {
     minWidth: 0,

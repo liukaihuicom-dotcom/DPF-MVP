@@ -115,7 +115,7 @@ export function UpgradeChatCard({ request, readonly }: UpgradeChatCardProps) {
 
       {!readonly && pending ? (
         <View style={StyleSheet.flatten([styles.waitingBox, { backgroundColor: `${colors.status.warning.fg}10`, borderColor: colors.status.warning.fg }])}>
-          <AppIcon tone="amber" name="icon.trading.history" size={15} />
+          <AppIcon tone="amber" name="icon.trading.history" sizeVariant="xs" />
           <AppText tone="amber" variant="caption">
             {t('upgrade.pendingHint')}
           </AppText>

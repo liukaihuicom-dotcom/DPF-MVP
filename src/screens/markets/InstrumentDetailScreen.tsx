@@ -10,6 +10,7 @@ import { AppIcon } from '@/src/components/AppIcon';
 import { HeaderIconButton } from '@/src/components/HeaderIconButton';
 import { getQuoteChangeVisual } from '@/src/components/quoteVisuals';
 import { Screen } from '@/src/components/Screen';
+import { SegmentedTabs } from '@/src/components/SegmentedTabs';
 import { AppText } from '@/src/components/Typography';
 import type { Instrument } from '@/src/domain/types';
 import { directionLabel, formatMoney, formatNumber, formatPercent, formatPrice, localizeText } from '@/src/domain/format';
@@ -17,10 +18,11 @@ import { calculateMargin, getDisplayChange } from '@/src/domain/trading';
 import { useToast } from '@/src/feedback/Toast';
 import type { Locale, TranslationKey } from '@/src/i18n/translations';
 import { impactLight } from '@/src/feedback/haptics';
+import { navigateBackOrReplace, safeRouteTargets } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { useBroker } from '@/src/state/BrokerStore';
 import type { ThemeColors } from '@/src/theme/colors';
-import { lineWidth, typography } from '@/src/theme/tokens';
+import { lineWidth, radius, spacing, typography } from '@/src/theme/tokens';
 
 type Timeframe = '1D' | '1W' | '1M' | '3M' | '1Y';
 type DetailTabKey = 'chart' | 'news' | 'signals' | 'specs';
@@ -46,7 +48,7 @@ export default function InstrumentDetailScreen() {
 
   if (!instrument) {
     return (
-      <Screen back title={t('common.invalidInstrument')}>
+      <Screen back backHref="/markets" title={t('common.invalidInstrument')}>
         <AppText variant="title">{t('common.invalidInstrument')}</AppText>
       </Screen>
     );
@@ -58,6 +60,18 @@ export default function InstrumentDetailScreen() {
   const sampleLots = instrument.symbol === 'XAU/USD' ? 0.2 : 0.1;
   const weekHigh = Math.max(instrument.dayHigh, ...instrument.sparkline);
   const weekLow = Math.min(instrument.dayLow, ...instrument.sparkline);
+  const quoteMetricColumns: { label: string; tone?: 'default' | 'down' | 'up'; value: string }[][] = [
+    [
+      { label: t('instrument.open'), value: formatPrice(instrument, instrument.previousClose) },
+      { label: t('instrument.dayHigh'), tone: 'down', value: formatPrice(instrument, instrument.dayHigh) },
+      { label: t('instrument.weekHigh'), value: formatPrice(instrument, weekHigh) },
+    ],
+    [
+      { label: t('instrument.prevClose'), value: formatPrice(instrument, instrument.previousClose) },
+      { label: t('instrument.dayLow'), tone: 'up', value: formatPrice(instrument, instrument.dayLow) },
+      { label: t('common.spread'), value: `${instrument.spread}` },
+    ],
+  ];
   const showPlaceholder = (action: string) => {
     void impactLight();
     toast.show({
@@ -86,7 +100,7 @@ export default function InstrumentDetailScreen() {
                 icon="icon.system.back"
                 onPress={() => {
                   void impactLight();
-                  router.back();
+                  navigateBackOrReplace(safeRouteTargets.markets);
                 }}
                 tone="default"
               />
@@ -110,71 +124,61 @@ export default function InstrumentDetailScreen() {
               </View>
             </View>
 
-            <View style={styles.identityBlock}>
-              <InstrumentIcon instrument={instrument} size={52} />
-              <View style={styles.identityCopy}>
-                <AppText adjustsFontSizeToFit numberOfLines={1} style={styles.instrumentTitle}>
-                  {instrument.symbol}
-                </AppText>
-                <AppText numberOfLines={1} style={styles.instrumentSubtitle} tone="dim">
-                  {localizeText(instrument.name, locale)}
-                </AppText>
+            <View style={StyleSheet.flatten([styles.quoteArea, { backgroundColor: colors.surface.panel }])}>
+              <View style={styles.identityBlock}>
+                <InstrumentIcon instrument={instrument} size={44} />
+                <View style={styles.identityCopy}>
+                  <AppText adjustsFontSizeToFit numberOfLines={1} style={styles.instrumentTitle}>
+                    {instrument.symbol}
+                  </AppText>
+                  <AppText numberOfLines={1} style={styles.instrumentSubtitle} tone="dim">
+                    {localizeText(instrument.name, locale)}
+                  </AppText>
+                </View>
               </View>
-            </View>
 
-            <View style={styles.priceBlock}>
-              <View>
-                <AppText style={styles.lastPrice}>{formatPrice(instrument, instrument.bid)}</AppText>
+              <View style={styles.priceBlock}>
+                <AppText adjustsFontSizeToFit numberOfLines={1} style={styles.lastPrice}>
+                  {formatPrice(instrument, instrument.bid)}
+                </AppText>
                 <AppText style={styles.inlineChange} tone={quoteVisual.tone}>
                   {changePercent >= 0 ? '▲' : '▼'} {change > 0 ? '+' : ''}
                   {formatPrice(instrument, change)} ({formatPercent(changePercent)})
                 </AppText>
               </View>
-              <QuoteStat label={t('instrument.dayHigh')} colors={colors} tone="down" value={formatPrice(instrument, instrument.dayHigh)} />
-            </View>
 
-            <View style={styles.quoteInfoGrid}>
-              <View style={styles.quoteInfoColumn}>
-                <QuoteStat label={t('instrument.open')} colors={colors} value={formatPrice(instrument, instrument.previousClose)} />
-                <QuoteStat label={t('instrument.prevClose')} colors={colors} value={formatPrice(instrument, instrument.previousClose)} />
-              </View>
-              <View style={styles.quoteInfoColumn}>
-                <QuoteStat label={t('instrument.dayLow')} colors={colors} tone="up" value={formatPrice(instrument, instrument.dayLow)} />
-                <QuoteStat label={t('instrument.weekHigh')} colors={colors} value={formatPrice(instrument, weekHigh)} />
-              </View>
-              <View style={styles.quoteInfoColumn}>
-                <QuoteStat label={t('instrument.weekLow')} colors={colors} value={formatPrice(instrument, weekLow)} />
-                <QuoteStat label={t('common.spread')} colors={colors} value={`${instrument.spread}`} />
+              <View style={styles.quoteInfoGrid}>
+                {quoteMetricColumns.map((column) => (
+                  <View key={column.map((item) => item.label).join('-')} style={styles.quoteInfoColumn}>
+                    {column.map((item) => (
+                      <QuoteStat key={item.label} label={item.label} tone={item.tone} value={item.value} />
+                    ))}
+                  </View>
+                ))}
               </View>
             </View>
 
             <View style={StyleSheet.flatten([styles.divider, { backgroundColor: colors.border.subtle }])} />
 
-            <View style={styles.detailTabs}>
-              {detailTabs.map((tab) => {
-                const selected = selectedTab === tab.id;
+            <SegmentedTabs
+              equalWidth={false}
+              items={detailTabs.map((tab) => {
                 const label = t(tab.labelKey);
 
-                return (
-                  <NativePressable
-                    accessibilityLabel={label}
-                    accessibilityRole="tab"
-                    accessibilityState={{ selected }}
-                    key={tab.id}
-                    minTouch={40}
-                    onPress={() => {
-                      void impactLight();
-                      setSelectedTab(tab.id);
-                    }}
-                    style={styles.detailTabButton}>
-                    <AppText style={styles.detailTabText} tone={selected ? 'default' : 'muted'}>
-                      {label}
-                    </AppText>
-                    <View style={StyleSheet.flatten([styles.detailTabIndicator, { backgroundColor: selected ? colors.brand.fg : 'transparent' }])} />
-                  </NativePressable>
-                );
+                return {
+                  accessibilityLabel: label,
+                  label,
+                  value: tab.id,
+                };
               })}
-            </View>
+              onValueChange={(nextTab) => {
+                void impactLight();
+                setSelectedTab(nextTab);
+              }}
+              style={styles.detailTabs}
+              value={selectedTab}
+              variant="underline"
+            />
 
             {selectedTab === 'chart' ? (
               <>
@@ -413,7 +417,7 @@ function VolumeBars({ color, colors, values, width }: { color: string; colors: T
   );
 }
 
-function QuoteStat({ label, tone = 'default', value }: { label: string; colors: ThemeColors; tone?: 'default' | 'down' | 'up'; value: string }) {
+function QuoteStat({ label, tone = 'default', value }: { label: string; tone?: 'default' | 'down' | 'up'; value: string }) {
   return (
     <View style={styles.quoteStat}>
       <AppText numberOfLines={1} style={styles.quoteStatLabel} tone="dim">
@@ -518,29 +522,16 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: lineWidth.hairline,
-    marginTop: 18,
+    marginTop: spacing.md,
   },
   detailPage: {
     minHeight: 780,
     paddingHorizontal: 16,
     paddingTop: 12,
   },
-  detailTabButton: {
-    gap: 6,
-    justifyContent: 'flex-end',
-    minHeight: 42,
-  },
-  detailTabIndicator: {
-    borderRadius: 999,
-    height: 3,
-  },
   detailTabs: {
-    flexDirection: 'row',
     gap: 24,
     marginTop: 8,
-  },
-  detailTabText: {
-    ...typography.titleSm,
   },
   footerSafe: {
     borderTopWidth: lineWidth.hairline,
@@ -549,10 +540,9 @@ const styles = StyleSheet.create({
     width: lineWidth.hairline,
   },
   identityBlock: {
-    alignItems: 'flex-end',
+    alignItems: 'center',
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 30,
+    gap: spacing.sm,
     minWidth: 0,
   },
   identityCopy: {
@@ -560,16 +550,15 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   inlineChange: {
-    ...typography.titleMd,
-    marginTop: 4,
+    ...typography.bodyMd,
+    marginTop: spacing.xxs,
   },
   instrumentSubtitle: {
-    ...typography.bodySm,
+    ...typography.captionSm,
     minWidth: 0,
-    paddingBottom: 7,
   },
   instrumentTitle: {
-    ...typography.displayXl,
+    ...typography.displayLg,
   },
   lastPrice: {
     ...typography.quote,
@@ -629,29 +618,40 @@ const styles = StyleSheet.create({
   },
   priceBlock: {
     alignItems: 'flex-start',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 18,
+    gap: spacing.xs,
+    marginTop: spacing.xs,
+  },
+  quoteArea: {
+    borderRadius: radius.none,
+    gap: spacing.sm,
+    marginTop: spacing.lg,
   },
   quoteInfoColumn: {
     flex: 1,
-    gap: 10,
+    gap: spacing.xs,
     minWidth: 0,
   },
   quoteInfoGrid: {
     flexDirection: 'row',
-    gap: 14,
-    marginTop: 16,
+    gap: spacing.lg,
+    marginTop: spacing.xxs,
   },
   quoteStat: {
-    gap: 2,
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'space-between',
+    minHeight: spacing.xl,
     minWidth: 0,
+    paddingVertical: spacing.xxs,
   },
   quoteStatLabel: {
     ...typography.captionSm,
   },
   quoteStatValue: {
-    ...typography.titleMd,
+    ...typography.caption,
+    flexShrink: 1,
+    textAlign: 'right',
   },
   riskPanel: {
     borderRadius: 16,

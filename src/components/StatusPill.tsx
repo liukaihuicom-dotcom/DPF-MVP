@@ -9,8 +9,10 @@ import { AppIcon, type AppIconName, type IconTone } from './AppIcon';
 import { AppText, type AppTextTone } from './Typography';
 
 export type StatusPillTone = 'success' | 'warning' | 'danger' | 'info' | 'neutral' | 'brand' | 'up' | 'down';
+export type StatusPillAppearance = 'filled' | 'outline';
 
 export type StatusPillProps = {
+  appearance?: StatusPillAppearance;
   compact?: boolean;
   icon?: AppIconName | ReactNode;
   label: string;
@@ -37,26 +39,36 @@ function resolveTone(colors: ThemeColors, tone: StatusPillTone): { color: string
       return { color: colors.market.down.fg, iconTone: 'down', textTone: 'down' };
     case 'neutral':
     default:
-      return { color: colors.text.tertiary, iconTone: 'primary', textTone: 'muted' };
+      return { color: colors.text.tertiary, iconTone: 'tertiary', textTone: 'muted' };
   }
 }
 
-export function StatusPill({ compact, icon, label, size = compact ? 'sm' : 'md', style, tone }: StatusPillProps) {
+export function StatusPill({ appearance = 'filled', compact, icon, label, size = compact ? 'sm' : 'md', style, tone }: StatusPillProps) {
   const colors = useThemeColors();
   const toneConfig = resolveTone(colors, tone);
   const isSmall = size === 'sm';
+  const isOutline = appearance === 'outline';
   const iconNode =
-    typeof icon === 'string' ? <AppIcon name={icon as AppIconName} size={isSmall ? 11 : 14} tone={toneConfig.iconTone} /> : icon ?? null;
+    typeof icon === 'string' ? <AppIcon name={icon as AppIconName} sizeVariant={isSmall ? 'micro' : 'xs'} tone={toneConfig.iconTone} /> : icon ?? null;
+  const semanticBackground = tone === 'neutral' ? colors.surface.subtle : `${toneConfig.color}12`;
+  const semanticBorder = tone === 'neutral' ? colors.border.subtle : `${toneConfig.color}55`;
 
   return (
     <View
       style={StyleSheet.flatten([
         styles.pill,
         isSmall && styles.small,
-        {
-          backgroundColor: tone === 'neutral' ? colors.surface.subtle : `${toneConfig.color}12`,
-          borderColor: tone === 'neutral' ? colors.border.subtle : `${toneConfig.color}55`,
-        },
+        isOutline
+          ? {
+              backgroundColor: 'transparent',
+              borderColor: semanticBorder,
+              borderWidth: lineWidth.hairline,
+            }
+          : {
+              backgroundColor: semanticBackground,
+              borderColor: 'transparent',
+              borderWidth: lineWidth.none,
+            },
         style,
       ])}>
       {iconNode}
@@ -71,7 +83,6 @@ const styles = StyleSheet.create({
   pill: {
     alignItems: 'center',
     borderRadius: radius.full,
-    borderWidth: lineWidth.hairline,
     flexDirection: 'row',
     gap: 5,
     minHeight: 30,

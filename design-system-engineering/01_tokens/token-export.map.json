@@ -3,7 +3,8 @@
   "exports": {
     "reactNative": {
       "runtimeTokens": "src/theme/tokens.ts",
-      "runtimeColors": "src/theme/colors.ts"
+      "runtimeColors": "src/theme/colors.ts",
+      "semanticSpacing": "layout.* spacing roles"
     },
     "cssVariables": {
       "file": "design-system-engineering/08_code_mapping/css-variable.mapping.css",
@@ -21,6 +22,13 @@
   "blockedExports": [
     "Page-local hardcoded colors",
     "Page-local spacing scales",
+    "Page-local semantic spacing aliases",
     "Unmapped icon colors"
-  ]
+  ],
+  "package": "@dpf/design-tokens",
+  "compatibilityRuntime": {
+    "runtimeTokens": "src/theme/tokens.ts",
+    "runtimeColors": "src/theme/colors.ts",
+    "semanticSpacing": "layout.moduleGap, layout.sectionGap, layout.cardPaddingX, layout.cardPaddingY, layout.cardPaddingCompactX, layout.cardPaddingCompactY, layout.cardPadding, layout.cardPaddingCompact, layout.listRowPaddingX, layout.formFieldTextInset, layout.formGroupGap"
+  }
 }

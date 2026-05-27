@@ -2,6 +2,8 @@ import type { Href } from 'expo-router';
 
 import type { AuthChannel } from '@/src/domain/types';
 
+type AuthRouteTarget = Extract<Href, string>;
+
 export const DEMO_OTP = '123456';
 export const RESEND_SECONDS = 15;
 
@@ -39,12 +41,28 @@ export function sanitizePhone(value: string) {
   return value.replace(/[^\d]/g, '').slice(0, 14);
 }
 
-export function safeRedirect(value: string | undefined): Href {
+export function safeRedirect(value: string | undefined): AuthRouteTarget {
   if (!value || !value.startsWith('/') || value.startsWith('//')) {
-    return '/markets' as Href;
+    return '/markets' as AuthRouteTarget;
   }
 
-  return value as Href;
+  return value as AuthRouteTarget;
+}
+
+export function buildAuthRoute(
+  path: '/auth' | '/auth/register' | '/auth/forgot-password',
+  redirect: AuthRouteTarget,
+  params?: Record<string, string | undefined>,
+): AuthRouteTarget {
+  const searchParams = new URLSearchParams({ redirect });
+
+  Object.entries(params ?? {}).forEach(([key, value]) => {
+    if (value) {
+      searchParams.set(key, value);
+    }
+  });
+
+  return `${path}?${searchParams.toString()}` as AuthRouteTarget;
 }
 
 export function maskTarget(channel: AuthChannel, target: string) {

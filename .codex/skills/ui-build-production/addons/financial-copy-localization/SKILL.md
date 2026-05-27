@@ -1,11 +1,6 @@
 ---
 name: financial-copy-localization-governance
-description: >
-  Use only as a UI Build Production add-on when creating or reviewing financial UX copy, English/Indonesian localization,
-  i18n keys, terminology, CTA text, risk disclosure, error recovery, agreements, onboarding, KYC, wallet, deposit, withdrawal, trading, broker, forex, or derivatives flows.
-  Inputs include business rules, Page Contract, risk rules, UI states, target locale, terminology sources, compliance constraints, and existing copy/i18n files.
-  Outputs governed UX copy, EN/ID localization, terminology decisions, i18n key map, copy QA findings, risk-language notes, and UI Build copy package.
-  Do not use as generic translation, legal approval, marketing copy generation, Page Contract editing, competitor-copy copying, or context-free wording invention.
+description: Use this skill when creating or reviewing English and Indonesian UX copy for financial, forex, derivatives, broker, trading, wallet, KYC, deposit, withdrawal, agreement, risk disclosure, onboarding, error recovery, CTA, i18n keys, terminology, or compliance-sensitive product flows.
 ---
 
 # 金融 UX 文案与本地化治理 Skill v1.0.0-L5
@@ -97,6 +92,7 @@ Business Rule
 │   ├── cta-governance.rules.md
 │   ├── risk-copy.rules.md
 │   ├── error-recovery-copy.rules.md
+│   ├── en-capitalization.rules.md
 │   ├── en-localization.rules.md
 │   ├── id-localization.rules.md
 │   ├── i18n-key.rules.md
@@ -576,11 +572,21 @@ Business Rule
 
 ## 14. 英文本地化规则
 
+当任务涉及英文 UI 文案、按钮、标题、表单 Label、Tab、表格 Header、Toast、Error、Helper text、Empty state、i18n key 文案时，必须读取并应用：
+
+```text
+.codex/skills/ui-build-production/addons/financial-copy-localization/rules/en-capitalization.rules.md
+```
+
+该文件是本 Add-on 的规则依赖，不是新的平级 Skill。发现英文 UI 大小写不一致时，必须在当前任务范围内自动修正，并在交付说明中输出 Page Copy Review 结果。
+
 | 规则 | 要求 |
 |---|---|
 | 使用 Plain English | 简短、直接、专业。 |
 | 避免 hype | 风险或交易流程中不使用营销化语言。 |
-| 使用 Sentence case | UI 文案优先使用 sentence case。 |
+| 使用大小写分层 | 标题、按钮、导航、Tab、表格 Header、状态标签使用 Title Case；描述、错误、Toast 正文、Helper text、Placeholder、Empty-state description 使用 Sentence case。 |
+| 保留官方术语大小写 | `KYC`、`AML`、`MT4`、`MT5`、`IB`、`PIN`、`OTP`、`USD`、`IDR`、`BTC`、`CopyTrading` 等术语必须保持官方大小写。 |
+| 执行 Page Copy Review | 写完英文 UI 文案后必须按 `en-capitalization.rules.md` 执行 Page Copy Review。 |
 | 具体 | 说明动作和下一步。 |
 | 避免模糊错误 | 有具体原因时，不只写 “Something went wrong”。 |
 | 避免习语 | 方便本地化和理解。 |
@@ -819,6 +825,7 @@ admin.kyc.review.cta.approve
 6. 生成 i18n keys
 7. 检查禁止话术
 8. 检查术语一致性
+8a. 读取 `rules/en-capitalization.rules.md`，检查英文 UI 文案大小写并自动修正不一致项
 9. 检查风险和 CTA 安全性
 10. 标记 native / compliance review
 11. 输出 UX Copy Table
@@ -879,6 +886,7 @@ admin.kyc.review.cta.approve
 - 按严重级别分类的问题
 - 建议改写
 - EN / ID 最终文案
+- English capitalization Page Copy Review
 - Review status
 - Release decision
 ```
@@ -987,6 +995,7 @@ UI Build 生成以下内容前或过程中调用本 Skill：
 | Copy request 有 schema | 是 |
 | 术语表存在 | 是 |
 | 英文 + 印尼语规则存在 | 是 |
+| 英文 UI 大小写规则存在 | 是 |
 | 风险文案规则存在 | 是 |
 | CTA 治理存在 | 是 |
 | 错误恢复文案存在 | 是 |

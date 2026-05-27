@@ -16,6 +16,7 @@ import {
 } from '@/src/domain/discoverLayout';
 import { localizeText } from '@/src/domain/format';
 import { impactLight } from '@/src/feedback/haptics';
+import { navigateBackOrReplace, safeRouteTargets } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { lineWidth, radius, spacing } from '@/src/theme/tokens';
 
@@ -30,14 +31,9 @@ export default function DiscoverLayoutScreen() {
     list: locale !== 'zh-CN' ? 'List' : '列表',
     medium: locale !== 'zh-CN' ? 'Medium' : '中卡',
   };
-  const title = locale !== 'zh-CN' ? 'Layout settings' : '布局设置';
+  const title = locale !== 'zh-CN' ? 'Layout Settings' : '布局设置';
   const close = () => {
-    if (router.canGoBack()) {
-      router.back();
-      return;
-    }
-
-    router.replace('/discover');
+    navigateBackOrReplace(safeRouteTargets.discover);
   };
   const save = () => {
     setDiscoverLayoutItems(draftItems);
@@ -65,6 +61,7 @@ export default function DiscoverLayoutScreen() {
   return (
     <Screen
       back
+      backHref="/discover"
       contentInsetBottom={18}
       stickyFooter={
         <View style={styles.footerActions}>
@@ -74,7 +71,7 @@ export default function DiscoverLayoutScreen() {
       }
       title={title}>
       <View style={StyleSheet.flatten([styles.introCard, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-        <AppIcon name="icon.system.settings" size={20} />
+        <AppIcon name="icon.system.settings" sizeVariant="sm" />
         <View style={styles.flex}>
           <AppText variant="subtitle">{title}</AppText>
           <AppText numberOfLines={2} tone="muted" variant="caption">
@@ -162,7 +159,7 @@ function LayoutEditorRow({
         ]}>
         <View style={styles.editorRowHeader}>
           <View style={styles.dragHandle}>
-            <AppIcon name="icon.system.more" size={18} />
+            <AppIcon name="icon.system.more" sizeVariant="sm" />
           </View>
           <View style={styles.flex}>
             <AppText numberOfLines={1} variant="subtitle">
@@ -179,7 +176,7 @@ function LayoutEditorRow({
               minTouch={32}
               onPress={() => moveItem(index, index - 1)}
               style={StyleSheet.flatten([styles.moveButton, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
-              <AppIcon name="icon.system.chevron_down" size={13} style={styles.moveUpIcon} />
+              <AppIcon name="icon.system.chevron_down" sizeVariant="xs" style={styles.moveUpIcon} />
             </NativePressable>
             <NativePressable
               accessibilityLabel={`${title} move down`}
@@ -187,7 +184,7 @@ function LayoutEditorRow({
               minTouch={32}
               onPress={() => moveItem(index, index + 1)}
               style={StyleSheet.flatten([styles.moveButton, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
-              <AppIcon name="icon.system.chevron_down" size={13} />
+              <AppIcon name="icon.system.chevron_down" sizeVariant="xs" />
             </NativePressable>
           </View>
         </View>
@@ -205,7 +202,7 @@ function LayoutEditorRow({
                 onPress={() => onViewModeChange(item.id, mode)}
                 style={StyleSheet.flatten([
                   styles.segmentButton,
-                  selected && { backgroundColor: colors.surface.panel, borderColor: colors.border.default },
+                  selected && { borderColor: colors.text.primary },
                 ])}>
                 <AppText numberOfLines={1} tone={selected ? 'default' : 'muted'} variant="caption">
                   {modeLabels[mode]}
@@ -284,7 +281,7 @@ const styles = StyleSheet.create({
   segmentButton: {
     alignItems: 'center',
     borderRadius: radius.full,
-    borderWidth: lineWidth.hairline,
+    borderWidth: lineWidth.selected,
     borderColor: 'transparent',
     flex: 1,
     paddingHorizontal: spacing.sm,

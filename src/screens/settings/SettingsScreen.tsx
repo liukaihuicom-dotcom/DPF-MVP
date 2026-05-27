@@ -8,7 +8,7 @@ export default function SettingsScreen() {
   const { t } = useProductSettings();
 
   return (
-    <Screen align="center" back contentInsetBottom={12} rightActions={[]} title={t('discover.module.profile.title')}>
+    <Screen align="center" back backHref="/accounts" contentInsetBottom={12} rightActions={[]} title={t('discover.module.profile.title')}>
       <ProfileModule account={account} role={role} upgradeStatus={upgradeRequest.status} />
     </Screen>
   );

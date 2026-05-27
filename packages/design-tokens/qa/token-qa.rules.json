@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "severity": {
+    "missingSchema": "blocker",
+    "missingMode": "blocker",
+    "directPrimitiveUseInPage": "critical",
+    "hardcodedStyleInPage": "major",
+    "missingExportMap": "major",
+    "missingChangelog": "minor"
+  },
+  "requiredFiles": [
+    "design-system-engineering/01_tokens/tokens.json",
+    "design-system-engineering/01_tokens/tokens.color.json",
+    "design-system-engineering/01_tokens/token.schema.json",
+    "design-system-engineering/01_tokens/token-mode.matrix.json",
+    "design-system-engineering/01_tokens/token-alias.map.json",
+    "design-system-engineering/01_tokens/token-export.map.json"
+  ],
+  "automatedChecks": [
+    "scripts/qa/check-hardcoded-style.js"
+  ],
+  "releaseDecision": {
+    "pass": "Token changes can enter UI Build.",
+    "fail": "Token changes cannot be marked production ready."
+  }
+}

@@ -1,0 +1,196 @@
+{
+  "version": "1.0.0",
+  "allowedTokenSources": [
+    "src/theme/tokens.ts",
+    "src/theme/colors.ts",
+    "src/settings/ProductSettings.tsx",
+    "src/icons/iconRegistry.ts"
+  ],
+  "rules": [
+    {
+      "id": "component-token-bound",
+      "description": "Reusable components must resolve spacing, typography, radius, line width, size, and color from tokens, theme palette, or icon registry metadata."
+    },
+    {
+      "id": "route-no-style-system",
+      "description": "app route files must not define reusable styles; screen-level style ownership belongs in src/screens and reusable UI belongs in src/components."
+    },
+    {
+      "id": "icon-registry-bound",
+      "description": "Functional icons must use AppIcon with semantic names registered in design-system-engineering/04_icons/icon-registry.json."
+    },
+    {
+      "id": "form-external-helper-alignment",
+      "description": "Helper or description text rendered outside a form field frame must use a 12px left inset from the field frame edge, bound to spacing.md."
+    },
+    {
+      "id": "title-role-bound",
+      "description": "Page, dialog, card, list, and tab titles must use AppText title.* variants or component-owned titleTypography mappings; do not hardcode or select generic text variants for title roles."
+    },
+    {
+      "id": "body-role-bound",
+      "description": "Paragraphs, descriptions, row body text, and empty-state body copy must use AppText body.* variants instead of generic body/caption guessing."
+    },
+    {
+      "id": "label-role-bound",
+      "description": "Labels, helper text, metadata, status text, badges, and compact control text must use AppText label.* variants with minimum text constrained to approved 12px roles."
+    },
+    {
+      "id": "screen-safe-bottom-bound",
+      "description": "Screen scroll content must combine layout.screenBottomPadding with the device bottom safe-area inset; page implementations must not remove the global bottom safety gap."
+    }
+  ],
+  "componentBindings": {
+    "foundation": [
+      "typography.*",
+      "spacing.*",
+      "radius.*",
+      "lineWidth.*",
+      "size.*",
+      "palette.*",
+      "iconRegistry.*"
+    ],
+    "layout": [
+      "layout.*",
+      "spacing.*",
+      "radius.*",
+      "lineWidth.*",
+      "palette.*"
+    ],
+    "forms": [
+      "size.input.*",
+      "spacing.*",
+      "radius.*",
+      "lineWidth.*",
+      "typography.*",
+      "palette.*"
+    ],
+    "feedback": [
+      "radius.*",
+      "lineWidth.*",
+      "palette.*",
+      "typography.*"
+    ],
+    "data-display": [
+      "typography.*",
+      "spacing.*",
+      "lineWidth.*",
+      "palette.*"
+    ],
+    "business": [
+      "layout.*",
+      "spacing.*",
+      "radius.*",
+      "lineWidth.*",
+      "typography.*",
+      "palette.*",
+      "iconRegistry.*"
+    ],
+    "navigation": [
+      "size.tab.*",
+      "typography.*",
+      "palette.*",
+      "iconRegistry.*"
+    ]
+  },
+  "componentTokenBindings": {
+    "Card": [
+      "layout.cardPaddingX",
+      "layout.cardPaddingY",
+      "layout.cardPaddingCompactX",
+      "layout.cardPaddingCompactY",
+      "radius.md",
+      "palette.panel"
+    ],
+    "OrderInfoRow": [
+      "palette.*",
+      "spacing.*",
+      "lineWidth.*"
+    ],
+    "RiskPriceRow": [
+      "palette.*",
+      "spacing.*",
+      "radius.*",
+      "lineWidth.*"
+    ],
+    "TransactionRow": [
+      "palette.*",
+      "spacing.*",
+      "radius.*",
+      "lineWidth.*",
+      "iconRegistry.*"
+    ],
+    "SegmentedTabs": [
+      "palette.*",
+      "spacing.*",
+      "typography.*",
+      "radius.*",
+      "lineWidth.*",
+      "size.tab.*"
+    ],
+    "DetailInline": [
+      "spacing.*",
+      "typography.*"
+    ],
+    "DetailRow": [
+      "palette.*",
+      "spacing.*",
+      "lineWidth.*",
+      "iconRegistry.*"
+    ],
+    "KeyValueList": [
+      "palette.*",
+      "spacing.*",
+      "typography.*",
+      "lineWidth.*"
+    ],
+    "LegendDot": [
+      "palette.*",
+      "spacing.*",
+      "radius.*"
+    ],
+    "MiniBarChart": [
+      "palette.*",
+      "spacing.*",
+      "radius.*",
+      "lineWidth.*"
+    ],
+    "MiniMetric": [
+      "palette.*",
+      "spacing.*",
+      "typography.*"
+    ],
+    "EmptyState": [
+      "palette.*",
+      "spacing.*",
+      "radius.*",
+      "iconRegistry.*"
+    ],
+    "StepperButton": [
+      "palette.*",
+      "size.control.*",
+      "radius.*",
+      "lineWidth.*"
+    ],
+    "SwitchControl": [
+      "palette.*",
+      "size.touch.*",
+      "size.control.*",
+      "size.icon.*",
+      "radius.*",
+      "lineWidth.*"
+    ],
+    "SheetGroupTitle": [
+      "palette.*",
+      "spacing.*",
+      "typography.*"
+    ],
+    "Screen": [
+      "layout.screenPaddingX",
+      "layout.screenGap",
+      "layout.screenBottomPadding",
+      "layout.bottomActionArea.*",
+      "palette.*"
+    ]
+  }
+}

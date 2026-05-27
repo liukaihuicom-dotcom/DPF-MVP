@@ -6,7 +6,7 @@ import { Screen } from '@/src/components/Screen';
 import { AppText } from '@/src/components/Typography';
 import { impactLight } from '@/src/feedback/haptics';
 import { useProductSettings } from '@/src/settings/ProductSettings';
-import { lineWidth, radius, spacing } from '@/src/theme/tokens';
+import { layout, lineWidth, radius, spacing } from '@/src/theme/tokens';
 import { themeColors, type ResolvedThemeMode, type ThemeMode, type ThemeColors } from '@/src/theme/colors';
 
 type AppearanceOption = {
@@ -77,6 +77,7 @@ export default function AppearanceScreen() {
     <Screen
       align="center"
       back
+      backHref="/settings"
       contentInsetBottom={32}
       rightActions={[]}
       title={locale === 'zh-CN' ? '外观' : locale === 'id-ID' ? 'Tampilan' : 'Appearance'}>
@@ -178,7 +179,7 @@ function RadioMark({ selected }: { selected: boolean }) {
       style={StyleSheet.flatten([
         styles.radio,
         {
-          borderColor: selected ? colors.brand.fg : colors.text.tertiary,
+          borderColor: selected ? colors.text.primary : colors.text.tertiary,
           borderWidth: selected ? 9 : 3,
         },
       ])}
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
   optionCard: {
     borderRadius: radius.lg,
     borderWidth: lineWidth.none,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: layout.cardPaddingX,
     paddingVertical: spacing.xl,
   },
   optionLabel: {

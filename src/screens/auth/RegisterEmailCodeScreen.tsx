@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { DEMO_OTP, isValidEmail, safeRedirect } from '@/src/auth/authFlow';
@@ -7,13 +7,14 @@ import { AuthShell } from '@/src/components/AuthShell';
 import { OtpInput, OtpRecoveryActions, useCountdown } from '@/src/components/AuthFlowControls';
 import { useToast } from '@/src/feedback/Toast';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
+import type { NavigationTarget } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { spacing } from '@/src/theme/tokens';
 
 const MAX_RESENDS = 3;
 
 export default function RegisterEmailCodeScreen() {
-  const params = useLocalSearchParams<{ email?: string; redirect?: string }>();
+  const params = useLocalSearchParams<{ email?: string; phone?: string; redirect?: string }>();
   const { t } = useProductSettings();
   const toast = useToast();
   const [code, setCode] = useState('');
@@ -22,8 +23,17 @@ export default function RegisterEmailCodeScreen() {
   const { reset, secondsLeft } = useCountdown(15);
   const redirect = safeRedirect(typeof params.redirect === 'string' ? params.redirect : undefined);
   const email = typeof params.email === 'string' ? params.email : '';
+  const phone = typeof params.phone === 'string' ? params.phone : '';
   const codeError = submitted && code !== DEMO_OTP ? t('auth.verify.errorCodeShort') : '';
   const canResend = secondsLeft === 0 && resendCount < MAX_RESENDS;
+  const emailStepTarget = `/auth/register-phone?phone=${encodeURIComponent(phone)}&redirect=${encodeURIComponent(String(redirect))}` as NavigationTarget;
+  const phoneStepTarget = `/auth/register?redirect=${encodeURIComponent(String(redirect))}` as NavigationTarget;
+
+  useEffect(() => {
+    if (!phone) {
+      router.replace(phoneStepTarget as never);
+    }
+  }, [phone, phoneStepTarget]);
 
   const verifyCode = (next: string) => {
     setCode(next);
@@ -35,13 +45,21 @@ export default function RegisterEmailCodeScreen() {
 
     setSubmitted(true);
 
+    if (!phone) {
+      void notifyWarning();
+      router.replace(phoneStepTarget as never);
+      return;
+    }
+
     if (!isValidEmail(email) || next !== DEMO_OTP) {
       void notifyWarning();
       return;
     }
 
     void notifySuccess();
-    router.push(`/auth/register-phone?email=${encodeURIComponent(email)}&redirect=${encodeURIComponent(String(redirect))}` as never);
+    router.push(
+      `/auth/register-password?phone=${encodeURIComponent(phone)}&email=${encodeURIComponent(email)}&redirect=${encodeURIComponent(String(redirect))}` as never,
+    );
   };
 
   const resendCode = () => {
@@ -78,7 +96,9 @@ export default function RegisterEmailCodeScreen() {
 
   return (
     <AuthShell
-      progressStep={1}
+      backTarget={emailStepTarget}
+      navMode="back"
+      progressStep={2}
       subtitle={t('auth.register.emailCodeSubtitle', { email })}
       title={t('auth.register.emailCodeTitle')}>
       <View style={styles.codeStack}>
@@ -87,7 +107,7 @@ export default function RegisterEmailCodeScreen() {
           canResend={canResend}
           changeTargetLabel={t('auth.verify.changeEmail')}
           maxResends={MAX_RESENDS}
-          onChangeTarget={() => router.replace(`/auth/register?redirect=${encodeURIComponent(String(redirect))}` as never)}
+          onChangeTarget={() => router.replace(emailStepTarget as never)}
           onOpenHelp={openRecoveryHelp}
           onResend={resendCode}
           resendCount={resendCount}

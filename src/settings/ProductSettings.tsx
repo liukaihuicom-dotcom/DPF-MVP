@@ -278,9 +278,7 @@ export function ProductSettingsProvider({ children }: PropsWithChildren) {
   const [pinStatus, setPinStatus] = useState<PinStatus>(
     isPinStatus(stored.pinStatus) ? stored.pinStatus : storedAuthStatus === 'signedIn' && localPinCode.length === 6 ? 'set' : 'unset',
   );
-  const [pinGateStatus, setPinGateStatus] = useState<'locked' | 'unlocked'>(
-    storedAuthStatus === 'signedIn' && pinStatus === 'set' && localPinCode.length === 6 ? 'locked' : 'unlocked',
-  );
+  const [pinGateStatus, setPinGateStatus] = useState<'locked' | 'unlocked'>('unlocked');
   const [discoverLayoutItems, updateDiscoverLayoutItems] = useState<DiscoverLayoutItem[]>(
     normalizeDiscoverLayoutItems(stored.discoverLayoutItems),
   );

@@ -3,8 +3,9 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 
 const root = path.resolve(__dirname, '../..');
-const registryPath = path.join(root, 'design-system-engineering/04_icons/icon-registry.json');
+const registryPath = path.join(root, 'packages/icon-library/registry/icon-registry.json');
 const appIconPath = path.join(root, 'src/components/AppIcon.tsx');
+const iconSurfacePath = path.join(root, 'src/components/IconSurface.tsx');
 const localIconRoot = path.join(root, 'src/icons/local');
 const localIconMapPath = path.join(root, 'src/icons/local/iconComponentMap.ts');
 const iconRegistryPath = path.join(root, 'src/icons/iconRegistry.ts');
@@ -13,6 +14,7 @@ const packageJsonPath = path.join(root, 'package.json');
 const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 const appIconSource = fs.existsSync(appIconPath) ? fs.readFileSync(appIconPath, 'utf8') : '';
+const iconSurfaceSource = fs.existsSync(iconSurfacePath) ? fs.readFileSync(iconSurfacePath, 'utf8') : '';
 const localIconMapSource = fs.existsSync(localIconMapPath) ? fs.readFileSync(localIconMapPath, 'utf8') : '';
 const iconRegistrySource = fs.existsSync(iconRegistryPath) ? fs.readFileSync(iconRegistryPath, 'utf8') : '';
 const dependencies = {
@@ -21,15 +23,22 @@ const dependencies = {
 };
 
 const issues = [];
-const approvedSources = new Set(['phosphor', 'remix', 'lucide', 'custom']);
+const approvedSources = new Set(['iconsax', 'custom']);
 const governedIconSizes = [8, 12, 16, 20, 24, 32, 40, 48, 64];
 const governedIconSizeSet = new Set(governedIconSizes);
 const defaultIconSize = 24;
 const defaultIconStrokeWidth = 1.5;
-const allowedLiteralIconTones = new Set(['amber', 'danger', 'disabled', 'down', 'panel', 'up', 'white']);
+const allowedAppIconSizeExpressions = [
+  'layout.headerIconSize',
+  'layout.menuDisclosureIconSize',
+  'surface.icon',
+  'Math.max(20, Math.round(size * 0.55))',
+];
+const allowedLiteralIconTones = new Set(['amber', 'danger', 'disabled', 'down', 'panel', 'tertiary', 'up', 'white']);
 const blockedDecorativeLiteralIconTones = new Set(['blue', 'brand', 'cyan', 'text', 'textDim', 'textMuted']);
 const forbiddenPackagePatterns = [
   '@expo/vector-icons',
+  'iconsax-react-native',
   '@hugeicons/core-free-icons',
   '@hugeicons/react-native',
   '@hugeicons-pro/core-duotone-rounded',
@@ -80,8 +89,8 @@ function assertPackageClean() {
 }
 
 function assertRegistryPolicy() {
-  if (!registry.source_policy || registry.source_policy.primary_library !== 'phosphor') {
-    addIssue('ICON_SOURCE_POLICY_INVALID', 'blocker', 'Registry primary source must be phosphor.');
+  if (!registry.source_policy || registry.source_policy.primary_library !== 'iconsax') {
+    addIssue('ICON_SOURCE_POLICY_INVALID', 'blocker', 'Registry primary source must be iconsax.');
   }
 
   const approved = new Set((registry.source_policy?.approved_libraries || []).map((item) => item.library));
@@ -101,28 +110,18 @@ function assertRegistryPolicy() {
     addIssue('ICON_RUNTIME_POLICY_INVALID', 'blocker', 'Registry runtime policy must require local-vendored-assets.');
   }
 
-  if (registry.source_policy?.runtime_policy?.asset_root !== 'src/icons/local') {
-    addIssue('ICON_LOCAL_ASSET_ROOT_INVALID', 'blocker', 'Registry local asset root must be src/icons/local.');
+  if (registry.source_policy?.runtime_policy?.asset_root !== 'src/icons/local/iconsax') {
+    addIssue('ICON_LOCAL_ASSET_ROOT_INVALID', 'blocker', 'Registry local asset root must be src/icons/local/iconsax.');
   }
 }
 
 function exportedNamesForPackage(sourceLibrary) {
-  if (sourceLibrary === 'phosphor') {
-    const indexPath = path.join(root, 'node_modules/phosphor-react-native/lib/typescript/index.d.ts');
-    const source = readFileIfExists(indexPath);
-    return new Set(Array.from(source.matchAll(/export \* from '\.\/icons\/([^']+)'/g)).map((match) => match[1]));
-  }
-
-  if (sourceLibrary === 'lucide') {
-    const indexPath = path.join(root, 'node_modules/lucide-react-native/dist/lucide-react-native.d.ts');
-    const source = readFileIfExists(indexPath);
-    return new Set(Array.from(source.matchAll(/declare const ([A-Za-z0-9_]+)\b/g)).map((match) => match[1]));
-  }
-
-  if (sourceLibrary === 'remix') {
-    const indexPath = path.join(root, 'node_modules/react-native-remix-icon/src/index.d.ts');
-    const source = readFileIfExists(indexPath);
-    return new Set(Array.from(source.matchAll(/\| "([^"]+)"/g)).map((match) => match[1]));
+  if (sourceLibrary === 'iconsax') {
+    const source = readFileIfExists(path.join(root, 'node_modules/iconsax-react-native/dist/index.d.ts'));
+    if (!source) {
+      return new Set();
+    }
+    return new Set(Array.from(source.matchAll(/export const ([A-Za-z0-9_]+): Icon;/g)).map((match) => match[1]));
   }
 
   return new Set();
@@ -137,9 +136,7 @@ function assertRegistryEntries() {
   const seen = new Set();
   const registryKeys = new Set();
   const exportedBySource = {
-    lucide: exportedNamesForPackage('lucide'),
-    phosphor: exportedNamesForPackage('phosphor'),
-    remix: exportedNamesForPackage('remix'),
+    iconsax: exportedNamesForPackage('iconsax'),
   };
 
   for (const icon of registry.icons) {
@@ -159,8 +156,8 @@ function assertRegistryEntries() {
       addIssue('ICON_SOURCE_LIBRARY_BLOCKED', 'blocker', `${key} uses unapproved source ${icon.source_library}.`);
     }
 
-    if (String(icon.source_library).includes('hugeicons') || String(icon.source_icon_name).includes('Huge')) {
-      addIssue('HUGEICONS_REGISTRY_REFERENCE', 'blocker', `${key} still references Hugeicons.`);
+    if (/(hugeicons|phosphor|lucide|remix)/i.test(String(icon.source_library)) || /Huge/i.test(String(icon.source_icon_name))) {
+      addIssue('LEGACY_ICON_PROVIDER_REGISTRY_REFERENCE', 'blocker', `${key} still references a blocked legacy icon provider.`);
     }
 
     for (const field of ['category', 'meaning', 'source_icon_name', 'style', 'sizes', 'states', 'token_binding', 'usage', 'license', 'status']) {
@@ -208,8 +205,8 @@ function assertRegistryEntries() {
       }
     }
 
-    if (!icon.local_asset_path || !icon.local_asset_path.startsWith('src/icons/local/')) {
-      addIssue('ICON_LOCAL_ASSET_PATH_MISSING', 'blocker', `${key} must declare a local_asset_path under src/icons/local.`);
+    if (!icon.local_asset_path || !icon.local_asset_path.startsWith('src/icons/local/iconsax/')) {
+      addIssue('ICON_LOCAL_ASSET_PATH_MISSING', 'blocker', `${key} must declare a local_asset_path under src/icons/local/iconsax.`);
     } else {
       const localAssetPath = path.join(root, icon.local_asset_path);
       if (!fs.existsSync(localAssetPath)) {
@@ -246,9 +243,9 @@ function assertCodeUsage() {
   const qaFiles = collectFiles(path.join(root, 'scripts')).filter((file) => fs.existsSync(file));
   const policyFiles = [
     registryPath,
-    path.join(root, 'design-system-engineering/04_icons/icon-qa.rules.json'),
-    path.join(root, 'design-system-engineering/04_icons/icon-usage-rules.md'),
-    path.join(root, 'design-system-engineering/04_icons/icon-changelog.md'),
+    path.join(root, 'packages/icon-library/qa/icon-qa.rules.json'),
+    path.join(root, 'packages/icon-library/registry/icon-usage-rules.md'),
+    path.join(root, 'packages/icon-library/CHANGELOG.md'),
   ].filter((file) => fs.existsSync(file));
 
   const registryKeys = new Set((registry.icons || []).map((icon) => icon.icon_key));
@@ -270,7 +267,7 @@ function assertCodeUsage() {
       }
     }
 
-    if (/from ['"](@expo\/vector-icons|phosphor-react-native|lucide-react-native|react-native-remix-icon)['"]/.test(source)) {
+    if (/from ['"](@expo\/vector-icons|iconsax-react-native|phosphor-react-native|lucide-react-native|react-native-remix-icon)['"]/.test(source)) {
       addIssue('LOW_LEVEL_ICON_IMPORT', 'blocker', 'Runtime icon libraries are blocked; AppIcon must render local vendored assets from src/icons/local.', file);
     }
 
@@ -295,6 +292,53 @@ function assertCodeUsage() {
       }
     }
 
+    const appIconMatches = source.matchAll(/<AppIcon\b[^>]*>/g);
+    for (const match of appIconMatches) {
+      const tag = match[0];
+      const literalSize = tag.match(/\bsize=(['"])([^'"]+)\1/)?.[2];
+      const expressionSize = tag.match(/\bsize=\{([^}]+)\}/)?.[1]?.trim();
+      const rawSize = literalSize ?? expressionSize;
+      if (!rawSize) {
+        continue;
+      }
+
+      const usesSizeToken = /^size\.icon\./.test(rawSize);
+      const usesLayoutAlias = allowedAppIconSizeExpressions.includes(rawSize);
+      if (!usesSizeToken && !usesLayoutAlias) {
+        addIssue(
+          'HARD_CODED_APP_ICON_SIZE',
+          'critical',
+          `AppIcon size "${rawSize}" is not governed. Use sizeVariant, size.icon.*, layout.headerIconSize, layout.menuDisclosureIconSize, or an approved component-owned alias.`,
+          file,
+        );
+      }
+    }
+
+    const disclosureIconMatches = source.matchAll(/<AppIcon\b[^>]*name=['"]icon\.system\.chevron_right['"][^>]*>/g);
+    for (const match of disclosureIconMatches) {
+      const tag = match[0];
+      if (!/tone=['"]tertiary['"]/.test(tag) || !/(size=\{layout\.menuDisclosureIconSize\}|size=\{?16\}?)/.test(tag)) {
+        addIssue('APP_ICON_DISCLOSURE_NOT_GOVERNED', 'critical', 'Row disclosure chevrons must be 16px tertiary pure AppIcon without a background surface.', file);
+      }
+    }
+
+    if (relativeFile !== 'src/components/IconSurface.tsx' && /<View[\s\S]{0,220}<AppIcon\b/.test(source)) {
+      const pageLocalIconSurface = Array.from(source.matchAll(/<View\b[\s\S]{0,260}<AppIcon\b/g)).some((viewMatch) => {
+        const snippet = viewMatch[0];
+        return /backgroundColor:/.test(snippet)
+          && /\b(icon|Icon)(Wrap|Slot|Box|Shell)?\b/.test(snippet)
+          && !/styles\.ruleIcon/.test(snippet)
+          && !/styles\.sidePill/.test(snippet);
+      });
+      if (pageLocalIconSurface) {
+        addIssue('PAGE_LOCAL_ICON_SURFACE', 'critical', 'Icon + background compositions must use IconSurface so icon and background colors stay in the same semantic family.', file);
+      }
+    }
+
+    if (relativeFile !== 'src/components/IconSurface.tsx' && /IconSurface[\s\S]{0,160}border/.test(source)) {
+      addIssue('ICON_SURFACE_BORDER_STYLE', 'critical', 'IconSurface does not support bordered icon backgrounds.', file);
+    }
+
     for (const key of registryKeys) {
       const matches = source.match(new RegExp(`['"]${key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]`, 'g'));
       if (matches) {
@@ -302,7 +346,7 @@ function assertCodeUsage() {
       }
     }
 
-    if (!relativeFile.startsWith('design-system-engineering/04_icons') && relativeFile !== 'src/icons/iconRegistry.ts') {
+    if (!relativeFile.startsWith('packages/icon-library') && !relativeFile.startsWith('design-system-engineering/04_icons') && relativeFile !== 'src/icons/iconRegistry.ts') {
       for (const legacy of legacyNames) {
         const legacyMatch = source.match(new RegExp(`['"]${legacy}['"]`, 'g'));
         if (legacyMatch) {
@@ -384,6 +428,18 @@ function assertRuntimeContract() {
 
   if (!appIconSource.includes("styleVariant = 'line'")) {
     addIssue('APP_ICON_DEFAULT_STYLE_VARIANT_INVALID', 'critical', 'AppIcon must default styleVariant to line.', appIconPath);
+  }
+
+  if (!appIconSource.includes("tone ?? 'primary'")) {
+    addIssue('APP_ICON_DEFAULT_TONE_INVALID', 'critical', 'AppIcon must default no-tone glyphs to neutral primary color.icon.primary.', appIconPath);
+  }
+
+  if (!/case 'neutral':\s*default:\s*return \{ backgroundColor: colors\.surface\.subtle, iconTone: 'primary' \};/.test(iconSurfaceSource)) {
+    addIssue('ICON_SURFACE_DEFAULT_TONE_INVALID', 'critical', 'IconSurface neutral/default icons must use neutral primary color.icon.primary, regardless of visible or hidden background.', iconSurfacePath);
+  }
+
+  if (!/case 'tertiary':\s*return \{ backgroundColor: colors\.surface\.subtle, iconTone: 'tertiary' \};/.test(iconSurfaceSource)) {
+    addIssue('ICON_SURFACE_TERTIARY_TONE_INVALID', 'critical', 'IconSurface tertiary tone must remain an explicit low-emphasis icon color, not the default.', iconSurfacePath);
   }
 
   if (!appIconSource.includes('lineWidth.icon.default')) {

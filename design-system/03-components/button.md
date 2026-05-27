@@ -10,7 +10,7 @@ Exports `ActionButtonTone` for shared footer/action typing.
 
 | Variant | Prop | Use |
 |---|---|---|
-| filled | `variant="filled"` | Solid primary CTA or explicit high-emphasis action |
+| filled | `variant="filled"` | Solid primary CTA or explicit high-emphasis action; no border stroke |
 | outline | `variant="outline"` | Secondary action with visible boundary |
 | text | `variant="text"` | Background-free action with the lightest emphasis |
 
@@ -55,9 +55,10 @@ Header icon buttons may keep a soft hit area for accessibility, but the button f
 
 | Part | Token |
 |---|---|
-| Label | default `typography.buttonMd`, large `typography.buttonLg`, through `AppText`, semibold `600` |
+| Label | default `typography.buttonMd` at 16px, large `typography.buttonLg` at 20px, through `AppText`, semibold `600` |
 | Icon | `AppIcon` registered asset, matching label foreground |
 | Radius | `radius.full` |
+| Border | `variant="filled"` uses `lineWidth.none`; `variant="outline"` and legacy soft use `lineWidth.hairline` |
 | Height | default `size.button.minHeight`, large `size.control.lg` |
 | Padding | default `space.18` horizontal equivalent, large `spacing.xl`, `space.12` vertical |
 | Colors | `ThemePalette` semantic fields; disabled uses `disabledSurface`, `disabledBorder`, and `disabledText` |

@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "source": "design-system-engineering/01_tokens/token-mode.matrix.json",
+  "aliases": {
+    "color.surface.canvas": "modes.darkTerminal.colors.surface.canvas",
+    "color.surface.panel": "modes.darkTerminal.colors.surface.panel",
+    "color.surface.raised": "modes.darkTerminal.colors.surface.raised",
+    "color.text.primary": "modes.darkTerminal.colors.text.primary",
+    "color.text.secondary": "modes.darkTerminal.colors.text.secondary",
+    "color.text.tertiary": "modes.darkTerminal.colors.text.tertiary",
+    "color.border.default": "modes.darkTerminal.colors.border.default",
+    "color.brand.solid": "modes.darkTerminal.colors.brand.solid",
+    "color.status.success.fg": "modes.darkTerminal.colors.status.success.fg",
+    "color.status.warning.fg": "modes.darkTerminal.colors.status.warning.fg",
+    "color.status.danger.fg": "modes.darkTerminal.colors.status.danger.fg",
+    "color.market.up.fg": "modes.darkTerminal.colors.market.up.fg",
+    "color.market.down.fg": "modes.darkTerminal.colors.market.down.fg"
+  },
+  "rule": "Pages and components consume semantic aliases or runtime theme helpers, not L1 primitive token paths."
+}

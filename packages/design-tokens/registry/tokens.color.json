@@ -1,0 +1,1762 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Dupoin full color token source. L1 primitives, L2 semantic modes, overlays, and chart colors.",
+  "color": {
+    "primitive": {
+      "neutral": {
+        "50": {
+          "$type": "color",
+          "$value": "#FAFAFA",
+          "$description": "Neutral scale 50"
+        },
+        "100": {
+          "$type": "color",
+          "$value": "#F4F4F5",
+          "$description": "Neutral scale 100"
+        },
+        "200": {
+          "$type": "color",
+          "$value": "#E4E4E7",
+          "$description": "Neutral scale 200"
+        },
+        "300": {
+          "$type": "color",
+          "$value": "#D4D4D8",
+          "$description": "Neutral scale 300"
+        },
+        "400": {
+          "$type": "color",
+          "$value": "#A1A1AA",
+          "$description": "Neutral scale 400"
+        },
+        "500": {
+          "$type": "color",
+          "$value": "#71717A",
+          "$description": "Neutral scale 500"
+        },
+        "600": {
+          "$type": "color",
+          "$value": "#52525B",
+          "$description": "Neutral scale 600"
+        },
+        "700": {
+          "$type": "color",
+          "$value": "#3F3F46",
+          "$description": "Neutral scale 700"
+        },
+        "800": {
+          "$type": "color",
+          "$value": "#27272A",
+          "$description": "Neutral scale 800"
+        },
+        "900": {
+          "$type": "color",
+          "$value": "#18181B",
+          "$description": "Neutral scale 900"
+        },
+        "950": {
+          "$type": "color",
+          "$value": "#09090B",
+          "$description": "Neutral scale 950"
+        }
+      },
+      "brand": {
+        "teal": {
+          "50": {
+            "$type": "color",
+            "$value": "#ECFEFF",
+            "$description": "Brand teal scale 50"
+          },
+          "100": {
+            "$type": "color",
+            "$value": "#CFFAFE",
+            "$description": "Brand teal scale 100"
+          },
+          "200": {
+            "$type": "color",
+            "$value": "#A5F3FC",
+            "$description": "Brand teal scale 200"
+          },
+          "300": {
+            "$type": "color",
+            "$value": "#67E8F9",
+            "$description": "Brand teal scale 300"
+          },
+          "400": {
+            "$type": "color",
+            "$value": "#22D3EE",
+            "$description": "Brand teal scale 400"
+          },
+          "500": {
+            "$type": "color",
+            "$value": "#2EB5C4",
+            "$description": "Brand teal scale 500"
+          },
+          "600": {
+            "$type": "color",
+            "$value": "#2399A5",
+            "$description": "Brand teal scale 600"
+          },
+          "700": {
+            "$type": "color",
+            "$value": "#0E7490",
+            "$description": "Brand teal scale 700"
+          },
+          "800": {
+            "$type": "color",
+            "$value": "#155E75",
+            "$description": "Brand teal scale 800"
+          },
+          "900": {
+            "$type": "color",
+            "$value": "#164E63",
+            "$description": "Brand teal scale 900"
+          },
+          "950": {
+            "$type": "color",
+            "$value": "#083344",
+            "$description": "Brand teal scale 950"
+          }
+        }
+      },
+      "red": {
+        "50": {
+          "$type": "color",
+          "$value": "#FEF2F2",
+          "$description": "Danger red scale 50"
+        },
+        "100": {
+          "$type": "color",
+          "$value": "#FEE2E2",
+          "$description": "Danger red scale 100"
+        },
+        "200": {
+          "$type": "color",
+          "$value": "#FECACA",
+          "$description": "Danger red scale 200"
+        },
+        "300": {
+          "$type": "color",
+          "$value": "#FCA5A5",
+          "$description": "Danger red scale 300"
+        },
+        "400": {
+          "$type": "color",
+          "$value": "#F87171",
+          "$description": "Danger red scale 400"
+        },
+        "500": {
+          "$type": "color",
+          "$value": "#EF4444",
+          "$description": "Danger red scale 500"
+        },
+        "600": {
+          "$type": "color",
+          "$value": "#DC2626",
+          "$description": "Danger red scale 600"
+        },
+        "700": {
+          "$type": "color",
+          "$value": "#CF202F",
+          "$description": "Danger red scale 700"
+        },
+        "800": {
+          "$type": "color",
+          "$value": "#991B1B",
+          "$description": "Danger red scale 800"
+        },
+        "900": {
+          "$type": "color",
+          "$value": "#7F1D1D",
+          "$description": "Danger red scale 900"
+        },
+        "950": {
+          "$type": "color",
+          "$value": "#450A0A",
+          "$description": "Danger red scale 950"
+        }
+      },
+      "green": {
+        "50": {
+          "$type": "color",
+          "$value": "#ECFDF5",
+          "$description": "Success green scale 50"
+        },
+        "100": {
+          "$type": "color",
+          "$value": "#D1FAE5",
+          "$description": "Success green scale 100"
+        },
+        "200": {
+          "$type": "color",
+          "$value": "#A7F3D0",
+          "$description": "Success green scale 200"
+        },
+        "300": {
+          "$type": "color",
+          "$value": "#6EE7B7",
+          "$description": "Success green scale 300"
+        },
+        "400": {
+          "$type": "color",
+          "$value": "#34D399",
+          "$description": "Success green scale 400"
+        },
+        "500": {
+          "$type": "color",
+          "$value": "#10B981",
+          "$description": "Success green scale 500"
+        },
+        "600": {
+          "$type": "color",
+          "$value": "#05A66B",
+          "$description": "Success green scale 600"
+        },
+        "700": {
+          "$type": "color",
+          "$value": "#047857",
+          "$description": "Success green scale 700"
+        },
+        "800": {
+          "$type": "color",
+          "$value": "#065F46",
+          "$description": "Success green scale 800"
+        },
+        "900": {
+          "$type": "color",
+          "$value": "#064E3B",
+          "$description": "Success green scale 900"
+        },
+        "950": {
+          "$type": "color",
+          "$value": "#022C22",
+          "$description": "Success green scale 950"
+        }
+      },
+      "amber": {
+        "50": {
+          "$type": "color",
+          "$value": "#FFFBEB",
+          "$description": "Warning amber scale 50"
+        },
+        "100": {
+          "$type": "color",
+          "$value": "#FEF3C7",
+          "$description": "Warning amber scale 100"
+        },
+        "200": {
+          "$type": "color",
+          "$value": "#FDE68A",
+          "$description": "Warning amber scale 200"
+        },
+        "300": {
+          "$type": "color",
+          "$value": "#FCD34D",
+          "$description": "Warning amber scale 300"
+        },
+        "400": {
+          "$type": "color",
+          "$value": "#FBBF24",
+          "$description": "Warning amber scale 400"
+        },
+        "500": {
+          "$type": "color",
+          "$value": "#F59E0B",
+          "$description": "Warning amber scale 500"
+        },
+        "600": {
+          "$type": "color",
+          "$value": "#D97706",
+          "$description": "Warning amber scale 600"
+        },
+        "700": {
+          "$type": "color",
+          "$value": "#A86D00",
+          "$description": "Warning amber scale 700"
+        },
+        "800": {
+          "$type": "color",
+          "$value": "#92400E",
+          "$description": "Warning amber scale 800"
+        },
+        "900": {
+          "$type": "color",
+          "$value": "#78350F",
+          "$description": "Warning amber scale 900"
+        },
+        "950": {
+          "$type": "color",
+          "$value": "#451A03",
+          "$description": "Warning amber scale 950"
+        }
+      },
+      "blue": {
+        "50": {
+          "$type": "color",
+          "$value": "#EFF6FF",
+          "$description": "Information blue scale 50"
+        },
+        "100": {
+          "$type": "color",
+          "$value": "#DBEAFE",
+          "$description": "Information blue scale 100"
+        },
+        "200": {
+          "$type": "color",
+          "$value": "#BFDBFE",
+          "$description": "Information blue scale 200"
+        },
+        "300": {
+          "$type": "color",
+          "$value": "#93C5FD",
+          "$description": "Information blue scale 300"
+        },
+        "400": {
+          "$type": "color",
+          "$value": "#60A5FA",
+          "$description": "Information blue scale 400"
+        },
+        "500": {
+          "$type": "color",
+          "$value": "#3B82F6",
+          "$description": "Information blue scale 500"
+        },
+        "600": {
+          "$type": "color",
+          "$value": "#2563EB",
+          "$description": "Information blue scale 600"
+        },
+        "700": {
+          "$type": "color",
+          "$value": "#1D4ED8",
+          "$description": "Information blue scale 700"
+        },
+        "800": {
+          "$type": "color",
+          "$value": "#1E40AF",
+          "$description": "Information blue scale 800"
+        },
+        "900": {
+          "$type": "color",
+          "$value": "#1E3A8A",
+          "$description": "Information blue scale 900"
+        },
+        "950": {
+          "$type": "color",
+          "$value": "#172554",
+          "$description": "Information blue scale 950"
+        }
+      },
+      "cyan": {
+        "50": {
+          "$type": "color",
+          "$value": "#ECFEFF",
+          "$description": "Cyan accent scale 50"
+        },
+        "100": {
+          "$type": "color",
+          "$value": "#CFFAFE",
+          "$description": "Cyan accent scale 100"
+        },
+        "200": {
+          "$type": "color",
+          "$value": "#A5F3FC",
+          "$description": "Cyan accent scale 200"
+        },
+        "300": {
+          "$type": "color",
+          "$value": "#67E8F9",
+          "$description": "Cyan accent scale 300"
+        },
+        "400": {
+          "$type": "color",
+          "$value": "#22D3EE",
+          "$description": "Cyan accent scale 400"
+        },
+        "500": {
+          "$type": "color",
+          "$value": "#06B6D4",
+          "$description": "Cyan accent scale 500"
+        },
+        "600": {
+          "$type": "color",
+          "$value": "#0891B2",
+          "$description": "Cyan accent scale 600"
+        },
+        "700": {
+          "$type": "color",
+          "$value": "#0E7490",
+          "$description": "Cyan accent scale 700"
+        },
+        "800": {
+          "$type": "color",
+          "$value": "#155E75",
+          "$description": "Cyan accent scale 800"
+        },
+        "900": {
+          "$type": "color",
+          "$value": "#164E63",
+          "$description": "Cyan accent scale 900"
+        },
+        "950": {
+          "$type": "color",
+          "$value": "#083344",
+          "$description": "Cyan accent scale 950"
+        }
+      },
+      "purple": {
+        "50": {
+          "$type": "color",
+          "$value": "#FAF5FF",
+          "$description": "Purple chart scale 50"
+        },
+        "100": {
+          "$type": "color",
+          "$value": "#F3E8FF",
+          "$description": "Purple chart scale 100"
+        },
+        "200": {
+          "$type": "color",
+          "$value": "#E9D5FF",
+          "$description": "Purple chart scale 200"
+        },
+        "300": {
+          "$type": "color",
+          "$value": "#D8B4FE",
+          "$description": "Purple chart scale 300"
+        },
+        "400": {
+          "$type": "color",
+          "$value": "#C084FC",
+          "$description": "Purple chart scale 400"
+        },
+        "500": {
+          "$type": "color",
+          "$value": "#A855F7",
+          "$description": "Purple chart scale 500"
+        },
+        "600": {
+          "$type": "color",
+          "$value": "#9333EA",
+          "$description": "Purple chart scale 600"
+        },
+        "700": {
+          "$type": "color",
+          "$value": "#7E22CE",
+          "$description": "Purple chart scale 700"
+        },
+        "800": {
+          "$type": "color",
+          "$value": "#6B21A8",
+          "$description": "Purple chart scale 800"
+        },
+        "900": {
+          "$type": "color",
+          "$value": "#581C87",
+          "$description": "Purple chart scale 900"
+        },
+        "950": {
+          "$type": "color",
+          "$value": "#3B0764",
+          "$description": "Purple chart scale 950"
+        }
+      },
+      "market": {
+        "up": {
+          "50": {
+            "$type": "color",
+            "$value": "#FEF2F2",
+            "$description": "China-market up red scale 50"
+          },
+          "100": {
+            "$type": "color",
+            "$value": "#FEE2E2",
+            "$description": "China-market up red scale 100"
+          },
+          "200": {
+            "$type": "color",
+            "$value": "#FECACA",
+            "$description": "China-market up red scale 200"
+          },
+          "300": {
+            "$type": "color",
+            "$value": "#FCA5A5",
+            "$description": "China-market up red scale 300"
+          },
+          "400": {
+            "$type": "color",
+            "$value": "#F87171",
+            "$description": "China-market up red scale 400"
+          },
+          "500": {
+            "$type": "color",
+            "$value": "#EF4444",
+            "$description": "China-market up red scale 500"
+          },
+          "600": {
+            "$type": "color",
+            "$value": "#DC2626",
+            "$description": "China-market up red scale 600"
+          },
+          "700": {
+            "$type": "color",
+            "$value": "#CF202F",
+            "$description": "China-market up red scale 700"
+          },
+          "800": {
+            "$type": "color",
+            "$value": "#991B1B",
+            "$description": "China-market up red scale 800"
+          },
+          "900": {
+            "$type": "color",
+            "$value": "#7F1D1D",
+            "$description": "China-market up red scale 900"
+          },
+          "950": {
+            "$type": "color",
+            "$value": "#450A0A",
+            "$description": "China-market up red scale 950"
+          }
+        },
+        "down": {
+          "50": {
+            "$type": "color",
+            "$value": "#ECFDF5",
+            "$description": "China-market down green scale 50"
+          },
+          "100": {
+            "$type": "color",
+            "$value": "#D1FAE5",
+            "$description": "China-market down green scale 100"
+          },
+          "200": {
+            "$type": "color",
+            "$value": "#A7F3D0",
+            "$description": "China-market down green scale 200"
+          },
+          "300": {
+            "$type": "color",
+            "$value": "#6EE7B7",
+            "$description": "China-market down green scale 300"
+          },
+          "400": {
+            "$type": "color",
+            "$value": "#34D399",
+            "$description": "China-market down green scale 400"
+          },
+          "500": {
+            "$type": "color",
+            "$value": "#10B981",
+            "$description": "China-market down green scale 500"
+          },
+          "600": {
+            "$type": "color",
+            "$value": "#05A66B",
+            "$description": "China-market down green scale 600"
+          },
+          "700": {
+            "$type": "color",
+            "$value": "#047857",
+            "$description": "China-market down green scale 700"
+          },
+          "800": {
+            "$type": "color",
+            "$value": "#065F46",
+            "$description": "China-market down green scale 800"
+          },
+          "900": {
+            "$type": "color",
+            "$value": "#064E3B",
+            "$description": "China-market down green scale 900"
+          },
+          "950": {
+            "$type": "color",
+            "$value": "#022C22",
+            "$description": "China-market down green scale 950"
+          }
+        }
+      }
+    },
+    "semantic": {
+      "accent": {
+        "blue": {
+          "bg": {
+            "$type": "color",
+            "$description": "Semantic color accent.blue.bg",
+            "$value": {
+              "darkTerminal": "#172554",
+              "lightBroker": "#EFF6FF",
+              "midnightBlue": "#172554"
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$description": "Semantic color accent.blue.border",
+            "$value": {
+              "darkTerminal": "#1D4ED8",
+              "lightBroker": "#BFDBFE",
+              "midnightBlue": "#1D4ED8"
+            }
+          },
+          "fg": {
+            "$type": "color",
+            "$description": "Semantic color accent.blue.fg",
+            "$value": {
+              "darkTerminal": "#74A8FF",
+              "lightBroker": "#2563EB",
+              "midnightBlue": "#7AB8FF"
+            }
+          },
+          "onSolid": {
+            "$type": "color",
+            "$description": "Semantic color accent.blue.onSolid",
+            "$value": {
+              "darkTerminal": "#FAFAFA",
+              "lightBroker": "#FAFAFA",
+              "midnightBlue": "#FAFAFA"
+            }
+          },
+          "solid": {
+            "$type": "color",
+            "$description": "Semantic color accent.blue.solid",
+            "$value": {
+              "darkTerminal": "#3B82F6",
+              "lightBroker": "#2563EB",
+              "midnightBlue": "#3B82F6"
+            }
+          }
+        },
+        "cyan": {
+          "bg": {
+            "$type": "color",
+            "$description": "Semantic color accent.cyan.bg",
+            "$value": {
+              "darkTerminal": "#083344",
+              "lightBroker": "#ECFEFF",
+              "midnightBlue": "#083344"
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$description": "Semantic color accent.cyan.border",
+            "$value": {
+              "darkTerminal": "#0E7490",
+              "lightBroker": "#A5F3FC",
+              "midnightBlue": "#0E7490"
+            }
+          },
+          "fg": {
+            "$type": "color",
+            "$description": "Semantic color accent.cyan.fg",
+            "$value": {
+              "darkTerminal": "#22D3EE",
+              "lightBroker": "#0E7490",
+              "midnightBlue": "#22D3EE"
+            }
+          },
+          "onSolid": {
+            "$type": "color",
+            "$description": "Semantic color accent.cyan.onSolid",
+            "$value": {
+              "darkTerminal": "#FAFAFA",
+              "lightBroker": "#FAFAFA",
+              "midnightBlue": "#FAFAFA"
+            }
+          },
+          "solid": {
+            "$type": "color",
+            "$description": "Semantic color accent.cyan.solid",
+            "$value": {
+              "darkTerminal": "#06B6D4",
+              "lightBroker": "#0891B2",
+              "midnightBlue": "#06B6D4"
+            }
+          }
+        },
+        "purple": {
+          "bg": {
+            "$type": "color",
+            "$description": "Semantic color accent.purple.bg",
+            "$value": {
+              "darkTerminal": "#3B0764",
+              "lightBroker": "#FAF5FF",
+              "midnightBlue": "#3B0764"
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$description": "Semantic color accent.purple.border",
+            "$value": {
+              "darkTerminal": "#7E22CE",
+              "lightBroker": "#E9D5FF",
+              "midnightBlue": "#7E22CE"
+            }
+          },
+          "fg": {
+            "$type": "color",
+            "$description": "Semantic color accent.purple.fg",
+            "$value": {
+              "darkTerminal": "#D8B4FE",
+              "lightBroker": "#7E22CE",
+              "midnightBlue": "#D8B4FE"
+            }
+          },
+          "onSolid": {
+            "$type": "color",
+            "$description": "Semantic color accent.purple.onSolid",
+            "$value": {
+              "darkTerminal": "#FAFAFA",
+              "lightBroker": "#FAFAFA",
+              "midnightBlue": "#FAFAFA"
+            }
+          },
+          "solid": {
+            "$type": "color",
+            "$description": "Semantic color accent.purple.solid",
+            "$value": {
+              "darkTerminal": "#A855F7",
+              "lightBroker": "#9333EA",
+              "midnightBlue": "#A855F7"
+            }
+          }
+        }
+      },
+      "border": {
+        "default": {
+          "$type": "color",
+          "$description": "Semantic color border.default",
+          "$value": {
+            "darkTerminal": "#444444",
+            "lightBroker": "#DEE1E6",
+            "midnightBlue": "#464646"
+          }
+        },
+        "disabled": {
+          "$type": "color",
+          "$description": "Semantic color border.disabled",
+          "$value": {
+            "darkTerminal": "#555555",
+            "lightBroker": "#D2D7DE",
+            "midnightBlue": "#565656"
+          }
+        },
+        "focus": {
+          "$type": "color",
+          "$description": "Semantic color border.focus",
+          "$value": {
+            "darkTerminal": "#2EB5C4",
+            "lightBroker": "#2EB5C4",
+            "midnightBlue": "#2EB5C4"
+          }
+        },
+        "strong": {
+          "$type": "color",
+          "$description": "Semantic color border.strong",
+          "$value": {
+            "darkTerminal": "#565656",
+            "lightBroker": "#CBD5E1",
+            "midnightBlue": "#5B5B5B"
+          }
+        },
+        "subtle": {
+          "$type": "color",
+          "$description": "Semantic color border.subtle",
+          "$value": {
+            "darkTerminal": "#2F2F2F",
+            "lightBroker": "#EEF0F3",
+            "midnightBlue": "#323232"
+          }
+        }
+      },
+      "brand": {
+        "bg": {
+          "$type": "color",
+          "$description": "Semantic color brand.bg",
+          "$value": {
+            "darkTerminal": "#083344",
+            "lightBroker": "#ECFEFF",
+            "midnightBlue": "#083344"
+          }
+        },
+        "border": {
+          "$type": "color",
+          "$description": "Semantic color brand.border",
+          "$value": {
+            "darkTerminal": "#0E7490",
+            "lightBroker": "#A5F3FC",
+            "midnightBlue": "#0E7490"
+          }
+        },
+        "fg": {
+          "$type": "color",
+          "$description": "Semantic color brand.fg",
+          "$value": {
+            "darkTerminal": "#2EB5C4",
+            "lightBroker": "#2EB5C4",
+            "midnightBlue": "#2EB5C4"
+          }
+        },
+        "onSolid": {
+          "$type": "color",
+          "$description": "Semantic color brand.onSolid",
+          "$value": {
+            "darkTerminal": "#FFFFFF",
+            "lightBroker": "#FFFFFF",
+            "midnightBlue": "#FFFFFF"
+          }
+        },
+        "solid": {
+          "$type": "color",
+          "$description": "Semantic color brand.solid",
+          "$value": {
+            "darkTerminal": "#2EB5C4",
+            "lightBroker": "#2EB5C4",
+            "midnightBlue": "#2EB5C4"
+          }
+        },
+        "active": {
+          "$type": "color",
+          "$description": "Semantic color brand.active",
+          "$value": {
+            "darkTerminal": "#22D3EE",
+            "lightBroker": "#2399A5",
+            "midnightBlue": "#22D3EE"
+          }
+        },
+        "disabled": {
+          "$type": "color",
+          "$description": "Semantic color brand.disabled",
+          "$value": {
+            "darkTerminal": "#155E75",
+            "lightBroker": "#B9E5EA",
+            "midnightBlue": "#155E75"
+          }
+        },
+        "launch": {
+          "$type": "color",
+          "$description": "Semantic color brand.launch",
+          "$value": {
+            "darkTerminal": "#9CE56D",
+            "lightBroker": "#9CE56D",
+            "midnightBlue": "#9CE56D"
+          }
+        }
+      },
+      "chart": {
+        "diverging": {
+          "negative": {
+            "$type": "color",
+            "$description": "Semantic color chart.diverging.negative",
+            "$value": {
+              "darkTerminal": "#FF6478",
+              "lightBroker": "#CF202F",
+              "midnightBlue": "#FF6478"
+            }
+          },
+          "neutral": {
+            "$type": "color",
+            "$description": "Semantic color chart.diverging.neutral",
+            "$value": {
+              "darkTerminal": "#B8B8B8",
+              "lightBroker": "#71717A",
+              "midnightBlue": "#BDBDBD"
+            }
+          },
+          "positive": {
+            "$type": "color",
+            "$description": "Semantic color chart.diverging.positive",
+            "$value": {
+              "darkTerminal": "#24C985",
+              "lightBroker": "#05A66B",
+              "midnightBlue": "#24C985"
+            }
+          }
+        },
+        "sequential": {
+          "high": {
+            "$type": "color",
+            "$description": "Semantic color chart.sequential.high",
+            "$value": {
+              "darkTerminal": "#67E8F9",
+              "lightBroker": "#0E7490",
+              "midnightBlue": "#67E8F9"
+            }
+          },
+          "low": {
+            "$type": "color",
+            "$description": "Semantic color chart.sequential.low",
+            "$value": {
+              "darkTerminal": "#123337",
+              "lightBroker": "#CFFAFE",
+              "midnightBlue": "#123337"
+            }
+          },
+          "mid": {
+            "$type": "color",
+            "$description": "Semantic color chart.sequential.mid",
+            "$value": {
+              "darkTerminal": "#2EB5C4",
+              "lightBroker": "#2EB5C4",
+              "midnightBlue": "#2EB5C4"
+            }
+          }
+        }
+      },
+      "market": {
+        "down": {
+          "bg": {
+            "$type": "color",
+            "$description": "Semantic color market.down.bg",
+            "$value": {
+              "darkTerminal": "#022C22",
+              "lightBroker": "#ECFDF5",
+              "midnightBlue": "#022C22"
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$description": "Semantic color market.down.border",
+            "$value": {
+              "darkTerminal": "#047857",
+              "lightBroker": "#A7F3D0",
+              "midnightBlue": "#047857"
+            }
+          },
+          "fg": {
+            "$type": "color",
+            "$description": "Semantic color market.down.fg",
+            "$value": {
+              "darkTerminal": "#24C985",
+              "lightBroker": "#05A66B",
+              "midnightBlue": "#24C985"
+            }
+          },
+          "onSolid": {
+            "$type": "color",
+            "$description": "Semantic color market.down.onSolid",
+            "$value": {
+              "darkTerminal": "#FAFAFA",
+              "lightBroker": "#FAFAFA",
+              "midnightBlue": "#FAFAFA"
+            }
+          },
+          "solid": {
+            "$type": "color",
+            "$description": "Semantic color market.down.solid",
+            "$value": {
+              "darkTerminal": "#10B981",
+              "lightBroker": "#05A66B",
+              "midnightBlue": "#10B981"
+            }
+          }
+        },
+        "flat": {
+          "bg": {
+            "$type": "color",
+            "$description": "Semantic color market.flat.bg",
+            "$value": {
+              "darkTerminal": "#222222",
+              "lightBroker": "#F4F4F5",
+              "midnightBlue": "#242424"
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$description": "Semantic color market.flat.border",
+            "$value": {
+              "darkTerminal": "#444444",
+              "lightBroker": "#D4D4D8",
+              "midnightBlue": "#464646"
+            }
+          },
+          "fg": {
+            "$type": "color",
+            "$description": "Semantic color market.flat.fg",
+            "$value": {
+              "darkTerminal": "#B8B8B8",
+              "lightBroker": "#71717A",
+              "midnightBlue": "#BDBDBD"
+            }
+          },
+          "onSolid": {
+            "$type": "color",
+            "$description": "Semantic color market.flat.onSolid",
+            "$value": {
+              "darkTerminal": "#FAFAFA",
+              "lightBroker": "#FAFAFA",
+              "midnightBlue": "#FAFAFA"
+            }
+          },
+          "solid": {
+            "$type": "color",
+            "$description": "Semantic color market.flat.solid",
+            "$value": {
+              "darkTerminal": "#71717A",
+              "lightBroker": "#71717A",
+              "midnightBlue": "#71717A"
+            }
+          }
+        },
+        "up": {
+          "bg": {
+            "$type": "color",
+            "$description": "Semantic color market.up.bg",
+            "$value": {
+              "darkTerminal": "#450A0A",
+              "lightBroker": "#FEF2F2",
+              "midnightBlue": "#450A0A"
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$description": "Semantic color market.up.border",
+            "$value": {
+              "darkTerminal": "#CF202F",
+              "lightBroker": "#FECACA",
+              "midnightBlue": "#CF202F"
+            }
+          },
+          "fg": {
+            "$type": "color",
+            "$description": "Semantic color market.up.fg",
+            "$value": {
+              "darkTerminal": "#FF5A68",
+              "lightBroker": "#CF202F",
+              "midnightBlue": "#FF6478"
+            }
+          },
+          "onSolid": {
+            "$type": "color",
+            "$description": "Semantic color market.up.onSolid",
+            "$value": {
+              "darkTerminal": "#FAFAFA",
+              "lightBroker": "#FAFAFA",
+              "midnightBlue": "#FAFAFA"
+            }
+          },
+          "solid": {
+            "$type": "color",
+            "$description": "Semantic color market.up.solid",
+            "$value": {
+              "darkTerminal": "#EF4444",
+              "lightBroker": "#CF202F",
+              "midnightBlue": "#EF4444"
+            }
+          }
+        }
+      },
+      "overlay": {
+        "backdrop": {
+          "$type": "color",
+          "$description": "Semantic color overlay.backdrop",
+          "$value": {
+            "darkTerminal": "#07070799",
+            "lightBroker": "#09090B66",
+            "midnightBlue": "#08080899"
+          }
+        },
+        "black": {
+          "muted": {
+            "$type": "color",
+            "$description": "Semantic color overlay.black.muted",
+            "$value": {
+              "darkTerminal": "#00000018",
+              "lightBroker": "#00000018",
+              "midnightBlue": "#00000018"
+            }
+          },
+          "scrim": {
+            "$type": "color",
+            "$description": "Semantic color overlay.black.scrim",
+            "$value": {
+              "darkTerminal": "#00000066",
+              "lightBroker": "#00000066",
+              "midnightBlue": "#00000066"
+            }
+          },
+          "strong": {
+            "$type": "color",
+            "$description": "Semantic color overlay.black.strong",
+            "$value": {
+              "darkTerminal": "#00000055",
+              "lightBroker": "#00000055",
+              "midnightBlue": "#00000055"
+            }
+          },
+          "subtle": {
+            "$type": "color",
+            "$description": "Semantic color overlay.black.subtle",
+            "$value": {
+              "darkTerminal": "#00000012",
+              "lightBroker": "#00000012",
+              "midnightBlue": "#00000012"
+            }
+          }
+        },
+        "brand": {
+          "muted": {
+            "$type": "color",
+            "$description": "Semantic color overlay.brand.muted",
+            "$value": {
+              "darkTerminal": "#2EB5C418",
+              "lightBroker": "#2EB5C418",
+              "midnightBlue": "#2EB5C418"
+            }
+          },
+          "scrim": {
+            "$type": "color",
+            "$description": "Semantic color overlay.brand.scrim",
+            "$value": {
+              "darkTerminal": "#2EB5C466",
+              "lightBroker": "#2EB5C466",
+              "midnightBlue": "#2EB5C466"
+            }
+          },
+          "strong": {
+            "$type": "color",
+            "$description": "Semantic color overlay.brand.strong",
+            "$value": {
+              "darkTerminal": "#2EB5C455",
+              "lightBroker": "#2EB5C455",
+              "midnightBlue": "#2EB5C455"
+            }
+          },
+          "subtle": {
+            "$type": "color",
+            "$description": "Semantic color overlay.brand.subtle",
+            "$value": {
+              "darkTerminal": "#2EB5C412",
+              "lightBroker": "#2EB5C412",
+              "midnightBlue": "#2EB5C412"
+            }
+          }
+        },
+        "danger": {
+          "muted": {
+            "$type": "color",
+            "$description": "Semantic color overlay.danger.muted",
+            "$value": {
+              "darkTerminal": "#FF6B7E18",
+              "lightBroker": "#CF202F18",
+              "midnightBlue": "#FF739118"
+            }
+          },
+          "scrim": {
+            "$type": "color",
+            "$description": "Semantic color overlay.danger.scrim",
+            "$value": {
+              "darkTerminal": "#FF6B7E66",
+              "lightBroker": "#CF202F66",
+              "midnightBlue": "#FF739166"
+            }
+          },
+          "strong": {
+            "$type": "color",
+            "$description": "Semantic color overlay.danger.strong",
+            "$value": {
+              "darkTerminal": "#FF6B7E55",
+              "lightBroker": "#CF202F55",
+              "midnightBlue": "#FF739155"
+            }
+          },
+          "subtle": {
+            "$type": "color",
+            "$description": "Semantic color overlay.danger.subtle",
+            "$value": {
+              "darkTerminal": "#FF6B7E12",
+              "lightBroker": "#CF202F12",
+              "midnightBlue": "#FF739112"
+            }
+          }
+        },
+        "down": {
+          "muted": {
+            "$type": "color",
+            "$description": "Semantic color overlay.down.muted",
+            "$value": {
+              "darkTerminal": "#24C98518",
+              "lightBroker": "#05A66B18",
+              "midnightBlue": "#24C98518"
+            }
+          },
+          "scrim": {
+            "$type": "color",
+            "$description": "Semantic color overlay.down.scrim",
+            "$value": {
+              "darkTerminal": "#24C98566",
+              "lightBroker": "#05A66B66",
+              "midnightBlue": "#24C98566"
+            }
+          },
+          "strong": {
+            "$type": "color",
+            "$description": "Semantic color overlay.down.strong",
+            "$value": {
+              "darkTerminal": "#24C98555",
+              "lightBroker": "#05A66B55",
+              "midnightBlue": "#24C98555"
+            }
+          },
+          "subtle": {
+            "$type": "color",
+            "$description": "Semantic color overlay.down.subtle",
+            "$value": {
+              "darkTerminal": "#24C98512",
+              "lightBroker": "#05A66B12",
+              "midnightBlue": "#24C98512"
+            }
+          }
+        },
+        "info": {
+          "muted": {
+            "$type": "color",
+            "$description": "Semantic color overlay.info.muted",
+            "$value": {
+              "darkTerminal": "#74A8FF18",
+              "lightBroker": "#2563EB18",
+              "midnightBlue": "#7AB8FF18"
+            }
+          },
+          "scrim": {
+            "$type": "color",
+            "$description": "Semantic color overlay.info.scrim",
+            "$value": {
+              "darkTerminal": "#74A8FF66",
+              "lightBroker": "#2563EB66",
+              "midnightBlue": "#7AB8FF66"
+            }
+          },
+          "strong": {
+            "$type": "color",
+            "$description": "Semantic color overlay.info.strong",
+            "$value": {
+              "darkTerminal": "#74A8FF55",
+              "lightBroker": "#2563EB55",
+              "midnightBlue": "#7AB8FF55"
+            }
+          },
+          "subtle": {
+            "$type": "color",
+            "$description": "Semantic color overlay.info.subtle",
+            "$value": {
+              "darkTerminal": "#74A8FF12",
+              "lightBroker": "#2563EB12",
+              "midnightBlue": "#7AB8FF12"
+            }
+          }
+        },
+        "inverse": {
+          "muted": {
+            "$type": "color",
+            "$description": "Semantic color overlay.inverse.muted",
+            "$value": {
+              "darkTerminal": "#FFFFFF18",
+              "lightBroker": "#FFFFFF18",
+              "midnightBlue": "#FFFFFF18"
+            }
+          },
+          "scrim": {
+            "$type": "color",
+            "$description": "Semantic color overlay.inverse.scrim",
+            "$value": {
+              "darkTerminal": "#FFFFFF66",
+              "lightBroker": "#FFFFFF66",
+              "midnightBlue": "#FFFFFF66"
+            }
+          },
+          "strong": {
+            "$type": "color",
+            "$description": "Semantic color overlay.inverse.strong",
+            "$value": {
+              "darkTerminal": "#FFFFFF55",
+              "lightBroker": "#FFFFFF55",
+              "midnightBlue": "#FFFFFF55"
+            }
+          },
+          "subtle": {
+            "$type": "color",
+            "$description": "Semantic color overlay.inverse.subtle",
+            "$value": {
+              "darkTerminal": "#FFFFFF12",
+              "lightBroker": "#FFFFFF12",
+              "midnightBlue": "#FFFFFF12"
+            }
+          }
+        },
+        "scrim": {
+          "$type": "color",
+          "$description": "Semantic color overlay.scrim",
+          "$value": {
+            "darkTerminal": "#070707CC",
+            "lightBroker": "#09090B80",
+            "midnightBlue": "#080808CC"
+          }
+        },
+        "up": {
+          "muted": {
+            "$type": "color",
+            "$description": "Semantic color overlay.up.muted",
+            "$value": {
+              "darkTerminal": "#FF5A6818",
+              "lightBroker": "#CF202F18",
+              "midnightBlue": "#FF647818"
+            }
+          },
+          "scrim": {
+            "$type": "color",
+            "$description": "Semantic color overlay.up.scrim",
+            "$value": {
+              "darkTerminal": "#FF5A6866",
+              "lightBroker": "#CF202F66",
+              "midnightBlue": "#FF647866"
+            }
+          },
+          "strong": {
+            "$type": "color",
+            "$description": "Semantic color overlay.up.strong",
+            "$value": {
+              "darkTerminal": "#FF5A6855",
+              "lightBroker": "#CF202F55",
+              "midnightBlue": "#FF647855"
+            }
+          },
+          "subtle": {
+            "$type": "color",
+            "$description": "Semantic color overlay.up.subtle",
+            "$value": {
+              "darkTerminal": "#FF5A6812",
+              "lightBroker": "#CF202F12",
+              "midnightBlue": "#FF647812"
+            }
+          }
+        },
+        "warning": {
+          "muted": {
+            "$type": "color",
+            "$description": "Semantic color overlay.warning.muted",
+            "$value": {
+              "darkTerminal": "#FBBF2418",
+              "lightBroker": "#A86D0018",
+              "midnightBlue": "#FBBF2418"
+            }
+          },
+          "scrim": {
+            "$type": "color",
+            "$description": "Semantic color overlay.warning.scrim",
+            "$value": {
+              "darkTerminal": "#FBBF2466",
+              "lightBroker": "#A86D0066",
+              "midnightBlue": "#FBBF2466"
+            }
+          },
+          "strong": {
+            "$type": "color",
+            "$description": "Semantic color overlay.warning.strong",
+            "$value": {
+              "darkTerminal": "#FBBF2455",
+              "lightBroker": "#A86D0055",
+              "midnightBlue": "#FBBF2455"
+            }
+          },
+          "subtle": {
+            "$type": "color",
+            "$description": "Semantic color overlay.warning.subtle",
+            "$value": {
+              "darkTerminal": "#FBBF2412",
+              "lightBroker": "#A86D0012",
+              "midnightBlue": "#FBBF2412"
+            }
+          }
+        },
+        "white": {
+          "muted": {
+            "$type": "color",
+            "$description": "Semantic color overlay.white.muted",
+            "$value": {
+              "darkTerminal": "#FFFFFF18",
+              "lightBroker": "#FFFFFF18",
+              "midnightBlue": "#FFFFFF18"
+            }
+          },
+          "scrim": {
+            "$type": "color",
+            "$description": "Semantic color overlay.white.scrim",
+            "$value": {
+              "darkTerminal": "#FFFFFF66",
+              "lightBroker": "#FFFFFF66",
+              "midnightBlue": "#FFFFFF66"
+            }
+          },
+          "strong": {
+            "$type": "color",
+            "$description": "Semantic color overlay.white.strong",
+            "$value": {
+              "darkTerminal": "#FFFFFF55",
+              "lightBroker": "#FFFFFF55",
+              "midnightBlue": "#FFFFFF55"
+            }
+          },
+          "subtle": {
+            "$type": "color",
+            "$description": "Semantic color overlay.white.subtle",
+            "$value": {
+              "darkTerminal": "#FFFFFF12",
+              "lightBroker": "#FFFFFF12",
+              "midnightBlue": "#FFFFFF12"
+            }
+          }
+        }
+      },
+      "status": {
+        "danger": {
+          "bg": {
+            "$type": "color",
+            "$description": "Semantic color status.danger.bg",
+            "$value": {
+              "darkTerminal": "#450A0A",
+              "lightBroker": "#FEF2F2",
+              "midnightBlue": "#450A0A"
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$description": "Semantic color status.danger.border",
+            "$value": {
+              "darkTerminal": "#CF202F",
+              "lightBroker": "#FECACA",
+              "midnightBlue": "#CF202F"
+            }
+          },
+          "fg": {
+            "$type": "color",
+            "$description": "Semantic color status.danger.fg",
+            "$value": {
+              "darkTerminal": "#FF6B7E",
+              "lightBroker": "#CF202F",
+              "midnightBlue": "#FF7391"
+            }
+          },
+          "onSolid": {
+            "$type": "color",
+            "$description": "Semantic color status.danger.onSolid",
+            "$value": {
+              "darkTerminal": "#FAFAFA",
+              "lightBroker": "#FAFAFA",
+              "midnightBlue": "#FAFAFA"
+            }
+          },
+          "solid": {
+            "$type": "color",
+            "$description": "Semantic color status.danger.solid",
+            "$value": {
+              "darkTerminal": "#EF4444",
+              "lightBroker": "#CF202F",
+              "midnightBlue": "#EF4444"
+            }
+          }
+        },
+        "info": {
+          "bg": {
+            "$type": "color",
+            "$description": "Semantic color status.info.bg",
+            "$value": {
+              "darkTerminal": "#172554",
+              "lightBroker": "#EFF6FF",
+              "midnightBlue": "#172554"
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$description": "Semantic color status.info.border",
+            "$value": {
+              "darkTerminal": "#1D4ED8",
+              "lightBroker": "#BFDBFE",
+              "midnightBlue": "#1D4ED8"
+            }
+          },
+          "fg": {
+            "$type": "color",
+            "$description": "Semantic color status.info.fg",
+            "$value": {
+              "darkTerminal": "#74A8FF",
+              "lightBroker": "#2563EB",
+              "midnightBlue": "#7AB8FF"
+            }
+          },
+          "onSolid": {
+            "$type": "color",
+            "$description": "Semantic color status.info.onSolid",
+            "$value": {
+              "darkTerminal": "#FAFAFA",
+              "lightBroker": "#FAFAFA",
+              "midnightBlue": "#FAFAFA"
+            }
+          },
+          "solid": {
+            "$type": "color",
+            "$description": "Semantic color status.info.solid",
+            "$value": {
+              "darkTerminal": "#3B82F6",
+              "lightBroker": "#2563EB",
+              "midnightBlue": "#3B82F6"
+            }
+          }
+        },
+        "neutral": {
+          "bg": {
+            "$type": "color",
+            "$description": "Semantic color status.neutral.bg",
+            "$value": {
+              "darkTerminal": "#222222",
+              "lightBroker": "#F4F4F5",
+              "midnightBlue": "#242424"
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$description": "Semantic color status.neutral.border",
+            "$value": {
+              "darkTerminal": "#444444",
+              "lightBroker": "#D4D4D8",
+              "midnightBlue": "#464646"
+            }
+          },
+          "fg": {
+            "$type": "color",
+            "$description": "Semantic color status.neutral.fg",
+            "$value": {
+              "darkTerminal": "#B8B8B8",
+              "lightBroker": "#52525B",
+              "midnightBlue": "#BDBDBD"
+            }
+          },
+          "onSolid": {
+            "$type": "color",
+            "$description": "Semantic color status.neutral.onSolid",
+            "$value": {
+              "darkTerminal": "#FAFAFA",
+              "lightBroker": "#FAFAFA",
+              "midnightBlue": "#FAFAFA"
+            }
+          },
+          "solid": {
+            "$type": "color",
+            "$description": "Semantic color status.neutral.solid",
+            "$value": {
+              "darkTerminal": "#71717A",
+              "lightBroker": "#71717A",
+              "midnightBlue": "#71717A"
+            }
+          }
+        },
+        "success": {
+          "bg": {
+            "$type": "color",
+            "$description": "Semantic color status.success.bg",
+            "$value": {
+              "darkTerminal": "#022C22",
+              "lightBroker": "#ECFDF5",
+              "midnightBlue": "#022C22"
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$description": "Semantic color status.success.border",
+            "$value": {
+              "darkTerminal": "#047857",
+              "lightBroker": "#A7F3D0",
+              "midnightBlue": "#047857"
+            }
+          },
+          "fg": {
+            "$type": "color",
+            "$description": "Semantic color status.success.fg",
+            "$value": {
+              "darkTerminal": "#24C985",
+              "lightBroker": "#05A66B",
+              "midnightBlue": "#24C985"
+            }
+          },
+          "onSolid": {
+            "$type": "color",
+            "$description": "Semantic color status.success.onSolid",
+            "$value": {
+              "darkTerminal": "#FAFAFA",
+              "lightBroker": "#FAFAFA",
+              "midnightBlue": "#FAFAFA"
+            }
+          },
+          "solid": {
+            "$type": "color",
+            "$description": "Semantic color status.success.solid",
+            "$value": {
+              "darkTerminal": "#10B981",
+              "lightBroker": "#05A66B",
+              "midnightBlue": "#10B981"
+            }
+          }
+        },
+        "warning": {
+          "bg": {
+            "$type": "color",
+            "$description": "Semantic color status.warning.bg",
+            "$value": {
+              "darkTerminal": "#451A03",
+              "lightBroker": "#FFFBEB",
+              "midnightBlue": "#451A03"
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$description": "Semantic color status.warning.border",
+            "$value": {
+              "darkTerminal": "#A86D00",
+              "lightBroker": "#FDE68A",
+              "midnightBlue": "#A86D00"
+            }
+          },
+          "fg": {
+            "$type": "color",
+            "$description": "Semantic color status.warning.fg",
+            "$value": {
+              "darkTerminal": "#F4B000",
+              "lightBroker": "#A86D00",
+              "midnightBlue": "#F4B000"
+            }
+          },
+          "onSolid": {
+            "$type": "color",
+            "$description": "Semantic color status.warning.onSolid",
+            "$value": {
+              "darkTerminal": "#FAFAFA",
+              "lightBroker": "#FAFAFA",
+              "midnightBlue": "#FAFAFA"
+            }
+          },
+          "solid": {
+            "$type": "color",
+            "$description": "Semantic color status.warning.solid",
+            "$value": {
+              "darkTerminal": "#F59E0B",
+              "lightBroker": "#D97706",
+              "midnightBlue": "#F59E0B"
+            }
+          }
+        }
+      },
+      "surface": {
+        "canvas": {
+          "$type": "color",
+          "$description": "Semantic color surface.canvas",
+          "$value": {
+            "darkTerminal": "#070707",
+            "lightBroker": "#F7F7F7",
+            "midnightBlue": "#080808"
+          }
+        },
+        "disabled": {
+          "$type": "color",
+          "$description": "Semantic color surface.disabled",
+          "$value": {
+            "darkTerminal": "#303030",
+            "lightBroker": "#E3E7EC",
+            "midnightBlue": "#333333"
+          }
+        },
+        "inverse": {
+          "$type": "color",
+          "$description": "Semantic color surface.inverse",
+          "$value": {
+            "darkTerminal": "#FFFFFF",
+            "lightBroker": "#09090B",
+            "midnightBlue": "#FFFFFF"
+          }
+        },
+        "panel": {
+          "$type": "color",
+          "$description": "Semantic color surface.panel",
+          "$value": {
+            "darkTerminal": "#181818",
+            "lightBroker": "#FFFFFF",
+            "midnightBlue": "#1A1A1A"
+          }
+        },
+        "raised": {
+          "$type": "color",
+          "$description": "Semantic color surface.raised",
+          "$value": {
+            "darkTerminal": "#222222",
+            "lightBroker": "#FFFFFF",
+            "midnightBlue": "#242424"
+          }
+        },
+        "subtle": {
+          "$type": "color",
+          "$description": "Semantic color surface.subtle",
+          "$value": {
+            "darkTerminal": "#2C2C2C",
+            "lightBroker": "#EEF0F3",
+            "midnightBlue": "#303030"
+          }
+        }
+      },
+      "text": {
+        "disabled": {
+          "$type": "color",
+          "$description": "Semantic color text.disabled",
+          "$value": {
+            "darkTerminal": "#B8B8B8",
+            "lightBroker": "#6D747E",
+            "midnightBlue": "#BCBCBC"
+          }
+        },
+        "inverse": {
+          "$type": "color",
+          "$description": "Semantic color text.inverse",
+          "$value": {
+            "darkTerminal": "#FFFFFF",
+            "lightBroker": "#FFFFFF",
+            "midnightBlue": "#FFFFFF"
+          }
+        },
+        "link": {
+          "$type": "color",
+          "$description": "Semantic color text.link",
+          "$value": {
+            "darkTerminal": "#74A8FF",
+            "lightBroker": "#2563EB",
+            "midnightBlue": "#7AB8FF"
+          }
+        },
+        "primary": {
+          "$type": "color",
+          "$description": "Semantic color text.primary",
+          "$value": {
+            "darkTerminal": "#F8FAFC",
+            "lightBroker": "#0A0B0D",
+            "midnightBlue": "#F8FAFC"
+          }
+        },
+        "secondary": {
+          "$type": "color",
+          "$description": "Semantic color text.secondary",
+          "$value": {
+            "darkTerminal": "#E2E2E2",
+            "lightBroker": "#5B616E",
+            "midnightBlue": "#E3E3E3"
+          }
+        },
+        "tertiary": {
+          "$type": "color",
+          "$description": "Semantic color text.tertiary",
+          "$value": {
+            "darkTerminal": "#B8B8B8",
+            "lightBroker": "#7C828A",
+            "midnightBlue": "#BDBDBD"
+          }
+        }
+      }
+    }
+  }
+}

@@ -4,17 +4,18 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { ActionButton } from '@/src/components/ActionButton';
 import { AppIcon, type AppIconName, type IconTone } from '@/src/components/AppIcon';
-import { useBottomSheet } from '@/src/components/BottomSheet';
+import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
 import { Card } from '@/src/components/Card';
 import { DetailRow } from '@/src/components/data-display';
 import { EmptyState } from '@/src/components/feedback';
 import { FundActionGrid } from '@/src/components/FundActionGrid';
+import { IconSurface, type IconSurfaceTone } from '@/src/components/IconSurface';
 import { NativePressable } from '@/src/components/NativePressable';
 import { Screen } from '@/src/components/Screen';
 import { SegmentedTabs } from '@/src/components/SegmentedTabs';
 import { StatusPill, type StatusPillTone } from '@/src/components/StatusPill';
 import { TextField } from '@/src/components/TextField';
-import { TradingAccountSwitchSheet } from '@/src/components/TradingAccountSwitchSheet';
+import { createTradingAccountSwitchHeader, TradingAccountSwitchSheet } from '@/src/components/TradingAccountSwitchSheet';
 import { AppText } from '@/src/components/Typography';
 import { buildTradingAccountProfiles } from '@/src/domain/accountProfiles';
 import {
@@ -40,7 +41,7 @@ import { mockFundingApi } from '@/src/services/fundingApi';
 import { useToast } from '@/src/feedback/Toast';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { useBroker } from '@/src/state/BrokerStore';
-import { lineWidth, radius, size, spacing } from '@/src/theme/tokens';
+import { lineWidth, layout, radius, size, spacing } from '@/src/theme/tokens';
 import type { KycStatus, TradingAccountUsageStatus } from '@/src/domain/types';
 
 type OperationFilter = FundingOperation | 'all';
@@ -73,14 +74,13 @@ export function FundingHomeScreen() {
     <Screen
       align="center"
       back
+      backHref="/trade"
       rightActions={[{ icon: 'icon.trading.history', label: t('funding.action.openTransactions'), onPress: () => router.push('/funding/transactions' as never) }]}
       title={t('funding.home.title')}>
       <Card highlight>
         <View style={styles.heroStack}>
           <View style={styles.heroHeader}>
-            <View style={StyleSheet.flatten([styles.heroIcon, { backgroundColor: colors.overlay.info.subtle }])}>
-              <AppIcon name="icon.wallet.balance" size={size.icon.lg} />
-            </View>
+            <IconSurface icon="icon.wallet.balance" sizeVariant="lg" tone="info" />
             <View style={styles.flex}>
               <AppText tone="muted" variant="eyebrow">{t('funding.home.eyebrow')}</AppText>
               <AppText variant="title">{t('funding.home.title')}</AppText>
@@ -271,12 +271,20 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
   const methodHelper = selectedMethod ? (amountEntered ? t('funding.method.estimated', { minutes: selectedMethod.estimatedMinutes }) : t('funding.amount.enterFirst')) : undefined;
   const previewRows = buildFundingPreviewRows(operation, numericAmount, expectedUsd, rules, locale, t);
   const footerPreviewRows = buildFundingFooterRows(operation, previewRows);
+  const showAddAccountFeedback = () => {
+    toast.show({
+      message: t('common.demoActionNoChange'),
+      title: t('account.addAccount'),
+    });
+  };
 
   const openAccountSheet = (mode: 'source' | 'target') => {
-    bottomSheet.show({
-      header: {
+    bottomSheet.show(bottomSheetPresets.selection({
+      ...createTradingAccountSwitchHeader({
+        locale,
+        onAddAccount: showAddAccountFeedback,
         title: t('funding.account.switchTitle'),
-      },
+      }),
       content: (
         <TradingAccountSwitchSheet
           accounts={profiles}
@@ -302,17 +310,15 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
           selectedId={mode === 'source' ? sourceAccountId : targetAccountId}
         />
       ),
-    });
+    }));
   };
   const openMethodSheet = () => {
     if (operation === 'internal_transfer') {
       return;
     }
 
-    bottomSheet.show({
-      header: {
-        title: t(operation === 'deposit' ? 'funding.method.selectDeposit' : 'funding.method.selectWithdrawal'),
-      },
+    bottomSheet.show(bottomSheetPresets.selection({
+      title: t(operation === 'deposit' ? 'funding.method.selectDeposit' : 'funding.method.selectWithdrawal'),
       content: (
         <PaymentMethodSheet
           methods={methods}
@@ -323,7 +329,7 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
           selectedId={methodId}
         />
       ),
-    });
+    }));
   };
   const selectMaxAmount = () => {
     if (!sourceAccount) {
@@ -484,7 +490,7 @@ export function FundingTransactionsScreen() {
   const groupedRows = groupFundingTransactionsByDate(rows);
 
   return (
-    <Screen align="center" back title={t('funding.transactions.historyTitle')}>
+    <Screen align="center" back backHref="/funding" title={t('funding.transactions.historyTitle')}>
       <FundingRiskBanner />
       <SegmentedTabs items={operationTabs.map((item) => ({ label: t(item.labelKey), value: item.value }))} onValueChange={setOperation} value={operation} />
       <Card>
@@ -531,7 +537,7 @@ export function FundingTransactionDetailScreen() {
 
   if (!transaction) {
     return (
-      <Screen align="center" back title={t('funding.detail.title')}>
+      <Screen align="center" back backHref="/funding/transactions" title={t('funding.detail.title')}>
         <EmptyState body={t('funding.transactions.empty')} icon="icon.trading.history" />
       </Screen>
     );
@@ -541,12 +547,10 @@ export function FundingTransactionDetailScreen() {
   const signedAmount = getFundingSignedAmount(transaction);
 
   return (
-    <Screen align="center" back title={t('funding.detail.title')}>
+    <Screen align="center" back backHref="/funding/transactions" title={t('funding.detail.title')}>
       <Card highlight>
         <View style={styles.detailHero}>
-          <View style={StyleSheet.flatten([styles.heroIcon, { backgroundColor: resolveStatusOverlay(transaction.status, colors) }])}>
-            <AppIcon name={detailStatusIcon(transaction.status)} size={size.icon.lg} tone={resolveStatusIconTone(transaction.status)} />
-          </View>
+          <IconSurface icon={detailStatusIcon(transaction.status)} sizeVariant="lg" tone={resolveStatusSurfaceTone(transaction.status)} />
           <StatusPill compact label={statusText(transaction.status, t)} tone={statusTone} />
           <AppText adjustsFontSizeToFit numberOfLines={1} tone={signedAmount >= 0 ? 'down' : 'up'} variant="largeNumber">
             {formatSignedMoney(signedAmount, 'USD', locale)}
@@ -634,7 +638,7 @@ function FundingGateScreen({ message }: { message: string }) {
   const { t } = useProductSettings();
 
   return (
-    <Screen align="center" back title={t('funding.home.title')}>
+    <Screen align="center" back backHref="/trade" title={t('funding.home.title')}>
       <EmptyState actionLabel={t('auth.action.signIn')} body={message} icon="icon.security.lock" onAction={() => router.push('/auth' as never)} title={t('funding.error.FUNDING_PERMISSION_DENIED')} variant="card" />
     </Screen>
   );
@@ -644,7 +648,7 @@ function FundingRestrictedScreen({ message, title }: { message: string; title: s
   const { t } = useProductSettings();
 
   return (
-    <Screen align="center" back title={title}>
+    <Screen align="center" back backHref="/funding" title={title}>
       <FundingRiskBanner />
       <EmptyState body={message} icon="icon.security.lock" title={t('funding.account.activeOnly')} variant="card" />
     </Screen>
@@ -674,12 +678,12 @@ function AccountSheetField({
         minTouch={58}
         onPress={onPress}
         style={StyleSheet.flatten([styles.sheetField, { backgroundColor: colors.surface.panel, borderColor: error ? colors.status.danger.fg : colors.border.default }])}>
-        <AppIcon name="icon.account.trading" size={15} />
+        <SheetFieldIcon icon="icon.account.trading" />
         <View style={styles.flex}>
           <AppText numberOfLines={1} tone="muted" variant="eyebrow">{label}</AppText>
           <AppText numberOfLines={1} variant="body">{account ? `${account.accountNo} · ${statusLabel(account.group, t)}` : label}</AppText>
         </View>
-        <AppIcon name="icon.system.chevron_down" size={15} />
+        <AppIcon name="icon.system.chevron_down" sizeVariant="xs" />
       </NativePressable>
       {error ? (
         <AppText style={styles.sheetFieldHelper} tone="danger" variant="caption">{error}</AppText>
@@ -713,13 +717,13 @@ function PaymentMethodField({
         minTouch={58}
         onPress={onPress}
         style={StyleSheet.flatten([styles.sheetField, { backgroundColor: colors.surface.panel, borderColor: error ? colors.status.danger.fg : colors.border.default }])}>
-        <AppIcon name={method?.icon ?? 'icon.wallet.balance'} size={15} />
+        <SheetFieldIcon icon={method?.icon ?? 'icon.wallet.balance'} />
         <View style={styles.flex}>
           <AppText numberOfLines={1} tone="muted" variant="eyebrow">{label}</AppText>
           <AppText numberOfLines={1} variant="body">{method ? localizeText(method.label, locale) : label}</AppText>
         </View>
         {method ? <StatusPill compact label={methodTypeText(method.type, t)} tone="neutral" /> : null}
-        <AppIcon name="icon.system.chevron_down" size={15} />
+        <AppIcon name="icon.system.chevron_down" sizeVariant="xs" />
       </NativePressable>
       {error ? (
         <AppText style={styles.sheetFieldHelper} tone="danger" variant="caption">{error}</AppText>
@@ -728,6 +732,10 @@ function PaymentMethodField({
       ) : null}
     </View>
   );
+}
+
+function SheetFieldIcon({ icon }: { icon: AppIconName }) {
+  return <IconSurface icon={icon} sizeVariant="sm" />;
 }
 
 function PaymentMethodSheet({
@@ -783,6 +791,7 @@ function PaymentMethodRow({
   const helper = disabled && method.maintenanceNote ? localizeText(method.maintenanceNote, locale) : t('funding.method.estimated', { minutes: method.estimatedMinutes });
   const borderWidth = selected ? lineWidth.selected : lineWidth.hairline;
   const paddingOffset = borderWidth - lineWidth.hairline;
+  const selectedBorderColor = colors.text.primary;
 
   return (
     <NativePressable
@@ -796,15 +805,13 @@ function PaymentMethodRow({
         styles.methodRow,
         {
           backgroundColor: colors.surface.panel,
-          borderColor: selected ? colors.text.tertiary : colors.border.subtle,
+          borderColor: selected ? selectedBorderColor : colors.border.subtle,
           borderWidth,
           padding: spacing.md - paddingOffset,
         },
         disabled && { opacity: 0.5 },
       ])}>
-      <View style={StyleSheet.flatten([styles.methodIcon, { backgroundColor: colors.surface.subtle }])}>
-        <AppIcon name={method.icon} size={18} tone={disabled ? 'disabled' : undefined} />
-      </View>
+      <IconSurface background={disabled ? 'hidden' : 'visible'} icon={method.icon} sizeVariant="sm" tone="neutral" />
       <View style={styles.flex}>
         <View style={styles.methodRowTop}>
           <AppText numberOfLines={1} tone={disabled ? 'dim' : 'default'} variant="subtitle">{localizeText(method.label, locale)}</AppText>
@@ -812,7 +819,7 @@ function PaymentMethodRow({
         </View>
         <AppText numberOfLines={2} tone="muted" variant="caption">{helper}</AppText>
       </View>
-      <AppIcon name={selected ? 'icon.status.verified' : 'icon.system.chevron_right'} size={15} />
+      <AppIcon name={selected ? 'icon.status.verified' : 'icon.system.chevron_right'} sizeVariant="xs" tone={selected ? 'success' : 'tertiary'} />
     </NativePressable>
   );
 }
@@ -849,9 +856,7 @@ function AmountStageField({
   return (
     <View style={StyleSheet.flatten([styles.amountStageWrap, { backgroundColor: colors.surface.raised, borderColor: error ? colors.status.danger.fg : colors.border.subtle }])}>
       <View style={styles.amountStageHeader}>
-        <View style={StyleSheet.flatten([styles.amountStageIcon, { backgroundColor: `${colors.brand.fg}14` }])}>
-          <AppIcon name={icon} size={16} />
-        </View>
+        <IconSurface icon={icon} sizeVariant="xs" />
         <View style={styles.flex}>
           <AppText numberOfLines={1} tone="muted" variant="eyebrow">{label}</AppText>
         </View>
@@ -934,7 +939,7 @@ function FundingRiskBanner() {
 
   return (
     <View style={StyleSheet.flatten([styles.riskBanner, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
-      <AppIcon tone="amber" name="icon.security.risk_shield" size={18} />
+      <AppIcon tone="amber" name="icon.security.risk_shield" sizeVariant="sm" />
       <View style={styles.flex}>
         <AppText variant="caption">{t('funding.kyc.required')}</AppText>
         <AppText tone="muted" variant="caption">{t('funding.banner.synthetic')}</AppText>
@@ -967,9 +972,7 @@ function FundingTransactionRow({ onPress, showDivider, transaction }: { onPress:
 
   return (
     <NativePressable accessibilityLabel={localizeText(transaction.note, locale)} accessibilityRole="button" minTouch={58} onPress={onPress} style={StyleSheet.flatten([styles.transactionRow, showDivider && { borderBottomColor: colors.border.subtle, borderBottomWidth: lineWidth.hairline }])}>
-      <View style={StyleSheet.flatten([styles.rowIcon, { backgroundColor: resolveOperationOverlay(transaction.operation, colors) }])}>
-        <AppIcon name={getFundingOperationIcon(transaction.operation)} size={18} tone={resolveOperationIconTone(transaction.operation)} />
-      </View>
+      <IconSurface icon={getFundingOperationIcon(transaction.operation)} sizeVariant="sm" tone={resolveOperationSurfaceTone(transaction.operation)} />
       <View style={styles.flex}>
         <AppText numberOfLines={1} variant="subtitle">{localizeText(transaction.note, locale)}</AppText>
         <AppText numberOfLines={1} tone="muted" variant="caption">{formatDateTime(transaction.createdAt, locale)} · {transaction.reference}</AppText>
@@ -980,7 +983,7 @@ function FundingTransactionRow({ onPress, showDivider, transaction }: { onPress:
         </AppText>
         <StatusPill compact label={statusText(transaction.status, t)} tone={getStatusTone(transaction.status)} />
       </View>
-      <AppIcon name="icon.system.chevron_right" size={14} />
+      <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
     </NativePressable>
   );
 }
@@ -1031,7 +1034,7 @@ function FundingFooterSummary({
                   minTouch={size.touch.min}
                   onPress={onToggle}
                   style={styles.fundingFooterToggle}>
-                  <AppIcon name={expanded ? 'icon.system.chevron_down' : 'icon.system.chevron_right'} size={size.icon.sm} />
+                  <AppIcon name={expanded ? 'icon.system.chevron_down' : 'icon.system.chevron_right'} sizeVariant="sm" />
                 </NativePressable>
               ) : null}
             </View>
@@ -1111,13 +1114,6 @@ function resolveStatusColor(status: FundingStatus, colors: ReturnType<typeof use
   return colors.status.info.fg;
 }
 
-function resolveStatusOverlay(status: FundingStatus, colors: ReturnType<typeof useProductSettings>['colors']) {
-  if (status === 'completed' || status === 'paid') return colors.overlay.down.subtle;
-  if (status === 'failed' || status === 'rejected' || status === 'expired') return colors.overlay.danger.subtle;
-  if (status === 'reviewing' || status === 'awaiting_payment' || status === 'processing') return colors.overlay.warning.subtle;
-  return colors.overlay.info.subtle;
-}
-
 function resolveStatusIconTone(status: FundingStatus): IconTone {
   if (status === 'completed' || status === 'paid') return 'down';
   if (status === 'failed' || status === 'rejected' || status === 'expired') return 'danger';
@@ -1125,16 +1121,23 @@ function resolveStatusIconTone(status: FundingStatus): IconTone {
   return 'blue';
 }
 
-function resolveOperationOverlay(operation: FundingOperation, colors: ReturnType<typeof useProductSettings>['colors']) {
-  if (operation === 'deposit') return colors.overlay.down.subtle;
-  if (operation === 'withdrawal') return colors.overlay.warning.subtle;
-  return colors.overlay.info.subtle;
+function resolveStatusSurfaceTone(status: FundingStatus): IconSurfaceTone {
+  if (status === 'completed' || status === 'paid') return 'down';
+  if (status === 'failed' || status === 'rejected' || status === 'expired') return 'danger';
+  if (status === 'reviewing' || status === 'awaiting_payment' || status === 'processing') return 'warning';
+  return 'info';
 }
 
 function resolveOperationIconTone(operation: FundingOperation): IconTone {
   if (operation === 'deposit') return 'down';
   if (operation === 'withdrawal') return 'amber';
   return 'blue';
+}
+
+function resolveOperationSurfaceTone(operation: FundingOperation): IconSurfaceTone {
+  if (operation === 'deposit') return 'down';
+  if (operation === 'withdrawal') return 'warning';
+  return 'info';
 }
 
 function buildDetailRows(transaction: FundingTransaction, locale: Locale, t: ReturnType<typeof useProductSettings>['t']) {
@@ -1347,13 +1350,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.sm,
   },
-  amountStageIcon: {
-    alignItems: 'center',
-    borderRadius: radius.full,
-    height: size.control.xs,
-    justifyContent: 'center',
-    width: size.control.xs,
-  },
   amountStageInput: {
     minHeight: size.control.lg,
     textAlign: 'center',
@@ -1385,19 +1381,13 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     borderWidth: lineWidth.none,
     gap: spacing.md,
-    padding: spacing.lg,
+    paddingHorizontal: layout.cardPaddingX,
+    paddingVertical: layout.cardPaddingY,
   },
   heroHeader: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing.md,
-  },
-  heroIcon: {
-    alignItems: 'center',
-    borderRadius: radius.full,
-    height: size.control.md,
-    justifyContent: 'center',
-    width: size.control.md,
   },
   heroStack: {
     gap: spacing.md,
@@ -1418,13 +1408,6 @@ const styles = StyleSheet.create({
   },
   methodGroup: {
     gap: spacing.sm,
-  },
-  methodIcon: {
-    alignItems: 'center',
-    borderRadius: radius.full,
-    height: size.control.sm,
-    justifyContent: 'center',
-    width: size.control.sm,
   },
   methodRow: {
     alignItems: 'center',
@@ -1464,13 +1447,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.md,
     padding: spacing.md,
-  },
-  rowIcon: {
-    alignItems: 'center',
-    borderRadius: radius.full,
-    height: size.control.sm - spacing.xxs,
-    justifyContent: 'center',
-    width: size.control.sm - spacing.xxs,
   },
   sheetField: {
     alignItems: 'center',

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DupoinComponentManifest",
+  "type": "object",
+  "required": ["version", "source", "components"],
+  "properties": {
+    "version": { "type": "string" },
+    "source": { "type": "string" },
+    "components": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "category",
+          "path",
+          "exports",
+          "props",
+          "variants",
+          "states",
+          "a11y",
+          "platforms",
+          "tokenBindings",
+          "usage",
+          "forbidden"
+        ],
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": ["foundation", "layout", "forms", "feedback", "data-display", "business", "navigation"]
+          },
+          "path": { "type": "string" },
+          "exports": { "type": "array", "items": { "type": "string" } },
+          "props": { "type": "array", "items": { "type": "string" } },
+          "variants": { "type": "array", "items": { "type": "string" } },
+          "states": { "type": "array", "items": { "type": "string" } },
+          "a11y": { "type": "array", "items": { "type": "string" } },
+          "platforms": { "type": "array", "items": { "type": "string", "enum": ["app", "h5", "web", "admin"] } },
+          "tokenBindings": { "type": "array", "items": { "type": "string" } },
+          "usage": { "type": "string" },
+          "forbidden": { "type": "array", "items": { "type": "string" } },
+          "status": { "type": "string", "enum": ["active", "deprecated", "draft"] }
+        }
+      }
+    }
+  }
+}

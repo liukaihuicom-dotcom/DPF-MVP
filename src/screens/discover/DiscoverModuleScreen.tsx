@@ -5,7 +5,9 @@ import type { DimensionValue } from 'react-native';
 import { ActionButton } from '@/src/components/ActionButton';
 import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
 import { Card } from '@/src/components/Card';
+import { GlobalMenuList, type GlobalMenuListItem } from '@/src/components/GlobalMenuList';
 import { InstrumentIcon } from '@/src/components/InstrumentIcon';
+import { IconSurface, type IconSurfaceTone } from '@/src/components/IconSurface';
 import { Metric } from '@/src/components/Metric';
 import { NativePressable } from '@/src/components/NativePressable';
 import { AppIcon, type AppIconName, type IconTone } from '@/src/components/AppIcon';
@@ -25,15 +27,13 @@ import { useToast } from '@/src/feedback/Toast';
 import { impactLight, notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { useBroker } from '@/src/state/BrokerStore';
-import { resolveThemeTone, type ThemeColors } from '@/src/theme/colors';
-import { lineWidth, typography } from '@/src/theme/tokens';
+import { lineWidth, layout, radius, size, spacing, typography } from '@/src/theme/tokens';
 
 export default function DiscoverModuleScreen() {
   const { account, instruments, positions, role, submitUpgradeRequest, upgradeRequest } = useBroker();
   const { locale, colors, selectedDiscoverModuleId, setSelectedDiscoverModule, t } = useProductSettings();
   const selectedInstrument = getPrimaryInstrument(selectedDiscoverModuleId, instruments);
   const moduleMeta = getModuleMeta(selectedDiscoverModuleId);
-  const moduleMetaColor = resolvePaletteIconTone(colors, moduleMeta.tone);
 
   if (selectedDiscoverModuleId === 'profile') {
     return (
@@ -54,16 +54,11 @@ export default function DiscoverModuleScreen() {
       rightActions={[{ icon: 'icon.navigation.discover', label: t('tabs.discover'), onPress: () => router.push('/partner-tools' as never) }]}
       subtitle={t('discover.subtitle')}
       title={t(`discover.module.${selectedDiscoverModuleId}.title`)}>
-      <Card highlight>
+      <Card>
         <View style={styles.hero}>
           <View style={styles.heroCopy}>
-            <View style={StyleSheet.flatten([styles.heroIcon, { backgroundColor: `${moduleMetaColor}14`, borderColor: `${moduleMetaColor}66` }])}>
-              <AppIcon name={moduleMeta.icon} size={22} tone={moduleMeta.tone} />
-            </View>
+            <IconSurface icon={moduleMeta.icon} sizeVariant="lg" tone={resolveDiscoverIconSurfaceTone(moduleMeta.tone)} />
             <View style={styles.flex}>
-              <AppText tone="dim" variant="eyebrow">
-                {t('discover.statusEntry')}
-              </AppText>
               <AppText variant="largeNumber">{t(`discover.module.${selectedDiscoverModuleId}.short`)}</AppText>
               <AppText numberOfLines={3} tone="muted" variant="caption">
                 {t(`discover.module.${selectedDiscoverModuleId}.hint`)}
@@ -84,16 +79,9 @@ export default function DiscoverModuleScreen() {
       {selectedDiscoverModuleId === 'support' ? <SupportModule /> : null}
       {selectedDiscoverModuleId === 'rewards' ? <RewardsModule /> : null}
 
-      <View style={styles.moduleRailTitle}>
-        <AppText variant="subtitle">{t('discover.functionCenter')}</AppText>
-        <AppText tone="dim" variant="caption">
-          {role === 'partner' ? t('role.partner') : t('role.trader')}
-        </AppText>
-      </View>
       <ScrollView contentContainerStyle={styles.moduleRail} horizontal showsHorizontalScrollIndicator={false}>
         {getModuleIds().map((moduleId) => {
           const meta = getModuleMeta(moduleId);
-          const metaColor = resolvePaletteIconTone(colors, meta.tone);
           const selected = selectedDiscoverModuleId === moduleId;
 
           return (
@@ -111,14 +99,12 @@ export default function DiscoverModuleScreen() {
               style={StyleSheet.flatten([
                 styles.modulePill,
                 {
-                  backgroundColor: selected ? `${colors.brand.fg}12` : colors.surface.panel,
-                  borderColor: selected ? colors.brand.fg : colors.border.subtle,
+                  backgroundColor: colors.surface.panel,
+                  borderColor: selected ? colors.text.primary : colors.border.subtle,
                 },
               ])}>
-              <View style={StyleSheet.flatten([styles.modulePillIcon, { backgroundColor: `${metaColor}12`, borderColor: `${metaColor}55` }])}>
-                <AppIcon name={meta.icon} size={16} tone={meta.tone} />
-              </View>
-              <AppText numberOfLines={1} tone={selected ? 'brand' : 'default'} variant="caption">
+              <IconSurface icon={meta.icon} sizeVariant="sm" tone={resolveDiscoverIconSurfaceTone(meta.tone)} />
+              <AppText numberOfLines={1} tone="default" variant="caption">
                 {t(`discover.module.${moduleId}.short`)}
               </AppText>
             </NativePressable>
@@ -135,7 +121,7 @@ function ChallengeModule({ instrument }: { instrument: Instrument }) {
   const quoteVisual = getQuoteChangeVisual(changePercent, colors);
   const rows = [
     { label: locale !== 'zh-CN' ? 'Weekly ROI' : '周收益率', tone: 'down', value: '+18.6%' },
-    { label: locale !== 'zh-CN' ? 'Risk score' : '风险评分', tone: 'amber', value: '82' },
+    { label: locale !== 'zh-CN' ? 'Risk Score' : '风险评分', tone: 'amber', value: '82' },
     { label: locale !== 'zh-CN' ? 'Rank' : '排名', tone: 'brand', value: '#12' },
   ] as const;
 
@@ -146,7 +132,7 @@ function ChallengeModule({ instrument }: { instrument: Instrument }) {
           <InstrumentIcon instrument={instrument} size={42} />
           <View style={styles.flex}>
             <AppText tone="dim" variant="eyebrow">
-              {locale !== 'zh-CN' ? 'Challenge market' : '模拟赛品种'}
+              {locale !== 'zh-CN' ? 'Challenge Market' : '挑战赛品种'}
             </AppText>
             <AppText variant="subtitle">{instrument.symbol}</AppText>
             <AppText numberOfLines={1} tone="muted" variant="caption">
@@ -162,7 +148,7 @@ function ChallengeModule({ instrument }: { instrument: Instrument }) {
         <View style={styles.sparklineWrap}>
           <Sparkline color={quoteVisual.color} height={58} values={instrument.sparkline} width={232} />
         </View>
-        <ActionButton label={locale !== 'zh-CN' ? 'Open challenge ticket' : '打开模拟赛订单'} onPress={() => router.push(`/order/${instrument.id}?direction=buy` as never)} tone="brand" />
+        <ActionButton label={locale !== 'zh-CN' ? 'Open Challenge Ticket' : '打开挑战赛订单'} onPress={() => router.push(`/order/${instrument.id}?direction=buy` as never)} tone="brand" />
       </Card>
       <Card compact>
         <View style={styles.metricRow}>
@@ -178,9 +164,9 @@ function ChallengeModule({ instrument }: { instrument: Instrument }) {
 function EducationModule() {
   const { locale, colors } = useProductSettings();
   const lessons = [
-    [locale !== 'zh-CN' ? 'Spread basics' : '点差基础', locale !== 'zh-CN' ? 'Bid, ask, and cost' : '买价、卖价与成本'],
-    [locale !== 'zh-CN' ? 'Margin call' : '保证金追缴', locale !== 'zh-CN' ? 'When equity drops' : '净值下行时的规则'],
-    [locale !== 'zh-CN' ? 'CFD risk' : 'CFD 风险', locale !== 'zh-CN' ? 'Leverage before order' : '下单前理解杠杆'],
+    [locale !== 'zh-CN' ? 'Spread Basics' : '点差基础', locale !== 'zh-CN' ? 'Bid, Ask, and Cost' : '买价、卖价与成本'],
+    [locale !== 'zh-CN' ? 'Margin Call' : '保证金追缴', locale !== 'zh-CN' ? 'When Equity Drops' : '净值下行时的规则'],
+    [locale !== 'zh-CN' ? 'CFD Risk' : 'CFD 风险', locale !== 'zh-CN' ? 'Leverage Before Order' : '下单前理解杠杆'],
   ];
 
   return (
@@ -248,6 +234,7 @@ export function ProfileModule({
     colors,
     profileAvatarId,
     profileNickname,
+    pinStatus,
     rememberedLoginSnapshot,
     resolvedThemeMode,
     setAuthStatus,
@@ -267,35 +254,73 @@ export function ProfileModule({
     { icon: 'icon.trading.volume' as AppIconName, label: locale !== 'zh-CN' ? 'Volume' : '交易量', value: '990' },
     { icon: 'icon.status.verified' as AppIconName, label: locale !== 'zh-CN' ? 'New Verified' : '新增认证', value: '10' },
   ];
-  const settingsRows = [
-    { label: locale !== 'zh-CN' ? 'One-click Trading' : '一键交易', right: 'switchOff' as const },
-    { label: locale !== 'zh-CN' ? 'Sound' : '声音', right: 'switchOn' as const },
-    { label: t('top.notifications'), right: 'chevron' as const },
-    { label: locale !== 'zh-CN' ? 'Language' : '语言', right: 'chevron' as const },
+  const settingsRows: GlobalMenuListItem[] = [
+    {
+      accessory: {
+        accessibilityLabel: locale !== 'zh-CN' ? 'Toggle one-click trading' : '切换一键交易',
+        onValueChange: () => undefined,
+        type: 'switch',
+        value: false,
+      },
+      icon: 'icon.trading.order_ticket',
+      label: locale !== 'zh-CN' ? 'One-click Trading' : '一键交易',
+    },
+    {
+      accessory: {
+        accessibilityLabel: locale !== 'zh-CN' ? 'Toggle sound' : '切换声音',
+        onValueChange: () => undefined,
+        type: 'switch',
+        value: true,
+      },
+      icon: 'icon.notification.bell',
+      label: locale !== 'zh-CN' ? 'Sound' : '声音',
+    },
+    { icon: 'icon.notification.bell', label: t('top.notifications') },
+    { icon: 'icon.trading.market', label: locale !== 'zh-CN' ? 'Language' : '语言' },
+    {
+      accessory: {
+        type: 'value',
+        value: t(`auth.pin.status.${pinStatus}`),
+      },
+      description: t('auth.pin.localCheckSubtitle'),
+      icon: 'icon.security.key_access' as AppIconName,
+      label: t('auth.pin.title'),
+      onPress: () => router.push('/auth/pin-setup?mode=setup&redirect=%2Fsettings' as never),
+    },
     {
       icon: 'icon.security.risk_shield' as AppIconName,
       label: t('settings.securityLog.title'),
       onPress: () => router.push('/settings/security-log' as never),
-      right: 'chevron' as const,
     },
     {
+      accessory: {
+        type: 'value',
+        value: getThemeModeLabel(themeMode, resolvedThemeMode, locale),
+      },
       icon: 'icon.system.settings' as AppIconName,
       label: locale !== 'zh-CN' ? 'Appearance' : '外观',
       onPress: () => router.push('/appearance' as never),
-      right: getThemeModeLabel(themeMode, resolvedThemeMode, locale),
     },
   ];
-  const supportRows: { icon: AppIconName; label: string }[] = [
+  const supportRows: GlobalMenuListItem[] = [
     { icon: 'icon.security.risk_shield', label: locale !== 'zh-CN' ? 'Fraud Prevention' : '反诈保护' },
     { icon: 'icon.notification.feedback', label: locale !== 'zh-CN' ? 'Feedback' : '反馈' },
     { icon: 'icon.support.help_center', label: locale !== 'zh-CN' ? 'Help Center' : '帮助中心' },
-    { icon: 'icon.feedback.rating', label: locale !== 'zh-CN' ? 'Rating App' : '应用评分' },
+    { accessory: { type: 'rating' }, icon: 'icon.feedback.rating', label: locale !== 'zh-CN' ? 'Rating App' : '应用评分' },
     { icon: 'icon.support.about', label: locale !== 'zh-CN' ? 'About Us' : '关于我们' },
   ];
+  const openManagerChat = () => {
+    void impactLight();
+    bottomSheet.show(bottomSheetPresets.detail({
+      content: <ManagerChatSheet locale={locale} />,
+      leftIcon: 'icon.notification.feedback',
+      title: locale !== 'zh-CN' ? 'Alexander Smith' : 'Alexander Smith',
+    }));
+  };
   const openProfileEditSheet = () => {
     bottomSheet.show(bottomSheetPresets.detail({
       content: <ProfileEditSheetContent />,
-      title: locale !== 'zh-CN' ? 'Edit profile' : '编辑资料',
+      title: locale !== 'zh-CN' ? 'Edit Profile' : '编辑资料',
     }));
   };
   const logout = () => {
@@ -320,18 +345,18 @@ export function ProfileModule({
     <>
       <View style={styles.profileHeader}>
         <NativePressable
-          accessibilityLabel={locale !== 'zh-CN' ? 'Edit profile avatar' : '编辑头像'}
+          accessibilityLabel={locale !== 'zh-CN' ? 'Edit Profile Avatar' : '编辑头像'}
           minTouch={58}
           onPress={openProfileEditSheet}
           style={styles.avatarPressable}>
           <ProfileAvatar id={profileAvatarId} key={avatarUri} size={58} />
           <View style={StyleSheet.flatten([styles.avatarEditBadge, { backgroundColor: colors.brand.fg, borderColor: colors.surface.panel }])}>
-            <AppIcon tone="white" name="icon.system.settings" size={11} />
+            <AppIcon tone="white" name="icon.system.settings" sizeVariant="micro" />
           </View>
         </NativePressable>
         <View style={styles.profileIdentity}>
           <NativePressable
-            accessibilityLabel={locale !== 'zh-CN' ? 'Edit nickname and avatar' : '编辑昵称和头像'}
+            accessibilityLabel={locale !== 'zh-CN' ? 'Edit Nickname and Avatar' : '编辑昵称和头像'}
             minTouch={44}
             onPress={openProfileEditSheet}
             style={styles.profileNameRow}>
@@ -339,7 +364,7 @@ export function ProfileModule({
           </NativePressable>
           <View style={styles.profileTagRow}>
             <StatusPill compact icon="icon.security.risk_shield" label={locale !== 'zh-CN' ? 'ID verified' : '身份已认证'} style={styles.profileTag} tone="brand" />
-            <StatusPill compact icon="icon.status.verified" label={locale !== 'zh-CN' ? 'Video verified' : '视频认证'} style={styles.profileTag} tone="brand" />
+            <StatusPill compact icon="icon.status.verified" label={locale !== 'zh-CN' ? 'Video Verified' : '视频认证'} style={styles.profileTag} tone="brand" />
           </View>
         </View>
       </View>
@@ -351,29 +376,29 @@ export function ProfileModule({
         title={locale !== 'zh-CN' ? 'Video Verified' : '视频认证'}
       />
 
-      <Card compact style={styles.profileCard}>
+      <Card compact style={styles.partnerPortalCard}>
         <ProfileCardHeader icon="icon.ib.network" iconTone="blue" title={locale !== 'zh-CN' ? 'Partner Portal' : 'Partner Portal'} />
-        <View style={StyleSheet.flatten([styles.profileDivider, { backgroundColor: colors.border.subtle }])} />
-        <AppText variant="body">{locale !== 'zh-CN' ? 'Total Rebate · USD' : '总返佣 · USD'}</AppText>
-        <View style={styles.rebateAmountRow}>
-          <AppText style={styles.rebateCurrency} variant="largeNumber">$</AppText>
-          <AppText style={styles.rebateMajor} variant="largeNumber">
-            {formatCompactProfileNumber(rebateValue)}
-          </AppText>
-          <AppText style={styles.rebateMinor} variant="number">.09</AppText>
+        <View style={styles.rebateDataBlock}>
+          <AppText variant="body">{locale !== 'zh-CN' ? 'Total Rebate · USD' : '总返佣 · USD'}</AppText>
+          <View style={styles.rebateAmountRow}>
+            <AppText style={styles.rebateCurrency} variant="largeNumber">$</AppText>
+            <AppText style={styles.rebateMajor} variant="largeNumber">
+              {formatCompactProfileNumber(rebateValue)}
+            </AppText>
+            <AppText style={styles.rebateMinor} variant="number">.09</AppText>
+          </View>
+          <View style={styles.rebateMetaRow}>
+            <AppText variant="number">{formatMoney(rebateValue, account.currency, 2, locale)}</AppText>
+            <StatusPill appearance="filled" compact label={locale !== 'zh-CN' ? '↑ 2.20% vs yesterday' : '↑ 2.20% 较昨日'} tone="success" />
+          </View>
         </View>
         <MiniTrendLine color={colors.market.down.fg} />
-        <View style={StyleSheet.flatten([styles.profileDivider, { backgroundColor: colors.border.subtle }])} />
-        <AppText variant="number">{formatMoney(rebateValue, account.currency, 2, locale)}</AppText>
-        <StatusPill compact label={locale !== 'zh-CN' ? '↑ 2.20% vs yesterday' : '↑ 2.20% 较昨日'} tone="success" />
       </Card>
 
       <View style={styles.profileStatsGrid}>
         {statCards.map((item) => (
           <Card compact key={item.label} style={styles.profileStatCard}>
-            <View style={StyleSheet.flatten([styles.profileStatIcon, { backgroundColor: `${colors.brand.fg}10` }])}>
-              <AppIcon name={item.icon} size={18} />
-            </View>
+            <IconSurface icon={item.icon} sizeVariant="md" />
             <AppText variant="body">{item.label}</AppText>
             <AppText variant="title">{item.value}</AppText>
             <AppText tone="down" variant="caption">
@@ -409,22 +434,23 @@ export function ProfileModule({
           <AppText variant="body">{locale !== 'zh-CN' ? 'My Relationship Manager' : '我的客户经理'}</AppText>
           <AppText variant="subtitle">Alexander Smith</AppText>
         </View>
-        <View style={StyleSheet.flatten([styles.managerChat, { backgroundColor: `${colors.market.down.fg}18` }])}>
-          <AppIcon tone="down" name="icon.copy.community" size={22} />
-        </View>
+        <NativePressable
+          accessibilityLabel={locale !== 'zh-CN' ? 'Open IM chat with Alexander Smith' : '打开与 Alexander Smith 的 IM 对话'}
+          accessibilityRole="button"
+          minTouch={layout.iconSurface.md.container}
+          onPress={openManagerChat}
+          style={styles.managerChat}>
+          <IconSurface icon="icon.notification.feedback" sizeVariant="md" styleVariant="fill" />
+        </NativePressable>
       </Card>
 
-      <Card compact style={styles.profileList}>
-        {settingsRows.map((row, index) => (
-          <SettingsRow icon={row.icon} key={row.label} label={row.label} onPress={row.onPress} right={row.right} showDivider={index < settingsRows.length - 1} />
-        ))}
-      </Card>
+      <View style={StyleSheet.flatten([styles.profileMenuList, { backgroundColor: colors.surface.panel }])}>
+        <GlobalMenuList contained items={settingsRows} />
+      </View>
 
-      <Card compact style={styles.profileList}>
-        {supportRows.map((row, index) => (
-          <SettingsRow icon={row.icon} key={row.label} label={row.label} right={row.label === (locale !== 'zh-CN' ? 'Rating App' : '应用评分') ? 'stars' : 'chevron'} showDivider={index < supportRows.length - 1} />
-        ))}
-      </Card>
+      <View style={StyleSheet.flatten([styles.profileMenuList, { backgroundColor: colors.surface.panel }])}>
+        <GlobalMenuList contained items={supportRows} />
+      </View>
 
       <ActionButton icon="icon.system.logout" label={t('auth.logout')} onPress={logout} tone="danger" variant="outline" />
     </>
@@ -464,7 +490,7 @@ function ProfileEditSheetContent() {
 
           return (
             <Pressable
-              accessibilityLabel={`${locale !== 'zh-CN' ? 'Choose avatar' : '选择头像'} ${option.name}`}
+              accessibilityLabel={`${locale !== 'zh-CN' ? 'Choose Avatar' : '选择头像'} ${option.name}`}
               accessibilityRole="button"
               accessibilityState={{ selected }}
               key={option.id}
@@ -472,18 +498,86 @@ function ProfileEditSheetContent() {
               style={StyleSheet.flatten([
                 styles.avatarRailItem,
                 {
-                  backgroundColor: selected ? `${colors.brand.fg}10` : colors.surface.panel,
-                  borderColor: selected ? colors.brand.fg : colors.border.subtle,
+                  backgroundColor: colors.surface.panel,
+                  borderColor: selected ? colors.text.primary : colors.border.subtle,
                 },
               ])}>
               <ProfileAvatar id={option.id} selected={selected} size={36} />
-              <AppText numberOfLines={1} tone={selected ? 'brand' : 'muted'} variant="caption">
+              <AppText numberOfLines={1} tone={selected ? 'default' : 'muted'} variant="caption">
                 {option.name}
               </AppText>
             </Pressable>
           );
         })}
       </ScrollView>
+    </View>
+  );
+}
+
+function ManagerChatSheet({ locale }: { locale: ReturnType<typeof useProductSettings>['locale'] }) {
+  const { colors } = useProductSettings();
+  const messages = [
+    {
+      body: locale !== 'zh-CN'
+        ? 'Hi, I can help with account questions, rebate records, and product setup.'
+        : '你好，我可以协助处理账户问题、返佣记录和产品使用设置。',
+      side: 'manager',
+    },
+    {
+      body: locale !== 'zh-CN'
+        ? "I want to check today's rebate and account status."
+        : '我想确认今天的返佣和账户状态。',
+      side: 'user',
+    },
+    {
+      body: locale !== 'zh-CN'
+        ? 'I can see your Partner Portal summary. The latest rebate data is already synced in this profile module.'
+        : '我已看到你的 Partner Portal 汇总，最新返佣数据已经同步在当前个人中心模块。',
+      side: 'manager',
+    },
+  ] as const;
+
+  return (
+    <View style={styles.managerChatSheet}>
+      <View style={StyleSheet.flatten([styles.managerChatProfile, { backgroundColor: colors.surface.panel }])}>
+        <ProfileAvatar id="alex" size={44} />
+        <View style={styles.flex}>
+          <AppText variant="subtitle">Alexander Smith</AppText>
+          <AppText tone="muted" variant="body.secondary">
+            {locale !== 'zh-CN' ? 'Relationship Manager · IM online' : '客户经理 · IM 在线'}
+          </AppText>
+        </View>
+      </View>
+      <View style={styles.managerMessageList}>
+        {messages.map((message, index) => {
+          const isUser = message.side === 'user';
+
+          return (
+            <View
+              key={`${message.side}-${index}`}
+              style={StyleSheet.flatten([
+                styles.managerMessageRow,
+                isUser && styles.managerMessageRowUser,
+              ])}>
+              <View
+                style={StyleSheet.flatten([
+                  styles.managerMessageBubble,
+                  { backgroundColor: isUser ? colors.brand.fg : colors.surface.panel },
+                ])}>
+                <AppText tone={isUser ? 'panel' : 'default'} variant="body.secondary">
+                  {message.body}
+                </AppText>
+              </View>
+            </View>
+          );
+        })}
+      </View>
+      <View style={StyleSheet.flatten([styles.managerComposer, { backgroundColor: colors.surface.panel }])}>
+        <AppText tone="muted" variant="body.secondary">
+          {locale !== 'zh-CN' ? 'IM conversation opened' : '已进入 IM 对话'}
+        </AppText>
+        <AppIcon name="icon.notification.feedback" size={layout.menuDisclosureIconSize} styleVariant="fill" tone="tertiary" />
+      </View>
     </View>
   );
 }
@@ -499,14 +593,9 @@ function ProfileListCard({
   subtitle?: string;
   title: string;
 }) {
-  const { colors } = useProductSettings();
-  const iconColor = resolvePaletteIconTone(colors, iconTone);
-
   return (
     <Card compact style={styles.profileListCard}>
-      <View style={StyleSheet.flatten([styles.profileListIcon, { backgroundColor: `${iconColor}12` }])}>
-        <AppIcon name={icon} size={22} tone={iconTone} />
-      </View>
+      <IconSurface icon={icon} sizeVariant="md" tone={resolveDiscoverIconSurfaceTone(iconTone)} />
       <View style={styles.flex}>
         <AppText variant="subtitle">{title}</AppText>
         {subtitle ? (
@@ -515,24 +604,19 @@ function ProfileListCard({
           </AppText>
         ) : null}
       </View>
-      <AppIcon name="icon.system.chevron_right" size={17} />
+      <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
     </Card>
   );
 }
 
 function ProfileCardHeader({ icon, iconTone, title }: { icon: AppIconName; iconTone: IconTone; title: string }) {
-  const { colors } = useProductSettings();
-  const iconColor = resolvePaletteIconTone(colors, iconTone);
-
   return (
     <View style={styles.profileCardHeader}>
-      <View style={StyleSheet.flatten([styles.profileListIcon, { backgroundColor: `${iconColor}12` }])}>
-        <AppIcon name={icon} size={20} tone={iconTone} />
-      </View>
+      <IconSurface icon={icon} sizeVariant="md" tone={resolveDiscoverIconSurfaceTone(iconTone)} />
       <AppText style={styles.profileCardTitle} variant="subtitle">
         {title}
       </AppText>
-      <AppIcon name="icon.system.chevron_right" size={17} />
+      <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
     </View>
   );
 }
@@ -540,7 +624,7 @@ function ProfileCardHeader({ icon, iconTone, title }: { icon: AppIconName; iconT
 function MiniTrendLine({ color }: { color: string }) {
   return (
     <View style={styles.trendLine}>
-      <Sparkline color={color} height={70} values={[2, 2.4, 3.2, 3, 4.6, 4.3, 3.4, 3.1, 4.2, 4, 4.4, 5.8, 6.5, 7.1]} width={292} />
+      <Sparkline color={color} edgeToEdge height={70} values={[2, 2.4, 3.2, 3, 4.6, 4.3, 3.4, 3.1, 4.2, 4, 4.4, 5.8, 6.5, 7.1]} width="100%" />
     </View>
   );
 }
@@ -557,79 +641,8 @@ function GiftIllustration() {
         <AppText tone="amber" variant="eyebrow">$</AppText>
       </View>
       <View style={StyleSheet.flatten([styles.giftBox, { backgroundColor: `${colors.brand.fg}16`, borderColor: `${colors.brand.fg}33` }])}>
-        <AppIcon name="icon.promotion.reward" size={42} />
+        <AppIcon name="icon.promotion.reward" sizeVariant="xl" />
       </View>
-    </View>
-  );
-}
-
-function SettingsRow({
-  icon,
-  label,
-  onPress,
-  right,
-  showDivider,
-}: {
-  icon?: AppIconName;
-  label: string;
-  onPress?: () => void;
-  right: 'switchOff' | 'switchOn' | 'chevron' | 'stars' | string;
-  showDivider?: boolean;
-}) {
-  const { colors } = useProductSettings();
-
-  return (
-    <NativePressable
-      accessibilityLabel={label}
-      minTouch={48}
-      onPress={onPress}
-      style={StyleSheet.flatten([styles.settingsRow, showDivider && { borderBottomColor: colors.border.subtle, borderBottomWidth: lineWidth.hairline }])}>
-      <View style={styles.settingsLeft}>
-        <View style={styles.settingsIconSlot}>
-          {icon ? <AppIcon name={icon} size={20} /> : <View style={StyleSheet.flatten([styles.placeholderRing, { borderColor: colors.text.tertiary }])} />}
-        </View>
-        <AppText variant="body">{label}</AppText>
-      </View>
-      <SettingsRowRight value={right} />
-    </NativePressable>
-  );
-}
-
-function SettingsRowRight({ value }: { value: 'switchOff' | 'switchOn' | 'chevron' | 'stars' | string }) {
-  const { colors } = useProductSettings();
-
-  if (value === 'switchOff' || value === 'switchOn') {
-    const enabled = value === 'switchOn';
-    return (
-      <View style={StyleSheet.flatten([styles.switchTrack, { backgroundColor: enabled ? colors.market.down.fg : colors.text.tertiary }])}>
-        <View style={StyleSheet.flatten([styles.switchKnob, enabled && styles.switchKnobOn, { backgroundColor: colors.text.inverse }])} />
-      </View>
-    );
-  }
-
-  if (value === 'stars') {
-    return (
-      <View style={styles.stars}>
-        {[0, 1, 2, 3, 4].map((item) => (
-          <AppText key={item} tone="dim" variant="body">
-            ★
-          </AppText>
-        ))}
-        <AppIcon name="icon.system.chevron_right" size={16} />
-      </View>
-    );
-  }
-
-  if (value === 'chevron') {
-    return <AppIcon name="icon.system.chevron_right" size={16} />;
-  }
-
-  return (
-    <View style={styles.settingsValue}>
-      <AppText tone="muted" variant="body">
-        {value}
-      </AppText>
-      <AppIcon name="icon.system.chevron_right" size={16} />
     </View>
   );
 }
@@ -680,7 +693,7 @@ function OnboardingModule() {
           </View>
         ))}
       </View>
-      <ActionButton label={locale !== 'zh-CN' ? 'Continue opening account' : '继续开户'} onPress={() => router.push('/auth/onboarding' as never)} style={styles.cardAction} tone="brand" />
+      <ActionButton label={locale !== 'zh-CN' ? 'Continue Opening Account' : '继续开户'} onPress={() => router.push('/auth/onboarding' as never)} style={styles.cardAction} tone="brand" />
     </Card>
   );
 }
@@ -794,7 +807,7 @@ function AccountsModule({ account, positionsCount }: { account: Account; positio
           <DetailRow label={t('account.marginRate')} value={account.marginLevel > 0 ? `${account.marginLevel.toFixed(2)}%` : t('home.noMargin')} />
           <DetailRow label={t('account.credit')} value={formatMoney(account.credit, account.currency, 0, locale)} />
         </View>
-        <ActionButton label={locale !== 'zh-CN' ? 'Open account list' : '打开账户列表'} onPress={() => router.push('/accounts' as never)} style={styles.cardAction} tone="neutral" />
+        <ActionButton label={locale !== 'zh-CN' ? 'Open Account List' : '打开账户列表'} onPress={() => router.push('/accounts' as never)} style={styles.cardAction} tone="neutral" />
       </Card>
     </>
   );
@@ -804,9 +817,9 @@ function SupportModule() {
   const { locale, colors, t } = useProductSettings();
   const toast = useToast();
   const rows = [
-    [t('top.support'), locale !== 'zh-CN' ? 'Online help desk' : '在线帮助中心'],
-    [t('top.notifications'), locale !== 'zh-CN' ? 'Account and service alerts' : '账户与服务通知'],
-    [locale !== 'zh-CN' ? 'Service status' : '服务状态', locale !== 'zh-CN' ? 'Quote proxy and demo workspace' : '报价代理与演示工作台'],
+    [t('top.support'), locale !== 'zh-CN' ? 'Online Help Desk' : '在线帮助中心'],
+    [t('top.notifications'), locale !== 'zh-CN' ? 'Account and Service Alerts' : '账户与服务通知'],
+    [locale !== 'zh-CN' ? 'Service Status' : '服务状态', locale !== 'zh-CN' ? 'Quote proxy and workspace health' : '报价代理与工作区状态'],
   ];
 
   return (
@@ -833,14 +846,14 @@ function RewardsModule() {
   const { locale, colors } = useProductSettings();
   const missions = [
     [locale !== 'zh-CN' ? 'Watchlist' : '自选任务', '75%'],
-    [locale !== 'zh-CN' ? 'First order' : '首单任务', '40%'],
-    [locale !== 'zh-CN' ? 'Risk quiz' : '风险测验', '100%'],
+    [locale !== 'zh-CN' ? 'First Order' : '首单任务', '40%'],
+    [locale !== 'zh-CN' ? 'Risk Quiz' : '风险测验', '100%'],
   ] as const satisfies readonly (readonly [string, DimensionValue])[];
 
   return (
     <Card>
       <View style={styles.rewardHeader}>
-        <Metric label={locale !== 'zh-CN' ? 'Demo credits' : '模拟体验金'} tone="amber" value="$2K" />
+        <Metric label={locale !== 'zh-CN' ? 'Practice Credits' : '练习体验金'} tone="amber" value="$2K" />
         <Metric label={locale !== 'zh-CN' ? 'Badges' : '徽章'} tone="brand" value="6" />
       </View>
       <View style={styles.rewardList}>
@@ -901,8 +914,13 @@ function getModuleMeta(moduleId: DiscoverModuleId) {
   return meta[moduleId];
 }
 
-function resolvePaletteIconTone(colors: ThemeColors, tone: IconTone) {
-  return resolveThemeTone(colors, tone);
+function resolveDiscoverIconSurfaceTone(tone: IconTone): IconSurfaceTone {
+  if (tone === 'brand') return 'brand';
+  if (tone === 'amber' || tone === 'warning') return 'warning';
+  if (tone === 'danger' || tone === 'up') return 'danger';
+  if (tone === 'blue' || tone === 'info') return 'info';
+  if (tone === 'down' || tone === 'success') return 'success';
+  return 'neutral';
 }
 
 const styles = StyleSheet.create({
@@ -1017,14 +1035,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
   },
-  heroIcon: {
-    alignItems: 'center',
-    borderRadius: 12,
-    borderWidth: lineWidth.hairline,
-    height: 48,
-    justifyContent: 'center',
-    width: 48,
-  },
   insightList: {
     gap: 2,
   },
@@ -1064,10 +1074,41 @@ const styles = StyleSheet.create({
   },
   managerChat: {
     alignItems: 'center',
-    borderRadius: 999,
-    height: 42,
     justifyContent: 'center',
-    width: 42,
+  },
+  managerChatProfile: {
+    alignItems: 'center',
+    borderRadius: radius.md,
+    flexDirection: 'row',
+    gap: spacing.md,
+    padding: spacing.md,
+  },
+  managerChatSheet: {
+    gap: spacing.lg,
+    paddingTop: spacing.xs,
+  },
+  managerComposer: {
+    alignItems: 'center',
+    borderRadius: radius.full,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'space-between',
+    minHeight: size.control.md,
+    paddingHorizontal: spacing.lg,
+  },
+  managerMessageBubble: {
+    borderRadius: radius.md,
+    maxWidth: '84%',
+    padding: spacing.md,
+  },
+  managerMessageList: {
+    gap: spacing.sm,
+  },
+  managerMessageRow: {
+    alignItems: 'flex-start',
+  },
+  managerMessageRowUser: {
+    alignItems: 'flex-end',
   },
   modulePill: {
     alignItems: 'center',
@@ -1077,23 +1118,9 @@ const styles = StyleSheet.create({
     minWidth: 82,
     padding: 10,
   },
-  modulePillIcon: {
-    alignItems: 'center',
-    borderRadius: 8,
-    borderWidth: lineWidth.hairline,
-    height: 32,
-    justifyContent: 'center',
-    width: 32,
-  },
   moduleRail: {
     gap: 8,
     paddingRight: 16,
-  },
-  moduleRailTitle: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 2,
   },
   rewardHeader: {
     flexDirection: 'row',
@@ -1102,13 +1129,22 @@ const styles = StyleSheet.create({
   rebateAmountRow: {
     alignItems: 'flex-end',
     flexDirection: 'row',
-    marginTop: 6,
+    marginTop: spacing.xs,
   },
   rebateCurrency: {
     ...typography.quote,
   },
+  rebateDataBlock: {
+    gap: spacing.xs,
+  },
   rebateMajor: {
     ...typography.quoteLg,
+  },
+  rebateMetaRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
   },
   rebateMinor: {
     ...typography.displayXl,
@@ -1139,15 +1175,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
   },
-  placeholderRing: {
-    borderRadius: 999,
-    borderStyle: 'dashed',
-    borderWidth: lineWidth.hairline,
-    height: 22,
-    width: 22,
-  },
   profileCard: {
     gap: 12,
+  },
+  partnerPortalCard: {
+    gap: spacing.md,
+    paddingBottom: spacing.sm,
   },
   profileCardHeader: {
     alignItems: 'center',
@@ -1180,22 +1213,16 @@ const styles = StyleSheet.create({
     gap: 5,
     minWidth: 0,
   },
-  profileList: {
-    gap: 0,
-    paddingVertical: 0,
-  },
   profileListCard: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: 12,
     minHeight: 70,
   },
-  profileListIcon: {
-    alignItems: 'center',
-    borderRadius: 999,
-    height: 42,
-    justifyContent: 'center',
-    width: 42,
+  profileMenuList: {
+    borderRadius: 12,
+    overflow: 'hidden',
+    paddingHorizontal: spacing.none,
   },
   profileNameRow: {
     alignItems: 'center',
@@ -1208,13 +1235,6 @@ const styles = StyleSheet.create({
     gap: 7,
     minHeight: 126,
     minWidth: 0,
-  },
-  profileStatIcon: {
-    alignItems: 'center',
-    borderRadius: 999,
-    height: 42,
-    justifyContent: 'center',
-    width: 42,
   },
   profileStatsGrid: {
     flexDirection: 'row',
@@ -1229,56 +1249,10 @@ const styles = StyleSheet.create({
     gap: 6,
     width: '100%',
   },
-  settingsIconSlot: {
-    alignItems: 'center',
-    height: 26,
-    justifyContent: 'center',
-    width: 26,
-  },
-  settingsLeft: {
-    alignItems: 'center',
-    flex: 1,
-    flexDirection: 'row',
-    gap: 12,
-    minWidth: 0,
-  },
-  settingsRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 12,
-    justifyContent: 'space-between',
-    minHeight: 48,
-    paddingVertical: 8,
-  },
-  settingsValue: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 5,
-  },
   sparklineWrap: {
     alignItems: 'center',
     marginVertical: 14,
     overflow: 'hidden',
-  },
-  stars: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 1,
-  },
-  switchKnob: {
-    borderRadius: 999,
-    height: 22,
-    width: 22,
-  },
-  switchKnobOn: {
-    transform: [{ translateX: 22 }],
-  },
-  switchTrack: {
-    borderRadius: 999,
-    height: 28,
-    justifyContent: 'center',
-    paddingHorizontal: 3,
-    width: 52,
   },
   timeline: {
     gap: 12,
@@ -1297,8 +1271,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   trendLine: {
-    alignItems: 'center',
     overflow: 'hidden',
+    paddingTop: spacing.xs,
+    width: '100%',
   },
   verifiedBadge: {
     alignItems: 'center',

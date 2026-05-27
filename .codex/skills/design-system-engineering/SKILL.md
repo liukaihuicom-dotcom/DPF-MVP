@@ -10,12 +10,12 @@ description: >
 
 # Design System Engineering Skill v3.0.0 — L5 Complete
 
-> File: `skills/design-system-engineering/SKILL.md`  
-> Version: `v3.0.0-L5`  
-> Level: `L5 Complete / Production Design System Engineering Skill`  
-> Purpose: 建立 AI 可读取、代码可消费、组件可治理、多项目可切换、可自动校验、可长期维护的生产级设计系统。  
-> Target: Codex / Claude / Cursor / Figma / 设计师 / 前端开发 / QA / 产品负责人。  
-> Status: 可直接作为生产级设计系统工程 Skill 使用。  
+> File: `.codex/skills/design-system-engineering/SKILL.md`
+> Version: `v3.0.0-L5`
+> Level: `L5 Complete / Production Design System Engineering Skill`
+> Purpose: 建立 AI 可读取、代码可消费、组件可治理、多项目可切换、可自动校验、可长期维护的生产级设计系统。
+> Target: Codex / Claude / Cursor / Figma / 设计师 / 前端开发 / QA / 产品负责人。
+> Status: 可直接作为生产级设计系统工程 Skill 使用。
 > Scope: Variables / Components / Business Components / Icons / Patterns / Platform Modes / Code Mapping / QA Gates / Release Governance。
 
 ---
@@ -1068,9 +1068,9 @@ Pass / Fail：
 
 ## 17. Icon Core List
 
-> 默认风格：Line。选中 / Active 状态：Fill。  
-> 默认尺寸：24px。辅助尺寸：16 / 20 / 32。  
-> 默认线宽：1.5px。圆角：3px。  
+> 默认风格：Line。选中 / Active 状态：Fill。
+> 默认尺寸：24px。辅助尺寸：16 / 20 / 32。
+> 默认线宽：1.5px。圆角：3px。
 > 颜色必须读取 `color.icon.*`。
 
 | 分类 | 图标 |
@@ -1447,7 +1447,7 @@ Pass / Fail：
 {
   "version": "v3.0.0-L5",
   "skill": "Design System Engineering Skill",
-  "entry": "skills/design-system-engineering/SKILL.md",
+  "entry": ".codex/skills/design-system-engineering/SKILL.md",
   "tokens": {
     "source": "01_tokens/tokens.json",
     "schema": "01_tokens/token.schema.json",
@@ -2228,5 +2228,5 @@ Design System Engineering Skill v3.0.0-L5
 
 # End
 
-`Design System Engineering Skill v3.0.0-L5` 是完整 L5 生产级设计系统工程 Skill。  
+`Design System Engineering Skill v3.0.0-L5` 是完整 L5 生产级设计系统工程 Skill。
 它可以作为变量系统、组件库、图标库、Pattern、AI Runtime、Code Mapping、QA Gate 和版本治理的统一执行标准。
