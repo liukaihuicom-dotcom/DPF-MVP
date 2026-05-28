@@ -44,6 +44,21 @@ export type LocalizedText = {
 
 export type InstrumentAssetClass = 'forex' | 'metals' | 'futures' | 'stocks';
 
+export type InstrumentChartTimeframe = '1m' | '5m' | '15m' | '30m' | '1H' | '4H' | '1D' | '1W';
+
+export type InstrumentQuoteStatus = 'live' | 'stale' | 'delayed' | 'closed' | 'restricted';
+
+export type InstrumentMarketStatus = 'open' | 'closed' | 'preMarket' | 'restricted';
+
+export type InstrumentCandle = {
+  close: number;
+  high: number;
+  low: number;
+  open: number;
+  time: string;
+  volume: number;
+};
+
 export type Instrument = {
   id: string;
   symbol: string;
@@ -53,14 +68,31 @@ export type Instrument = {
   quoteCurrency: string;
   bid: number;
   ask: number;
+  openPrice: number;
   previousClose: number;
   dayHigh: number;
   dayLow: number;
+  weekHigh: number;
+  weekLow: number;
+  yearHigh: number;
+  yearLow: number;
   leverage: number;
   spread: number;
   pipSize: number;
+  tickSize: number;
+  tickValue: number;
   contractSize: number;
+  minLot: number;
+  maxLot: number;
+  lotStep: number;
+  marginCurrency: string;
+  swapLong: number;
+  swapShort: number;
   tradingHours: LocalizedText;
+  quoteStatus: InstrumentQuoteStatus;
+  quoteUpdatedAt: string;
+  marketStatus: InstrumentMarketStatus;
+  candlesByTimeframe: Record<InstrumentChartTimeframe, InstrumentCandle[]>;
   favorite: boolean;
   sparkline: number[];
 };

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "2.2.0",
   "source": "src/components compatibility runtime; governance source is packages/component-library",
   "components": {
     "ActionButton": {
@@ -22,9 +22,7 @@
       ],
       "variants": [
         "filled",
-        "outline",
-        "text",
-        "legacySoft"
+        "outline"
       ],
       "states": [
         "default",
@@ -49,10 +47,11 @@
         "lineWidth.*",
         "size.button.*"
       ],
-      "usage": "Primary command button for app screens and sheets.",
+      "usage": "Primary command button for app screens and sheets. Supports exactly two visual variants: filled renders a semantic background with no border, outline renders a transparent background with a semantic border. Text-only actions must use a text action pattern instead of ActionButton.",
       "forbidden": [
         "Do not create page-local button styles",
-        "Do not hardcode icon names outside AppIcon registry"
+        "Do not hardcode icon names outside AppIcon registry",
+        "Do not add background-free or mixed background plus outline variants"
       ],
       "status": "active"
     },
@@ -234,7 +233,8 @@
       ],
       "a11y": [
         "Uses React Native Text semantics",
-        "Supports numberOfLines and dynamic fitting through Text props"
+        "Supports numberOfLines and governed dynamic fitting through Text props",
+        "Clamps adjustsFontSizeToFit text to minimumFontScale >= 0.92 while preserving system font scaling"
       ],
       "platforms": [
         "app",
@@ -249,7 +249,8 @@
       "forbidden": [
         "Do not use raw Text in governed UI components unless AppText cannot satisfy host requirements",
         "Do not use generic typography variants for page, dialog, card, list, or tab titles in new code; use title.* roles",
-        "Do not use generic body/caption/microLabel for governed body, label, helper, metadata, or minimum text roles in new code; use body.* or label.* roles"
+        "Do not use generic body/caption/microLabel for governed body, label, helper, metadata, or minimum text roles in new code; use body.* or label.* roles",
+        "Do not use adjustsFontSizeToFit for titles, buttons, tabs, launch copy, or auth confirmation text; reserve it for registered numeric/data-value surfaces"
       ],
       "status": "active"
     },
@@ -331,13 +332,15 @@
         "web"
       ],
       "tokenBindings": [
-        "layout.screenPaddingX",
+        "layout.contentCardPaddingX",
+        "layout.contentPlainPaddingX",
+        "layout.topBarPaddingX",
         "layout.screenGap",
         "layout.screenBottomPadding",
         "layout.bottomActionArea.*",
         "palette.bg"
       ],
-      "usage": "Standard screen shell for route screens. Scroll content must always reserve the global bottom safe gap by combining layout.screenBottomPadding with the device bottom safe-area inset. contentBottomPadding is retained only for API compatibility and must not remove the global safe-bottom rule. Sticky footers use layout.bottomActionArea.* separately so footer safe-area padding is not double-counted.",
+      "usage": "Standard screen shell for route screens. Card-mode page content defaults to 12px horizontal inset through layout.contentCardPaddingX; plain or form content opts into 16px through layout.contentPlainPaddingX. Top bars remain 16px through layout.topBarPaddingX. Scroll content must always reserve the global bottom safe gap by combining layout.screenBottomPadding with the device bottom safe-area inset. contentBottomPadding is retained only for API compatibility and must not remove the global safe-bottom rule. Sticky footers use layout.bottomActionArea.* separately so footer safe-area padding is not double-counted.",
       "forbidden": [
         "Do not recreate page shell padding or safe-area handling in app routes",
         "Do not remove default scroll-bottom padding on route screens",
@@ -375,17 +378,19 @@
         "web"
       ],
       "tokenBindings": [
-        "radius.md",
+        "radius.card",
         "layout.cardPaddingX",
         "layout.cardPaddingY",
         "layout.cardPaddingCompactX",
         "layout.cardPaddingCompactY",
         "palette.panel"
       ],
-      "usage": "Standard content grouping surface. Default cards use 12px horizontal padding through layout.cardPaddingX and 16px vertical padding through layout.cardPaddingY. Compact cards use 12px horizontal and 12px vertical padding through compact axis tokens. Existing style overrides remain reserved for documented business exceptions such as edge-to-edge modules.",
+      "usage": "Standard borderless content grouping surface. Default cards use the semantic 12px radius.card corner treatment, 12px horizontal padding through layout.cardPaddingX, and 16px vertical padding through layout.cardPaddingY. Compact cards keep the same radius.card and use 12px horizontal/vertical compact axis tokens. Existing style overrides remain reserved for documented business exceptions such as edge-to-edge modules.",
       "forbidden": [
         "Do not nest decorative page cards",
         "Do not recreate card border/radius in pages",
+        "Do not add borderWidth or borderColor to Card, page card-like panels, sheet cards, dialog cards, or business card surfaces",
+        "Do not use radius.md, radius.lg, radius.xl, radius.sm, or numeric borderRadius for card-like surfaces; use radius.card",
         "Do not use new scalar padding: layout.cardPadding, padding: spacing.lg, or paddingHorizontal: spacing.lg for card-like surfaces"
       ],
       "status": "active"
@@ -405,6 +410,7 @@
         "footer",
         "snapPoints",
         "contentSizing",
+        "sheetSurface",
         "onDismiss"
       ],
       "variants": [
@@ -422,10 +428,11 @@
         "Backdrop blocks background interaction",
         "Backdrop tap dismisses the sheet through the shared hide() path",
         "Pan-down dismissal is enabled for header and headerless sheets",
-        "Header, content, and fixed footer action zones reveal together through the shared entrance progress",
+        "Opening or stacking a sheet dismisses the active keyboard and releases input focus first",
+        "Header and content keep full text opacity while translating through the shared entrance progress; fixed footer action zones reveal and dismiss through the shared entrance progress and start hidden until the sheet entrance is complete",
         "Header actions require accessibility labels",
         "Short content must not expose unnecessary scroll behavior",
-        "Short content with footer actions must use natural content height with only measured footer avoidance",
+        "Short content with footer actions must use natural content height with measured footer avoidance and a governed reading gap before the action area",
         "Footer actions keep safe-area spacing without visual separation from the sheet surface"
       ],
       "platforms": [
@@ -436,19 +443,27 @@
       "tokenBindings": [
         "layout.sheetHeaderHeight",
         "layout.topReservedSpace",
+        "layout.contentCardPaddingX",
+        "layout.contentPlainPaddingX",
+        "layout.topBarPaddingX",
+        "layout.bottomActionArea.*",
         "palette.*",
         "spacing.*"
       ],
-      "usage": "Global bottom sheet system. Use presets for every page-triggered mobile sheet. Header, content, and fixed footer actions share the same entrance progress and sheet background; footer action areas do not render a top divider; short content uses a non-scroll container at natural content height, measured footer avoidance protects actions, backdrop tap and pan-down close are mandatory, and only over-height content becomes scrollable.",
+      "usage": "Global bottom sheet system. Use presets for every page-triggered mobile sheet. Opening or stacking a sheet dismisses the active keyboard and releases input focus before presentation. Header and fixed footer actions keep 16px horizontal inset; card-mode content defaults to 12px, while plain/form content opts into 16px. List-only selection sheets can request sheetSurface=panel so the sheet uses the white panel surface instead of the page canvas; card/detail sheets keep the canvas default. Header and content keep full text opacity while translating through the shared entrance progress, preserving readable sheet content after presentation. Fixed footer action areas start hidden below the sheet, follow the sheet entrance and dismissal, and never remain visible after content exits. Footer action areas do not render a top divider; short content uses a non-scroll container at natural content height with a governed reading gap before fixed actions, measured footer avoidance protects actions, backdrop tap and pan-down close are mandatory, and only over-height content becomes scrollable. Every page-level bottom sheet must be opened through useBottomSheet with bottomSheetPresets.selection/detail/actionMenu or a registered business sheet wrapper exported from design-public-assets.",
       "forbidden": [
         "Do not call bottomSheet.show or bottomSheet.push with ad hoc options; use bottomSheetPresets",
+        "Do not add page-local Keyboard.dismiss calls before bottomSheet.show or bottomSheet.push; the shared provider owns keyboard dismissal",
         "Do not import or render BottomSheetModal outside src/components/BottomSheet.tsx",
         "Do not create page-local sheet containers",
         "Do not create page-local scrims, handles, SafeArea bottom shells, or absolute bottom modal containers",
         "Do not override BottomSheet footer background or add page-local footer dividers",
         "Do not add fixed content bottom insets to compensate for footer actions",
         "Do not wrap short sheet content in page-local vertical scroll containers to force scrolling",
-        "Do not animate content and fixed footer on separate entrance timelines"
+        "Do not animate content and fixed footer on separate entrance or dismissal timelines",
+        "Do not render fixed footer action areas visible or interactive before the shared sheet entrance progress completes or after dismissal begins",
+        "Do not import useBottomSheet or bottomSheetPresets in pages from runtime-private component paths; use src/design-public-assets/components.",
+        "Do not use React Native Modal to simulate a bottom sheet."
       ],
       "status": "active"
     },
@@ -639,11 +654,14 @@
         "variant",
         "divided",
         "fill",
+        "inset",
         "style"
       ],
       "variants": [
         "compact",
-        "detail"
+        "detail",
+        "inset.default",
+        "inset.none"
       ],
       "states": [
         "default",
@@ -661,15 +679,72 @@
         "web"
       ],
       "tokenBindings": [
+        "layout.listRowPaddingX",
         "spacing.*",
         "typography.*",
         "lineWidth.hairline",
         "palette.lineSoft"
       ],
-      "usage": "Financial/account label-value lists. The compact variant is for dense account metric summaries with 14px governed value text and tight row gaps; the detail variant is for modal or card detail rows with divided structure.",
+      "usage": "Financial/account label-value lists. Rows default to the full-site 12px list-row horizontal inset through layout.listRowPaddingX; inset=none is only for lists already nested inside a card that owns layout.cardPaddingX. The compact variant is for dense account metric summaries with 14px governed value text and tight row gaps; the detail variant is for modal or card detail rows with divided structure.",
       "forbidden": [
         "Do not hand-roll reusable detail rows in pages",
-        "Do not add page-local row margins to compact account metric summaries"
+        "Do not add page-local row margins to compact account metric summaries",
+        "Do not use inset=none unless the immediate parent already owns governed card/list horizontal padding"
+      ],
+      "status": "active"
+    },
+    "OrderPositionDetailSheet": {
+      "category": "business",
+      "path": "src/components/business/OrderPositionDetailSheet.tsx",
+      "exports": [
+        "OrderPositionDetailSheet",
+        "ClosedOrderDetailSheet"
+      ],
+      "props": [
+        "detailItems",
+        "summary",
+        "title",
+        "valueHero",
+        "dealCountLabel",
+        "deals",
+        "pnlDelta",
+        "pnlText",
+        "ticketLabel",
+        "ticketValue"
+      ],
+      "variants": [
+        "openOrderPosition",
+        "closedOrder",
+        "valueHero"
+      ],
+      "states": [
+        "default",
+        "positivePnl",
+        "negativePnl",
+        "withDealBreakdown"
+      ],
+      "a11y": [
+        "Trade direction, symbol, lots, PnL, and detail values remain visible text",
+        "Numeric hero text may use governed auto-fit with minimumFontScale >= 0.92"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.*",
+        "spacing.*",
+        "radius.*",
+        "lineWidth.*",
+        "typography.*",
+        "palette.*"
+      ],
+      "usage": "Reusable order, position, and closed-order detail sheet body for trading/account task flows. It owns dense financial value layout and registered numeric auto-fit behavior for constrained PnL/value hero surfaces.",
+      "forbidden": [
+        "Do not recreate order or position detail sheet bodies in route pages",
+        "Do not use auto-fit for titles or labels inside this sheet",
+        "Do not hardcode financial value colors outside AppText tone semantics"
       ],
       "status": "active"
     },
@@ -794,10 +869,12 @@
       "tokenBindings": [
         "radius.md",
         "lineWidth.hairline",
+        "layout.listRowPaddingX",
+        "layout.listRowPaddingY",
         "spacing.*",
         "palette.*"
       ],
-      "usage": "Reusable menu/list pattern for account, support, and action sheets. Contained lists own their card interior padding through layout.listRowPaddingX. Descriptive rows use governed list-row and control-gap spacing so page sheets do not add local menu padding. Left-side menu icons render as pure 24px AppIcon glyphs aligned to the row content start without IconSurface background slots. Value accessories use low-emphasis regular body text rather than button-weight text.",
+      "usage": "Reusable menu/list pattern for account, support, and action sheets. Contained lists own their default 12px horizontal card/list inset through layout.listRowPaddingX. Descriptive rows use governed list-row and control-gap spacing so page sheets do not add local menu padding. Left-side menu icons render as pure 24px AppIcon glyphs aligned to the row content start without IconSurface background slots. Value accessories use low-emphasis regular body text rather than button-weight text.",
       "forbidden": [
         "Do not recreate global menu rows in pages",
         "Do not use unregistered icons",
@@ -840,9 +917,12 @@
         "layout.fundActionIconBoxSize",
         "spacing.*",
         "lineWidth.hairline",
+        "color.status.success",
+        "color.status.warning",
+        "color.status.info",
         "palette.*"
       ],
-      "usage": "Deposit, withdrawal, and transfer action cluster.",
+      "usage": "Deposit, withdrawal, and transfer action cluster. Funding operation icon tones are semantic: deposit uses success green, withdrawal uses warning amber, and transfer uses info blue.",
       "forbidden": [
         "Do not use for non-funding shortcuts",
         "Do not invent unreviewed fund actions"
@@ -915,6 +995,7 @@
       ],
       "tokenBindings": [
         "palette.*",
+        "color.surface.subtle",
         "spacing.*",
         "typography.*",
         "radius.*",
@@ -923,7 +1004,7 @@
         "layout.*",
         "iconRegistry.*"
       ],
-      "usage": "Standard top navigation bar for screens.",
+      "usage": "Standard top navigation bar for screens. Header/title columns keep the full-site 16px horizontal inset through layout.topBarPaddingX.",
       "forbidden": [
         "Do not recreate this pattern inside app route files",
         "Do not bypass token or icon registry bindings"
@@ -937,50 +1018,37 @@
         "AppViewport"
       ],
       "props": [
-        "containerStyle",
-        "equalWidth",
-        "items",
-        "labelSize",
-        "onValueChange",
-        "scrollable",
-        "style",
-        "value",
-        "variant"
+        "children"
       ],
       "variants": [
-        "pill",
-        "underline",
-        "labelSize.default",
-        "labelSize.large"
+        "native.flex",
+        "web.codexAppPreview390x844"
       ],
       "states": [
-        "default",
-        "selected",
-        "disabled"
+        "default"
       ],
       "a11y": [
-        "Visible labels or caller-provided accessibility labels are required for interactive use",
-        "Dismissal must come from the shared BottomSheet backdrop tap and pan-down behavior"
+        "Product route content must preserve native app safe-area composition through RootLayout SafeAreaProvider"
       ],
       "platforms": [
         "app",
-        "h5",
         "web"
       ],
       "tokenBindings": [
-        "palette.*",
-        "spacing.*",
-        "typography.*",
-        "radius.*",
-        "lineWidth.*",
-        "size.*",
-        "layout.*",
-        "iconRegistry.*"
+        "layout.appDeviceWidth",
+        "layout.appDeviceHeight",
+        "layout.appMaxWidth",
+        "layout.appPreviewSafeAreaInsets",
+        "lineWidth.hairline",
+        "color.surface.canvas",
+        "color.surface.subtle",
+        "color.border.subtle"
       ],
-      "usage": "Constrains app viewport width on larger surfaces.",
+      "usage": "Root product route viewport. On web/Codex preview it constrains product pages to the governed 390 x 844 native app canvas; native iOS/Android remains full flex device size.",
       "forbidden": [
-        "Do not recreate this pattern inside app route files",
-        "Do not bypass token or icon registry bindings"
+        "Do not recreate viewport width or height inside route pages",
+        "Do not place ProductControlPanel or other developer/debug tools inside AppViewport",
+        "Do not change app preview dimensions without updating design-token package version, QA, and release records"
       ],
       "status": "active"
     },
@@ -1022,7 +1090,7 @@
         "layout.*",
         "iconRegistry.*"
       ],
-      "usage": "Authentication flow shell and supporting controls. Footer actions must use governed keyboard-visible bottom action spacing on iOS.",
+      "usage": "Authentication flow shell and supporting controls. Top navigation right actions reserve a stable two-icon slot and right-align one-icon states so page transitions do not shift the visible right-side icon. Left-side close/back actions must keep a visible token-bound surface background on auth page surfaces. Footer actions must use governed keyboard-visible bottom action spacing on iOS.",
       "forbidden": [
         "Do not recreate this pattern inside app route files",
         "Do not bypass token or icon registry bindings"
@@ -1072,10 +1140,11 @@
         "layout.*",
         "iconRegistry.*"
       ],
-      "usage": "Authentication and verification helper controls.",
+      "usage": "Authentication and verification helper controls. CountryPickerModal uses the shared BottomSheet selection preset with sheetSurface=panel, plain list padding, and an explicit snap point so long country/region lists use the shared max-height and scroll behavior without re-opening on parent callback or selected-country reference changes. The picker exposes 128 mainstream global phone regions with Indonesia first as the default, keeps search over country/region name, ISO code, and dial code, and shows a localized empty state for unmatched searches. Country rows stack the dial code above the country or region name and render the selected state with the registered icon.status.check AppIcon at the default 24px component icon size. Dismissal remains owned by the shared BottomSheet backdrop, pan-down gesture, and selected-option paths. AuthContactConfirmDialog, AuthLeaveVerifiedStepDialog, and AuthErrorDialog keep the centered feedback visual but delegate the React Native Modal host to GlobalDialog.",
       "forbidden": [
         "Do not recreate this pattern inside app route files",
-        "Do not bypass token or icon registry bindings"
+        "Do not bypass token or icon registry bindings",
+        "Do not import or render React Native Modal inside AuthFlowControls; centered feedback and confirmation must use GlobalDialog."
       ],
       "status": "active"
     },
@@ -1311,6 +1380,8 @@
       ],
       "tokenBindings": [
         "palette.*",
+        "color.surface.panel",
+        "color.icon.primary",
         "spacing.*",
         "typography.*",
         "radius.*",
@@ -1319,10 +1390,11 @@
         "layout.*",
         "iconRegistry.*"
       ],
-      "usage": "Icon button and slot for top bars and headers. Default header icons use the neutral primary icon token; pass an explicit semantic tone only for selected, destructive, status, inverse, or deliberately low-emphasis tertiary header actions.",
+      "usage": "Icon button and slot for top bars and headers. Filled header/icon action containers render on the white panel surface token when placed over gray page, sheet, or canvas backgrounds, while the default glyph uses the neutral primary icon token. Pass an explicit semantic tone only for selected, destructive, status, inverse, or deliberately low-emphasis tertiary header actions.",
       "forbidden": [
         "Do not recreate this pattern inside app route files",
-        "Do not bypass token or icon registry bindings"
+        "Do not bypass token or icon registry bindings",
+        "Do not hardcode white or use the gray subtle surface for filled header icon action containers on gray page or sheet backgrounds"
       ],
       "status": "active"
     },
@@ -1465,8 +1537,6 @@
         "Visible labels or caller-provided accessibility labels are required for interactive use"
       ],
       "platforms": [
-        "app",
-        "h5",
         "web"
       ],
       "tokenBindings": [
@@ -1479,10 +1549,12 @@
         "layout.*",
         "iconRegistry.*"
       ],
-      "usage": "Internal product scenario control panel.",
+      "usage": "Web-only floating developer console. It is an independent debug module rendered outside AppViewport so it remains draggable, expandable, clickable, and uncropped by the 390 x 844 product preview canvas.",
       "forbidden": [
-        "Do not recreate this pattern inside app route files",
-        "Do not bypass token or icon registry bindings"
+        "Do not render ProductControlPanel inside AppViewport",
+        "Do not remove PanResponder drag handling",
+        "Do not clamp developer tooling to the phone canvas; drag bounds use the browser window",
+        "Do not let the developer console block product page scroll or route clicks when closed"
       ],
       "status": "active"
     },
@@ -1775,7 +1847,7 @@
         "Each row must provide an accessibilityLabel",
         "Rows expose accessibilityRole=button",
         "Visible symbol, direction, quantity, price/range, and right-side value must remain readable",
-        "Row touch and highlight areas must reach the list card left and right edges"
+        "Rows sit inside the governed list card content inset"
       ],
       "platforms": [
         "app",
@@ -1784,16 +1856,17 @@
       ],
       "tokenBindings": [
         "spacing.*",
+        "layout.cardPaddingX",
         "layout.menuDisclosureIconSize",
         "size.viewport.detailSide*",
         "lineWidth.hairline",
         "palette.*",
         "iconRegistry.*"
       ],
-      "usage": "Reusable trading order list for positions, pending orders, and history rows. Owns vertical row rhythm, dividers, left TradeDirectionIcon sizing, right-side value alignment, and optional disclosure chevrons so same-type trading lists do not recreate page-local row layouts. The containing card and rows keep 0px horizontal padding so the outer container controls the list left/right width; rows keep only vertical padding for touch rhythm.",
+      "usage": "Reusable trading order list for positions, pending orders, and history rows. Owns the Card container, governed horizontal list inset through layout.cardPaddingX, vertical row rhythm, dividers, left TradeDirectionIcon sizing, right-side value alignment, and optional disclosure chevrons so same-type trading lists do not recreate page-local row layouts. Rows keep only vertical padding for touch rhythm; screen sections control the outside page margin.",
       "forbidden": [
         "Do not rebuild trading order rows with page-local View + TradeDirectionIcon loops",
-        "Do not add page-local horizontal card padding around TradeOrderList rows",
+        "Do not wrap TradeOrderList in page-local card or padding shells to create list insets",
         "Do not add row-level horizontal padding inside TradeOrderList",
         "Do not pass raw numeric icon sizes for order direction icons",
         "Do not use unregistered icons or hardcoded risk colors"
@@ -1838,6 +1911,114 @@
         "Do not recreate this pattern inside app route files",
         "Do not bypass token or icon registry bindings",
         "Do not replace account-row balance icons with profile, group, or page-local SVG icons"
+      ],
+      "status": "active"
+    },
+    "TradingAccountCard": {
+      "category": "business",
+      "path": "src/components/TradingAccountSwitchSheet.tsx",
+      "exports": [
+        "TradingAccountCard",
+        "TradingAccountCardProps",
+        "TradingAccountCardTrailing"
+      ],
+      "props": [
+        "profile",
+        "onPress",
+        "selected",
+        "disabledReason",
+        "mode",
+        "trailing",
+        "accessibilityLabel"
+      ],
+      "variants": [
+        "compact",
+        "detailed",
+        "trailing.currency",
+        "trailing.radio",
+        "trailing.chevron"
+      ],
+      "states": [
+        "default",
+        "selected",
+        "disabled"
+      ],
+      "a11y": [
+        "NativePressable exposes button role",
+        "Selection and disabled state are exposed through accessibilityState",
+        "Visible account number and caller-provided accessibility labels are supported"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.*",
+        "spacing.*",
+        "radius.*",
+        "lineWidth.*",
+        "typography.*",
+        "palette.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Reusable trading account row/card used by TradingAccountSwitchSheet and account context selectors. It owns selected, disabled, currency, radio, and chevron trailing treatments for account switching surfaces.",
+      "forbidden": [
+        "Do not recreate trading account row cards in route pages",
+        "Do not bypass account status, currency, or disabled feedback",
+        "Do not replace registered account icons with page-local SVG or decorative badges"
+      ],
+      "status": "active"
+    },
+    "TradingAccountContextSwitcher": {
+      "category": "business",
+      "path": "src/components/business/TradingAccountContextSwitcher.tsx",
+      "exports": [
+        "TradingAccountContextSwitcher",
+        "createTradingAccountContextSwitcherHeader",
+        "TradingAccountContextSwitcherProps"
+      ],
+      "props": [
+        "accounts",
+        "selectedId",
+        "onSelect",
+        "mode",
+        "getDisabledReason"
+      ],
+      "variants": [
+        "compact",
+        "detailed",
+        "bottomSheetContext"
+      ],
+      "states": [
+        "default",
+        "selected",
+        "disabled",
+        "emptyGroup"
+      ],
+      "a11y": [
+        "Delegates account card semantics to TradingAccountSwitchSheet",
+        "Selection state and disabled state remain exposed through NativePressable"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.*",
+        "spacing.*",
+        "radius.*",
+        "lineWidth.*",
+        "typography.*",
+        "palette.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Business wrapper for trading account selection contexts. It reuses TradingAccountSwitchSheet while giving markets, portfolio, funding, and trading flows a governed account-switcher entry point.",
+      "forbidden": [
+        "Do not rebuild account switcher rows in route pages",
+        "Do not bypass TradingAccountSwitchSheet for account selection visuals",
+        "Do not hide account identity, currency, platform, or restricted-state feedback"
       ],
       "status": "active"
     },
@@ -2360,6 +2541,705 @@
       "usage": "Standard group title for bottom-sheet menu sections.",
       "forbidden": [
         "Do not use as page title replacement"
+      ],
+      "status": "active"
+    },
+    "MetricCluster": {
+      "category": "business-data",
+      "path": "src/components/business/MetricCluster.tsx",
+      "exports": [
+        "MetricCluster"
+      ],
+      "props": [
+        "items",
+        "style"
+      ],
+      "variants": [
+        "row-cluster"
+      ],
+      "states": [
+        "default",
+        "positive",
+        "negative",
+        "neutral",
+        "empty"
+      ],
+      "a11y": [
+        "Each metric keeps text labels and values visible through the shared Metric component"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.controlGap",
+        "typography.*",
+        "color.market.*",
+        "color.status.*"
+      ],
+      "usage": "Reusable metric cluster for repeated KPI groups across accounts, portfolio, funding, and Discover surfaces.",
+      "forbidden": [
+        "Do not rebuild KPI row loops inside pages when MetricCluster applies",
+        "Do not omit label or unit context for financial metrics"
+      ],
+      "status": "active"
+    },
+    "FilterPillGroup": {
+      "category": "business-filter",
+      "path": "src/components/business/FilterPillGroup.tsx",
+      "exports": [
+        "FilterPillGroup"
+      ],
+      "props": [
+        "items",
+        "value",
+        "onChange",
+        "variant"
+      ],
+      "variants": [
+        "button",
+        "status"
+      ],
+      "states": [
+        "default",
+        "selected",
+        "pressed"
+      ],
+      "a11y": [
+        "Button variant exposes accessibilityRole=button and selected state",
+        "Status variant delegates visual semantics to StatusPill"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "spacing.*",
+        "radius.full",
+        "lineWidth.hairline",
+        "palette.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Shared compact filter pill group for market, account, and portfolio filter surfaces. Use it instead of route-local pill button loops when the options behave as a single-choice filter.",
+      "forbidden": [
+        "Do not hardcode pill colors or border widths in route pages",
+        "Do not use status variant for interactive filter controls that must expose selected state"
+      ],
+      "status": "active"
+    },
+    "MetricDescriptionSheet": {
+      "category": "business-data",
+      "path": "src/components/business/MetricDescriptionSheet.tsx",
+      "exports": [
+        "MetricDescriptionSheet"
+      ],
+      "props": [
+        "label",
+        "value",
+        "description"
+      ],
+      "variants": [
+        "metric-explanation"
+      ],
+      "states": [
+        "default"
+      ],
+      "a11y": [
+        "Metric label, value, and description remain visible text inside the sheet"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "spacing.*",
+        "radius.sm",
+        "lineWidth.none",
+        "palette.*",
+        "typography.*"
+      ],
+      "usage": "Reusable bottom-sheet body for explaining financial metrics. It keeps the sheet body on shared spacing, surface, and typography tokens so account pages do not duplicate metric explanation layouts.",
+      "forbidden": [
+        "Do not recreate metric explanation sheet bodies inside route pages",
+        "Do not hardcode metric explanation colors or padding in pages"
+      ],
+      "status": "active"
+    },
+    "RiskGauge": {
+      "category": "business-visualization",
+      "path": "src/components/business/RiskGauge.tsx",
+      "exports": [
+        "RiskGauge"
+      ],
+      "props": [
+        "title",
+        "riskLabel",
+        "safeLabel",
+        "value",
+        "locale"
+      ],
+      "variants": [
+        "margin-risk-gauge"
+      ],
+      "states": [
+        "default",
+        "safe",
+        "warning",
+        "danger"
+      ],
+      "a11y": [
+        "Accessible label includes title, safe/risk state, and numeric value"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "size.chart.*",
+        "lineWidth.*",
+        "spacing.*",
+        "color.status.*",
+        "color.market.*"
+      ],
+      "usage": "Shared SVG-backed risk gauge for account and margin safety visualizations. Pages must import this component instead of inline SVG.",
+      "forbidden": [
+        "Do not import react-native-svg from route screens for gauges",
+        "Do not communicate risk by color only"
+      ],
+      "status": "active"
+    },
+    "AccountClosedPnlTrendChart": {
+      "category": "business-visualization",
+      "path": "src/components/business/FinancialTrendChart.tsx",
+      "exports": [
+        "AccountClosedPnlTrendChart"
+      ],
+      "props": [
+        "realizedPnl",
+        "series",
+        "totalColor",
+        "totalValues"
+      ],
+      "variants": [
+        "closed-pnl-trend"
+      ],
+      "states": [
+        "default",
+        "positive",
+        "negative",
+        "flat"
+      ],
+      "a11y": [
+        "Accessible chart label is declared on the chart container"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "size.chart.*",
+        "lineWidth.*",
+        "spacing.*",
+        "color.chart.*",
+        "color.brand.*"
+      ],
+      "usage": "Shared account closed P/L trend chart used by account details and future portfolio history modules.",
+      "forbidden": [
+        "Do not keep reusable account trend SVG inside pages",
+        "Charts must remain supplemental to textual financial values"
+      ],
+      "status": "active"
+    },
+    "InstrumentDetailTrendChart": {
+      "category": "business-visualization",
+      "path": "src/components/business/FinancialTrendChart.tsx",
+      "exports": [
+        "InstrumentDetailTrendChart"
+      ],
+      "props": [
+        "instrument",
+        "values",
+        "color",
+        "width",
+        "rangeStartLabel",
+        "rangeEndLabel"
+      ],
+      "variants": [
+        "instrument-detail-area-chart"
+      ],
+      "states": [
+        "default",
+        "up",
+        "down",
+        "flat"
+      ],
+      "a11y": [
+        "Accessible chart label includes the instrument symbol"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "size.chart.*",
+        "lineWidth.*",
+        "spacing.*",
+        "radius.*",
+        "color.chart.*",
+        "color.market.*"
+      ],
+      "usage": "Shared instrument detail trend chart for market detail pages.",
+      "forbidden": [
+        "Do not import react-native-svg in instrument route screens for the trend chart"
+      ],
+      "status": "active"
+    },
+    "InstrumentVolumeBars": {
+      "category": "business-visualization",
+      "path": "src/components/business/FinancialTrendChart.tsx",
+      "exports": [
+        "InstrumentVolumeBars"
+      ],
+      "props": [
+        "values",
+        "color",
+        "width"
+      ],
+      "variants": [
+        "volume-bars"
+      ],
+      "states": [
+        "default",
+        "active-session"
+      ],
+      "a11y": [
+        "Accessible chart label is declared on the bars container"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "size.chart.*",
+        "lineWidth.*",
+        "spacing.*",
+        "color.market.*"
+      ],
+      "usage": "Shared compact volume bar visualization for instrument detail and future market modules.",
+      "forbidden": [
+        "Do not duplicate volume bar SVG loops inside pages"
+      ],
+      "status": "active"
+    },
+    "FundingTrendBars": {
+      "category": "business-visualization",
+      "path": "src/components/business/FinancialTrendChart.tsx",
+      "exports": [
+        "FundingTrendBars"
+      ],
+      "props": [
+        "points"
+      ],
+      "variants": [
+        "deposit-withdrawal-bars"
+      ],
+      "states": [
+        "default",
+        "empty-values"
+      ],
+      "a11y": [
+        "Funding trend remains paired with visible labels and textual funding values in the parent card"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "size.chart.*",
+        "spacing.*",
+        "radius.*",
+        "lineWidth.*",
+        "color.market.*",
+        "color.status.*",
+        "color.border.*"
+      ],
+      "usage": "Shared deposit and withdrawal trend bar visualization for account balance and future funding analytics modules. Pages must import this component instead of rebuilding paired bar charts locally.",
+      "forbidden": [
+        "Do not duplicate funding bar chart loops inside route pages",
+        "Do not communicate funding direction by color only without adjacent labels or values"
+      ],
+      "status": "active"
+    },
+    "VerificationStatusCard": {
+      "category": "business-profile",
+      "path": "src/components/business/DiscoverProfileCards.tsx",
+      "exports": [
+        "VerificationStatusCard"
+      ],
+      "props": [
+        "title",
+        "subtitle"
+      ],
+      "variants": [
+        "verified-profile-row"
+      ],
+      "states": [
+        "verified",
+        "reviewing",
+        "restricted"
+      ],
+      "a11y": [
+        "Uses text labels and a registered status icon through IconSurface"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "size.profile.*",
+        "layout.controlGap",
+        "spacing.*",
+        "color.status.*"
+      ],
+      "usage": "Shared Discover profile verification summary card for KYC/compliance status surfaces.",
+      "forbidden": [
+        "Do not hardcode approval language in pages",
+        "Verification copy must use i18n keys"
+      ],
+      "status": "active"
+    },
+    "PartnerPortalSummary": {
+      "category": "business-partner",
+      "path": "src/components/business/DiscoverProfileCards.tsx",
+      "exports": [
+        "PartnerPortalSummary"
+      ],
+      "props": [
+        "accountCurrency",
+        "locale",
+        "rebateValue",
+        "title",
+        "totalLabel",
+        "trendLabel",
+        "colors"
+      ],
+      "variants": [
+        "partner-rebate-summary"
+      ],
+      "states": [
+        "trader-preview",
+        "partner",
+        "pending",
+        "approved"
+      ],
+      "a11y": [
+        "Rebate amount is rendered as text and the sparkline is supplemental"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "spacing.*",
+        "layout.controlGap",
+        "typography.*",
+        "size.profile.*",
+        "color.market.*"
+      ],
+      "usage": "Shared Partner Portal rebate summary card for Discover profile commerce modules.",
+      "forbidden": [
+        "Do not imply guaranteed rebate or investment outcome",
+        "Do not duplicate partner summary cards inside Discover pages"
+      ],
+      "status": "active"
+    },
+    "RewardSummaryCard": {
+      "category": "business-growth",
+      "path": "src/components/business/DiscoverProfileCards.tsx",
+      "exports": [
+        "RewardSummaryCard"
+      ],
+      "props": [
+        "title",
+        "totalLabel",
+        "activeCampaignsLabel"
+      ],
+      "variants": [
+        "reward-summary"
+      ],
+      "states": [
+        "default",
+        "active-campaigns",
+        "empty"
+      ],
+      "a11y": [
+        "Reward value and campaign count are rendered as text"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "spacing.*",
+        "layout.controlGap",
+        "size.profile.*",
+        "radius.*",
+        "lineWidth.*"
+      ],
+      "usage": "Shared reward summary card for Discover growth and promotion modules.",
+      "forbidden": [
+        "Do not use reward copy to imply trading profit",
+        "Reward copy must be governed through i18n/copy-table"
+      ],
+      "status": "active"
+    },
+    "RelationshipManagerCard": {
+      "category": "business-support",
+      "path": "src/components/business/DiscoverProfileCards.tsx",
+      "exports": [
+        "RelationshipManagerCard"
+      ],
+      "props": [
+        "title",
+        "managerName",
+        "accessibilityLabel",
+        "onPress"
+      ],
+      "variants": [
+        "relationship-manager-chat"
+      ],
+      "states": [
+        "default",
+        "pressed",
+        "unavailable"
+      ],
+      "a11y": [
+        "Chat action uses NativePressable with accessibilityRole=button and caller-provided label"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "size.profile.*",
+        "layout.iconSurface.*",
+        "layout.controlGap",
+        "spacing.*"
+      ],
+      "usage": "Shared relationship manager entry card for profile support and partner service contexts.",
+      "forbidden": [
+        "Do not use View onTouchEnd for button behavior",
+        "Do not hardcode support chat labels in pages"
+      ],
+      "status": "active"
+    },
+    "ThemePreviewSelector": {
+      "category": "business-preferences",
+      "path": "src/components/business/ThemePreviewSelector.tsx",
+      "exports": [
+        "ThemePreviewSelector"
+      ],
+      "props": [
+        "colors",
+        "locale",
+        "options",
+        "selectedValue",
+        "onChange"
+      ],
+      "variants": [
+        "system",
+        "light",
+        "dark"
+      ],
+      "states": [
+        "selected",
+        "unselected",
+        "pressed"
+      ],
+      "a11y": [
+        "Each option exposes accessibilityRole=radio and selected state"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "size.themePreview.*",
+        "spacing.*",
+        "radius.*",
+        "lineWidth.*",
+        "color.surface.*",
+        "color.border.*"
+      ],
+      "usage": "Shared appearance theme preview selector for settings pages.",
+      "forbidden": [
+        "Do not rebuild theme preview cards inside pages",
+        "Do not hardcode preview colors outside theme token mappings"
+      ],
+      "status": "active"
+    },
+    "DesignPublicAssetsFacade": {
+      "category": "runtime-facade",
+      "path": "src/design-public-assets/index.ts",
+      "exports": [
+        "tokens",
+        "components",
+        "business-components",
+        "patterns",
+        "icons",
+        "copy",
+        "registry"
+      ],
+      "props": [],
+      "variants": [
+        "page-facing-bridge"
+      ],
+      "states": [
+        "active"
+      ],
+      "a11y": [
+        "No rendered UI; facade preserves registered component accessibility contracts."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "packages/design-tokens",
+        "src/theme/tokens compatibility bridge"
+      ],
+      "usage": "Single page-facing import facade for route screens. It re-exports public resources from the governed runtime compatibility surfaces without copying implementations.",
+      "forbidden": [
+        "Do not copy component, token, icon, or copy implementations into src/design-public-assets",
+        "Route screens must not bypass the facade for src/components, src/theme, src/icons, src/i18n, or ProductSettings imports."
+      ],
+      "status": "active"
+    },
+    "TradingTerminalChart": {
+      "category": "business-visualization",
+      "path": "src/components/business/TradingTerminalChart.tsx",
+      "exports": [
+        "TradingTerminalChart"
+      ],
+      "props": [
+        "instrument",
+        "initialTimeframe",
+        "state"
+      ],
+      "variants": [
+        "candlestick-terminal",
+        "line-terminal",
+        "area-terminal",
+        "fullscreen-terminal"
+      ],
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "quote_stale",
+        "market_closed",
+        "restricted"
+      ],
+      "a11y": [
+        "Visible OHLCV text panel pairs with crosshair data",
+        "Bid/Ask/current price lines include text labels",
+        "Risk and stale quote states are text-labeled, not color-only"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "size.chart.*",
+        "lineWidth.*",
+        "spacing.*",
+        "radius.*",
+        "color.chart.*",
+        "color.market.*",
+        "color.status.*",
+        "color.surface.*"
+      ],
+      "usage": "Governed SVG-backed mobile trading terminal chart for instrument detail pages. Owns candlestick/line/area rendering, timeframe switching, pan/zoom/crosshair, indicators, drawing tools, fullscreen, and quote exception states inside the registered business component.",
+      "forbidden": [
+        "Do not import react-native-svg from route screens for trading-terminal charts",
+        "Do not add unregistered toolbar icons",
+        "Do not communicate quote freshness, trend, or risk by color only"
+      ],
+      "status": "active"
+    },
+    "GlobalDialog": {
+      "category": "feedback",
+      "path": "src/components/GlobalDialog.tsx",
+      "exports": [
+        "GlobalDialog",
+        "GlobalDialogAction",
+        "GlobalDialogProps"
+      ],
+      "props": [
+        "open",
+        "onRequestClose",
+        "title",
+        "body",
+        "target",
+        "icon",
+        "iconTone",
+        "actions",
+        "accessibilityLabel",
+        "children"
+      ],
+      "variants": [
+        "centered-feedback",
+        "centered-confirmation",
+        "centered-error"
+      ],
+      "states": [
+        "closed",
+        "open",
+        "dismissed",
+        "action-disabled"
+      ],
+      "a11y": [
+        "Centered feedback and confirmation dialogs expose alert semantics and a composed accessibility label.",
+        "Request-close behavior is caller-owned so Android back, scrim replacement, and cancel paths stay recoverable.",
+        "Actions use governed ActionButton labels, disabled state, and accessibility labels."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.appMaxWidth",
+        "radius.sheet",
+        "spacing.*",
+        "typography.*",
+        "palette.*",
+        "color.overlay.*",
+        "size.iconSurface.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Global centered feedback, confirmation, and error dialog host. Use this for feedback operations that must keep the current centered dialog visual design. It is the only governed business dialog component allowed to own React Native Modal; page and feature components must call GlobalDialog or registered BottomSheet presets instead of creating local Modal shells.",
+      "forbidden": [
+        "Do not render React Native Modal directly in pages or business feedback components.",
+        "Do not recreate centered dialog backdrops, stages, or action stacks in AuthFlowControls or route screens.",
+        "Do not use GlobalDialog for bottom sheets; bottom sheet surfaces must use BottomSheetProvider, GlobalBottomSheetHost, useBottomSheet, and bottomSheetPresets.",
+        "Do not bypass i18n-provided labels or registered icon names for user-facing dialog content."
       ],
       "status": "active"
     }

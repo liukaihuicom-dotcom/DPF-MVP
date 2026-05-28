@@ -1,5 +1,24 @@
 # Changelog
 
+## v1.0.15-global-dialog-bottom-sheet-governance
+
+- Added the governed `GlobalDialog` centered feedback host and migrated auth feedback/confirmation dialogs to consume it without changing the user-facing centered visual.
+- Reinforced the product rule that page bottom sheets must call the global BottomSheet component system through `bottomSheetPresets`.
+- Added QA blockers for page-owned business Modal and bottom-sheet shells, preserving only registered technical exceptions.
+- Registered the local `/markets-account-demo` design review route in route governance and public-resource coverage so `qa:all` validates all 43 runtime routes.
+
+## v1.0.14-discover-emotional-icon-tones
+
+- Added governed semantic icon tones to Discover entry and campaign cards so the content area feels warmer and less tool-like.
+- Reused existing registered icons and `IconSurface`; no route, copy, business rule, API, or product flow changed.
+
+## v1.0.13-security-center-contract
+
+- Added contract-first Security Center product module for TOTP, GSL, alerts, security score, devices, login history, anti-phishing code, DMP policy boundaries, and audit requirements.
+- Added `app-security-center.page-contract.json`, `security-center.openapi.yaml`, security-center schema, root API overview schema/mock, security error codes, RBAC entries, business rules, state machines, exception paths, UI Build inputs, and test mappings.
+- Preserved `/settings/security-log` as the current compatibility device/login detail surface; `/settings/security-center` remains planned for the next App implementation stage.
+- Reconfirmed TOTP/MFA does not force local PIN setup by default; local PIN remains optional unless explicit local lock/unlock is active.
+
 ## v1.0.12-card-axis-padding
 
 - Added the full-site card horizontal inset rule: card-like content surfaces use 12px left/right padding while retaining existing vertical rhythm.

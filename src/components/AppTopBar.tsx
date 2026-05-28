@@ -4,7 +4,7 @@ import { useToast } from '@/src/feedback/Toast';
 import { impactLight } from '@/src/feedback/haptics';
 import { navigateBackOrReplace, safeRouteTargets, type NavigationTarget } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/settings/ProductSettings';
-import { lineWidth } from '@/src/theme/tokens';
+import { layout, lineWidth, spacing } from '@/src/theme/tokens';
 
 import { type AppIconName } from './AppIcon';
 import { HeaderIconButton, HeaderIconSlot } from './HeaderIconButton';
@@ -96,7 +96,7 @@ export function AppTopBar({ actions, align = 'left', back, backHref, subtitle, t
 const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
-    gap: 8,
+    gap: spacing.sm,
     justifyContent: 'flex-end',
     minWidth: 132,
   },
@@ -104,11 +104,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: lineWidth.hairline,
     flexDirection: 'row',
-    gap: 10,
+    gap: spacing.sm + spacing.xxs,
     minHeight: 60,
-    paddingBottom: 9,
-    paddingHorizontal: 16,
-    paddingTop: 7,
+    paddingBottom: spacing.sm + 1,
+    paddingHorizontal: layout.topBarPaddingX,
+    paddingTop: spacing.sm - 1,
   },
   side: {
     minWidth: 40,

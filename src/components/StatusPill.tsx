@@ -24,7 +24,7 @@ export type StatusPillProps = {
 function resolveTone(colors: ThemeColors, tone: StatusPillTone): { color: string; iconTone: IconTone; textTone: AppTextTone } {
   switch (tone) {
     case 'success':
-      return { color: colors.market.down.fg, iconTone: 'success', textTone: 'down' };
+      return { color: colors.status.success.fg, iconTone: 'success', textTone: 'success' };
     case 'warning':
       return { color: colors.status.warning.fg, iconTone: 'warning', textTone: 'amber' };
     case 'danger':

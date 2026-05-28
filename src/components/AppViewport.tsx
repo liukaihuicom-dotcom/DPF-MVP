@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 
-import { lineWidth } from '@/src/theme/tokens';
+import { layout, lineWidth, radius } from '@/src/theme/tokens';
 import { useThemeColors } from '@/src/settings/ProductSettings';
 
 export function AppViewport({ children }: PropsWithChildren) {
@@ -20,13 +20,14 @@ export function AppViewport({ children }: PropsWithChildren) {
 
 const styles = StyleSheet.create({
   phone: {
+    borderRadius: radius.sheet,
     borderLeftWidth: lineWidth.hairline,
     borderRightWidth: lineWidth.hairline,
-    flex: 1,
-    maxWidth: 430,
+    height: layout.appDeviceHeight,
+    maxHeight: '100%',
     overflow: 'hidden',
     position: 'relative',
-    width: '100%',
+    width: layout.appDeviceWidth,
   },
   native: {
     flex: 1,
@@ -35,6 +36,7 @@ const styles = StyleSheet.create({
   },
   stage: {
     alignItems: 'center',
+    justifyContent: 'center',
     flex: 1,
     width: '100%',
   },

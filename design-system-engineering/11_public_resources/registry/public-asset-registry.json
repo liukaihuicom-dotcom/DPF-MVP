@@ -1,0 +1,1873 @@
+{
+  "version": "0.2.0",
+  "generated_at": "2026-05-28",
+  "governance_skill": "design-public-resource-package-governance v1.1.0-L5",
+  "source_of_truth": "workspace-packages with src runtime compatibility surfaces",
+  "assets": [
+    {
+      "asset_id": "token.design-tokens",
+      "asset_type": "token",
+      "name": "Design Tokens Package",
+      "version": "3.1.0",
+      "source_path": "packages/design-tokens/registry/tokens.json",
+      "doc_path": "packages/design-tokens/registry/tokens.json",
+      "usage_scope": [
+        "all_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [],
+      "dependents": [
+        "component.base.component-library",
+        "icon.icon-library",
+        "pattern.all",
+        "component.base.GlobalDialog"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "token.color",
+      "asset_type": "token",
+      "name": "Color Tokens",
+      "version": "3.0.0",
+      "source_path": "packages/design-tokens/registry/tokens.color.json",
+      "doc_path": "packages/design-tokens/registry/tokens.color.json",
+      "usage_scope": [
+        "all_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "token.semantic-layout",
+      "asset_type": "token",
+      "name": "Semantic Layout, Spacing, Radius, Typography Roles",
+      "version": "1.1.0",
+      "source_path": "packages/design-tokens/registry/tokens.json",
+      "doc_path": "packages/design-tokens/registry/tokens.json",
+      "usage_scope": [
+        "all_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.component-library",
+      "asset_type": "base_component",
+      "name": "Component Library Manifest",
+      "version": "2.2.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "all_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "token.design-tokens",
+        "icon.icon-library"
+      ],
+      "dependents": [
+        "business.all",
+        "pattern.all",
+        "component.base.GlobalDialog"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.Screen",
+      "asset_type": "base_component",
+      "name": "Screen",
+      "version": "1.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [
+        "page.trade",
+        "page.portfolio_alias"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.Card",
+      "asset_type": "base_component",
+      "name": "Card",
+      "version": "1.0.2",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28",
+      "notes": "Card and card-like panel surfaces use semantic radius.card at 12px and remain borderless; radius.md remains a compatibility alias for non-card surfaces."
+    },
+    {
+      "asset_id": "component.base.ActionButton",
+      "asset_type": "base_component",
+      "name": "ActionButton",
+      "version": "2.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.TextField",
+      "asset_type": "base_component",
+      "name": "TextField",
+      "version": "1.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.BottomSheet",
+      "asset_type": "base_component",
+      "name": "BottomSheet",
+      "version": "1.1.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.ConfirmActionSheet",
+      "asset_type": "base_component",
+      "name": "ConfirmActionSheet",
+      "version": "1.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.AppIcon",
+      "asset_type": "base_component",
+      "name": "AppIcon",
+      "version": "1.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.IconSurface",
+      "asset_type": "base_component",
+      "name": "IconSurface",
+      "version": "1.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.StatusPill",
+      "asset_type": "base_component",
+      "name": "StatusPill",
+      "version": "1.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.SegmentedTabs",
+      "asset_type": "base_component",
+      "name": "SegmentedTabs",
+      "version": "1.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.GlobalMenuList",
+      "asset_type": "base_component",
+      "name": "GlobalMenuList",
+      "version": "1.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.KeyValueList",
+      "asset_type": "base_component",
+      "name": "KeyValueList",
+      "version": "1.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.Metric",
+      "asset_type": "base_component",
+      "name": "Metric",
+      "version": "1.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.TradeOrderList",
+      "asset_type": "base_component",
+      "name": "TradeOrderList",
+      "version": "1.0.1",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [
+        "page.trade",
+        "page.portfolio_alias"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.TradingAccountSwitchSheet",
+      "asset_type": "base_component",
+      "name": "TradingAccountSwitchSheet",
+      "version": "1.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.FundActionGrid",
+      "asset_type": "base_component",
+      "name": "FundActionGrid",
+      "version": "1.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.EmptyState",
+      "asset_type": "base_component",
+      "name": "EmptyState",
+      "version": "1.0.0",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.registry",
+      "asset_type": "business_component",
+      "name": "Business Component Manifest",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "pattern.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.FundingOperationWorkspace",
+      "asset_type": "business_component",
+      "name": "FundingOperationWorkspace",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [
+        "page.trade",
+        "page.portfolio_alias"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.PortfolioOrderWorkspace",
+      "asset_type": "business_component",
+      "name": "PortfolioOrderWorkspace",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.TradingAccountSwitchSheet",
+      "asset_type": "business_component",
+      "name": "TradingAccountSwitchSheet",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.TradeOrderList",
+      "asset_type": "business_component",
+      "name": "TradeOrderList",
+      "version": "1.1.1",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [
+        "page.trade",
+        "page.portfolio_alias"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.ConfirmActionSheet",
+      "asset_type": "business_component",
+      "name": "ConfirmActionSheet",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.AccountLedgerWorkspace",
+      "asset_type": "business_component",
+      "name": "AccountLedgerWorkspace",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.InstrumentDetailWorkspace",
+      "asset_type": "business_component",
+      "name": "InstrumentDetailWorkspace",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.TradingAccountContextSwitcher",
+      "asset_type": "business_component",
+      "name": "TradingAccountContextSwitcher",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [
+        "page.markets",
+        "page.trade",
+        "page.portfolio_alias",
+        "page.instrument_detail"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.OrderPositionDetailSheet",
+      "asset_type": "business_component",
+      "name": "OrderPositionDetailSheet",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [
+        "page.trade",
+        "page.portfolio_alias"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.MetricCluster",
+      "asset_type": "business_component",
+      "name": "MetricCluster",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [
+        "page.quick",
+        "page.account_details"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.FinancialTrendChart",
+      "asset_type": "business_component",
+      "name": "FinancialTrendChart",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [
+        "page.instrument_detail",
+        "page.account_details"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.TradingTerminalChart",
+      "asset_type": "business_component",
+      "name": "TradingTerminalChart",
+      "version": "1.0.0",
+      "source_path": "src/components/business/TradingTerminalChart.tsx",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "instrument_detail",
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry",
+        "component.base.component-library",
+        "icon.icon-library",
+        "token.design-tokens"
+      ],
+      "dependents": [
+        "page.instrument_detail"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.RiskGauge",
+      "asset_type": "business_component",
+      "name": "RiskGauge",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [
+        "page.instrument_detail",
+        "page.account_details"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.PartnerPortalSummary",
+      "asset_type": "business_component",
+      "name": "PartnerPortalSummary",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [
+        "page.quick"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.RewardSummaryCard",
+      "asset_type": "business_component",
+      "name": "RewardSummaryCard",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [
+        "page.quick"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.VerificationStatusCard",
+      "asset_type": "business_component",
+      "name": "VerificationStatusCard",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [
+        "page.quick"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.ThemePreviewSelector",
+      "asset_type": "business_component",
+      "name": "ThemePreviewSelector",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry"
+      ],
+      "dependents": [
+        "page.appearance"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.registry",
+      "asset_type": "page_pattern",
+      "name": "Pattern Registry",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "all_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.page.dashboard",
+      "asset_type": "page_pattern",
+      "name": "dashboard",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.page.form",
+      "asset_type": "page_pattern",
+      "name": "form",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.page.list",
+      "asset_type": "page_pattern",
+      "name": "list",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.page.detail",
+      "asset_type": "page_pattern",
+      "name": "detail",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.page.emptyError",
+      "asset_type": "page_pattern",
+      "name": "emptyError",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.page.onboarding",
+      "asset_type": "page_pattern",
+      "name": "onboarding",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.page.review",
+      "asset_type": "page_pattern",
+      "name": "review",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.page.discoverProfileCommerce",
+      "asset_type": "page_pattern",
+      "name": "discoverProfileCommerce",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "app_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.dialog.accountContextSwitcher",
+      "asset_type": "dialog_pattern",
+      "name": "accountContextSwitcher",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry",
+        "business.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.dialog.tradingOrderActionSheet",
+      "asset_type": "dialog_pattern",
+      "name": "tradingOrderActionSheet",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry",
+        "business.registry"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.flow.fundingOperation",
+      "asset_type": "flow_pattern",
+      "name": "Funding Operation Flow",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "funding_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry",
+        "business.FundingOperationWorkspace"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.state.appearanceThemePreview",
+      "asset_type": "state_pattern",
+      "name": "Appearance Theme Preview State",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "settings_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry",
+        "business.ThemePreviewSelector"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "pattern.list.metricCluster",
+      "asset_type": "list_pattern",
+      "name": "Metric Cluster Pattern",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry",
+        "business.MetricCluster"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "icon.icon-library",
+      "asset_type": "icon_asset",
+      "name": "Local Icon Registry",
+      "version": "4.1.9",
+      "source_path": "packages/icon-library/registry/icon-registry.json",
+      "doc_path": "packages/icon-library/registry/icon-registry.json",
+      "usage_scope": [
+        "all_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "token.design-tokens"
+      ],
+      "dependents": [
+        "component.base.GlobalDialog"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "copy.runtime-translations",
+      "asset_type": "copy_asset",
+      "name": "Runtime i18n Translations",
+      "version": "0.1.0",
+      "source_path": "src/i18n/translations.ts",
+      "doc_path": "src/i18n/translations.ts",
+      "usage_scope": [
+        "all_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "copy.copy-table",
+      "asset_type": "copy_asset",
+      "name": "Public Copy Table",
+      "version": "0.2.0",
+      "source_path": "design-system-engineering/11_public_resources/copy/copy-table.json",
+      "doc_path": "design-system-engineering/11_public_resources/copy/copy-table.json",
+      "usage_scope": [
+        "all_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "copy.runtime-translations"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28",
+      "notes": "First-batch high-risk page copy is keyed in src/i18n/translations.ts and mirrored in copy-table; Indonesian entries use current runtime strings where available and remain marked for native review where applicable."
+    },
+    {
+      "asset_id": "illustration.registry",
+      "asset_type": "illustration_asset",
+      "name": "Illustration Registry",
+      "version": "0.2.0",
+      "source_path": "design-system-engineering/11_public_resources/illustrations/illustration-registry.json",
+      "doc_path": "design-system-engineering/11_public_resources/illustrations/illustration-registry.json",
+      "usage_scope": [
+        "empty_state",
+        "onboarding",
+        "reward"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [],
+      "dependents": [
+        "pattern.page.emptyError",
+        "pattern.page.onboarding",
+        "business.RewardSummaryCard"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28",
+      "notes": "Approved as the owned-illustration governance registry. Runtime pages currently use registered IconSurface/AppIcon fallbacks; unknown-source bitmap/SVG illustration assets remain blocked until separately registered."
+    },
+    {
+      "asset_id": "qa.public-resource-check",
+      "asset_type": "qa_asset",
+      "name": "Public Resource QA Gate",
+      "version": "0.1.0",
+      "source_path": "scripts/qa/check-public-resources.js",
+      "doc_path": "scripts/qa/check-public-resources.js",
+      "usage_scope": [
+        "all_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "registry.public-assets",
+        "graph.asset-dependency"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "handoff.public-resource-migration",
+      "asset_type": "handoff_asset",
+      "name": "Public Resource Migration Plan",
+      "version": "0.2.0",
+      "source_path": "design-system-engineering/11_public_resources/registry/migration-plan.md",
+      "doc_path": "design-system-engineering/11_public_resources/registry/migration-plan.md",
+      "usage_scope": [
+        "development_handoff"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "registry.public-assets",
+        "graph.asset-dependency"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "registry.public-assets",
+      "asset_type": "qa_asset",
+      "name": "Public Asset Registry",
+      "version": "0.2.0",
+      "source_path": "design-system-engineering/11_public_resources/registry/public-asset-registry.json",
+      "doc_path": "design-system-engineering/11_public_resources/registry/public-asset-registry.json",
+      "usage_scope": [
+        "all_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "token.design-tokens",
+        "component.base.component-library",
+        "business.registry",
+        "pattern.registry",
+        "icon.icon-library",
+        "copy.copy-table"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "graph.asset-dependency",
+      "asset_type": "qa_asset",
+      "name": "Asset Dependency Graph",
+      "version": "0.2.0",
+      "source_path": "design-system-engineering/11_public_resources/registry/asset-dependency-graph.json",
+      "doc_path": "design-system-engineering/11_public_resources/registry/asset-dependency-graph.json",
+      "usage_scope": [
+        "all_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "registry.public-assets"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "business.LocalPinSecurityFlow",
+      "asset_type": "business_component",
+      "name": "LocalPinSecurityFlow",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "doc_path": "design-system-engineering/11_public_resources/registry/migration-plan.md",
+      "usage_scope": [
+        "auth_pages",
+        "security_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry",
+        "copy.copy-table"
+      ],
+      "dependents": [
+        "page.pin_setup"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28",
+      "notes": "Approved as a governed high-risk local security flow. Runtime remains in PinSetupScreen with i18n copy, optional-default bypass, locked-state unlock recovery, and graph dependency coverage."
+    },
+    {
+      "asset_id": "runtime.design-public-assets.facade",
+      "asset_type": "handoff_asset",
+      "name": "Design Public Assets Runtime Facade",
+      "version": "1.0.0",
+      "source_path": "src/design-public-assets/index.ts",
+      "doc_path": "design-system-engineering/11_public_resources/registry/change-impact-report.md",
+      "usage_scope": [
+        "all_pages",
+        "route_screens",
+        "runtime_bridge"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "token.design-tokens",
+        "component.base.component-library",
+        "business.registry",
+        "pattern.registry",
+        "icon.icon-library",
+        "copy.copy-table",
+        "registry.public-assets"
+      ],
+      "dependents": [
+        "page.all_route_screens"
+      ],
+      "sync_policy": "auto_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28",
+      "notes": "Page-facing typed facade. It re-exports runtime compatibility surfaces only; it does not copy public asset implementations."
+    },
+    {
+      "asset_id": "component.layout.AppViewport",
+      "asset_type": "base_component",
+      "name": "AppViewport",
+      "version": "2.1.7",
+      "source_path": "packages/component-library/registry/component-manifest.json",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "all_product_routes",
+        "codex_browser_preview"
+      ],
+      "platforms": [
+        "web",
+        "app"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens",
+        "token.semantic-layout"
+      ],
+      "dependents": [
+        "page.all_product_routes"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28",
+      "notes": "Web/Codex product-page preview uses the governed 390 x 844 native app canvas with token-bound radius.sheet clipping; native apps keep real device dimensions."
+    },
+    {
+      "asset_id": "tool.dev.ProductControlPanel",
+      "asset_type": "qa_asset",
+      "name": "ProductControlPanel developer tool",
+      "version": "1.7.0",
+      "source_path": "src/components/ProductControlPanel.tsx",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "developer_preview",
+        "qa_debug"
+      ],
+      "platforms": [
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens",
+        "icon.icon-library"
+      ],
+      "dependents": [],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28",
+      "notes": "Independent draggable debug module outside AppViewport; it must not be clipped by the product app canvas."
+    },
+    {
+      "asset_id": "product.security-center-contract",
+      "asset_type": "handoff_asset",
+      "name": "Security Center Product Contract Package",
+      "version": "1.0.13",
+      "source_path": "design-system-engineering/11_public_resources/registry/change-impact-report.md",
+      "doc_path": "product-engineering-package/04_page_contracts/pages/app-security-center.page-contract.json",
+      "usage_scope": [
+        "security_pages",
+        "app_security_center_planned"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web",
+        "admin",
+        "dmp"
+      ],
+      "status": "planned_contract_ready",
+      "owner": "product-engineering",
+      "dependencies": [
+        "registry.public-assets",
+        "copy.copy-table",
+        "icon.icon-library",
+        "component.base.component-library",
+        "pattern.registry"
+      ],
+      "dependents": [
+        "planned.page.app_security_center"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "conditional_ready",
+      "last_updated": "2026-05-28",
+      "notes": "Contract-first Security Center package. Runtime route /settings/security-center is planned for the next App implementation stage; /settings/security-log remains compatibility detail surface."
+    },
+    {
+      "asset_id": "pattern.page.securityCenterOverview",
+      "asset_type": "page_pattern",
+      "name": "Security Center Overview Pattern",
+      "version": "0.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "product-engineering-package/04_page_contracts/pages/app-security-center.page-contract.json",
+      "usage_scope": [
+        "security_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "planned_contract_ready",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry",
+        "component.base.component-library",
+        "copy.copy-table",
+        "icon.icon-library"
+      ],
+      "dependents": [
+        "planned.page.app_security_center"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "conditional_ready",
+      "last_updated": "2026-05-28",
+      "notes": "Planned pattern for alert banner, security score, account security cards, GSL summary, and device/login entry."
+    },
+    {
+      "asset_id": "pattern.dialog.securityVerification",
+      "asset_type": "dialog_pattern",
+      "name": "Security Verification Pattern",
+      "version": "0.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "product-engineering-package/04_page_contracts/pages/app-security-center.page-contract.json",
+      "usage_scope": [
+        "security_pages",
+        "high_risk_actions"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "planned_contract_ready",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.ConfirmActionSheet",
+        "component.base.BottomSheet",
+        "copy.copy-table",
+        "icon.icon-library"
+      ],
+      "dependents": [
+        "planned.page.app_security_center"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "conditional_ready",
+      "last_updated": "2026-05-28",
+      "notes": "Planned shared verification and high-risk confirmation pattern for TOTP/email OTP/GSL cancel actions."
+    },
+    {
+      "asset_id": "component.base.GlobalDialog",
+      "asset_type": "base_component",
+      "name": "GlobalDialog",
+      "version": "1.0.0",
+      "source_path": "src/components/GlobalDialog.tsx",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "app_pages",
+        "auth_feedback",
+        "centered_feedback_dialogs"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens",
+        "icon.icon-library"
+      ],
+      "dependents": [
+        "component.forms.AuthFlowControls"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-28"
+    }
+  ]
+}

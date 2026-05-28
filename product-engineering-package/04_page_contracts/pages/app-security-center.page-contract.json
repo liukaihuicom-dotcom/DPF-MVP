@@ -1,0 +1,197 @@
+{
+  "$schema": "../page-contract.schema.json",
+  "page_id": "app-security-center",
+  "page_name": "Security Center",
+  "version": "v1.0.13-security-center-contract",
+  "platform": "app",
+  "runtime_mode": "existing_project",
+  "roles": ["trader", "partner"],
+  "purpose": "Canonical customer-facing Security Center contract for account security status, risk alerts, TOTP, GSL, devices, login history, anti-phishing code, and high-risk verification entry points.",
+  "entry_points": [
+    "/settings/security-center",
+    "/settings",
+    "/discover security shortcut",
+    "/settings/security-log compatibility upsell"
+  ],
+  "implementation_status": "contract_ready_route_not_yet_implemented",
+  "compatibility": {
+    "existing_route": "/settings/security-log",
+    "existing_page_component": "SecurityLoginLogScreen",
+    "reuse_rule": "SecurityLoginLogScreen may be linked from Security Center as device/login detail, but cannot replace the canonical overview."
+  },
+  "states": [
+    "default",
+    "loading",
+    "empty",
+    "error",
+    "disabled",
+    "inputting",
+    "validating",
+    "submitting",
+    "success",
+    "failed",
+    "permission-denied",
+    "restricted",
+    "reviewing",
+    "pending",
+    "blocked",
+    "snoozed",
+    "resolved"
+  ],
+  "sections": [
+    {
+      "section_id": "page_header",
+      "required_content": ["Security Center title", "static subtitle", "back navigation to settings"]
+    },
+    {
+      "section_id": "security_alert_banner",
+      "required_content": ["highest priority active alert", "risk level", "primary action", "secondary action", "dismiss or snooze handling"]
+    },
+    {
+      "section_id": "security_score",
+      "required_content": ["total score", "score level", "highest priority suggestion", "completion state at score 100"]
+    },
+    {
+      "section_id": "account_security",
+      "required_content": ["password status", "TOTP status", "email status", "phone status", "anti-phishing code status", "GSL summary"]
+    },
+    {
+      "section_id": "device_and_login",
+      "required_content": ["current device summary", "active device count", "risk device count", "link to security login log", "login history filters"]
+    },
+    {
+      "section_id": "security_audit_notifications",
+      "required_content": ["latest user-visible security changes", "notification channel status", "audit-friendly timestamp and actor copy"]
+    },
+    {
+      "section_id": "verification_modal",
+      "required_content": ["operation title", "risk consequence", "device/IP/time", "TOTP or email OTP input", "cancel path", "recovery path"]
+    },
+    {
+      "section_id": "confirm_risk_modal",
+      "required_content": ["explicit consequence", "primary destructive or high-risk CTA", "secondary cancel CTA", "no profit/safety claims"]
+    }
+  ],
+  "business_rules": [
+    "Only the highest-priority active alert is displayed at one time.",
+    "Dismissed unresolved alerts can reappear after 24 hours.",
+    "TOTP active status contributes 30 points to the security score; disable_pending contributes only 10 points.",
+    "Closing TOTP always enters a 24-hour GSL and TOTP remains valid during the pending period.",
+    "Changing email, changing phone, adding withdrawal address, and high-risk password change enter 24-hour GSL.",
+    "Withdrawal and new withdrawal address always require strong verification and cannot be DMP-disabled.",
+    "Trusted device may only waive low or selected medium-risk checks; it cannot waive high-risk financial or account recovery operations.",
+    "Current device/session cannot be revoked from device management.",
+    "Security Center must not force local PIN setup; local PIN remains optional unless the user explicitly locks the app.",
+    "All visible copy must use i18n keys and be represented in copy table before production release."
+  ],
+  "interactions": [
+    {
+      "id": "alert_primary_action",
+      "trigger": "tap alert primary action",
+      "result": "route to detail, open GSL cancel sheet, freeze contact path, or device detail according to alert type",
+      "failure_recovery": "show API error with retry or support contact"
+    },
+    {
+      "id": "totp_bind",
+      "trigger": "tap bind TOTP",
+      "result": "open TOTP binding flow: app guidance, QR/manual key, 6-digit code, recovery codes, save confirmation",
+      "failure_recovery": "invalid code error, locked state after configured failures"
+    },
+    {
+      "id": "totp_disable_request",
+      "trigger": "tap disable TOTP",
+      "result": "show high-risk confirmation, verify TOTP, create GSL pending change",
+      "failure_recovery": "blocked when account frozen, invalid code, or existing pending change"
+    },
+    {
+      "id": "gsl_cancel",
+      "trigger": "tap cancel pending security change",
+      "result": "verify TOTP or email OTP, cancel GSL, keep original setting active",
+      "failure_recovery": "preserve pending change and show recoverable error"
+    },
+    {
+      "id": "device_revoke",
+      "trigger": "tap remove non-current device",
+      "result": "verify if required, revoke target session/token, refresh device list",
+      "failure_recovery": "block current device and already-revoked sessions with stable error code"
+    },
+    {
+      "id": "anti_phishing_update",
+      "trigger": "update anti-phishing code",
+      "result": "verify, update code immediately, send email and in-app notification",
+      "failure_recovery": "reject unsafe content and preserve previous code"
+    }
+  ],
+  "risk_rules": [
+    "Critical account freeze and remote login blocked alerts override all other active alerts.",
+    "High-risk withdrawal, withdrawal address, TOTP disable, email/phone change, and high-risk remote login must never rely on email-only verification as a long-term policy.",
+    "Partner users follow normal account-security UI, with stricter risk policy for funds-related operations.",
+    "DMP can configure only non-mandatory scenarios; mandatory security scenarios are policy-locked."
+  ],
+  "apis": [
+    "GET /api/security-center/overview",
+    "GET /api/security-center/alerts",
+    "POST /api/security-center/alerts/{alertId}/dismiss",
+    "POST /api/security-center/alerts/{alertId}/snooze",
+    "POST /api/security-center/alerts/{alertId}/resolve",
+    "POST /api/security-center/password/strength-check",
+    "POST /api/security-center/password/change",
+    "POST /api/security-center/totp/bind/start",
+    "POST /api/security-center/totp/bind/verify",
+    "POST /api/security-center/totp/disable/request",
+    "POST /api/security-center/totp/disable/cancel",
+    "GET /api/security-center/gsl/changes",
+    "POST /api/security-center/gsl/changes/{changeId}/cancel",
+    "GET /api/security-center/devices",
+    "POST /api/security-center/devices/{deviceId}/revoke",
+    "POST /api/security-center/devices/revoke-others",
+    "GET /api/security-center/login-history",
+    "GET /api/security-center/anti-phishing-code",
+    "POST /api/security-center/anti-phishing-code/update",
+    "POST /api/security-center/anti-phishing-code/regenerate"
+  ],
+  "design_system_binding": {
+    "tokens": ["token.design-tokens", "token.color", "token.semantic-layout"],
+    "base_components": [
+      "Screen",
+      "Card",
+      "AppText",
+      "ActionButton",
+      "StatusPill",
+      "IconSurface",
+      "AppIcon",
+      "BottomSheet",
+      "ConfirmActionSheet",
+      "SegmentedTabs",
+      "KeyValueList",
+      "Metric"
+    ],
+    "icons": [
+      "icon.security.lock",
+      "icon.security.password_rules",
+      "icon.security.key_access",
+      "icon.security.risk_shield"
+    ],
+    "patterns": [
+      "detail",
+      "list",
+      "emptyError",
+      "securityCenterOverview",
+      "securityVerification"
+    ],
+    "forbidden": [
+      "No page-local hardcoded colors, spacing, radius, typography, shadows, icons, or visible copy.",
+      "No runtime third-party icon imports.",
+      "No page-local calculation of final risk decision."
+    ]
+  },
+  "qa_gate": {
+    "release_decision": "conditional_ready_for_design_and_api_review",
+    "blockers_before_production": [
+      "OpenAPI request/response and backend persistence model must be approved.",
+      "Risk/compliance must confirm GSL, TOTP, remote login, and withdrawal verification thresholds.",
+      "High-risk English and Indonesian copy requires financial copy and UX Gate review.",
+      "Route /settings/security-center must be implemented and registered before UI release."
+    ]
+  }
+}

@@ -41,7 +41,36 @@
       "permission": "funding.configure_limits_fees",
       "roles": ["risk_compliance"],
       "conditions": ["adminSession=true", "approvalWorkflowRequired=true"]
+    },
+    {
+      "permission": "security_center.view_own_overview",
+      "roles": ["trader", "partner"],
+      "conditions": ["authStatus=signedIn", "dataScope=own_security_profile"]
+    },
+    {
+      "permission": "security_center.manage_own_security_settings",
+      "roles": ["trader", "partner"],
+      "conditions": ["authStatus=signedIn", "verificationPolicySatisfied=true", "accountStatus not_in frozen"]
+    },
+    {
+      "permission": "security_center.cancel_own_gsl_change",
+      "roles": ["trader", "partner"],
+      "conditions": ["authStatus=signedIn", "gslStatus=pending", "verificationMethod in totp,email", "changeOwner=currentUser"]
+    },
+    {
+      "permission": "security_center.view_user_status_readonly",
+      "roles": ["customer_support"],
+      "conditions": ["adminSession=true", "readOnly=true", "no_totp_secret_access", "no_security_disable_action"]
+    },
+    {
+      "permission": "security_center.view_risk_audit",
+      "roles": ["risk_compliance"],
+      "conditions": ["adminSession=true", "auditAccessReasonRequired=true", "exportPolicySatisfied=true"]
+    },
+    {
+      "permission": "security_center.configure_policy",
+      "roles": ["system_admin", "dmp_admin"],
+      "conditions": ["adminSession=true", "changeReasonRequired=true", "mandatoryScenariosLocked=true", "policyVersionRecorded=true"]
     }
   ]
 }
-

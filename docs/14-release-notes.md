@@ -1,5 +1,51 @@
 # Release Notes
 
+## 2026-05-28
+
+### Breaking
+
+- Updated `@dpf/component-library` to `2.0.0` because the global `ActionButton` contract now supports only `filled` and `outline`.
+- Removed Button text and legacy soft mixed background-plus-outline appearances from the governed global Button API.
+- Updated `@dpf/design-tokens` to `3.0.0` for the trading color semantic migration: global market `up` is now green `#2EA379`, market `down` is red, and success/feedback green remains independent.
+
+### Added
+
+- Added the Design Public Resource Package Governance Skill under the local `.codex/skills` tree.
+- Updated AGENTS routing so page, design-system, shared-asset, migration, and public-resource work must check registries, dependency graph, change impact, and release readiness before delivery.
+- Added the public resource governance package with public asset registry, asset dependency graph, copy-table seed, illustration registry seed, migration plan, change impact report, deprecated-assets record, and QA checklist.
+- Added `pnpm qa:public-resources` and wired it into `pnpm qa:all`.
+- Registered migration targets for repeated page-local structures across trading account switching, order/position sheets, metric clusters, financial charts/gauges, Discover partner/reward/verification cards, theme preview selection, and local PIN security.
+
+### Changed
+
+- Removed residual border styles from page, sheet, dialog, demo, chart, Discover, and developer-console card-like surfaces while preserving functional input, button, chip, icon, divider, and selection-control borders.
+- Strengthened Card governance and QA so Card and card-like page/sheet/dialog/business surfaces remain borderless and cannot reintroduce `borderWidth` or `borderColor`.
+- Standardized card and card-like panel roundness on semantic `radius.card`, including the shared Card contract, metric-detail value card, developer scenario tiles, and root error panel.
+- Tightened the Discover entry-card title-to-description spacing to the governed 4px layer and updated filled header icon action backgrounds to the white panel surface token on gray page/sheet backgrounds.
+- Migrated global Button consumers to explicit `filled` or `outline` variants, and moved text-only lightweight actions to text action patterns.
+- Updated the shared BottomSheet fixed footer action area so bottom actions start hidden and follow the sheet entrance instead of appearing at the bottom by default.
+- Updated Discover entry-card descriptions from the compact 12px caption role to the governed 14px `body.secondary` role while keeping routes, icons, copy, and card order unchanged.
+- Updated the Trade workspace order-list card container so positions, pending orders, and history orders use the governed `layout.cardPaddingX` list inset inside the card and `layout.screenPaddingX` outside page margin.
+- Updated funding quick-action icon semantics so 存款 uses the green success tone, 取款 keeps the amber warning tone, and 转账 remains info blue.
+- Tuned the `/accounts` trading account list card rhythm so currency metadata tightens to a 2px token gap, title-to-description spacing has a dedicated token layer, and secondary financial labels use regular caption weight.
+- Changed the standard blue token to `#1F72E8` and synchronized runtime colors, token registries, CSS mappings, and design-system mirrors.
+- Added the full-site page and bottom-sheet horizontal spacing contract: title/header and fixed footer actions stay at 16px, card-mode content uses 12px, plain/form content uses 16px, and global Card/List content defaults to 12px.
+- Completed second-stage first-batch public-resource migration for Portfolio, DiscoverModule, Markets, InstrumentDetail, AccountDetails, and Appearance.
+- Promoted the migrated business components and patterns to active registry and dependency-graph assets.
+- Synced copy-table entries with runtime i18n keys for high-risk trading, Discover/Partner, Markets account-switch feedback, Appearance, Funding, and PIN copy surfaces.
+- Clarified icon governance so registered public chart/gauge components may own internal SVG while route screens remain blocked from `react-native-svg`.
+- Added governed AppText auto-fit protection so Expo Go phone previews preserve system font scaling while preventing key text from shrinking below the design standard.
+- Updated Codex/browser product-page preview to simulate the app in a governed 390 x 844 native device canvas with web-only safe-area metrics.
+- Rounded the Codex/browser product-page preview canvas with token-bound `radius.sheet` clipping so the viewing area reads as a phone device instead of a square web frame.
+- Preserved the developer control panel as an independent draggable debug module outside the product-page preview canvas.
+- Updated the AI-readable design-system index and production gate list so future production UI work must account for public-resource registry and dependency-graph coverage.
+- Registered the local `/markets-account-demo` design review route across route governance, page inventory, route coverage, and the public-resource dependency graph so full QA covers all 43 runtime routes.
+
+### Notes
+
+- No Expo service, runtime route, API, or data behavior was changed.
+- Planned owned illustrations and the Local PIN security flow remain conditional follow-up assets requiring human/native review before whole-product production readiness.
+
 ## 2026-05-27
 
 ### Added
@@ -25,7 +71,7 @@
 - Added a reusable `TradeOrderList` component and migrated the Trade workspace position, pending-order, and history-order rows so direction icon size, row dividers, and right-side values are governed globally.
 - Updated `TradeOrderList` card vertical padding to 0px so the list card no longer adds extra top or bottom spacing around order rows.
 - Fixed global `BottomSheet` content height with footer actions so short detail sheets stay naturally sized and long sheets still scroll with measured footer avoidance.
-- Updated `TradeOrderList` card horizontal padding to 0px so order row touch/highlight areas align to the global menu-list edge contract.
+- Earlier `TradeOrderList` spacing work temporarily moved horizontal width ownership out of rows so order-list spacing could be governed centrally.
 - Tightened `KeyValueList` compact row spacing so the Trade account metric summary reads more densely.
 - Tightened the Trade account summary panel to 16px padding on all sides and removed the default scroll-bottom whitespace for this flush first-screen layout.
 - Increased Discover entry card title-to-description spacing on mobile so module cards read as cards rather than cramped menu rows.
@@ -37,7 +83,7 @@
 - Removed row-level horizontal padding from the reusable `TradeOrderList` so order-list left/right width is controlled by the outer container rather than the generic list module.
 - Updated compact account metric values in the Trade workspace to the governed 14px typography role while leaving detail rows unchanged.
 - Updated shared `Card` and custom card-like surfaces across Discover, Accounts, Funding, Portfolio, detail, empty-state, and error contexts to use the 12px horizontal card inset contract.
-- Kept `TradeOrderList` as a registered edge-to-edge exception: order rows still have 0px horizontal padding and their outer container controls width.
+- Kept `TradeOrderList` rows free of row-level horizontal padding so the governed list container can own horizontal spacing.
 - Updated the global `BottomSheet` interaction contract so header, content, and fixed footer actions reveal together as one native-style bottom panel.
 - Migrated `QuickActionSheet` to shared `BottomSheet` action-menu content and removed its page-owned host, scrim, handle, and SafeArea bottom shell.
 - Added full-site bottom-sheet governance: mobile sheets must use shared presets, while auth dialogs, PIN error dialogs, and web select menus remain documented non-sheet exceptions.

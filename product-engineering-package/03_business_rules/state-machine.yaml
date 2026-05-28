@@ -83,4 +83,95 @@ operations:
 audit_required:
   fields: [actor, actorRole, reason, previousStatus, nextStatus, timestamp, requestId]
   applies_to: every_transition
-
+security_center:
+  alert:
+    initial: active
+    terminal: [resolved]
+    states:
+      active: Alert is visible or eligible to become the highest-priority visible alert.
+      dismissed: User acknowledged the alert; unresolved alert can reappear after the configured 24-hour window.
+      snoozed: Alert is hidden until snoozeUntil.
+      resolved: Underlying event is handled and alert is no longer eligible for display.
+    transitions:
+      - [active, dismissed, user_dismissed]
+      - [active, snoozed, user_snoozed]
+      - [dismissed, active, unresolved_24h_elapsed]
+      - [snoozed, active, snooze_expired]
+      - [active, resolved, underlying_risk_resolved]
+      - [dismissed, resolved, underlying_risk_resolved]
+      - [snoozed, resolved, underlying_risk_resolved]
+  totp:
+    initial: not_bound
+    terminal: [disabled]
+    states:
+      not_bound: User has not bound TOTP.
+      binding: User is viewing QR/manual key and submitting verification code.
+      active: TOTP is enabled and required for high-risk security and funds operations.
+      disable_pending: Disable request is in 24-hour GSL; TOTP remains valid.
+      disabled: TOTP is disabled after GSL effective transition.
+      locked: TOTP verification is temporarily locked after repeated invalid attempts.
+    transitions:
+      - [not_bound, binding, bind_start]
+      - [binding, active, verify_success_and_recovery_codes_saved]
+      - [binding, locked, five_invalid_attempts]
+      - [locked, binding, lock_window_elapsed]
+      - [active, disable_pending, disable_request_verified]
+      - [disable_pending, active, disable_cancelled]
+      - [disable_pending, disabled, gsl_effective]
+      - [active, locked, five_invalid_attempts]
+  gsl:
+    initial: pending
+    terminal: [cancelled, effective, failed, superseded, expired]
+    states:
+      pending: Change is cooling down and can be cancelled when canCancel is true.
+      cancelled: User cancelled before effectiveAt and original setting remains active.
+      effective: Backend scheduler applied the change.
+      failed: Backend, risk, admin, or scheduler failure prevented the change.
+      superseded: A controlled admin/risk intervention replaced this change.
+      expired: Exceptional state where the change did not apply within allowed execution window.
+    transitions:
+      - [pending, cancelled, user_cancelled_after_verification]
+      - [pending, effective, scheduler_applied_change]
+      - [pending, failed, scheduler_or_policy_failed]
+      - [pending, superseded, admin_or_risk_superseded]
+      - [pending, expired, execution_window_expired_without_effect]
+  device:
+    initial: active
+    terminal: [revoked, expired]
+    states:
+      active: Device has an active session/token.
+      revoked: Session/token was destroyed by user, system, or admin action.
+      expired: Session/token expired naturally.
+      trusted: Device is trusted for low or selected medium-risk operations until trustExpireAt.
+      high_risk: Device is flagged by risk event and cannot bypass verification.
+    transitions:
+      - [active, revoked, revoke_non_current_device]
+      - [active, expired, session_expired]
+      - [active, trusted, trust_device]
+      - [trusted, active, trust_removed_or_expired]
+      - [active, high_risk, suspicious_event_detected]
+      - [trusted, high_risk, suspicious_event_detected]
+      - [high_risk, revoked, revoke_device]
+  remote_login_risk:
+    initial: low
+    terminal: [confirmed_user, confirmed_not_user, blocked]
+    states:
+      low: New city in same country without other high-risk signals.
+      medium: Remote login requires TOTP or email OTP.
+      high: Remote login plus new device or proxy requires TOTP and cannot use trusted-device waiver.
+      critical: Remote login plus high-risk IP/ASN or repeated failures is blocked.
+      confirmed_user: User confirmed the login as their own.
+      confirmed_not_user: User denied the login; device is logged out and recovery actions are recommended.
+      blocked: Login attempt is blocked.
+    transitions:
+      - [low, medium, city_or_country_risk_increased]
+      - [medium, high, new_device_or_proxy_detected]
+      - [high, critical, high_risk_ip_or_repeated_failures]
+      - [medium, confirmed_user, user_confirmed]
+      - [high, confirmed_user, user_confirmed_after_totp]
+      - [medium, confirmed_not_user, user_denied]
+      - [high, confirmed_not_user, user_denied]
+      - [critical, blocked, system_blocked]
+security_audit_required:
+  fields: [auditId, userId, actorType, actorId, actionType, targetType, targetId, ip, deviceId, userAgent, country, city, riskLevel, result, createdAt, requestId]
+  applies_to: [login, password_change, email_change, phone_change, totp_bind, totp_disable, recovery_code_use, withdrawal_address_change, withdrawal_verification, device_revoke, revoke_other_devices, anti_phishing_code_change, admin_security_view]

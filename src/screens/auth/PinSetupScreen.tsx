@@ -4,15 +4,15 @@ import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { safeRedirect } from '@/src/auth/authFlow';
-import { AuthErrorDialog } from '@/src/components/AuthFlowControls';
-import { AuthLanguageAction } from '@/src/components/AuthShell';
-import { AppIcon } from '@/src/components/AppIcon';
-import { HeaderIconSlot } from '@/src/components/HeaderIconButton';
-import { NativePressable } from '@/src/components/NativePressable';
-import { AppText } from '@/src/components/Typography';
+import { AuthErrorDialog } from '@/src/design-public-assets/components';
+import { AuthLanguageAction } from '@/src/design-public-assets/components';
+import { AppIcon } from '@/src/design-public-assets/components';
+import { HeaderIconSlot } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
-import { useProductSettings } from '@/src/settings/ProductSettings';
-import { layout, lineWidth, radius, size, spacing } from '@/src/theme/tokens';
+import { useProductSettings } from '@/src/design-public-assets/copy';
+import { layout, lineWidth, radius, size, spacing } from '@/src/design-public-assets/tokens';
 
 const pinLength = 6;
 const keypadItems = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'empty', '0', 'delete'] as const;

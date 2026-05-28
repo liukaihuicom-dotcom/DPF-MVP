@@ -48,12 +48,12 @@ export function EmptyState({
         </View>
         <View style={styles.actionRow}>
           {secondaryLabel && onSecondaryAction ? (
-            <ActionButton label={secondaryLabel} onPress={onSecondaryAction} style={styles.action} tone="neutral" />
+            <ActionButton label={secondaryLabel} onPress={onSecondaryAction} style={styles.action} tone="neutral" variant="outline" />
           ) : (
             <View style={styles.action} />
           )}
           {actionLabel && onAction ? (
-            <ActionButton label={actionLabel} onPress={onAction} style={styles.action} tone="brand" />
+            <ActionButton label={actionLabel} onPress={onAction} style={styles.action} tone="brand" variant="filled" />
           ) : (
             <View style={styles.action} />
           )}
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   },
   plain: {
     alignItems: 'center',
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     paddingHorizontal: layout.cardPaddingX,
     paddingVertical: layout.cardPaddingY,
   },

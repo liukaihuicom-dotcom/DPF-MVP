@@ -2,26 +2,26 @@ import { useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
-import { Card } from '@/src/components/Card';
-import { CurrencyFlag } from '@/src/components/CurrencyFlag';
-import { FeaturedInstrumentCard } from '@/src/components/FeaturedInstrumentCard';
-import { InstrumentRow } from '@/src/components/InstrumentRow';
-import { NativePressable } from '@/src/components/NativePressable';
-import { AppIcon } from '@/src/components/AppIcon';
-import { Screen } from '@/src/components/Screen';
-import { SegmentedTabs } from '@/src/components/SegmentedTabs';
-import { TextField } from '@/src/components/TextField';
-import { createTradingAccountSwitchHeader, TradingAccountSwitchSheet } from '@/src/components/TradingAccountSwitchSheet';
-import { AppText } from '@/src/components/Typography';
+import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { Card } from '@/src/design-public-assets/components';
+import { FeaturedInstrumentCard } from '@/src/design-public-assets/components';
+import { InstrumentRow } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { AppIcon } from '@/src/design-public-assets/components';
+import { createTradingAccountContextSwitcherHeader, TradingAccountContextSwitcher } from '@/src/design-public-assets/business-components';
+import { Screen } from '@/src/design-public-assets/components';
+import { SegmentedTabs } from '@/src/design-public-assets/components';
+import { TextField } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
+import type { AppTextTone } from '@/src/design-public-assets/components';
 import { getAccountStatusLabel } from '@/src/domain/accountProfiles';
-import { formatCompactMoney, formatMoney, localizeText } from '@/src/domain/format';
+import { formatMoney, localizeText } from '@/src/domain/format';
 import { buildSharedTradingAccountProfiles } from '@/src/domain/tradingAccountView';
 import type { Instrument, InstrumentAssetClass } from '@/src/domain/types';
 import { useToast } from '@/src/feedback/Toast';
-import { useProductSettings } from '@/src/settings/ProductSettings';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
-import { lineWidth, typography } from '@/src/theme/tokens';
+import { layout, lineWidth, radius, size, spacing, typography } from '@/src/design-public-assets/tokens';
 
 type MarketTabKey = 'watchlist' | InstrumentAssetClass;
 
@@ -38,19 +38,35 @@ const featuredInstrumentIds = ['eur-usd', 'gbp-usd', 'usd-jpy', 'xau-usd', 'us30
 export default function HomeScreen() {
   const { account, instruments, positions } = useBroker();
   const { t } = useProductSettings();
+  const [amountsVisible, setAmountsVisible] = useState(true);
+  const [selectedTab, setSelectedTab] = useState<MarketTabKey>(() => resolveInitialMarketTab(instruments));
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const closeSearch = () => {
+    setSearchQuery('');
+    setSearchOpen(false);
+  };
 
   return (
     <Screen
       rightActions={[
-        { icon: 'icon.notification.bell', label: t('top.notifications') },
-        { icon: 'icon.support.headset', label: t('top.support') },
+        { icon: 'icon.system.search', label: t('markets.search'), onPress: () => setSearchOpen(true) },
       ]}
-      title="Dupoin">
-      <AccountMiniCard account={account} positions={positions} />
+      title={t('brand.name')}>
+      <AccountMiniCard account={account} amountsVisible={amountsVisible} onToggleAmountsVisible={() => setAmountsVisible((visible) => !visible)} positions={positions} />
+
+      {searchOpen ? (
+        <View style={styles.marketSearchShell}>
+          <MarketSearchInput onCancel={closeSearch} onChangeText={setSearchQuery} searchQuery={searchQuery} />
+        </View>
+      ) : null}
+
+      <MarketTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+
+      <MarketList instruments={instruments} normalizedQuery={normalizedQuery} selectedTab={selectedTab} />
 
       <FeaturedMarketCards instruments={instruments} />
-
-      <MarketList instruments={instruments} />
     </Screen>
   );
 }
@@ -80,7 +96,17 @@ function FeaturedMarketCards({ instruments }: { instruments: Instrument[] }) {
   );
 }
 
-function AccountMiniCard({ account, positions }: { account: ReturnType<typeof useBroker>['account']; positions: ReturnType<typeof useBroker>['positions'] }) {
+function AccountMiniCard({
+  account,
+  amountsVisible,
+  onToggleAmountsVisible,
+  positions,
+}: {
+  account: ReturnType<typeof useBroker>['account'];
+  amountsVisible: boolean;
+  onToggleAmountsVisible: () => void;
+  positions: ReturnType<typeof useBroker>['positions'];
+}) {
   const {
     locale,
     colors,
@@ -104,22 +130,23 @@ function AccountMiniCard({ account, positions }: { account: ReturnType<typeof us
     [account, positions, tradingAccountCountPreset, tradingAccountDataPreset, tradingAccountScenario, tradingAccountStatusPreset],
   );
   const selectedAccount = accounts.find((profile) => profile.id === selectedTradingAccountId) ?? accounts[0];
-  const statusLabel = getAccountStatusLabel(selectedAccount.group, locale);
+  const accountStatusLabel = getAccountStatusLabel(selectedAccount.group, locale);
+  const shouldShowAccountException = selectedAccount.group !== 'active' && selectedAccount.group !== 'demo';
   const showAddAccountFeedback = () => {
     toast.show({
-      message: locale !== 'zh-CN' ? 'Action unavailable. No account was created.' : '当前操作暂不可用，未创建新账户。',
-      title: locale !== 'zh-CN' ? 'Add Account' : '添加账户',
+      message: t('common.demoActionNoAccount'),
+      title: t('account.addAccount'),
     });
   };
   const openAccountPicker = () => {
     bottomSheet.show(bottomSheetPresets.selection({
-      ...createTradingAccountSwitchHeader({
+      ...createTradingAccountContextSwitcherHeader({
         locale,
         onAddAccount: showAddAccountFeedback,
-        title: locale !== 'zh-CN' ? 'Switch Trading Account' : '切换交易账号',
+        title: t('funding.account.switchTitle'),
       }),
       content: (
-        <TradingAccountSwitchSheet
+        <TradingAccountContextSwitcher
           accounts={accounts}
           mode="detailed"
           onSelect={(nextId) => {
@@ -132,63 +159,108 @@ function AccountMiniCard({ account, positions }: { account: ReturnType<typeof us
     }));
   };
   const metrics = [
-    { label: t('account.equity'), value: formatMoney(selectedAccount.equity, selectedAccount.currency, 0, locale) },
+    { label: t('account.equity'), value: amountsVisible ? formatMoney(selectedAccount.equity, selectedAccount.currency, 0, locale) : '••••••' },
     {
       label: t('portfolio.unrealizedPnl'),
-      tone: selectedAccount.unrealizedPnl >= 0 ? ('down' as const) : ('up' as const),
-      value: formatMoney(selectedAccount.unrealizedPnl, selectedAccount.currency, 0, locale),
+      tone: amountsVisible ? signedValueTone(selectedAccount.unrealizedPnl) : ('muted' as const),
+      value: amountsVisible ? formatMoney(selectedAccount.unrealizedPnl, selectedAccount.currency, 0, locale) : '••••',
     },
-    { label: t('account.availableMargin'), value: formatCompactMoney(selectedAccount.freeMargin, selectedAccount.currency, locale) },
   ];
 
   return (
-    <Card compact style={styles.accountCard}>
-      <View style={styles.accountCardHeader}>
-        <NativePressable accessibilityLabel={locale !== 'zh-CN' ? 'Switch Trading Account' : '切换交易账号'} minTouch={40} onPress={openAccountPicker} style={styles.accountSwitcher}>
-          <View style={StyleSheet.flatten([styles.accountAvatar, { backgroundColor: colors.surface.subtle }])}>
-            <AppIcon name="icon.account.trading" sizeVariant="sm" />
-          </View>
-          <View style={styles.accountIdentity}>
-            <AppText numberOfLines={1} variant="subtitle">
-              {locale !== 'zh-CN' ? `Trading account ${selectedAccount.accountNo}` : `交易账号 ${selectedAccount.accountNo}`}
+    <View style={StyleSheet.flatten([styles.accountStrip, { backgroundColor: colors.surface.panel }])}>
+      <NativePressable accessibilityLabel={t('funding.account.accessibilitySwitch')} minTouch={size.iconSurface.xs} onPress={openAccountPicker} style={styles.accountSwitcher}>
+        <AppText numberOfLines={1} style={styles.accountTitle} variant="label.control">
+          {t('markets.account.current', { accountNo: selectedAccount.accountNo })}
+        </AppText>
+        {shouldShowAccountException ? (
+          <View style={StyleSheet.flatten([styles.accountStatusPill, { backgroundColor: colors.status.warning.bg, borderColor: colors.status.warning.border }])}>
+            <AppText numberOfLines={1} tone="amber" variant="caption">
+              {accountStatusLabel}
             </AppText>
-            <View style={styles.accountMetaRow}>
-              <CurrencyFlag currency={selectedAccount.currency} size={18} />
-              <AppText numberOfLines={1} style={styles.accountMetaText} tone="muted" variant="caption">
-                {selectedAccount.currency} · {statusLabel}
-              </AppText>
-            </View>
           </View>
-          <AppIcon name="icon.system.chevron_down" sizeVariant="xs" />
-        </NativePressable>
-      </View>
+        ) : null}
+        <AppIcon name="icon.system.chevron_down" sizeVariant="xs" tone="tertiary" />
+      </NativePressable>
+      <NativePressable
+        accessibilityLabel={amountsVisible ? t('markets.account.hideAmounts') : t('markets.account.showAmounts')}
+        minTouch={size.iconSurface.xs}
+        onPress={onToggleAmountsVisible}
+        style={StyleSheet.flatten([styles.accountAmountToggle, { backgroundColor: colors.surface.subtle }])}>
+        <AppIcon name={amountsVisible ? 'icon.account.amount_visible' : 'icon.account.amount_hidden'} sizeVariant="xs" tone="tertiary" />
+      </NativePressable>
 
       <View style={styles.accountMetrics}>
         {metrics.map((metric, index) => (
-          <View key={metric.label} style={StyleSheet.flatten([styles.accountMetric, index > 0 && { borderLeftColor: colors.border.subtle, borderLeftWidth: lineWidth.hairline }])}>
-            <AppText numberOfLines={1} tone="muted" variant="caption">
-              {metric.label}
-            </AppText>
-            <AppText adjustsFontSizeToFit numberOfLines={1} tone={metric.tone} variant="number">
+          <View key={metric.label} style={StyleSheet.flatten([styles.accountMetric, index > 0 && styles.accountMetricEnd])}>
+            <AppText numberOfLines={1} tone={metric.tone} variant="title.listItem">
               {metric.value}
+            </AppText>
+            <AppText numberOfLines={1} tone="muted" variant="label.metadata">
+              {metric.label}
             </AppText>
           </View>
         ))}
       </View>
-    </Card>
+    </View>
   );
 }
 
-function MarketList({ instruments }: { instruments: Instrument[] }) {
+function MarketTabs({ selectedTab, setSelectedTab }: { selectedTab: MarketTabKey; setSelectedTab: (tab: MarketTabKey) => void }) {
+  const { t } = useProductSettings();
+
+  return (
+    <View style={styles.marketTabsBlock}>
+      <SegmentedTabs
+        items={marketTabs.map((tab) => ({
+          accessibilityLabel: t(tab.labelKey),
+          label: t(tab.labelKey),
+          value: tab.key,
+        }))}
+        onValueChange={setSelectedTab}
+        scrollable
+        value={selectedTab}
+        variant="pill"
+      />
+    </View>
+  );
+}
+
+function MarketSearchInput({ onCancel, onChangeText, searchQuery }: { onCancel: () => void; onChangeText: (value: string) => void; searchQuery: string }) {
+  const { colors, t } = useProductSettings();
+
+  return (
+    <>
+      <TextField
+        accessibilityLabel={t('markets.search')}
+        autoCapitalize="characters"
+        autoCorrect={false}
+        autoFocus
+        containerStyle={styles.marketSearchField}
+        icon="icon.system.search"
+        inputStyle={styles.marketSearchInput}
+        label={t('markets.search')}
+        labelHidden
+        onChangeText={onChangeText}
+        placeholder={t('markets.onboarding.searchHint')}
+        returnKeyType="search"
+        shellStyle={StyleSheet.flatten([styles.marketSearchExpanded, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}
+        value={searchQuery}
+      />
+      <NativePressable
+        accessibilityLabel={t('common.cancel')}
+        accessibilityRole="button"
+        minTouch={layout.headerIconButtonSize}
+        onPress={onCancel}
+        style={StyleSheet.flatten([styles.marketSearchClose, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
+        <AppIcon name="icon.system.close" sizeVariant="xs" />
+      </NativePressable>
+    </>
+  );
+}
+
+function MarketList({ instruments, normalizedQuery, selectedTab }: { instruments: Instrument[]; normalizedQuery: string; selectedTab: MarketTabKey }) {
   const { locale, colors, t } = useProductSettings();
-  const [selectedTab, setSelectedTab] = useState<MarketTabKey>('watchlist');
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const normalizedQuery = searchQuery.trim().toLowerCase();
-  const closeSearch = () => {
-    setSearchQuery('');
-    setSearchOpen(false);
-  };
   const filteredInstruments = useMemo(() => {
     const tabInstruments =
       selectedTab === 'watchlist' ? instruments.filter((instrument) => instrument.favorite) : instruments.filter((instrument) => instrument.assetClass === selectedTab);
@@ -207,61 +279,6 @@ function MarketList({ instruments }: { instruments: Instrument[] }) {
 
   return (
     <Card compact style={styles.marketBoard}>
-      <View style={styles.marketToolbar}>
-        {searchOpen ? (
-          <View style={styles.marketSearchShell}>
-            <TextField
-              accessibilityLabel={t('markets.search')}
-              autoCapitalize="characters"
-              autoCorrect={false}
-              autoFocus
-              containerStyle={styles.marketSearchField}
-              icon="icon.system.search"
-              inputStyle={styles.marketSearchInput}
-              label={t('markets.search')}
-              labelHidden
-              onChangeText={setSearchQuery}
-              placeholder={t('markets.search')}
-              returnKeyType="search"
-              shellStyle={StyleSheet.flatten([styles.marketSearchExpanded, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}
-              value={searchQuery}
-            />
-            <NativePressable
-              accessibilityLabel={t('common.cancel')}
-              accessibilityRole="button"
-              minTouch={38}
-              onPress={closeSearch}
-              style={StyleSheet.flatten([styles.marketSearchClose, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
-              <AppIcon name="icon.system.close" sizeVariant="xs" />
-            </NativePressable>
-          </View>
-        ) : (
-          <>
-            <SegmentedTabs
-              containerStyle={styles.marketTabsRail}
-              items={marketTabs.map((tab) => ({
-                accessibilityLabel: t(tab.labelKey),
-                label: t(tab.labelKey),
-                value: tab.key,
-              }))}
-              onValueChange={setSelectedTab}
-              scrollable
-              style={styles.marketTabs}
-              value={selectedTab}
-              variant="pill"
-            />
-            <NativePressable
-              accessibilityLabel={t('markets.search')}
-              accessibilityRole="button"
-              minTouch={38}
-              onPress={() => setSearchOpen(true)}
-              style={StyleSheet.flatten([styles.marketSearchTrigger, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
-              <AppIcon name="icon.system.search" sizeVariant="sm" />
-            </NativePressable>
-          </>
-        )}
-      </View>
-
       <View style={styles.marketRows}>
         {filteredInstruments.length > 0 ? (
           filteredInstruments.map((instrument, index) => (
@@ -279,92 +296,118 @@ function MarketList({ instruments }: { instruments: Instrument[] }) {
   );
 }
 
+function resolveInitialMarketTab(instruments: Instrument[]): MarketTabKey {
+  return instruments.some((instrument) => instrument.favorite) ? 'watchlist' : 'forex';
+}
+
+function signedValueTone(value: number): AppTextTone {
+  if (value > 0) {
+    return 'up';
+  }
+
+  if (value < 0) {
+    return 'down';
+  }
+
+  return 'default';
+}
+
 const styles = StyleSheet.create({
   accountAvatar: {
     alignItems: 'center',
-    borderRadius: 999,
-    height: 28,
+    borderRadius: radius.full,
+    height: size.iconSurface.xs,
     justifyContent: 'center',
-    width: 28,
+    width: size.iconSurface.xs,
   },
-  accountCard: {
-    gap: 8,
-    padding: 10,
+  accountStatusPill: {
+    borderRadius: radius.full,
+    borderWidth: lineWidth.hairline,
+    paddingHorizontal: spacing.xs,
+    paddingVertical: lineWidth.strong,
   },
-  accountCardHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 10,
-    justifyContent: 'space-between',
+  accountStrip: {
+    borderRadius: radius.card,
+    borderWidth: lineWidth.none,
+    gap: spacing.xs,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
   },
   accountIdentity: {
     flex: 1,
-    gap: 1,
+    gap: lineWidth.strong,
     minWidth: 0,
   },
   accountMetric: {
     flex: 1,
-    gap: 2,
-    minHeight: 42,
+    gap: lineWidth.strong,
     minWidth: 0,
-    paddingHorizontal: 9,
-    paddingVertical: 4,
+  },
+  accountMetricEnd: {
+    alignItems: 'flex-end',
   },
   accountMetrics: {
     flexDirection: 'row',
-    marginHorizontal: -4,
-  },
-  accountMetaRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 5,
-    minWidth: 0,
-  },
-  accountMetaText: {
-    flex: 1,
-    minWidth: 0,
+    gap: spacing.sm,
+    justifyContent: 'space-between',
   },
   accountSwitcher: {
-    alignItems: 'center',
-    flex: 1,
+    alignItems: 'flex-start',
+    alignSelf: 'flex-start',
     flexDirection: 'row',
-    gap: 8,
+    gap: spacing.xs,
+    maxWidth: '100%',
+    minWidth: 0,
+  },
+  accountAmountToggle: {
+    alignItems: 'center',
+    borderRadius: radius.full,
+    height: size.iconSurface.xs,
+    justifyContent: 'center',
+    position: 'absolute',
+    right: spacing.md,
+    top: spacing.md,
+    width: size.iconSurface.xs,
+  },
+  accountTitle: {
+    flexShrink: 1,
     minWidth: 0,
   },
   featuredRail: {
-    gap: 10,
-    paddingRight: 12,
+    gap: spacing.sm + spacing.xxs,
+    paddingRight: spacing.md,
   },
   featuredSection: {
-    gap: 8,
+    gap: spacing.xs,
   },
   emptyMarketRows: {
     alignItems: 'center',
-    borderRadius: 12,
-    minHeight: 72,
+    borderRadius: radius.card,
+    minHeight: spacing.section + spacing.xl,
     justifyContent: 'center',
-    paddingHorizontal: 14,
+    paddingHorizontal: radius.lg,
   },
   marketBoard: {
-    gap: 12,
+    gap: spacing.none,
+    paddingVertical: spacing.none,
   },
   marketRows: {
-    gap: 0,
+    gap: spacing.none,
   },
   marketSearchClose: {
     alignItems: 'center',
-    borderRadius: 999,
+    borderRadius: radius.full,
     borderWidth: lineWidth.hairline,
-    height: 38,
+    height: size.control.sm - spacing.xxs,
     justifyContent: 'center',
-    width: 38,
+    width: size.control.sm - spacing.xxs,
   },
   marketSearchExpanded: {
-    borderRadius: 999,
-    gap: 6,
-    height: 38,
-    minHeight: 38,
-    paddingHorizontal: 11,
+    borderRadius: radius.full,
+    gap: spacing.xs + spacing.xxs,
+    height: size.control.sm - spacing.xxs,
+    minHeight: size.control.sm - spacing.xxs,
+    paddingHorizontal: spacing.sm + spacing.xxs + lineWidth.strong,
   },
   marketSearchField: {
     flex: 1,
@@ -374,33 +417,15 @@ const styles = StyleSheet.create({
     flex: 1,
     ...typography.microLabel,
     minWidth: 0,
-    padding: 0,
+    padding: spacing.none,
   },
   marketSearchShell: {
     alignItems: 'center',
-    flex: 1,
     flexDirection: 'row',
-    gap: 8,
+    gap: spacing.sm,
     minWidth: 0,
   },
-  marketSearchTrigger: {
-    alignItems: 'center',
-    borderRadius: 999,
-    borderWidth: lineWidth.hairline,
-    height: 38,
-    justifyContent: 'center',
-    width: 38,
-  },
-  marketTabs: {
-    paddingRight: 8,
-  },
-  marketTabsRail: {
-    flex: 1,
-    minWidth: 0,
-  },
-  marketToolbar: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 8,
+  marketTabsBlock: {
+    gap: spacing.xs,
   },
 });

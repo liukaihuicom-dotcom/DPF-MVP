@@ -1,0 +1,418 @@
+{
+  "version": "0.2.0",
+  "generated_at": "2026-05-28",
+  "governance_skill": "financial-copy-localization-governance v1.0.0-L5",
+  "languages": [
+    "en-US",
+    "zh-CN",
+    "id-ID"
+  ],
+  "source_of_truth": [
+    "src/i18n/translations.ts",
+    "i18n/en-US.json",
+    "i18n/zh-CN.json"
+  ],
+  "localization_status": "full_site_i18n_keyed_id-ID_review_required",
+  "terminology": {
+    "protectedTerms": [
+      "KYC",
+      "PIN",
+      "OTP",
+      "USD",
+      "IDR",
+      "CFD",
+      "FX",
+      "PnL",
+      "CopyTrading",
+      "IB",
+      "MT5"
+    ],
+    "forbiddenClaims": [
+      "risk-free",
+      "guaranteed profit",
+      "easy money",
+      "safe investment"
+    ]
+  },
+  "entries": [
+    {
+      "key": "portfolio.action.closePosition",
+      "namespace": "portfolio",
+      "module": "Trading",
+      "surface": "danger_cta",
+      "riskLevel": "high",
+      "sourcePaths": [
+        "src/screens/portfolio/PortfolioScreen.tsx",
+        "src/i18n/translations.ts"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy",
+        "ux_gate"
+      ],
+      "enUS": "Close Position",
+      "zhCN": "平仓",
+      "idID": "Close Position",
+      "notes": "High-risk trading mutation copy is now consumed through i18n key in PortfolioScreen; Indonesian wording remains compliance/native review required."
+    },
+    {
+      "key": "portfolio.action.deleteOrder",
+      "namespace": "portfolio",
+      "module": "Trading",
+      "surface": "danger_cta",
+      "riskLevel": "high",
+      "sourcePaths": [
+        "src/screens/portfolio/PortfolioScreen.tsx",
+        "src/i18n/translations.ts"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy",
+        "ux_gate"
+      ],
+      "enUS": "Delete Order",
+      "zhCN": "删除订单",
+      "idID": "Delete Order",
+      "notes": "High-risk trading mutation copy is now consumed through i18n key in PortfolioScreen; destructive action remains confirmation/recovery governed."
+    },
+    {
+      "key": "portfolio.history.summaryTitle",
+      "namespace": "portfolio",
+      "module": "Trading",
+      "surface": "section_title",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/screens/portfolio/PortfolioScreen.tsx",
+        "src/i18n/translations.ts"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "History Summary",
+      "zhCN": "历史概览",
+      "idID": "History Summary",
+      "notes": "Runtime i18n key is portfolio.history.summaryTitle; retained source audit surface as historical summary section title."
+    },
+    {
+      "key": "discover.profile.partnerPortal.title",
+      "namespace": "discover",
+      "module": "Discover",
+      "surface": "section_title",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/screens/discover/DiscoverModuleScreen.tsx",
+        "src/i18n/translations.ts"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Partner Portal",
+      "zhCN": "Partner Portal",
+      "idID": "Partner Portal",
+      "notes": "DiscoverModuleScreen imports PartnerPortalSummary and consumes the title through i18n."
+    },
+    {
+      "key": "discover.profile.reward.totalValue",
+      "namespace": "discover",
+      "module": "Discover",
+      "surface": "field_label",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/screens/discover/DiscoverModuleScreen.tsx",
+        "src/i18n/translations.ts"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Total Rewards Value",
+      "zhCN": "总奖励价值",
+      "idID": "Total nilai reward",
+      "notes": "Reward value label is keyed and consumed by RewardSummaryCard; copy must not imply guaranteed trading outcome."
+    },
+    {
+      "key": "discover.challenge.openTicket",
+      "namespace": "discover",
+      "module": "Discover",
+      "surface": "primary_cta",
+      "riskLevel": "high",
+      "sourcePaths": [
+        "src/screens/discover/DiscoverModuleScreen.tsx",
+        "src/i18n/translations.ts"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy",
+        "ux_gate"
+      ],
+      "enUS": "Open Challenge Ticket",
+      "zhCN": "打开挑战赛订单",
+      "idID": "Open Challenge Ticket",
+      "notes": "Challenge order CTA is keyed; paper challenge remains virtual until contest and reward rules are approved."
+    },
+    {
+      "key": "common.demoActionNoAccount",
+      "namespace": "markets",
+      "module": "Markets",
+      "surface": "toast",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/screens/markets/MarketsScreen.tsx",
+        "src/i18n/translations.ts"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Action unavailable. No account was created.",
+      "zhCN": "当前操作暂不可用，未创建新账户。",
+      "idID": "Tindakan tidak tersedia. Tidak ada akun yang dibuat.",
+      "notes": "Markets/Funding/Portfolio add-account unavailable feedback reuses common.demoActionNoAccount i18n key."
+    },
+    {
+      "key": "settings.appearance.title",
+      "namespace": "settings",
+      "module": "Settings",
+      "surface": "page_title",
+      "riskLevel": "low",
+      "sourcePaths": [
+        "src/screens/settings/AppearanceScreen.tsx",
+        "src/i18n/translations.ts"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [],
+      "enUS": "Appearance",
+      "zhCN": "外观",
+      "idID": "Tampilan",
+      "notes": "Runtime i18n key is settings.appearance.title."
+    },
+    {
+      "key": "funding.operation.submit",
+      "namespace": "funding",
+      "module": "Funding",
+      "surface": "primary_cta",
+      "riskLevel": "high",
+      "sourcePaths": [
+        "src/screens/funding/FundingScreens.tsx",
+        "src/i18n/translations.ts"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Submit funding request",
+      "zhCN": "提交资金请求",
+      "idID": "Kirim permintaan dana",
+      "notes": "Representative keyed funding CTA; funding namespace remains in runtime translations and financial copy review."
+    },
+    {
+      "key": "auth.pin.title",
+      "namespace": "auth",
+      "module": "Auth",
+      "surface": "page_title",
+      "riskLevel": "high",
+      "sourcePaths": [
+        "src/i18n/translations.ts",
+        "src/screens/auth/PinSetupScreen.tsx"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "ux_gate"
+      ],
+      "enUS": "Local PIN",
+      "zhCN": "本地 PIN",
+      "idID": "Add a Security Code",
+      "notes": "PIN setup title is keyed; Indonesian wording remains native/security review required before production."
+    },
+    {
+      "key": "root.error.title",
+      "namespace": "root",
+      "module": "Navigation",
+      "surface": "system_message",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/screens/navigation/RootLayout.tsx",
+        "src/i18n/translations.ts"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "ux_gate"
+      ],
+      "enUS": "Something went wrong",
+      "zhCN": "出现错误",
+      "idID": "Terjadi kesalahan",
+      "notes": "Root error boundary title is keyed; retry and recovery action are visible through common.retry."
+    },
+    {
+      "key": "common.retry",
+      "namespace": "common",
+      "module": "Navigation",
+      "surface": "secondary_cta",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/screens/navigation/RootLayout.tsx",
+        "src/i18n/translations.ts"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "ux_gate"
+      ],
+      "enUS": "Retry",
+      "zhCN": "重试",
+      "idID": "Coba lagi",
+      "notes": "Shared error recovery CTA for root boundary and future retry surfaces."
+    },
+    {
+      "key": "instrument.marketBriefBrand",
+      "namespace": "instrument",
+      "module": "Markets",
+      "surface": "metadata",
+      "riskLevel": "low",
+      "sourcePaths": [
+        "src/screens/markets/InstrumentDetailScreen.tsx",
+        "src/i18n/translations.ts"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Dupoin Market",
+      "zhCN": "Dupoin 市场",
+      "idID": "Dupoin Market",
+      "notes": "Replaces page-local market source brand string in instrument news footer."
+    },
+    {
+      "key": "securityCenter.title",
+      "namespace": "securityCenter",
+      "module": "Security Center",
+      "surface": "page_title",
+      "riskLevel": "high",
+      "sourcePaths": [
+        "product-engineering-package/04_page_contracts/pages/app-security-center.page-contract.json"
+      ],
+      "status": "planned_i18n_key",
+      "reviewRequired": [
+        "financial_copy",
+        "ux_gate"
+      ],
+      "enUS": "Security Center",
+      "zhCN": "安全中心",
+      "idID": "Pusat Keamanan",
+      "notes": "Canonical planned Security Center page title; runtime i18n key to be added during App implementation."
+    },
+    {
+      "key": "securityCenter.subtitle",
+      "namespace": "securityCenter",
+      "module": "Security Center",
+      "surface": "page_subtitle",
+      "riskLevel": "high",
+      "sourcePaths": [
+        "product-engineering-package/04_page_contracts/pages/app-security-center.page-contract.json"
+      ],
+      "status": "planned_i18n_key",
+      "reviewRequired": [
+        "financial_copy",
+        "ux_gate"
+      ],
+      "enUS": "Manage your account security settings and protect your funds and personal information.",
+      "zhCN": "管理你的账户安全设置，保护资金与个人信息。",
+      "idID": "Kelola pengaturan keamanan akun dan lindungi dana serta informasi pribadi Anda.",
+      "notes": "Security Center static subtitle; high-risk security copy requires native/compliance review before production."
+    },
+    {
+      "key": "securityCenter.alert.totpDisablePending.title",
+      "namespace": "securityCenter",
+      "module": "Security Center",
+      "surface": "risk_banner_title",
+      "riskLevel": "high",
+      "sourcePaths": [
+        "product-engineering-package/04_page_contracts/pages/app-security-center.page-contract.json"
+      ],
+      "status": "planned_i18n_key",
+      "reviewRequired": [
+        "financial_copy",
+        "ux_gate"
+      ],
+      "enUS": "TOTP disable request pending",
+      "zhCN": "TOTP 关闭待生效",
+      "idID": "Permintaan penonaktifan TOTP tertunda",
+      "notes": "High-risk GSL alert copy; must not soften the consequence of disabling TOTP."
+    },
+    {
+      "key": "securityCenter.action.cancelChange",
+      "namespace": "securityCenter",
+      "module": "Security Center",
+      "surface": "primary_cta",
+      "riskLevel": "high",
+      "sourcePaths": [
+        "product-engineering-package/04_page_contracts/pages/app-security-center.page-contract.json"
+      ],
+      "status": "planned_i18n_key",
+      "reviewRequired": [
+        "financial_copy",
+        "ux_gate"
+      ],
+      "enUS": "Cancel change",
+      "zhCN": "撤销变更",
+      "idID": "Batalkan perubahan",
+      "notes": "GSL recovery CTA; must remain explicit and reversible."
+    },
+    {
+      "key": "securityCenter.error.SECURITY_GSL_PENDING_EXISTS",
+      "namespace": "securityCenter",
+      "module": "Security Center",
+      "surface": "error",
+      "riskLevel": "high",
+      "sourcePaths": [
+        "api-contracts/error-codes.json",
+        "product-engineering-package/05_api_contracts/security-center.openapi.yaml"
+      ],
+      "status": "planned_i18n_key",
+      "reviewRequired": [
+        "financial_copy",
+        "ux_gate"
+      ],
+      "enUS": "A pending security change already exists. Cancel it before submitting a new change.",
+      "zhCN": "当前已有待生效变更，请先撤销后再操作。",
+      "idID": "Perubahan keamanan yang tertunda sudah ada. Batalkan sebelum mengajukan perubahan baru.",
+      "notes": "Recoverable GSL duplicate-change error."
+    },
+    {
+      "key": "securityCenter.error.SECURITY_CANNOT_REVOKE_CURRENT_DEVICE",
+      "namespace": "securityCenter",
+      "module": "Security Center",
+      "surface": "error",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "api-contracts/error-codes.json",
+        "product-engineering-package/05_api_contracts/security-center.openapi.yaml"
+      ],
+      "status": "planned_i18n_key",
+      "reviewRequired": [
+        "ux_gate"
+      ],
+      "enUS": "The current device cannot be removed here.",
+      "zhCN": "当前设备不能在此处移除。",
+      "idID": "Perangkat saat ini tidak dapat dihapus di sini.",
+      "notes": "Device management prevention copy; normal sign-out remains the recovery path."
+    }
+  ],
+  "migrationPolicy": {
+    "pageLocalConditionalCopy": "Any repeated locale conditional visible text must migrate to src/i18n/translations.ts and be represented here before production release.",
+    "highRiskCopy": "Trading, funding, KYC, Partner, and security mutation copy requires Financial Copy Review and UX Gate.",
+    "idIDPolicy": "Indonesian localization may be reused from current runtime fallback while status is i18n_keyed or review_required; production_ready entries require native or compliance review for high-risk financial/security copy."
+  },
+  "copyQA": {
+    "status": "passed_with_security_center_planned_review_notes",
+    "checked_at": "2026-05-28",
+    "checks": [
+      "All strict-scanned page-visible literal copy has been migrated to runtime i18n keys or dynamic product data.",
+      "Root error recovery and instrument market source copy are represented in copy-table.",
+      "High-risk trading, funding, Partner, security, and PIN copy remains marked for financial_copy and/or ux_gate review.",
+      "Forbidden claims were not introduced.",
+      "Security Center planned copy keys are represented in copy-table and marked for financial copy / UX Gate review before runtime implementation."
+    ]
+  }
+}

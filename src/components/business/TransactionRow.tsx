@@ -66,7 +66,7 @@ export function TransactionRow<T extends TransactionListRow>({
         </AppText>
       </View>
       <View style={styles.side}>
-        <AppText adjustsFontSizeToFit numberOfLines={1} tone={transaction.amount >= 0 ? 'down' : 'up'} variant="subtitle">
+        <AppText adjustsFontSizeToFit numberOfLines={1} tone={transaction.amount >= 0 ? 'up' : 'down'} variant="subtitle">
           {formatSignedMoney(transaction.amount, currency, locale)}
         </AppText>
         <StatusPill compact label={getStatusLabel(transaction)} tone={getTone(transaction)} />
@@ -77,8 +77,9 @@ export function TransactionRow<T extends TransactionListRow>({
 }
 
 function resolveIconSurfaceTone(tone: IconTone): IconSurfaceTone {
-  if (tone === 'down' || tone === 'success') return 'down';
-  if (tone === 'up' || tone === 'danger') return 'up';
+  if (tone === 'success') return 'success';
+  if (tone === 'up') return 'up';
+  if (tone === 'down' || tone === 'danger') return 'down';
   if (tone === 'amber' || tone === 'warning') return 'warning';
   if (tone === 'blue' || tone === 'info') return 'info';
   if (tone === 'brand') return 'brand';
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing.md,
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: layout.listRowPaddingX,
     paddingVertical: spacing.md,
   },
   side: {

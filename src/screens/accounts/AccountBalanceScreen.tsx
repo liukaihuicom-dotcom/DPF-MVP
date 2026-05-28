@@ -2,25 +2,25 @@ import { useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { AppIcon, type AppIconName, type IconTone } from '@/src/components/AppIcon';
-import { ActionButton } from '@/src/components/ActionButton';
-import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
-import { TransactionRow } from '@/src/components/business';
-import { Card } from '@/src/components/Card';
-import { DetailRow, LegendDot, MiniMetric } from '@/src/components/data-display';
-import { EmptyState } from '@/src/components/feedback';
-import { IconSurface, type IconSurfaceTone } from '@/src/components/IconSurface';
-import { NativePressable } from '@/src/components/NativePressable';
-import { Screen } from '@/src/components/Screen';
-import { StatusPill, type StatusPillTone } from '@/src/components/StatusPill';
-import { AppText } from '@/src/components/Typography';
+import { AppIcon, type AppIconName, type IconTone } from '@/src/design-public-assets/components';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { FilterPillGroup, FundingTrendBars, TransactionRow } from '@/src/design-public-assets/business-components';
+import { Card } from '@/src/design-public-assets/components';
+import { DetailRow, LegendDot, MiniMetric } from '@/src/design-public-assets/components';
+import { EmptyState } from '@/src/design-public-assets/components';
+import { IconSurface, type IconSurfaceTone } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { Screen } from '@/src/design-public-assets/components';
+import { StatusPill, type StatusPillTone } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import { buildTradingAccountProfiles, type TradingAccountProfile } from '@/src/domain/accountProfiles';
 import { formatMoney } from '@/src/domain/format';
-import type { Locale } from '@/src/i18n/translations';
-import { useProductSettings } from '@/src/settings/ProductSettings';
+import type { Locale } from '@/src/design-public-assets/copy';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
-import { resolveThemeTone } from '@/src/theme/colors';
-import { layout, lineWidth, radius, spacing } from '@/src/theme/tokens';
+import { resolveThemeTone } from '@/src/design-public-assets/tokens';
+import { layout, lineWidth, radius, size, spacing } from '@/src/design-public-assets/tokens';
 import type { Transaction, TransactionStatus } from '@/src/domain/types';
 
 type BalanceFilter = 'all' | 'deposit' | 'withdrawal';
@@ -33,7 +33,6 @@ type TrendPoint = {
   withdrawal: number;
 };
 
-const chartHeight = 104;
 const filterOrder: BalanceFilter[] = ['all', 'deposit', 'withdrawal'];
 
 export default function AccountBalanceScreen() {
@@ -104,7 +103,7 @@ export default function AccountBalanceScreen() {
         <View style={StyleSheet.flatten([styles.snapshotGrid, { borderTopColor: colors.border.subtle }])}>
           <MiniMetric label={t('balance.currentBalance')} value={formatMoney(profile.balance, profile.currency, 0, locale)} variant="snapshot" />
           <MiniMetric label={t('balance.available')} value={formatMoney(profile.freeMargin, profile.currency, 0, locale)} variant="snapshot" />
-          <MiniMetric label={t('balance.netCashFlow')} tone={netCashFlow >= 0 ? 'down' : 'up'} value={formatSignedMoney(netCashFlow, profile.currency, locale, 0)} variant="snapshot" />
+          <MiniMetric label={t('balance.netCashFlow')} tone={netCashFlow >= 0 ? 'up' : 'down'} value={formatSignedMoney(netCashFlow, profile.currency, locale, 0)} variant="snapshot" />
         </View>
       </Card>
 
@@ -120,14 +119,14 @@ export default function AccountBalanceScreen() {
         </View>
 
         <View style={styles.totalRow}>
-          <FundingTotal tone="down" label={t('balance.depositTotal')} value={formatMoney(depositTotal, profile.currency, 0, locale)} />
+          <FundingTotal tone="success" label={t('balance.depositTotal')} value={formatMoney(depositTotal, profile.currency, 0, locale)} />
           <FundingTotal tone="amber" label={t('balance.withdrawalTotal')} value={formatMoney(withdrawalTotal, profile.currency, 0, locale)} />
         </View>
 
-        <FundingChart points={trend} />
+        <FundingTrendBars points={trend} />
 
         <View style={styles.legendRow}>
-          <LegendDot tone="down" label={t('balance.legend.deposit')} />
+          <LegendDot tone="success" label={t('balance.legend.deposit')} />
           <LegendDot tone="amber" label={t('balance.legend.withdrawal')} />
         </View>
       </Card>
@@ -140,11 +139,11 @@ export default function AccountBalanceScreen() {
           </AppText>
         </View>
 
-        <View style={styles.filterRow}>
-          {filterOrder.map((item) => (
-            <FilterButton current={filter} item={item} key={item} onPress={() => setFilter(item)} />
-          ))}
-        </View>
+        <FilterPillGroup
+          items={filterOrder.map((item) => ({ label: t(`balance.filter.${item}`), value: item }))}
+          onChange={setFilter}
+          value={filter}
+        />
 
         {groupedTransactions.length === 0 ? (
           <EmptyState body={t('balance.empty')} />
@@ -179,7 +178,7 @@ export default function AccountBalanceScreen() {
   );
 }
 
-function FundingTotal({ label, tone, value }: { label: string; tone: Extract<IconTone, 'amber' | 'down'>; value: string }) {
+function FundingTotal({ label, tone, value }: { label: string; tone: Extract<IconTone, 'amber' | 'success'>; value: string }) {
   const { colors } = useProductSettings();
 
   return (
@@ -194,64 +193,6 @@ function FundingTotal({ label, tone, value }: { label: string; tone: Extract<Ico
         {value}
       </AppText>
     </View>
-  );
-}
-
-function FundingChart({ points }: { points: TrendPoint[] }) {
-  const { colors } = useProductSettings();
-  const maxValue = Math.max(...points.flatMap((point) => [point.deposit, point.withdrawal]), 1);
-
-  return (
-    <View style={styles.chartWrap}>
-      <View style={styles.chartGrid}>
-        {[0, 1, 2].map((line) => (
-          <View key={line} style={StyleSheet.flatten([styles.gridLine, { backgroundColor: colors.border.subtle }])} />
-        ))}
-      </View>
-      <View style={styles.chartColumns}>
-        {points.map((point) => (
-          <View key={point.label} style={styles.chartColumn}>
-            <View style={styles.barPair}>
-              <View
-                style={StyleSheet.flatten([
-                  styles.chartBar,
-                  { backgroundColor: colors.market.down.fg, height: resolveBarHeight(point.deposit, maxValue) },
-                ])}
-              />
-              <View
-                style={StyleSheet.flatten([
-                  styles.chartBar,
-                  { backgroundColor: colors.status.warning.fg, height: resolveBarHeight(point.withdrawal, maxValue) },
-                ])}
-              />
-            </View>
-            <AppText numberOfLines={1} tone="dim" variant="caption">
-              {point.label}
-            </AppText>
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-}
-
-function FilterButton({ current, item, onPress }: { current: BalanceFilter; item: BalanceFilter; onPress: () => void }) {
-  const { colors, t } = useProductSettings();
-  const selected = current === item;
-
-  return (
-    <NativePressable
-      accessibilityLabel={t(`balance.filter.${item}`)}
-      minTouch={36}
-      onPress={onPress}
-      style={StyleSheet.flatten([
-        styles.filterButton,
-        { backgroundColor: colors.surface.subtle, borderColor: selected ? colors.text.primary : colors.border.subtle },
-      ])}>
-      <AppText tone={selected ? 'default' : 'muted'} variant="caption">
-        {t(`balance.filter.${item}`)}
-      </AppText>
-    </NativePressable>
   );
 }
 
@@ -289,10 +230,10 @@ function TransactionDetailSheet({
 
   return (
     <View style={styles.detailSheet}>
-      <View style={StyleSheet.flatten([styles.detailHero, { backgroundColor: statusOverlay.muted, borderColor: statusOverlay.strong }])}>
+      <View style={StyleSheet.flatten([styles.detailHero, { backgroundColor: statusOverlay.muted }])}>
         <IconSurface icon={getDetailStatusIcon(transaction.status)} sizeVariant="lg" tone={resolveStatusSurfaceTone(transaction.status)} />
         <StatusPill icon={getDetailStatusIcon(transaction.status)} label={t(`balance.detail.status.${transaction.status}`)} tone={statusTone} />
-        <AppText adjustsFontSizeToFit numberOfLines={1} style={styles.detailAmount} tone={transaction.amount >= 0 ? 'down' : 'up'} variant="displayXl">
+        <AppText adjustsFontSizeToFit numberOfLines={1} style={styles.detailAmount} tone={transaction.amount >= 0 ? 'up' : 'down'} variant="displayXl">
           {formatSignedMoney(transaction.amount, currency, locale)}
         </AppText>
         <AppText numberOfLines={1} tone="muted" variant="caption">
@@ -305,7 +246,7 @@ function TransactionDetailSheet({
           <DetailRow key={`${row.label}-${row.value}`} row={row} showDivider={index < detailRows.length - 1} />
         ))}
       </View>
-      <ActionButton label={t('balance.detail.ok')} onPress={onClose} tone="brand" />
+      <ActionButton label={t('balance.detail.ok')} onPress={onClose} tone="brand" variant="filled" />
     </View>
   );
 }
@@ -410,7 +351,12 @@ function getDetailStatusIcon(status: TransactionStatus): AppIconName {
 
 function resolveStatusOverlay(status: TransactionStatus, colors: ReturnType<typeof useProductSettings>['colors']) {
   if (status === 'completed') {
-    return colors.overlay.down;
+    return {
+      muted: `${colors.status.success.fg}18`,
+      scrim: `${colors.status.success.fg}66`,
+      strong: `${colors.status.success.fg}55`,
+      subtle: `${colors.status.success.fg}12`,
+    };
   }
 
   if (status === 'rejected') {
@@ -422,7 +368,7 @@ function resolveStatusOverlay(status: TransactionStatus, colors: ReturnType<type
 
 function resolveStatusIconTone(status: TransactionStatus): IconTone {
   if (status === 'completed') {
-    return 'down';
+    return 'success';
   }
 
   if (status === 'rejected') {
@@ -434,7 +380,7 @@ function resolveStatusIconTone(status: TransactionStatus): IconTone {
 
 function resolveStatusSurfaceTone(status: TransactionStatus): IconSurfaceTone {
   if (status === 'completed') {
-    return 'down';
+    return 'success';
   }
 
   if (status === 'rejected') {
@@ -453,7 +399,7 @@ function resolveTransactionColor(transaction: Transaction, colors: ReturnType<ty
     return colors.status.info.fg;
   }
 
-  return colors.market.down.fg;
+  return colors.status.success.fg;
 }
 
 function resolveTransactionIconTone(transaction: Transaction): IconTone {
@@ -465,7 +411,7 @@ function resolveTransactionIconTone(transaction: Transaction): IconTone {
     return 'blue';
   }
 
-  return 'down';
+  return 'success';
 }
 
 function getTransactionTypeLabel(type: Transaction['type'], t: ReturnType<typeof useProductSettings>['t']) {
@@ -512,14 +458,6 @@ function addMinutes(createdAt: string, minutes: number) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
-function resolveBarHeight(value: number, maxValue: number) {
-  if (value <= 0) {
-    return 8;
-  }
-
-  return Math.max(12, Math.round((value / maxValue) * chartHeight));
-}
-
 function formatSignedMoney(value: number, currency: string, locale: Locale, digits = 2) {
   const sign = value >= 0 ? '+' : '-';
   return `${sign}${formatMoney(Math.abs(value), currency, digits, locale)}`;
@@ -551,53 +489,19 @@ function parseTransactionTime(createdAt: string) {
 }
 
 const styles = StyleSheet.create({
-  barPair: {
-    alignItems: 'flex-end',
-    flexDirection: 'row',
-    gap: spacing.xs,
-    height: chartHeight,
-  },
-  chartBar: {
-    borderRadius: radius.xs,
-    width: 12,
-  },
-  chartColumn: {
-    alignItems: 'center',
-    flex: 1,
-    gap: spacing.sm,
-    justifyContent: 'flex-end',
-  },
-  chartColumns: {
-    alignItems: 'flex-end',
-    flexDirection: 'row',
-    gap: spacing.sm,
-    minHeight: chartHeight + 26,
-  },
-  chartGrid: {
-    bottom: 25,
-    justifyContent: 'space-between',
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 4,
-  },
-  chartWrap: {
-    minHeight: chartHeight + 32,
-    position: 'relative',
-  },
   detailAmount: {
     marginTop: spacing.xs,
   },
   detailHero: {
     alignItems: 'center',
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     gap: spacing.sm,
     paddingHorizontal: layout.cardPaddingX,
     paddingVertical: layout.cardPaddingY,
   },
   detailRows: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     overflow: 'hidden',
   },
@@ -605,31 +509,15 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     paddingBottom: spacing.sm,
   },
-  filterButton: {
-    alignItems: 'center',
-    borderRadius: radius.full,
-    borderWidth: lineWidth.hairline,
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  filterRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-  },
   flexBlock: {
     flex: 1,
     gap: spacing.xs,
     minWidth: 0,
   },
-  gridLine: {
-    height: lineWidth.hairline,
-  },
   legendDot: {
     borderRadius: radius.full,
-    height: 8,
-    width: 8,
+    height: size.indicator.dotSm,
+    width: size.indicator.dotSm,
   },
   legendRow: {
     flexDirection: 'row',
@@ -687,7 +575,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   transactionList: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     overflow: 'hidden',
   },

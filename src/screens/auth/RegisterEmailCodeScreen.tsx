@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { DEMO_OTP, isValidEmail, safeRedirect } from '@/src/auth/authFlow';
-import { AuthShell } from '@/src/components/AuthShell';
-import { OtpInput, OtpRecoveryActions, useCountdown } from '@/src/components/AuthFlowControls';
+import { AuthShell } from '@/src/design-public-assets/components';
+import { OtpInput, OtpRecoveryActions, useCountdown } from '@/src/design-public-assets/components';
 import { useToast } from '@/src/feedback/Toast';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import type { NavigationTarget } from '@/src/navigation/navigationPolicy';
-import { useProductSettings } from '@/src/settings/ProductSettings';
-import { spacing } from '@/src/theme/tokens';
+import { useProductSettings } from '@/src/design-public-assets/copy';
+import { spacing } from '@/src/design-public-assets/tokens';
 
 const MAX_RESENDS = 3;
 

@@ -1,6 +1,30 @@
-import type { Account, Commission, Instrument, PartnerClient, PartnerMetrics, UpgradeRequest } from './types';
+import type { Account, Commission, Instrument, InstrumentCandle, InstrumentChartTimeframe, PartnerClient, PartnerMetrics, UpgradeRequest } from './types';
 
-export const instruments: Instrument[] = [
+type BaseInstrument = Omit<
+  Instrument,
+  | 'candlesByTimeframe'
+  | 'lotStep'
+  | 'marginCurrency'
+  | 'marketStatus'
+  | 'maxLot'
+  | 'minLot'
+  | 'openPrice'
+  | 'quoteStatus'
+  | 'quoteUpdatedAt'
+  | 'swapLong'
+  | 'swapShort'
+  | 'tickSize'
+  | 'tickValue'
+  | 'weekHigh'
+  | 'weekLow'
+  | 'yearHigh'
+  | 'yearLow'
+>;
+
+const quoteSnapshotTime = '2026-05-28T09:32:00+08:00';
+const chartTimeframes: InstrumentChartTimeframe[] = ['1m', '5m', '15m', '30m', '1H', '4H', '1D', '1W'];
+
+const baseInstruments: BaseInstrument[] = [
   {
     id: 'eur-usd',
     symbol: 'EUR/USD',
@@ -182,6 +206,135 @@ export const instruments: Instrument[] = [
     sparkline: [913.5, 916.8, 920.4, 918.6, 925.1, 923.9, 925.4],
   },
 ];
+
+export const instruments: Instrument[] = baseInstruments.map(enrichInstrument);
+
+function enrichInstrument(instrument: BaseInstrument): Instrument {
+  const midPrice = (instrument.bid + instrument.ask) / 2;
+  const sourceValues = instrument.sparkline.length > 1 ? instrument.sparkline : [instrument.previousClose, midPrice];
+  const rangeHigh = Math.max(instrument.dayHigh, ...sourceValues, midPrice);
+  const rangeLow = Math.min(instrument.dayLow, ...sourceValues, midPrice);
+  const spreadValue = Math.max(rangeHigh - rangeLow, instrument.pipSize * instrument.spread);
+  const lotProfile = resolveLotProfile(instrument);
+
+  return {
+    ...instrument,
+    candlesByTimeframe: Object.fromEntries(
+      chartTimeframes.map((timeframe) => [timeframe, buildCandles(instrument, timeframe)]),
+    ) as Record<InstrumentChartTimeframe, InstrumentCandle[]>,
+    lotStep: lotProfile.lotStep,
+    marginCurrency: instrument.quoteCurrency,
+    marketStatus: 'open',
+    maxLot: lotProfile.maxLot,
+    minLot: lotProfile.minLot,
+    openPrice: sourceValues[0] ?? instrument.previousClose,
+    quoteStatus: 'live',
+    quoteUpdatedAt: quoteSnapshotTime,
+    swapLong: lotProfile.swapLong,
+    swapShort: lotProfile.swapShort,
+    tickSize: instrument.pipSize,
+    tickValue: lotProfile.tickValue,
+    weekHigh: roundPrice(instrument, rangeHigh + spreadValue * 0.72),
+    weekLow: roundPrice(instrument, Math.max(instrument.pipSize, rangeLow - spreadValue * 0.66)),
+    yearHigh: roundPrice(instrument, rangeHigh + spreadValue * 4.2),
+    yearLow: roundPrice(instrument, Math.max(instrument.pipSize, rangeLow - spreadValue * 3.6)),
+  };
+}
+
+function resolveLotProfile(instrument: BaseInstrument) {
+  if (instrument.assetClass === 'stocks') {
+    return { lotStep: 0.01, maxLot: 50, minLot: 0.01, swapLong: -3.8, swapShort: -2.7, tickValue: instrument.contractSize * instrument.pipSize };
+  }
+
+  if (instrument.assetClass === 'metals') {
+    return { lotStep: 0.01, maxLot: 100, minLot: 0.01, swapLong: -18.6, swapShort: 7.2, tickValue: instrument.contractSize * instrument.pipSize };
+  }
+
+  if (instrument.assetClass === 'futures') {
+    return { lotStep: 0.1, maxLot: 100, minLot: 0.1, swapLong: -4.8, swapShort: -4.2, tickValue: instrument.contractSize * instrument.pipSize };
+  }
+
+  return { lotStep: 0.01, maxLot: 200, minLot: 0.01, swapLong: -6.2, swapShort: 2.1, tickValue: instrument.contractSize * instrument.pipSize };
+}
+
+function buildCandles(instrument: BaseInstrument, timeframe: InstrumentChartTimeframe): InstrumentCandle[] {
+  const countByTimeframe: Record<InstrumentChartTimeframe, number> = {
+    '1m': 96,
+    '5m': 96,
+    '15m': 88,
+    '30m': 80,
+    '1H': 72,
+    '4H': 64,
+    '1D': 56,
+    '1W': 52,
+  };
+  const minutesByTimeframe: Record<InstrumentChartTimeframe, number> = {
+    '1m': 1,
+    '5m': 5,
+    '15m': 15,
+    '30m': 30,
+    '1H': 60,
+    '4H': 240,
+    '1D': 1440,
+    '1W': 10080,
+  };
+  const count = countByTimeframe[timeframe];
+  const intervalMs = minutesByTimeframe[timeframe] * 60 * 1000;
+  const endTime = Date.parse(quoteSnapshotTime);
+  const source = instrument.sparkline.length > 1 ? instrument.sparkline : [instrument.previousClose, instrument.bid];
+  const sourceMin = Math.min(...source, instrument.dayLow);
+  const sourceMax = Math.max(...source, instrument.dayHigh);
+  const baseRange = Math.max(sourceMax - sourceMin, instrument.pipSize * instrument.spread * 4);
+  const timeframeVolatility = resolveTimeframeVolatility(timeframe);
+  const candles: InstrumentCandle[] = [];
+  let previousClose = instrument.previousClose;
+
+  for (let index = 0; index < count; index += 1) {
+    const progress = index / Math.max(count - 1, 1);
+    const sourceIndex = Math.min(Math.floor(progress * (source.length - 1)), source.length - 1);
+    const nextSourceIndex = Math.min(sourceIndex + 1, source.length - 1);
+    const sourceProgress = progress * (source.length - 1) - sourceIndex;
+    const anchor = source[sourceIndex] + (source[nextSourceIndex] - source[sourceIndex]) * sourceProgress;
+    const wave = Math.sin((index + instrument.symbol.length) * 0.72) * baseRange * 0.22 * timeframeVolatility;
+    const pulse = Math.cos((index + instrument.symbol.charCodeAt(0)) * 0.37) * baseRange * 0.12 * timeframeVolatility;
+    const close = roundPrice(instrument, index === count - 1 ? (instrument.bid + instrument.ask) / 2 : anchor + wave + pulse);
+    const open = roundPrice(instrument, previousClose);
+    const candleRange = Math.max(Math.abs(close - open), instrument.pipSize * instrument.spread * (1.2 + timeframeVolatility));
+    const high = roundPrice(instrument, Math.max(open, close) + candleRange * (0.35 + ((index % 5) + 1) * 0.08));
+    const low = roundPrice(instrument, Math.max(instrument.pipSize, Math.min(open, close) - candleRange * (0.28 + ((index % 7) + 1) * 0.05)));
+    const volumeBase = instrument.assetClass === 'forex' ? 850 : instrument.assetClass === 'metals' ? 620 : instrument.assetClass === 'stocks' ? 1280 : 960;
+    candles.push({
+      close,
+      high,
+      low,
+      open,
+      time: new Date(endTime - (count - 1 - index) * intervalMs).toISOString(),
+      volume: Math.round(volumeBase * (1 + Math.abs(Math.sin(index * 0.46)) * 2.4 + timeframeVolatility)),
+    });
+    previousClose = close;
+  }
+
+  return candles;
+}
+
+function resolveTimeframeVolatility(timeframe: InstrumentChartTimeframe) {
+  const volatility: Record<InstrumentChartTimeframe, number> = {
+    '1m': 0.42,
+    '5m': 0.56,
+    '15m': 0.72,
+    '30m': 0.86,
+    '1H': 1,
+    '4H': 1.28,
+    '1D': 1.58,
+    '1W': 2.2,
+  };
+
+  return volatility[timeframe];
+}
+
+function roundPrice(instrument: Pick<BaseInstrument, 'pipSize'>, value: number) {
+  return Number(value.toFixed(instrument.pipSize >= 0.01 ? 3 : 5));
+}
 
 export const initialAccount: Account = {
   accountId: 'DP-FX-208839',

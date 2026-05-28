@@ -4,10 +4,10 @@ import { Image, StyleSheet, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ActionButton } from '@/src/components/ActionButton';
-import { AppText } from '@/src/components/Typography';
-import { useProductSettings } from '@/src/settings/ProductSettings';
-import { layout, radius, size, spacing } from '@/src/theme/tokens';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
+import { useProductSettings } from '@/src/design-public-assets/copy';
+import { radius, size, spacing } from '@/src/design-public-assets/tokens';
 
 const TITLE_ENTER_DURATION_MS = 620;
 const TITLE_ENTER_DELAY_MS = 110;
@@ -68,7 +68,7 @@ export default function LaunchScreen() {
 
         <View style={styles.content}>
           <Animated.View style={titleEnterStyle}>
-            <AppText adjustsFontSizeToFit maxFontSizeMultiplier={1.08} minimumFontScale={0.72} numberOfLines={3} style={styles.title} variant="quote">
+            <AppText numberOfLines={3} style={styles.title} variant="quote">
               {t('launch.title')}
             </AppText>
           </Animated.View>
@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
     gap: spacing.sm,
+    marginTop: spacing.xl,
     width: '100%',
   },
   safe: {
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     paddingBottom: spacing.xl,
-    paddingHorizontal: layout.screenPaddingX + spacing.lg,
+    paddingHorizontal: spacing.xl,
   },
   subtitle: {
     textAlign: 'center',

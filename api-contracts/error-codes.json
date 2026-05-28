@@ -42,7 +42,54 @@
       "messageKey": "risk.restricted",
       "httpStatus": 423,
       "severity": "danger"
+    },
+    {
+      "code": "SECURITY_OTP_INVALID",
+      "messageKey": "securityCenter.error.SECURITY_OTP_INVALID",
+      "httpStatus": 400,
+      "severity": "warning"
+    },
+    {
+      "code": "SECURITY_OTP_LOCKED",
+      "messageKey": "securityCenter.error.SECURITY_OTP_LOCKED",
+      "httpStatus": 423,
+      "severity": "danger"
+    },
+    {
+      "code": "SECURITY_TOTP_REQUIRED",
+      "messageKey": "securityCenter.error.SECURITY_TOTP_REQUIRED",
+      "httpStatus": 403,
+      "severity": "danger"
+    },
+    {
+      "code": "SECURITY_GSL_PENDING_EXISTS",
+      "messageKey": "securityCenter.error.SECURITY_GSL_PENDING_EXISTS",
+      "httpStatus": 409,
+      "severity": "warning"
+    },
+    {
+      "code": "SECURITY_DEVICE_NOT_FOUND",
+      "messageKey": "securityCenter.error.SECURITY_DEVICE_NOT_FOUND",
+      "httpStatus": 404,
+      "severity": "warning"
+    },
+    {
+      "code": "SECURITY_CANNOT_REVOKE_CURRENT_DEVICE",
+      "messageKey": "securityCenter.error.SECURITY_CANNOT_REVOKE_CURRENT_DEVICE",
+      "httpStatus": 409,
+      "severity": "warning"
+    },
+    {
+      "code": "SECURITY_RISK_BLOCKED",
+      "messageKey": "securityCenter.error.SECURITY_RISK_BLOCKED",
+      "httpStatus": 423,
+      "severity": "danger"
+    },
+    {
+      "code": "SECURITY_ACCOUNT_FROZEN",
+      "messageKey": "securityCenter.error.SECURITY_ACCOUNT_FROZEN",
+      "httpStatus": 423,
+      "severity": "danger"
     }
   ]
 }
-

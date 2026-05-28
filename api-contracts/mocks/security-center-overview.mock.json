@@ -1,0 +1,54 @@
+{
+  "score": {
+    "total": 82,
+    "level": "good",
+    "suggestions": [
+      {
+        "suggestionId": "bind-totp",
+        "titleKey": "securityCenter.suggestion.bindTotp",
+        "scoreGain": 30,
+        "priority": 1,
+        "actionType": "bind_totp"
+      }
+    ]
+  },
+  "alerts": [
+    {
+      "alertId": "alert-gsl-totp-disable",
+      "alertType": "totp_disable_pending",
+      "riskLevel": "High",
+      "titleKey": "securityCenter.alert.totpDisablePending.title",
+      "descriptionKey": "securityCenter.alert.totpDisablePending.description",
+      "status": "active",
+      "triggeredAt": "2026-05-28T09:00:00Z",
+      "relatedEntityId": "gsl-totp-disable-001"
+    }
+  ],
+  "accountSecurity": [
+    {
+      "itemId": "password",
+      "labelKey": "securityCenter.account.password",
+      "status": "strong",
+      "statusTone": "success",
+      "descriptionKey": "securityCenter.account.password.description",
+      "primaryActionType": "change_password"
+    },
+    {
+      "itemId": "totp",
+      "labelKey": "securityCenter.account.totp",
+      "status": "disable_pending",
+      "statusTone": "warning",
+      "descriptionKey": "securityCenter.account.totp.description",
+      "primaryActionType": "cancel_totp_disable"
+    }
+  ],
+  "devicesSummary": {
+    "activeDeviceCount": 3,
+    "riskDeviceCount": 1,
+    "currentDeviceName": "This device"
+  },
+  "gslSummary": {
+    "pendingCount": 1,
+    "highestRiskLevel": "High"
+  }
+}

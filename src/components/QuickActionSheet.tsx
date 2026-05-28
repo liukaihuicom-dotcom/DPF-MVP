@@ -195,7 +195,7 @@ export function QuickActionSheetContent({ onClose }: { onClose: () => void }) {
             <View style={styles.actionIcon}>
               <AppIcon name={action.icon} sizeVariant="sm" tone={action.tone} />
             </View>
-            <AppText adjustsFontSizeToFit numberOfLines={1} variant="caption">
+            <AppText numberOfLines={1} variant="caption">
               {action.label}
             </AppText>
           </NativePressable>
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   },
   actionItem: {
     alignItems: 'center',
-    borderRadius: radius.lg,
+    borderRadius: radius.card,
     flexBasis: '30%',
     flexGrow: 1,
     gap: spacing.sm,

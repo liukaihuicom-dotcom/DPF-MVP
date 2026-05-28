@@ -99,6 +99,7 @@ export function AuthShell({
 
               navigateBackOrReplace(backTarget ?? safeRouteTargets.launch);
             }}
+            style={StyleSheet.flatten([styles.authNavAction, { backgroundColor: colors.surface.subtle }])}
             tone="default"
           />
         )}
@@ -314,6 +315,7 @@ const styles = StyleSheet.create({
   authInputText: {
     ...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as object) : null),
   },
+  authNavAction: {},
   authLinkText: {
     ...typography.bodyMd,
   },
@@ -398,7 +400,9 @@ const styles = StyleSheet.create({
   },
   rightAction: {
     alignItems: 'center',
-    minWidth: size.input.authOtpCellWidth,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    minWidth: layout.headerIconButtonSize * 2 + spacing.xs,
   },
   safe: {
     flex: 1,
@@ -412,7 +416,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
   },
   topSpacer: {
-    width: size.input.authOtpCellWidth,
+    width: layout.headerIconButtonSize,
   },
   titleText: {
     minWidth: 0,

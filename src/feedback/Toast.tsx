@@ -46,9 +46,9 @@ export function ToastProvider({ children }: PropsWithChildren) {
   const value = useMemo(() => ({ show }), [show]);
 
   const tone = toast?.tone ?? 'default';
-  const toneText: AppTextTone = tone === 'success' ? 'down' : tone === 'warning' ? 'amber' : tone === 'danger' ? 'danger' : 'brand';
+  const toneText: AppTextTone = tone === 'success' ? 'success' : tone === 'warning' ? 'amber' : tone === 'danger' ? 'danger' : 'brand';
   const toneColor =
-    tone === 'success' ? colors.market.down.fg : tone === 'warning' ? colors.status.warning.fg : tone === 'danger' ? colors.status.danger.fg : colors.brand.fg;
+    tone === 'success' ? colors.status.success.fg : tone === 'warning' ? colors.status.warning.fg : tone === 'danger' ? colors.status.danger.fg : colors.brand.fg;
 
   return (
     <ToastContext.Provider value={value}>

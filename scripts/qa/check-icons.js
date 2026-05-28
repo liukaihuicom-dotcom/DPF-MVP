@@ -48,12 +48,13 @@ const forbiddenPackagePatterns = [
 ];
 const allowedSvgRenderers = new Set([
   'app/account-details/[id].tsx',
-  'app/instrument/[id].tsx',
   'src/components/FlagIcon.tsx',
   'src/components/InstrumentIcon.tsx',
   'src/components/Sparkline.tsx',
+  'src/components/business/FinancialTrendChart.tsx',
+  'src/components/business/RiskGauge.tsx',
+  'src/components/business/TradingTerminalChart.tsx',
   'src/screens/accounts/AccountDetailsScreen.tsx',
-  'src/screens/markets/InstrumentDetailScreen.tsx',
 ]);
 function addIssue(id, severity, message, file = registryPath) {
   issues.push({ file: path.relative(root, file), id, message, severity });

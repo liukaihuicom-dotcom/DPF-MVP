@@ -1,5 +1,107 @@
 # Changelog
 
+## 1.0.3 - 2026-05-28
+
+### Changed
+
+- Removed residual border styles from page, sheet, dialog, demo, chart, Discover, and developer-console card-like surfaces.
+- Updated Card governance so Card and card-like page/sheet/dialog/business surfaces stay borderless and cannot declare `borderWidth` or `borderColor`.
+- Added QA coverage for card-like borderless enforcement while preserving functional borders for inputs, outline buttons, chips, icons, dividers, and selection controls.
+
+## 1.0.2 - 2026-05-28
+
+### Changed
+
+- Standardized card and card-like panel radius governance on semantic `radius.card` while keeping `radius.md` as a same-value compatibility alias for non-card surfaces.
+- Updated Card component documentation, token export mappings, component manifests, and QA guards so page/sheet/business card surfaces use one radius role.
+- Migrated remaining card-like developer, metric-detail, and root error panels to the same `radius.card` contract.
+
+## 1.0.1 - 2026-05-28
+
+### Changed
+
+- Tightened Discover entry-card title-to-description rhythm to the governed 4px `spacing.xs` layer.
+- Updated filled header icon action backgrounds on gray page, sheet, and canvas surfaces to use the white `surface.panel` semantic token instead of the gray subtle surface.
+- Added QA and manifest coverage for the Discover entry copy gap and header icon surface token contract.
+
+## 1.0.0 - 2026-05-28
+
+### Breaking
+
+- Restricted the global `ActionButton` design contract to `filled` and `outline` only.
+- Removed text-button and legacy soft mixed background-plus-outline appearances from the Button specification.
+
+### Changed
+
+- Migrated existing ActionButton usages to explicit `filled` or `outline` variants, with text-only actions expressed through text action patterns.
+- Added component QA coverage to prevent `text`, `legacySoft`, and `emphasis` from returning to the global Button contract.
+
+## 0.6.1 - 2026-05-28
+
+### Changed
+
+- Updated the Trade workspace order lists so the `TradeOrderList` Card container owns the governed 12px horizontal inset through `layout.cardPaddingX`, while the screen section uses `layout.screenPaddingX` for outside page margin.
+- Preserved row-level vertical-only padding, shared direction icons, dividers, right-side values, and accessibility labels without changing routes, copy, data, or trading behavior.
+
+## 0.6.0 - 2026-05-28
+
+### Breaking
+
+- Upgraded `@dpf/design-tokens` to `3.0.0` for the global trading color migration: `up` is now green `#2EA379`, `down` is red, and feedback success remains on `status.success`.
+
+### Changed
+
+- Changed the standard blue token to `#1F72E8` across token source, runtime compatibility layer, CSS mapping, and design-system mirrors.
+- Added migration guidance that old green `down` usages must be remapped by business meaning to trading `up`, trading `down`, or feedback `success`.
+
+## 0.5.0 - 2026-05-28
+
+### Changed
+
+- Added the full-site horizontal spacing contract for route pages and BottomSheet surfaces: 16px for headers and fixed action areas, 12px for card/list content, and 16px for plain/form content.
+- Synced token, component, public-resource, and QA governance so later page work consumes shared spacing modes instead of page-local padding.
+
+## 0.4.2 - 2026-05-28
+
+### Changed
+
+- Completed first-batch public-resource reference migration for Portfolio, DiscoverModule, Markets, InstrumentDetail, AccountDetails, and Appearance.
+- Promoted the migrated business components and patterns from migration targets to active referenced resources in registry and dependency graph records.
+- Synced the public copy table with i18n keys for high-risk trading, Discover/Partner, Markets account-switch feedback, Appearance, Funding, and PIN copy surfaces.
+- Clarified the icon QA boundary: route screens cannot import `react-native-svg`, while registered chart/gauge business components may use SVG internally as data visualization.
+
+### Notes
+
+- Planned owned illustrations and the Local PIN security flow remain conditional follow-up assets requiring human/native review before whole-product production readiness.
+
+## 0.4.1 - 2026-05-28
+
+### Changed
+
+- Updated Codex/browser product-page preview governance so all product routes render inside a 390 x 844 native app simulation canvas.
+- Added web-only simulated safe-area metrics for App preview while preserving real device safe-area behavior on native iOS and Android.
+- Kept the developer control panel as an independent draggable debug module outside the app preview canvas.
+
+## 0.4.0 - 2026-05-28
+
+### Added
+
+- Added the public resource governance package under `design-system-engineering/11_public_resources`.
+- Added public asset registry, asset dependency graph, copy-table seed, illustration registry seed, migration plan, impact report, deprecated-assets record, and public-resource QA checklist.
+- Added `qa:public-resources` so page delivery can verify registry, dependency graph, copy, pattern, business-component, and high-risk page coverage.
+
+### Changed
+
+- Expanded business-component and pattern registries with migration targets for duplicated page-local modules without changing runtime UI.
+- Added public-resource governance entries to the AI-readable index and production QA gate list.
+
+## 0.3.23 - 2026-05-28
+
+### Added
+
+- Added the Design Public Resource Package Governance Skill as a Design System Engineering Add-on.
+- Updated AGENTS routing so public-resource, registry, dependency-graph, migration, and release-readiness tasks must use the new governance skill.
+
 ## 0.3.22 - 2026-05-27
 
 ### Changed
@@ -19,7 +121,7 @@
 ### Changed
 
 - Added axis-specific card padding governance so default card horizontal content inset is 12px while default vertical padding remains 16px and compact vertical padding remains 12px.
-- Updated shared `Card` and custom card-like surfaces to use `layout.cardPaddingX/Y` or compact axis tokens, with `TradeOrderList` remaining a registered edge-to-edge exception.
+- Updated shared `Card` and custom card-like surfaces to use `layout.cardPaddingX/Y` or compact axis tokens, with `TradeOrderList` rows remaining a registered no-row-horizontal-padding exception.
 
 ## 0.3.19 - 2026-05-27
 

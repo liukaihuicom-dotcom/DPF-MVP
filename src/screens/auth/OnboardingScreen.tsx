@@ -1,17 +1,17 @@
 import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
-import { lineWidth, radius, size, spacing } from '@/src/theme/tokens';
-import { ActionButton } from '@/src/components/ActionButton';
-import { AuthLink, AuthShell } from '@/src/components/AuthShell';
-import { IconSurface } from '@/src/components/IconSurface';
-import { NativePressable } from '@/src/components/NativePressable';
-import { AppIcon, type AppIconName } from '@/src/components/AppIcon';
-import { AppText } from '@/src/components/Typography';
+import { lineWidth, radius, size, spacing } from '@/src/design-public-assets/tokens';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { AuthLink, AuthShell } from '@/src/design-public-assets/components';
+import { IconSurface } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { AppIcon, type AppIconName } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import { dupoinOnboardingSteps } from '@/src/domain/dupoinMvp';
 import { localizeText } from '@/src/domain/format';
 import { impactLight } from '@/src/feedback/haptics';
-import { useProductSettings } from '@/src/settings/ProductSettings';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 
 export default function OnboardingScreen() {
   const { locale, colors, t } = useProductSettings();
@@ -29,8 +29,8 @@ export default function OnboardingScreen() {
     <AuthShell
       footer={
         <View style={styles.footerActions}>
-          <ActionButton accessibilityLabel={t('onboarding.primaryCta')} label={t('onboarding.primaryCta')} onPress={() => router.push('/auth/register')} tone="brand" />
-          <ActionButton accessibilityLabel={t('onboarding.secondaryCta')} label={t('onboarding.secondaryCta')} onPress={() => router.push('/auth')} tone="neutral" />
+          <ActionButton accessibilityLabel={t('onboarding.primaryCta')} label={t('onboarding.primaryCta')} onPress={() => router.push('/auth/register')} tone="brand" variant="filled" />
+          <ActionButton accessibilityLabel={t('onboarding.secondaryCta')} label={t('onboarding.secondaryCta')} onPress={() => router.push('/auth')} tone="neutral" variant="outline" />
         </View>
       }
       kicker={t('onboarding.kicker')}
@@ -38,7 +38,7 @@ export default function OnboardingScreen() {
       step={t('onboarding.stepLabel')}
       subtitle={t('onboarding.subtitle')}
       title={t('onboarding.title')}>
-      <View style={StyleSheet.flatten([styles.heroPanel, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+      <View style={StyleSheet.flatten([styles.heroPanel, { backgroundColor: colors.surface.panel }])}>
         <View style={styles.heroRow}>
           <IconSurface icon="icon.market.global" sizeVariant="md" tone="neutral" />
           <View style={styles.flex}>
@@ -65,7 +65,7 @@ export default function OnboardingScreen() {
         </View>
       </View>
 
-      <View style={StyleSheet.flatten([styles.activationPanel, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+      <View style={StyleSheet.flatten([styles.activationPanel, { backgroundColor: colors.surface.panel }])}>
         <View style={styles.activationHeader}>
           <View style={styles.flex}>
             <AppText variant="subtitle">{t('onboarding.activation.title')}</AppText>
@@ -78,19 +78,20 @@ export default function OnboardingScreen() {
             onPress={() => router.push('/auth/register')}
             style={styles.smallButton}
             tone="brand"
+            variant="filled"
           />
         </View>
         <View style={styles.activationSteps}>
           {dupoinOnboardingSteps.map((step, index) => (
             <View key={step.id} style={styles.activationStepRow}>
-              <View style={StyleSheet.flatten([styles.activationStepMark, { backgroundColor: index < 2 ? colors.market.down.fg : colors.brand.fg }])}>
+              <View style={StyleSheet.flatten([styles.activationStepMark, { backgroundColor: index < 2 ? colors.status.success.fg : colors.brand.fg }])}>
                 <AppText tone="white" variant="eyebrow">
                   {index + 1}
                 </AppText>
               </View>
               <View style={styles.flex}>
                 <AppText variant="body">{localizeText(step.label, locale)}</AppText>
-                <AppText tone={index < 2 ? 'down' : 'brand'} variant="caption">
+                <AppText tone={index < 2 ? 'success' : 'brand'} variant="caption">
                   {localizeText(step.state, locale)}
                 </AppText>
               </View>
@@ -109,7 +110,7 @@ export default function OnboardingScreen() {
               void impactLight();
               router.push('/auth/register');
             }}
-            style={StyleSheet.flatten([styles.choiceCard, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+            style={StyleSheet.flatten([styles.choiceCard, { backgroundColor: colors.surface.panel }])}>
             <IconSurface icon={icon as AppIconName} sizeVariant="xs" />
             <AppText variant="body">{title}</AppText>
             <AppText numberOfLines={3} tone="muted" variant="caption">
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   activationPanel: {
-    borderRadius: radius.xl,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     gap: radius.lg,
     padding: radius.lg,
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   choiceCard: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flex: 1,
     gap: spacing.sm,
@@ -185,7 +186,7 @@ const styles = StyleSheet.create({
     gap: radius.md - spacing.xxs,
   },
   heroPanel: {
-    borderRadius: radius.xl,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     gap: spacing.lg,
     padding: radius.lg,
@@ -197,7 +198,7 @@ const styles = StyleSheet.create({
   },
   notice: {
     alignItems: 'center',
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flexDirection: 'row',
     gap: radius.md - spacing.xxs,

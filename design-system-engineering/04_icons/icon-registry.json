@@ -187,7 +187,9 @@
     "indexMarket": "icon.market.index",
     "stockAsset": "icon.market.stock",
     "infoCircle": "icon.risk.info",
-    "closeX": "icon.system.close"
+    "closeX": "icon.system.close",
+    "showAccountAmount": "icon.account.amount_visible",
+    "hideAccountAmount": "icon.account.amount_hidden"
   },
   "brand_assets": {
     "launcherIcon": "assets/images/icon.png",
@@ -2158,6 +2160,124 @@
       "local_asset_path": "src/icons/local/iconsax/LocalEyeSlashIcon.tsx"
     },
     {
+      "icon_key": "icon.account.amount_visible",
+      "legacy_names": [
+        "showAccountAmount"
+      ],
+      "category": "account",
+      "meaning": "Toggle account amount visibility for financial balance and PnL values",
+      "source_library": "iconsax",
+      "source_icon_name": "Eye",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "textDim",
+        "text"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.tertiary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Toggle account balance, equity, margin, or PnL values between visible and masked states."
+      ],
+      "forbidden": [
+        "Do not use for credential password visibility."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "MIT",
+        "url": "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+      },
+      "modified": false,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalEyeIcon.tsx"
+    },
+    {
+      "icon_key": "icon.account.amount_hidden",
+      "legacy_names": [
+        "hideAccountAmount"
+      ],
+      "category": "account",
+      "meaning": "Toggle account amount hidden state for financial balance and PnL values",
+      "source_library": "custom",
+      "source_icon_name": "EyeSlash",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active"
+      ],
+      "tone_tokens": [
+        "textDim",
+        "text"
+      ],
+      "default_tone": "textDim",
+      "token_binding": {
+        "color": "color.icon.tertiary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Use when financial account amounts are currently visible and the next action will mask them."
+      ],
+      "forbidden": [
+        "Do not use for credential password visibility."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "custom-owned",
+        "url": "internal-custom-icon-request"
+      },
+      "modified": true,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalEyeSlashIcon.tsx"
+    },
+    {
       "icon_key": "icon.system.search",
       "legacy_names": [
         "searchGlass"
@@ -2765,6 +2885,66 @@
       "modified": false,
       "status": "approved",
       "local_asset_path": "src/icons/local/iconsax/LocalProfileAddIcon.tsx"
+    },
+    {
+      "icon_key": "icon.system.add",
+      "legacy_names": [],
+      "category": "system",
+      "meaning": "Generic add, create, or append action",
+      "source_library": "custom",
+      "source_icon_name": "Add",
+      "style": {
+        "default": "line",
+        "active": "fill",
+        "disabled": "line"
+      },
+      "sizes": [
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ],
+      "default_size": 24,
+      "states": [
+        "default",
+        "active",
+        "disabled"
+      ],
+      "tone_tokens": [
+        "text",
+        "textMuted",
+        "brand"
+      ],
+      "default_tone": "text",
+      "token_binding": {
+        "color": "color.icon.primary",
+        "size": "size.icon.md"
+      },
+      "usage": [
+        "Generic add, create, or append action.",
+        "Use when the action is add/create rather than adding a person or profile."
+      ],
+      "forbidden": [
+        "Do not use for profile invitation when addUser carries the account-person meaning."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "license": {
+        "attribution_required": false,
+        "name": "custom-owned",
+        "url": "local"
+      },
+      "modified": true,
+      "status": "approved",
+      "local_asset_path": "src/icons/local/iconsax/LocalAddIcon.tsx"
     },
     {
       "icon_key": "icon.system.close",

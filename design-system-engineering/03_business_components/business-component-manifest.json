@@ -1,119 +1,862 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "source": "src/components/business and src/screens",
   "components": {
     "FundActionGrid": {
       "component": "FundActionGrid",
       "businessDomain": "funding",
-      "states": ["default", "pressed", "disabled"],
-      "riskRules": ["Fund actions must not imply guaranteed settlement or risk-free movement."],
-      "permissions": ["Visible to signed-in trading account users; action handlers decide eligibility."],
-      "dataInputs": ["FundActionGridItem[]", "locale", "translation keys"],
-      "platforms": ["app", "h5", "web"],
-      "qaGate": ["Registered icons only", "Visible labels required", "No page-local funding shortcut grids"]
+      "states": [
+        "default",
+        "pressed",
+        "disabled"
+      ],
+      "riskRules": [
+        "Fund actions must not imply guaranteed settlement or risk-free movement."
+      ],
+      "permissions": [
+        "Visible to signed-in trading account users; action handlers decide eligibility."
+      ],
+      "dataInputs": [
+        "FundActionGridItem[]",
+        "locale",
+        "translation keys"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "qaGate": [
+        "Registered icons only",
+        "Visible labels required",
+        "No page-local funding shortcut grids"
+      ]
     },
     "GlobalMenuList": {
       "component": "GlobalMenuList",
       "businessDomain": "account-navigation",
-      "states": ["default", "pressed", "descriptive"],
-      "riskRules": ["Destructive or high-risk actions must carry explicit copy and tone in the caller."],
-      "permissions": ["Caller controls visibility based on role and account state."],
-      "dataInputs": ["GlobalMenuListItem[]"],
-      "platforms": ["app", "h5", "web"],
-      "qaGate": ["Accessibility labels required", "Registered semantic icons only"]
+      "states": [
+        "default",
+        "pressed",
+        "descriptive"
+      ],
+      "riskRules": [
+        "Destructive or high-risk actions must carry explicit copy and tone in the caller."
+      ],
+      "permissions": [
+        "Caller controls visibility based on role and account state."
+      ],
+      "dataInputs": [
+        "GlobalMenuListItem[]"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "qaGate": [
+        "Accessibility labels required",
+        "Registered semantic icons only"
+      ]
     },
     "TradingAccountSwitchSheet": {
       "component": "TradingAccountSwitchSheet",
       "businessDomain": "trading-account-selection",
-      "states": ["default", "selected", "restricted", "empty"],
-      "riskRules": ["Account status must remain visible when selecting an account."],
-      "permissions": ["Signed-in user with trading account access."],
-      "dataInputs": ["TradingAccountProfile[]", "selected account id", "onSelect"],
-      "platforms": ["app", "h5", "web"],
-      "qaGate": ["Status visibility", "Bottom sheet preset usage", "No page-local account switcher"]
+      "states": [
+        "default",
+        "selected",
+        "restricted",
+        "empty"
+      ],
+      "riskRules": [
+        "Account status must remain visible when selecting an account."
+      ],
+      "permissions": [
+        "Signed-in user with trading account access."
+      ],
+      "dataInputs": [
+        "TradingAccountProfile[]",
+        "selected account id",
+        "onSelect",
+        "TradingAccountCard trailing variant: radio | chevron | currency"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "qaGate": [
+        "Status visibility",
+        "Bottom sheet preset usage",
+        "No page-local account switcher",
+        "Account list entry cards reuse TradingAccountCard with chevron trailing variant instead of duplicating the sheet card body",
+        "TradingAccountCard radio selected indicator uses registered AppIcon default size without an icon background",
+        "TradingAccountCard metadata rows use a 16px flag, 2px horizontal gap, and no vertical row gap",
+        "Account switcher uses icon.system.add for the add action",
+        "Selection sheet content supports scrolling for long account lists"
+      ]
     },
     "ConfirmActionSheet": {
       "component": "ConfirmActionSheet",
       "businessDomain": "risk-confirmation",
-      "states": ["default", "disabled-confirm", "cancelled", "confirmed"],
+      "states": [
+        "default",
+        "disabled-confirm",
+        "cancelled",
+        "confirmed"
+      ],
       "riskRules": [
         "High-risk trading, funding, security, and account actions must expose explicit cancel and confirm paths.",
         "Confirm actions must be registered in modalRegistry with risk level, close behavior, and confirm behavior."
       ],
-      "permissions": ["Caller owns role, account, and entitlement checks before opening the confirmation."],
-      "dataInputs": ["title", "body", "semantic icon", "cancel label", "confirm label", "confirm tone", "onCancel", "onConfirm"],
-      "platforms": ["app", "h5", "web"],
-      "qaGate": ["No Alert.alert or window.confirm for governed flows", "Registered icon only", "Token-bound actions and icon surface", "Recovery path visible"]
+      "permissions": [
+        "Caller owns role, account, and entitlement checks before opening the confirmation."
+      ],
+      "dataInputs": [
+        "title",
+        "body",
+        "semantic icon",
+        "cancel label",
+        "confirm label",
+        "confirm tone",
+        "onCancel",
+        "onConfirm"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "qaGate": [
+        "No Alert.alert or window.confirm for governed flows",
+        "Registered icon only",
+        "Token-bound actions and icon surface",
+        "Recovery path visible"
+      ]
     },
     "PortfolioOrderWorkspace": {
       "component": "PortfolioScreen order and position composition",
       "businessDomain": "trading",
-      "states": ["positions", "pending", "history", "empty", "restricted"],
-      "riskRules": ["Close-position and order mutations must use registered confirmation or feedback flows."],
-      "permissions": ["Trader role plus production account and order entitlement checks."],
-      "dataInputs": ["positions", "orders", "selected trading account", "instrument formatters"],
-      "platforms": ["app", "h5", "web"],
-      "qaGate": ["Uses Card, KeyValueList, TradeOrderList, GlobalMenuList, ConfirmActionSheet, and ToastProvider instead of page-local primitives"]
+      "states": [
+        "positions",
+        "pending",
+        "history",
+        "empty",
+        "restricted"
+      ],
+      "riskRules": [
+        "Close-position and order mutations must use registered confirmation or feedback flows."
+      ],
+      "permissions": [
+        "Trader role plus production account and order entitlement checks."
+      ],
+      "dataInputs": [
+        "positions",
+        "orders",
+        "selected trading account",
+        "instrument formatters"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "qaGate": [
+        "Uses Card, KeyValueList, TradeOrderList, GlobalMenuList, ConfirmActionSheet, and ToastProvider instead of page-local primitives"
+      ]
     },
     "TradeOrderList": {
       "component": "TradeOrderList",
       "businessDomain": "trading-order-list",
-      "states": ["position", "pending-order", "history-order", "pressed", "buy", "sell"],
-      "riskRules": ["Order direction, quantity, price/range, and P/L or status values must remain visible and text-based for auditability."],
-      "permissions": ["Caller controls account scope, order entitlement, and mutation permissions."],
-      "dataInputs": ["TradeOrderListRow[]", "direction", "quantity label", "price or price range", "right-side value", "optional disclosure state"],
-      "platforms": ["app", "h5", "web"],
-      "qaGate": ["Uses TradeDirectionIcon sizeVariant instead of raw icon size", "Registered disclosure icon only", "Row accessibilityLabel required", "No page-local trading order row loops", "No row-level horizontal padding; outer container controls list width", "Registered edge-to-edge exception; do not restore row-level or card-level horizontal padding"]
+      "states": [
+        "position",
+        "pending-order",
+        "history-order",
+        "pressed",
+        "buy",
+        "sell"
+      ],
+      "riskRules": [
+        "Order direction, quantity, price/range, and P/L or status values must remain visible and text-based for auditability."
+      ],
+      "permissions": [
+        "Caller controls account scope, order entitlement, and mutation permissions."
+      ],
+      "dataInputs": [
+        "TradeOrderListRow[]",
+        "direction",
+        "quantity label",
+        "price or price range",
+        "right-side value",
+        "optional disclosure state"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "qaGate": [
+        "Uses TradeDirectionIcon sizeVariant instead of raw icon size",
+        "Registered disclosure icon only",
+        "Row accessibilityLabel required",
+        "No page-local trading order row loops",
+        "No row-level horizontal padding",
+        "TradeOrderList owns the card container and uses layout.cardPaddingX for list content inset"
+      ]
     },
     "AccountLedgerWorkspace": {
       "component": "AccountBalanceScreen and AccountDetailsScreen data-display composition",
       "businessDomain": "accounts-ledger",
-      "states": ["default", "filtered", "empty", "transaction-detail", "restricted"],
-      "riskRules": ["Ledger data must remain textual and auditable; charts are supplemental only."],
-      "permissions": ["Trader role plus production account ownership and ledger scope checks."],
-      "dataInputs": ["account profile", "ledger transactions", "metric summaries", "filter state"],
-      "platforms": ["app", "h5", "web"],
-      "qaGate": ["Uses registered DetailRow, KeyValueList, TransactionRow, MiniBarChart, StatusPill, and BottomSheet presets"]
+      "states": [
+        "default",
+        "filtered",
+        "empty",
+        "transaction-detail",
+        "restricted"
+      ],
+      "riskRules": [
+        "Ledger data must remain textual and auditable; charts are supplemental only."
+      ],
+      "permissions": [
+        "Trader role plus production account ownership and ledger scope checks."
+      ],
+      "dataInputs": [
+        "account profile",
+        "ledger transactions",
+        "metric summaries",
+        "filter state"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "qaGate": [
+        "Uses registered DetailRow, KeyValueList, TransactionRow, MiniBarChart, StatusPill, and BottomSheet presets"
+      ]
     },
     "FundingOperationWorkspace": {
       "component": "FundingScreens operation and transaction composition",
       "businessDomain": "funding",
-      "states": ["default", "inputting", "validating", "submitting", "reviewing", "success", "failed", "restricted"],
-      "riskRules": ["Deposit, withdrawal, and transfer flows must keep fees, FX, eligibility, and recovery feedback visible."],
-      "permissions": ["Trader role plus production KYC, jurisdiction, limit, account, and payout eligibility checks."],
-      "dataInputs": ["eligible accounts", "funding rules", "payment methods", "transaction history"],
-      "platforms": ["app", "h5", "web"],
-      "qaGate": ["Uses TextField, SelectField, TradingAccountSwitchSheet, FundActionGrid, TransactionRow, funding feedback toast, and default-tone IconSurface backgrounds for form selector left icons"]
+      "states": [
+        "default",
+        "inputting",
+        "validating",
+        "submitting",
+        "reviewing",
+        "success",
+        "failed",
+        "restricted"
+      ],
+      "riskRules": [
+        "Deposit, withdrawal, and transfer flows must keep fees, FX, eligibility, and recovery feedback visible."
+      ],
+      "permissions": [
+        "Trader role plus production KYC, jurisdiction, limit, account, and payout eligibility checks."
+      ],
+      "dataInputs": [
+        "eligible accounts",
+        "funding rules",
+        "payment methods",
+        "transaction history"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "qaGate": [
+        "Uses TextField, SelectField, TradingAccountSwitchSheet, FundActionGrid, TransactionRow, funding feedback toast, and default-tone IconSurface backgrounds for form selector left icons"
+      ]
     },
     "InstrumentDetailWorkspace": {
       "component": "InstrumentDetailScreen market-detail composition",
       "businessDomain": "markets-trading-entry",
-      "states": ["default", "loading", "not_found", "restricted"],
-      "riskRules": ["Trading entry must route through order ticket and must not bypass quote/account entitlement checks."],
-      "permissions": ["Trader role plus production quote entitlement and trading account checks."],
-      "dataInputs": ["instrument quote", "chart summary", "market stats", "order ticket route params"],
-      "platforms": ["app", "h5", "web"],
-      "qaGate": ["Uses registered InstrumentIcon, HeaderIconButton, AppIcon, and order ticket route modal"]
+      "states": [
+        "default",
+        "loading",
+        "not_found",
+        "restricted"
+      ],
+      "riskRules": [
+        "Trading entry must route through order ticket and must not bypass quote/account entitlement checks."
+      ],
+      "permissions": [
+        "Trader role plus production quote entitlement and trading account checks."
+      ],
+      "dataInputs": [
+        "instrument quote",
+        "chart summary",
+        "market stats",
+        "order ticket route params"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "qaGate": [
+        "Uses registered InstrumentIcon, HeaderIconButton, AppIcon, and order ticket route modal"
+      ]
     },
     "UpgradeChatCard": {
       "component": "UpgradeChatCard",
       "businessDomain": "partner-upgrade",
-      "states": ["none", "pending", "approved", "rejected", "readonly"],
-      "riskRules": ["Partner upgrade state must not be overstated as approval before approved status."],
-      "permissions": ["Shown according to role and upgrade request status."],
-      "dataInputs": ["upgrade request", "readonly flag"],
-      "platforms": ["app", "h5", "web"],
-      "qaGate": ["State label visible", "No promise of financial outcome"]
+      "states": [
+        "none",
+        "pending",
+        "approved",
+        "rejected",
+        "readonly"
+      ],
+      "riskRules": [
+        "Partner upgrade state must not be overstated as approval before approved status."
+      ],
+      "permissions": [
+        "Shown according to role and upgrade request status."
+      ],
+      "dataInputs": [
+        "upgrade request",
+        "readonly flag"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "qaGate": [
+        "State label visible",
+        "No promise of financial outcome"
+      ]
     },
     "ScreenCompositions": {
       "component": "src/screens route compositions",
       "businessDomain": "route-orchestration",
-      "states": ["default", "loading", "empty", "error", "restricted", "reviewing"],
-      "riskRules": ["Screens may orchestrate business actions but must not define reusable uppercase UI in app routes."],
-      "permissions": ["Route and store guards own access rules."],
-      "dataInputs": ["useBroker", "useProductSettings", "router params", "domain formatters"],
-      "platforms": ["app"],
-      "qaGate": ["app route boundary check", "component manifest check", "icon registry check"]
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "restricted",
+        "reviewing"
+      ],
+      "riskRules": [
+        "Screens may orchestrate business actions but must not define reusable uppercase UI in app routes."
+      ],
+      "permissions": [
+        "Route and store guards own access rules."
+      ],
+      "dataInputs": [
+        "useBroker",
+        "useProductSettings",
+        "router params",
+        "domain formatters"
+      ],
+      "platforms": [
+        "app"
+      ],
+      "qaGate": [
+        "app route boundary check",
+        "component manifest check",
+        "icon registry check"
+      ]
+    },
+    "TradingAccountContextSwitcher": {
+      "component": "TradingAccountContextSwitcher governance target",
+      "businessDomain": "trading-account-selection",
+      "states": [
+        "default",
+        "selected",
+        "restricted",
+        "empty",
+        "feedback"
+      ],
+      "riskRules": [
+        "Account identity, status, server, and scope must remain visible before market, funding, and trading actions."
+      ],
+      "permissions": [
+        "Signed-in trader or partner flows; production must enforce account ownership and entitlement checks."
+      ],
+      "dataInputs": [
+        "TradingAccountProfile[]",
+        "selected account id",
+        "status labels",
+        "add-account feedback copy",
+        "onSelect"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "currentSources": [
+        "src/components/business/TradingAccountContextSwitcher.tsx",
+        "src/screens/markets/MarketsScreen.tsx",
+        "src/screens/portfolio/PortfolioScreen.tsx",
+        "src/screens/funding/FundingScreens.tsx"
+      ],
+      "extractionStatus": "implemented_active",
+      "qaGate": [
+        "No page-local trading account switcher shells after migration",
+        "Uses BottomSheet selection preset",
+        "Uses registered AppIcon keys and i18n copy",
+        "Markets, Portfolio, and Funding import the shared context switcher wrapper"
+      ],
+      "sourcePath": "src/components/business/TradingAccountContextSwitcher.tsx"
+    },
+    "OrderPositionDetailSheet": {
+      "component": "OrderPositionDetailSheet governance target",
+      "businessDomain": "trading-order-detail",
+      "states": [
+        "position-detail",
+        "pending-order-detail",
+        "history-order-detail",
+        "restricted",
+        "mutation-feedback"
+      ],
+      "riskRules": [
+        "Modify, delete, and close actions must expose recoverable feedback and registered confirmation when risk level is high."
+      ],
+      "permissions": [
+        "Trader role plus production order/account entitlement checks."
+      ],
+      "dataInputs": [
+        "position row",
+        "pending order row",
+        "history order row",
+        "direction label",
+        "risk copy",
+        "mutation handlers"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "currentSources": [
+        "src/components/business/OrderPositionDetailSheet.tsx",
+        "src/screens/portfolio/PortfolioScreen.tsx"
+      ],
+      "extractionStatus": "implemented_active",
+      "qaGate": [
+        "Uses ConfirmActionSheet for high-risk close/delete flows",
+        "Uses KeyValueList and TradeDirectionIcon",
+        "No page-local hardcoded high-risk copy after migration",
+        "Portfolio detail sheets import the shared sheet body component"
+      ],
+      "sourcePath": "src/components/business/OrderPositionDetailSheet.tsx"
+    },
+    "MetricCluster": {
+      "component": "MetricCluster",
+      "businessDomain": "financial-kpi-summary",
+      "states": [
+        "default",
+        "positive",
+        "negative",
+        "neutral",
+        "loading",
+        "empty"
+      ],
+      "riskRules": [
+        "Financial metrics must keep labels, units, sign, and period context visible."
+      ],
+      "permissions": [
+        "Caller controls data scope and masking policy."
+      ],
+      "dataInputs": [
+        "metric items",
+        "tone",
+        "period label",
+        "formatters"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web",
+        "admin"
+      ],
+      "currentSources": [
+        "src/components/business/MetricCluster.tsx",
+        "src/screens/accounts/AccountDetailsScreen.tsx"
+      ],
+      "extractionStatus": "implemented_active",
+      "qaGate": [
+        "No repeated page-local KPI grid when MetricCluster can compose it",
+        "Uses token-bound spacing and typography roles",
+        "Runtime component exported from src/components/business",
+        "Registered in component-manifest.json"
+      ],
+      "sourcePath": "src/components/business/MetricCluster.tsx"
+    },
+    "FinancialTrendChart": {
+      "component": "FinancialTrendChart family",
+      "businessDomain": "financial-data-visualization",
+      "states": [
+        "default",
+        "positive",
+        "negative",
+        "flat",
+        "empty"
+      ],
+      "riskRules": [
+        "Charts are supplemental; numeric source values and labels must remain available as text."
+      ],
+      "permissions": [
+        "Caller controls instrument/account data access."
+      ],
+      "dataInputs": [
+        "series values",
+        "tone",
+        "axis labels",
+        "formatter",
+        "accessibility summary"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "currentSources": [
+        "src/components/business/FinancialTrendChart.tsx",
+        "src/screens/accounts/AccountDetailsScreen.tsx",
+        "src/screens/markets/InstrumentDetailScreen.tsx"
+      ],
+      "extractionStatus": "implemented_active",
+      "qaGate": [
+        "No page-local SVG chart for reusable financial trends after migration",
+        "Textual value fallback required",
+        "Token-bound color roles only",
+        "Route screens do not import react-native-svg for migrated charts",
+        "Chart sizes use size.chart tokens"
+      ],
+      "sourcePath": "src/components/business/FinancialTrendChart.tsx"
+    },
+    "RiskGauge": {
+      "component": "RiskGauge",
+      "businessDomain": "financial-risk-visualization",
+      "states": [
+        "safe",
+        "warning",
+        "danger",
+        "unknown"
+      ],
+      "riskRules": [
+        "Risk status must not be reduced to color-only communication; text label and score are required."
+      ],
+      "permissions": [
+        "Caller controls account scope and risk model."
+      ],
+      "dataInputs": [
+        "risk value",
+        "risk labels",
+        "thresholds",
+        "formatter"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "currentSources": [
+        "src/components/business/RiskGauge.tsx",
+        "src/screens/accounts/AccountDetailsScreen.tsx"
+      ],
+      "extractionStatus": "implemented_active",
+      "qaGate": [
+        "Text label required",
+        "No color-only risk state",
+        "Registered pattern dependency required",
+        "Risk visualization includes textual safe/risk labels",
+        "Gauge sizes use size.chart tokens"
+      ],
+      "sourcePath": "src/components/business/RiskGauge.tsx"
+    },
+    "PartnerPortalSummary": {
+      "component": "PartnerPortalSummary",
+      "businessDomain": "partner-portal",
+      "states": [
+        "trader-preview",
+        "partner-approved",
+        "pending",
+        "restricted"
+      ],
+      "riskRules": [
+        "Partner rebate and conversion copy must avoid income guarantees and must show synthetic/demo status when applicable."
+      ],
+      "permissions": [
+        "Trader preview or Partner role; production Partner data scope required."
+      ],
+      "dataInputs": [
+        "partner metrics",
+        "rebate value",
+        "role",
+        "upgrade status"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "currentSources": [
+        "src/components/business/DiscoverProfileCards.tsx",
+        "src/screens/discover/DiscoverModuleScreen.tsx"
+      ],
+      "extractionStatus": "implemented_active",
+      "qaGate": [
+        "No page-local Partner card clone after migration",
+        "Financial Copy Review required",
+        "Dependency graph edge required",
+        "Discover profile imports shared PartnerPortalSummary",
+        "Visible copy uses i18n keys"
+      ],
+      "sourcePath": "src/components/business/DiscoverProfileCards.tsx"
+    },
+    "RewardSummaryCard": {
+      "component": "RewardSummaryCard",
+      "businessDomain": "promotion-reward",
+      "states": [
+        "default",
+        "active-campaigns",
+        "empty",
+        "restricted"
+      ],
+      "riskRules": [
+        "Reward copy must not imply trading profit or guaranteed outcome."
+      ],
+      "permissions": [
+        "Caller controls campaign eligibility and role visibility."
+      ],
+      "dataInputs": [
+        "reward value",
+        "campaign count",
+        "status label",
+        "reward icon or illustration"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "currentSources": [
+        "src/components/business/DiscoverProfileCards.tsx",
+        "src/screens/discover/DiscoverModuleScreen.tsx"
+      ],
+      "extractionStatus": "implemented_active",
+      "qaGate": [
+        "Financial Copy Review required",
+        "Illustration registry edge required if illustration is used",
+        "Discover profile imports shared RewardSummaryCard",
+        "Reward copy uses i18n keys"
+      ],
+      "sourcePath": "src/components/business/DiscoverProfileCards.tsx"
+    },
+    "VerificationStatusCard": {
+      "component": "VerificationStatusCard",
+      "businessDomain": "kyc-compliance",
+      "states": [
+        "not-started",
+        "in-review",
+        "verified",
+        "rejected",
+        "restricted"
+      ],
+      "riskRules": [
+        "Verification status must not imply production approval unless backend KYC approval exists."
+      ],
+      "permissions": [
+        "Guest or signed-in contexts; production KYC provider state required."
+      ],
+      "dataInputs": [
+        "status",
+        "status copy",
+        "next action",
+        "risk/compliance note"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "currentSources": [
+        "src/components/business/DiscoverProfileCards.tsx",
+        "src/screens/discover/DiscoverModuleScreen.tsx"
+      ],
+      "extractionStatus": "implemented_active",
+      "qaGate": [
+        "No hardcoded approval language",
+        "Status and recovery path visible",
+        "i18n key required",
+        "Discover profile imports shared VerificationStatusCard",
+        "Verification copy uses i18n keys"
+      ],
+      "sourcePath": "src/components/business/DiscoverProfileCards.tsx"
+    },
+    "ThemePreviewSelector": {
+      "component": "ThemePreviewSelector",
+      "businessDomain": "appearance-preferences",
+      "states": [
+        "selected",
+        "unselected",
+        "system",
+        "light",
+        "dark"
+      ],
+      "riskRules": [
+        "Theme selection is local preference only and must not affect account/risk state."
+      ],
+      "permissions": [
+        "Signed-in optional local settings."
+      ],
+      "dataInputs": [
+        "theme modes",
+        "selected mode",
+        "preview tokens"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "currentSources": [
+        "src/components/business/ThemePreviewSelector.tsx",
+        "src/screens/settings/AppearanceScreen.tsx"
+      ],
+      "extractionStatus": "implemented_active",
+      "qaGate": [
+        "Preview uses token-bound values",
+        "No page-local preview card clone after migration",
+        "AppearanceScreen imports shared ThemePreviewSelector",
+        "Preview dimensions use size.themePreview tokens"
+      ],
+      "sourcePath": "src/components/business/ThemePreviewSelector.tsx"
+    },
+    "LocalPinSecurityFlow": {
+      "component": "LocalPinSecurityFlow",
+      "businessDomain": "local-security",
+      "states": [
+        "setup",
+        "confirm",
+        "unlock",
+        "skipped",
+        "error",
+        "locked"
+      ],
+      "riskRules": [
+        "Local PIN must stay optional unless an explicit locked-state flow requires unlock.",
+        "PIN copy must not imply server-side account security coverage."
+      ],
+      "permissions": [
+        "Guest or signed-in optional local security flow; production account security checks remain server-owned."
+      ],
+      "dataInputs": [
+        "pin length",
+        "redirect target",
+        "local PIN state",
+        "error feedback copy"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "currentSources": [
+        "src/screens/auth/PinSetupScreen.tsx",
+        "src/auth/authFlow.ts",
+        "src/settings/ProductSettings.tsx",
+        "src/i18n/translations.ts"
+      ],
+      "extractionStatus": "implemented_active",
+      "qaGate": [
+        "UX Gate required for setup/unlock recovery",
+        "Copy-table/i18n key required for visible PIN state copy",
+        "No forced unlock when local PIN is disabled by default",
+        "Locked-state unlock bypass is guarded by pinGateStatus",
+        "Runtime screen consumes components/tokens/copy through src/design-public-assets facade"
+      ],
+      "sourcePath": "src/screens/auth/PinSetupScreen.tsx"
+    },
+    "RelationshipManagerCard": {
+      "component": "RelationshipManagerCard",
+      "businessDomain": "profile-support",
+      "states": [
+        "default",
+        "pressed",
+        "unavailable"
+      ],
+      "riskRules": [
+        "Relationship manager entry must not imply guaranteed service response time unless backend SLA exists."
+      ],
+      "permissions": [
+        "Caller controls visibility by account and service availability."
+      ],
+      "dataInputs": [
+        "managerName",
+        "onPress",
+        "localized title",
+        "localized accessibility label"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "currentSources": [
+        "src/components/business/DiscoverProfileCards.tsx",
+        "src/screens/discover/DiscoverModuleScreen.tsx"
+      ],
+      "extractionStatus": "implemented_active",
+      "sourcePath": "src/components/business/DiscoverProfileCards.tsx",
+      "qaGate": [
+        "Uses NativePressable for chat action",
+        "Visible copy uses i18n keys",
+        "Registered icon only"
+      ]
+    },
+    "TradingTerminalChart": {
+      "component": "TradingTerminalChart",
+      "businessDomain": "instrument-trading-terminal",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "quote_stale",
+        "market_closed",
+        "restricted"
+      ],
+      "riskRules": [
+        "Quote freshness, market status, Bid/Ask, and current price must remain visible as text.",
+        "Charts are decision support only; order entry still routes through the governed order ticket.",
+        "Trend, quote exception, and risk states must not be communicated by color only."
+      ],
+      "permissions": [
+        "Caller controls instrument visibility and trading entitlement before rendering or opening order flows."
+      ],
+      "dataInputs": [
+        "Instrument",
+        "InstrumentCandle[] by timeframe",
+        "Bid/Ask/current price",
+        "quote status",
+        "market status",
+        "toolbar i18n labels"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "currentSources": [
+        "src/components/business/TradingTerminalChart.tsx",
+        "src/screens/markets/InstrumentDetailScreen.tsx"
+      ],
+      "extractionStatus": "implemented_active",
+      "qaGate": [
+        "All react-native-svg rendering is inside this business component",
+        "Toolbar icons come from the local registered AppIcon registry",
+        "OHLCV, Bid/Ask, current price, and stale/closed/restricted states are text-labeled",
+        "Mobile width keeps chart toolbar horizontally scrollable without overflow"
+      ],
+      "sourcePath": "src/components/business/TradingTerminalChart.tsx"
     }
   }
 }

@@ -1,16 +1,16 @@
 import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { ActionButton } from '@/src/components/ActionButton';
-import { AppIcon, type AppIconName, type IconTone } from '@/src/components/AppIcon';
-import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
-import { Card } from '@/src/components/Card';
-import { ConfirmActionSheet } from '@/src/components/ConfirmActionSheet';
-import { IconSurface, type IconSurfaceTone } from '@/src/components/IconSurface';
-import { NativePressable } from '@/src/components/NativePressable';
-import { Screen } from '@/src/components/Screen';
-import { StatusPill, type StatusPillTone } from '@/src/components/StatusPill';
-import { AppText } from '@/src/components/Typography';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { AppIcon, type AppIconName, type IconTone } from '@/src/design-public-assets/components';
+import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { Card } from '@/src/design-public-assets/components';
+import { ConfirmActionSheet } from '@/src/design-public-assets/components';
+import { IconSurface, type IconSurfaceTone } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { Screen } from '@/src/design-public-assets/components';
+import { StatusPill, type StatusPillTone } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import {
   buildSecurityLoginDevices,
   reportSecurityEvent,
@@ -23,8 +23,8 @@ import {
 } from '@/src/domain/securityLoginLog';
 import { useToast } from '@/src/feedback/Toast';
 import { impactLight, notifySuccess, notifyWarning } from '@/src/feedback/haptics';
-import { useProductSettings } from '@/src/settings/ProductSettings';
-import { layout, lineWidth, radius, size, spacing } from '@/src/theme/tokens';
+import { useProductSettings } from '@/src/design-public-assets/copy';
+import { layout, lineWidth, radius, size, spacing } from '@/src/design-public-assets/tokens';
 
 type SummaryMetric = {
   label: string;
@@ -226,7 +226,7 @@ function SecurityDeviceCard({ device, formatDate, onPress }: { device: SecurityD
       accessibilityRole="button"
       minTouch={96}
       onPress={onPress}
-      style={StyleSheet.flatten([styles.deviceCard, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+      style={StyleSheet.flatten([styles.deviceCard, { backgroundColor: colors.surface.panel }])}>
       <IconSurface icon={deviceIcon(device.deviceType)} sizeVariant="md" tone={resolveRiskIconSurfaceTone(device.riskLevel)} />
       <View style={styles.deviceBody}>
         <View style={styles.deviceTopRow}>
@@ -282,7 +282,7 @@ function DeviceDetailSheet({
 
   return (
     <View style={styles.sheetContent}>
-      <View style={StyleSheet.flatten([styles.detailHeaderCard, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+      <View style={StyleSheet.flatten([styles.detailHeaderCard, { backgroundColor: colors.surface.panel }])}>
         <View style={styles.inlineRow}>
           <StatusPill compact label={t(`securityLog.risk.${device.riskLevel}`)} tone={riskTone(device.riskLevel)} />
           {device.isCurrentDevice ? <StatusPill compact label={t('securityLog.status.current')} tone="info" /> : null}
@@ -318,15 +318,19 @@ function DeviceDetailSheet({
                 </AppText>
               ) : null}
             </View>
-            <ActionButton
+            <NativePressable
+              accessibilityLabel={t('securityLog.action.revokeShort')}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: session.isCurrentSession || session.status === 'revoked' }}
               disabled={session.isCurrentSession || session.status === 'revoked'}
-              icon="icon.system.logout"
-              label={t('securityLog.action.revokeShort')}
+              minTouch={size.button.textMinTouch}
               onPress={() => onOpenConfirmRevoke(session)}
-              sizePreset="default"
-              tone="danger"
-              variant="text"
-            />
+              style={styles.textAction}>
+              <AppIcon name="icon.system.logout" sizeVariant="sm" tone={session.isCurrentSession || session.status === 'revoked' ? 'disabled' : 'danger'} />
+              <AppText tone={session.isCurrentSession || session.status === 'revoked' ? 'disabled' : 'danger'} variant="subtitle">
+                {t('securityLog.action.revokeShort')}
+              </AppText>
+            </NativePressable>
           </View>
         ))}
       </View>
@@ -350,13 +354,17 @@ function DeviceDetailSheet({
               </AppText>
             </View>
             {event.status === 'open' && event.riskLevel !== 'low' ? (
-              <ActionButton
-                icon="icon.security.risk_shield"
-                label={t('securityLog.action.reportShort')}
+              <NativePressable
+                accessibilityLabel={t('securityLog.action.reportShort')}
+                accessibilityRole="button"
+                minTouch={size.button.textMinTouch}
                 onPress={() => onOpenConfirmReport(event)}
-                tone="danger"
-                variant="text"
-              />
+                style={styles.textAction}>
+                <AppIcon name="icon.security.risk_shield" sizeVariant="sm" tone="danger" />
+                <AppText tone="danger" variant="subtitle">
+                  {t('securityLog.action.reportShort')}
+                </AppText>
+              </NativePressable>
             ) : null}
           </View>
         ))}
@@ -428,7 +436,7 @@ function formatSecurityDate(value: string, locale: string) {
 
 const styles = StyleSheet.create({
   detailHeaderCard: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     gap: spacing.sm,
     padding: spacing.md,
@@ -440,7 +448,7 @@ const styles = StyleSheet.create({
   },
   deviceCard: {
     alignItems: 'center',
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flexDirection: 'row',
     gap: spacing.md,
@@ -495,6 +503,13 @@ const styles = StyleSheet.create({
   sheetSection: {
     gap: spacing.sm,
   },
+  textAction: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.xs,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.sm,
+  },
   summaryGrid: {
     flexDirection: 'row',
     gap: spacing.sm,
@@ -506,7 +521,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   summaryMetric: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flex: 1,
     gap: spacing.xs,

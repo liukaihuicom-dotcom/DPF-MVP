@@ -1,19 +1,16 @@
 import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
-import { Card } from '@/src/components/Card';
-import { CurrencyFlag } from '@/src/components/CurrencyFlag';
-import { DescribedLabel } from '@/src/components/DescribedLabel';
-import { FundActionGrid } from '@/src/components/FundActionGrid';
-import { IconSurface } from '@/src/components/IconSurface';
-import { Metric } from '@/src/components/Metric';
-import { NativePressable } from '@/src/components/NativePressable';
-import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
-import { AppIcon } from '@/src/components/AppIcon';
-import { Screen } from '@/src/components/Screen';
-import { Sparkline } from '@/src/components/Sparkline';
-import { StatusPill, type StatusPillTone } from '@/src/components/StatusPill';
-import { AppText } from '@/src/components/Typography';
+import { Card } from '@/src/design-public-assets/components';
+import { DescribedLabel } from '@/src/design-public-assets/components';
+import { FundActionGrid } from '@/src/design-public-assets/components';
+import { Metric } from '@/src/design-public-assets/components';
+import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { MetricDescriptionSheet } from '@/src/design-public-assets/business-components';
+import { Screen } from '@/src/design-public-assets/components';
+import { Sparkline } from '@/src/design-public-assets/components';
+import { TradingAccountCard } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import {
   buildTradingAccountProfiles,
   getAccountStatusLabel,
@@ -23,9 +20,9 @@ import {
 import { formatCompactMoney, formatMoney, formatVolumeMillions, localizeText, statusLabel } from '@/src/domain/format';
 import { getFundingOperationActions } from '@/src/domain/funding';
 import { commissions, partnerMetrics } from '@/src/domain/mockData';
-import { useProductSettings } from '@/src/settings/ProductSettings';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
-import { lineWidth, layout, radius, spacing, typography } from '@/src/theme/tokens';
+import { lineWidth, layout, radius, size, spacing, typography } from '@/src/design-public-assets/tokens';
 
 export default function AccountScreen() {
   return <TraderAccountsScreen />;
@@ -81,56 +78,13 @@ function TraderAccountsScreen() {
 }
 
 function AccountListCard({ profile }: { profile: TradingAccountProfile }) {
-  const { locale, colors, t } = useProductSettings();
-  const status = profile.group !== 'active' ? getAccountStatusLabel(profile.group, locale) : '';
-  const statusTone: StatusPillTone = profile.group === 'demo' ? 'brand' : profile.group === 'disabled' || profile.group === 'archived' ? 'danger' : 'warning';
-
   return (
-    <NativePressable
+    <TradingAccountCard
       accessibilityLabel={profile.accountNo}
-      minTouch={86}
       onPress={() => router.push(`/account-details/${profile.id}`)}
-      style={StyleSheet.flatten([styles.accountCard, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-      <IconSurface icon="icon.account.trading" sizeVariant="md" />
-      <View style={styles.accountCardBody}>
-        <View style={styles.accountCardTop}>
-          <View style={styles.accountTitleBlock}>
-            <View style={styles.accountNumberRow}>
-              <AppText variant="subtitle">{profile.accountNo}</AppText>
-              {status ? <StatusPill compact label={status} tone={statusTone} /> : null}
-            </View>
-            <View style={styles.accountMetaRow}>
-              <CurrencyFlag currency={profile.currency} size={14} />
-              <AppText numberOfLines={1} tone="muted" variant="caption">
-                {profile.currency} · {profile.platform} · {profile.type}
-              </AppText>
-            </View>
-          </View>
-          <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
-        </View>
-
-        <View style={StyleSheet.flatten([styles.accountDivider, { backgroundColor: colors.border.subtle }])} />
-        <View style={styles.accountValues}>
-          <View style={styles.accountValueCell}>
-            <AppText style={styles.accountValueAmount}>{formatMoney(profile.equity, profile.currency, 2, locale)}</AppText>
-            <AppText style={styles.accountValueLabel} tone="muted">
-              {t('account.equity')}
-            </AppText>
-          </View>
-          <View style={styles.accountValueCell}>
-            <AppText style={styles.accountValueAmount} tone={profile.unrealizedPnl >= 0 ? 'down' : 'up'}>
-              {formatMoney(profile.unrealizedPnl, profile.currency, 2, locale)}
-            </AppText>
-            <AppText style={styles.accountValueLabel} tone="muted">
-              {t('portfolio.unrealizedPnl')}
-            </AppText>
-          </View>
-        </View>
-        <AppText tone="dim" variant="caption">
-          {t('accountDetails.lastTrade')} {profile.lastTrade}
-        </AppText>
-      </View>
-    </NativePressable>
+      profile={profile}
+      trailing="chevron"
+    />
   );
 }
 
@@ -182,12 +136,12 @@ function AccountOverviewCard({ overview }: { overview: AccountOverview }) {
           <View style={styles.overviewDailyBlock}>
             <View style={styles.overviewDailyRow}>
               <AppText tone="muted" variant="caption">{t('accounts.overview.dailyPnl')}</AppText>
-              <AppText numberOfLines={1} style={styles.overviewDailyValue} tone={overview.todayPnl >= 0 ? 'down' : 'up'} variant="subtitle">
+              <AppText numberOfLines={1} style={styles.overviewDailyValue} tone={overview.todayPnl >= 0 ? 'up' : 'down'} variant="subtitle">
                 {formatMoney(overview.todayPnl, 'USD', 2, locale)}
               </AppText>
             </View>
             <View style={styles.overviewTrend}>
-              <Sparkline edgeToEdge color={overview.todayPnl >= 0 ? colors.market.down.fg : colors.market.up.fg} height={56} values={overview.trendValues} width="100%" />
+              <Sparkline edgeToEdge color={overview.todayPnl >= 0 ? colors.market.up.fg : colors.market.down.fg} height={56} values={overview.trendValues} width="100%" />
             </View>
           </View>
         </View>
@@ -197,38 +151,18 @@ function AccountOverviewCard({ overview }: { overview: AccountOverview }) {
         <View style={styles.overviewSide}>
           <OverviewSideMetric
             label={t('accounts.overview.totalUnrealizedPnl')}
-            tone={overview.totalUnrealizedPnl >= 0 ? 'down' : 'up'}
+            tone={overview.totalUnrealizedPnl >= 0 ? 'up' : 'down'}
             value={formatMoney(overview.totalUnrealizedPnl, 'USD', 2, locale)}
           />
           <OverviewSideMetric
             label={t('accounts.overview.totalReturn')}
-            tone={overview.totalReturn >= 0 ? 'down' : 'up'}
+            tone={overview.totalReturn >= 0 ? 'up' : 'down'}
             value={formatMoney(overview.totalReturn, 'USD', 2, locale)}
           />
           <OverviewSideMetric label={t('accounts.overview.activeAccounts')} value={`${overview.activeAccountCount}`} />
         </View>
       </View>
     </Card>
-  );
-}
-
-function MetricDescriptionSheet({ description, label, value }: { description: string; label: string; value: string }) {
-  const { colors } = useProductSettings();
-
-  return (
-    <View style={styles.descriptionSheet}>
-      <View style={StyleSheet.flatten([styles.descriptionValueCard, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-        <AppText tone="muted" variant="caption">
-          {label}
-        </AppText>
-        <AppText numberOfLines={1} variant="subtitle">
-          {value}
-        </AppText>
-      </View>
-      <AppText tone="muted" variant="body">
-        {description}
-      </AppText>
-    </View>
   );
 }
 
@@ -251,7 +185,7 @@ export function CommissionScreen({ showBack = false }: { showBack?: boolean }) {
       <Card highlight>
         <View style={styles.metricRow}>
           <Metric label={t('commission.pending')} tone="amber" value={formatCompactMoney(partnerMetrics.pendingCommission, 'USD', locale)} />
-          <Metric label={t('commission.settled')} tone="down" value={formatCompactMoney(partnerMetrics.settledCommission, 'USD', locale)} />
+          <Metric label={t('commission.settled')} tone="up" value={formatCompactMoney(partnerMetrics.settledCommission, 'USD', locale)} />
         </View>
       </Card>
 
@@ -283,7 +217,7 @@ export function CommissionScreen({ showBack = false }: { showBack?: boolean }) {
               </AppText>
             </View>
             <View style={styles.recordSide}>
-              <AppText tone={commission.status === 'pending' ? 'amber' : 'down'} variant="body">
+              <AppText tone={commission.status === 'pending' ? 'amber' : 'up'} variant="body">
                 {formatMoney(commission.amount, 'USD', 2, locale)}
               </AppText>
               <AppText tone="dim" variant="caption">
@@ -331,29 +265,6 @@ function buildOverviewTrend(totalEquity: number, totalReturn: number) {
 }
 
 const styles = StyleSheet.create({
-  accountCard: {
-    alignItems: 'flex-start',
-    borderRadius: radius.md,
-    borderWidth: lineWidth.none,
-    flexDirection: 'row',
-    gap: spacing.md,
-    paddingHorizontal: layout.cardPaddingX,
-    paddingVertical: layout.cardPaddingY,
-  },
-  accountCardBody: {
-    flex: 1,
-    gap: 9,
-    minWidth: 0,
-  },
-  accountCardTop: {
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    gap: 8,
-    justifyContent: 'space-between',
-  },
-  accountDivider: {
-    height: lineWidth.hairline,
-  },
   accountGroup: {
     gap: spacing.md,
   },
@@ -367,61 +278,19 @@ const styles = StyleSheet.create({
   accountGroupTitleText: {
     ...typography.caption,
   },
-  accountMetaRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 6,
-    minWidth: 0,
-  },
-  accountNumberRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-  },
-  accountTitleBlock: {
-    flex: 1,
-    minWidth: 0,
-  },
-  accountValueCell: {
-    flex: 1,
-    gap: 1,
-    minWidth: 0,
-  },
-  accountValueAmount: {
-    ...typography.displayLg,
-  },
-  accountValueLabel: {
-    ...typography.caption,
-  },
-  accountValues: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  descriptionSheet: {
-    gap: spacing.lg,
-    paddingHorizontal: spacing.xs,
-    paddingTop: spacing.xs,
-  },
-  descriptionValueCard: {
-    borderRadius: 10,
-    borderWidth: lineWidth.none,
-    gap: spacing.xs,
-    padding: spacing.md,
-  },
   metricRow: {
     flexDirection: 'row',
-    gap: 12,
-    marginTop: 12,
+    gap: spacing.md,
+    marginTop: spacing.md,
   },
   overviewCardContent: {
     alignItems: 'stretch',
     flexDirection: 'row',
-    gap: 14,
+    gap: radius.lg,
   },
   overviewDailyBlock: {
-    gap: 6,
-    marginTop: 16,
+    gap: spacing.xs + spacing.xxs,
+    marginTop: spacing.lg,
   },
   overviewDailyRow: {
     alignItems: 'center',
@@ -440,12 +309,12 @@ const styles = StyleSheet.create({
   },
   overviewSide: {
     flex: 0.82,
-    gap: 12,
+    gap: spacing.md,
     justifyContent: 'center',
     minWidth: 116,
   },
   overviewSideMetric: {
-    gap: 3,
+    gap: spacing.xs - lineWidth.strong,
     minWidth: 0,
   },
   overviewSideMetricLabel: {
@@ -453,7 +322,7 @@ const styles = StyleSheet.create({
   },
   overviewTrend: {
     alignItems: 'flex-end',
-    height: 56,
+    height: size.control.lg,
     justifyContent: 'center',
     width: '100%',
   },
@@ -469,9 +338,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: lineWidth.hairline,
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
     minHeight: 60,
-    paddingVertical: 10,
+    paddingVertical: spacing.sm + spacing.xxs,
   },
   recordSide: {
     alignItems: 'flex-end',
@@ -479,14 +348,14 @@ const styles = StyleSheet.create({
   },
   ruleRow: {
     flexDirection: 'row',
-    gap: 8,
-    marginBottom: 10,
-    marginTop: 12,
+    gap: spacing.sm,
+    marginBottom: spacing.sm + spacing.xxs,
+    marginTop: spacing.md,
   },
   sectionTitle: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 4,
+    marginTop: spacing.xs,
   },
 });

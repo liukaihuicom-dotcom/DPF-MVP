@@ -9,7 +9,7 @@ import { AppText } from '../Typography';
 
 type LegendDotProps = {
   label: string;
-  tone: Extract<IconTone, 'amber' | 'blue' | 'brand' | 'danger' | 'down' | 'text' | 'textDim' | 'textMuted' | 'up'>;
+  tone: Extract<IconTone, 'amber' | 'blue' | 'brand' | 'danger' | 'down' | 'success' | 'text' | 'textDim' | 'textMuted' | 'up'>;
 };
 
 export function LegendDot({ label, tone }: LegendDotProps) {

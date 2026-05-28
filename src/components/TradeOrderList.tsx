@@ -66,7 +66,7 @@ export function TradeOrderList({
               </AppText>
               <AppText
                 numberOfLines={1}
-                tone={row.direction === 'buy' ? 'down' : 'up'}
+                tone={row.direction === 'buy' ? 'up' : 'down'}
                 variant="subtitle"
               >
                 {row.quantityLabel}
@@ -103,7 +103,7 @@ export function TradeOrderList({
 const styles = StyleSheet.create({
   card: {
     paddingBottom: spacing.none,
-    paddingHorizontal: spacing.none,
+    paddingHorizontal: layout.cardPaddingX,
     paddingTop: spacing.none,
   },
   main: {

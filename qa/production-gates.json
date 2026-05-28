@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "gates": [
     "business",
     "permission",
@@ -14,7 +14,11 @@
     "performance",
     "security",
     "handoff",
-    "runtime"
+    "runtime",
+    "public-resource-governance",
+    "asset-dependency-graph",
+    "copy-table",
+    "pattern-reuse",
+    "business-component-extraction"
   ]
 }
-

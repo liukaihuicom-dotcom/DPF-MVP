@@ -8,14 +8,51 @@
     "transaction-timeline",
     "bank-account-card",
     "risk-warning-banner",
-    "kyc-status-block"
+    "kyc-status-block",
+    "security-alert-banner",
+    "security-score-card",
+    "security-setting-list",
+    "gsl-change-list",
+    "device-list",
+    "login-history-list",
+    "verification-modal",
+    "confirm-risk-modal"
   ],
   "required_patterns": [
     "form-pattern",
     "review-pattern",
     "list-pattern",
     "detail-pattern",
-    "empty-error-pattern"
-  ]
+    "empty-error-pattern",
+    "security-center-overview-pattern",
+    "security-verification-pattern",
+    "security-gsl-cooling-pattern"
+  ],
+  "security_center": {
+    "page_contract": "product-engineering-package/04_page_contracts/pages/app-security-center.page-contract.json",
+    "implementation_status": "contract_ready_route_not_yet_implemented",
+    "base_components": [
+      "Screen",
+      "Card",
+      "AppText",
+      "ActionButton",
+      "StatusPill",
+      "IconSurface",
+      "AppIcon",
+      "BottomSheet",
+      "ConfirmActionSheet",
+      "SegmentedTabs",
+      "KeyValueList",
+      "Metric"
+    ],
+    "runtime_reuse": [
+      "SecurityLoginLogScreen remains compatibility/detail surface",
+      "src/domain/securityLoginLog.ts can inform device/login mock shape but must not be the complete Security Center source"
+    ],
+    "forbidden": [
+      "No local risk-policy calculation in the page",
+      "No page-local SVG or third-party icon imports",
+      "No local PIN mandatory gate introduced by TOTP/MFA"
+    ]
+  }
 }
-

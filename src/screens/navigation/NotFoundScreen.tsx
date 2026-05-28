@@ -1,9 +1,9 @@
 import { Link, Stack } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
-import { AppText } from '@/src/components/Typography';
-import { useProductSettings } from '@/src/settings/ProductSettings';
-import { spacing } from '@/src/theme/tokens';
+import { AppText } from '@/src/design-public-assets/components';
+import { useProductSettings } from '@/src/design-public-assets/copy';
+import { spacing } from '@/src/design-public-assets/tokens';
 
 export default function NotFoundScreen() {
   const { colors, t } = useProductSettings();

@@ -1,0 +1,288 @@
+import { StyleSheet, View } from 'react-native';
+
+import { DetailInline } from '@/src/components/data-display';
+import { KeyValueList, type KeyValueListItem } from '@/src/components/KeyValueList';
+import { TradeDirectionIcon } from '@/src/components/TradeDirectionIcon';
+import { AppText, type AppTextTone } from '@/src/components/Typography';
+import type { Direction } from '@/src/domain/types';
+import { useThemeColors } from '@/src/settings/ProductSettings';
+import { layout, lineWidth, radius, spacing } from '@/src/theme/tokens';
+
+type DataSummaryHeroProps = {
+  emphasis?: 'default' | 'strong';
+  label: string;
+  supportingValue?: string;
+  tone?: AppTextTone;
+  value: string;
+};
+
+type DirectionSummary = {
+  direction: Direction;
+  label: string;
+  lots: string;
+  priceRange?: string;
+  symbol: string;
+};
+
+type OrderPositionDetailSheetProps = {
+  detailItems: KeyValueListItem[];
+  summary: DirectionSummary;
+  title?: string;
+  valueHero?: DataSummaryHeroProps;
+};
+
+type ClosedOrderDeal = {
+  delta: string;
+  detailItems?: { label: string; value: string }[];
+  id: string;
+  lots: string;
+  pnlText: string;
+  priceRange: string;
+};
+
+type ClosedOrderDetailSheetProps = {
+  dealCountLabel: string;
+  deals: ClosedOrderDeal[];
+  detailItems: { label: string; value: string }[];
+  pnlDelta: string;
+  pnlText: string;
+  summary: DirectionSummary;
+  ticketLabel: string;
+  ticketValue: string;
+};
+
+const rowMinHeight = spacing.xxl - spacing.xs;
+
+export function OrderPositionDetailSheet({ detailItems, summary, title, valueHero }: OrderPositionDetailSheetProps) {
+  const colors = useThemeColors();
+
+  return (
+    <View style={styles.sheet}>
+      {valueHero ? (
+        <DataSummaryHero {...valueHero} />
+      ) : (
+        <View style={styles.hero}>
+          <TradeDirectionIcon direction={summary.direction} sizeVariant="lg" />
+          {title ? <AppText variant="title">{title}</AppText> : null}
+          <DirectionSummaryHeader summary={summary} />
+          {summary.priceRange ? (
+            <AppText tone="muted" variant="caption">
+              {summary.priceRange}
+            </AppText>
+          ) : null}
+        </View>
+      )}
+
+      <View style={StyleSheet.flatten([styles.detailCard, { backgroundColor: colors.surface.panel }])}>
+        <KeyValueList divided inset="none" items={detailItems} variant="detail" />
+      </View>
+    </View>
+  );
+}
+
+export function ClosedOrderDetailSheet({ dealCountLabel, deals, detailItems, pnlDelta, pnlText, summary, ticketLabel, ticketValue }: ClosedOrderDetailSheetProps) {
+  const colors = useThemeColors();
+  const pnlTone = pnlText.trim().startsWith('-') ? 'down' : 'up';
+
+  return (
+    <View style={styles.closedSheet}>
+      <AppText variant="title">
+        {ticketLabel} {ticketValue}
+      </AppText>
+      <View style={StyleSheet.flatten([styles.closedCard, { backgroundColor: colors.surface.panel }])}>
+        <View style={styles.closedTop}>
+          <View style={styles.closedIdentity}>
+            <TradeDirectionIcon direction={summary.direction} sizeVariant="lg" />
+            <View style={styles.tradeMain}>
+              <DirectionSummaryHeader summary={summary} titleVariant="title" />
+              {summary.priceRange ? (
+                <AppText tone="muted" variant="subtitle">
+                  {summary.priceRange}
+                </AppText>
+              ) : null}
+            </View>
+          </View>
+          <PnlBlock delta={pnlDelta} pnlText={pnlText} tone={pnlTone} />
+        </View>
+        {detailItems.map((item) => (
+          <View key={item.label} style={styles.closedDetailRow}>
+            <AppText tone="muted" variant="body">
+              {item.label}
+            </AppText>
+            <AppText variant="body">{item.value}</AppText>
+          </View>
+        ))}
+      </View>
+
+      <View style={StyleSheet.flatten([styles.closedCard, { backgroundColor: colors.surface.panel }])}>
+        <AppText style={styles.dealsTitle} variant="subtitle">
+          {dealCountLabel}
+        </AppText>
+        {deals.map((deal, index) => (
+          <View
+            key={deal.id}
+            style={StyleSheet.flatten([
+              styles.dealRow,
+              index < deals.length - 1 && {
+                borderBottomColor: colors.border.subtle,
+                borderBottomWidth: lineWidth.hairline,
+              },
+            ])}>
+            <TradeDirectionIcon direction={summary.direction} sizeVariant="sm" />
+            <View style={styles.tradeMain}>
+              <AppText variant="subtitle">
+                {summary.symbol} {deal.lots}
+              </AppText>
+              <AppText tone="muted" variant="body">
+                {deal.priceRange}
+              </AppText>
+              {deal.detailItems?.length ? (
+                <View style={styles.dealMeta}>
+                  {deal.detailItems.map((item) => (
+                    <DetailInline key={item.label} label={item.label} value={item.value} />
+                  ))}
+                </View>
+              ) : null}
+            </View>
+            <PnlBlock delta={deal.delta} pnlText={deal.pnlText} tone={pnlTone} />
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+function DataSummaryHero({ emphasis = 'default', label, supportingValue, tone, value }: DataSummaryHeroProps) {
+  return (
+    <View style={styles.dataHero}>
+      <View style={styles.dataCopy}>
+        <View style={styles.dataValueGroup}>
+          <AppText adjustsFontSizeToFit numberOfLines={1} tone={tone} variant={emphasis === 'strong' ? 'largeNumber' : 'number'}>
+            {value}
+          </AppText>
+          <AppText numberOfLines={1} tone="muted" variant="caption">
+            {label}
+          </AppText>
+        </View>
+        {supportingValue ? (
+          <View style={styles.dataSupport}>
+            <AppText numberOfLines={1} variant="subtitle">
+              {supportingValue}
+            </AppText>
+          </View>
+        ) : null}
+      </View>
+    </View>
+  );
+}
+
+function DirectionSummaryHeader({ summary, titleVariant = 'subtitle' }: { summary: DirectionSummary; titleVariant?: 'subtitle' | 'title' }) {
+  return (
+    <View style={styles.inlineTitle}>
+      <AppText variant={titleVariant}>{summary.symbol}</AppText>
+      <AppText tone={summary.direction === 'buy' ? 'up' : 'down'} variant={titleVariant}>
+        {summary.label} {summary.lots}
+      </AppText>
+    </View>
+  );
+}
+
+function PnlBlock({ delta, pnlText, tone }: { delta: string; pnlText: string; tone: AppTextTone }) {
+  return (
+    <View style={styles.closedPnl}>
+      <AppText tone={tone} variant="title">
+        {pnlText}
+      </AppText>
+      <AppText tone={tone} variant="body">
+        {delta}
+      </AppText>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  closedCard: {
+    borderRadius: radius.card,
+    borderWidth: lineWidth.none,
+    gap: spacing.sm,
+    padding: radius.lg,
+  },
+  closedDetailRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    minHeight: rowMinHeight,
+  },
+  closedIdentity: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    gap: spacing.md,
+    minWidth: 0,
+  },
+  closedPnl: {
+    alignItems: 'flex-end',
+  },
+  closedSheet: {
+    gap: spacing.md,
+  },
+  closedTop: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: spacing.md,
+    justifyContent: 'space-between',
+  },
+  dataCopy: {
+    alignItems: 'center',
+    gap: lineWidth.selected + lineWidth.strong,
+  },
+  dataHero: {
+    alignItems: 'center',
+    paddingBottom: spacing.xs + lineWidth.selected,
+  },
+  dataSupport: {
+    paddingTop: spacing.sm + lineWidth.selected,
+  },
+  dataValueGroup: {
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  dealMeta: {
+    gap: spacing.sm - lineWidth.selected,
+    marginTop: spacing.md,
+  },
+  dealRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    paddingVertical: spacing.md,
+  },
+  dealsTitle: {
+    paddingBottom: spacing.xs,
+  },
+  detailCard: {
+    borderRadius: radius.card,
+    borderWidth: lineWidth.none,
+    overflow: 'hidden',
+    paddingHorizontal: layout.cardPaddingX,
+  },
+  hero: {
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingBottom: spacing.sm + lineWidth.selected,
+  },
+  inlineTitle: {
+    alignItems: 'baseline',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs + lineWidth.strong,
+  },
+  sheet: {
+    gap: radius.lg,
+  },
+  tradeMain: {
+    flex: 1,
+    gap: lineWidth.selected + lineWidth.strong,
+    justifyContent: 'center',
+    minWidth: 0,
+  },
+});

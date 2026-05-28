@@ -1,0 +1,50 @@
+{
+  "version": "0.2.0",
+  "generated_at": "2026-05-28",
+  "status": "approved",
+  "assets": [
+    {
+      "illustration_id": "illustration.empty-state.generic",
+      "type": "empty_state",
+      "source_path": "src/design-public-assets/icons/index.ts",
+      "owner": "design-system-engineering",
+      "status": "approved_fallback",
+      "replacement_policy": "Use EmptyState with registered AppIcon until owned illustration is approved.",
+      "dependents": [
+        "pattern.page.emptyError"
+      ],
+      "qa_status": "passed_with_registered_icon_fallback"
+    },
+    {
+      "illustration_id": "illustration.partner.reward",
+      "type": "reward",
+      "source_path": "src/design-public-assets/icons/index.ts",
+      "owner": "design-system-engineering",
+      "status": "approved_fallback",
+      "replacement_policy": "Do not keep page-local reward illustration once owned asset is approved.",
+      "dependents": [
+        "business.RewardSummaryCard",
+        "pattern.page.discoverProfileCommerce"
+      ],
+      "qa_status": "passed_with_registered_icon_fallback"
+    },
+    {
+      "illustration_id": "illustration.onboarding.security",
+      "type": "onboarding",
+      "source_path": "src/design-public-assets/icons/index.ts",
+      "owner": "design-system-engineering",
+      "status": "approved_fallback",
+      "replacement_policy": "Use IconSurface/AppIcon composition until owned illustration is approved.",
+      "dependents": [
+        "pattern.page.onboarding"
+      ],
+      "qa_status": "passed_with_registered_icon_fallback"
+    }
+  ],
+  "qaPolicy": [
+    "Unknown-source SVG or bitmap illustration is blocked.",
+    "Owned/generated illustrations require review metadata before production use.",
+    "Until owned illustration files are approved, pages must use registered IconSurface/AppIcon fallbacks instead of page-local SVG or bitmap assets."
+  ],
+  "approval_basis": "Registry approved for governance coverage; runtime uses registered IconSurface/AppIcon fallbacks until owned illustration files are added."
+}

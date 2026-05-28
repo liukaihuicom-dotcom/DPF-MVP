@@ -16,4 +16,13 @@
 | Audit required (`BR-FUND-012`) | Admin review/detail | All mutation APIs | N/A | `TC-AUDIT-001` |
 | Mutation metadata (`BR-FUND-013`) | All submit pages | All mutation APIs | Validation error | `TC-API-001` |
 | Demo funds not withdrawable (`BR-FUND-014`) | Existing account assets and future funding entry | `GET /trading-accounts` | `FUNDING_ACCOUNT_NOT_ACTIVE` | `TC-REG-001` |
-
+| Security alert priority (`BR-SEC-001`) | App Security Center | `GET /api/security-center/alerts`, `POST /api/security-center/alerts/*` | N/A | `TC-SEC-ALERT-001`, `TC-SEC-ALERT-002` |
+| Mandatory high-risk MFA (`BR-SEC-002`) | App Security Center, verification modal | TOTP/GSL/device/security APIs | `SECURITY_TOTP_REQUIRED`, `SECURITY_RISK_BLOCKED` | `TC-SEC-MFA-001`, `TC-SEC-DMP-001` |
+| TOTP binding and recovery (`BR-SEC-003`) | TOTP binding flow | `POST /api/security-center/totp/bind/*` | `SECURITY_OTP_INVALID` | `TC-SEC-TOTP-001`, `TC-SEC-TOTP-002` |
+| TOTP lockout (`BR-SEC-004`) | Verification modal | TOTP APIs | `SECURITY_OTP_LOCKED` | `TC-SEC-TOTP-003` |
+| GSL cooling and cancel (`BR-SEC-005`) | GSL list, GSL cancel sheet | `GET/POST /api/security-center/gsl/changes/*` | `SECURITY_GSL_PENDING_EXISTS` | `TC-SEC-GSL-001`, `TC-SEC-GSL-002` |
+| Same-type GSL duplicate prevention (`BR-SEC-006`) | Security setting actions | GSL and account security APIs | `SECURITY_GSL_PENDING_EXISTS` | `TC-SEC-GSL-003` |
+| Device revoke rules (`BR-SEC-007`) | Device and login section, Security Login Log compatibility page | Device APIs | `SECURITY_CANNOT_REVOKE_CURRENT_DEVICE`, `SECURITY_DEVICE_NOT_FOUND` | `TC-SEC-DEVICE-001`, `TC-SEC-DEVICE-002` |
+| Remote login risk (`BR-SEC-008`) | Alert banner, login history, device details | Login history/risk APIs | `SECURITY_RISK_BLOCKED` | `TC-SEC-RISK-001`, `TC-SEC-RISK-002`, `TC-SEC-RISK-003` |
+| Local PIN boundary (`BR-SEC-009`) | App Security Center, Auth PIN flow | No Security Center API should force PIN | N/A | `TC-SEC-PIN-001` |
+| Security audit required (`BR-SEC-010`) | All sensitive Security Center actions | All Security Center mutation APIs | N/A | `TC-SEC-AUDIT-001` |

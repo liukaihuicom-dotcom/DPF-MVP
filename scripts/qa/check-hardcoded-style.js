@@ -35,6 +35,27 @@ const textColorAllowedFiles = new Set([
   'src/components/StatusPill.tsx',
 ]);
 
+const autoFitAllowedFiles = new Set([
+  'src/components/FeaturedInstrumentCard.tsx',
+  'src/components/KeyValueList.tsx',
+  'src/components/Metric.tsx',
+  'src/components/business/OrderPositionDetailSheet.tsx',
+  'src/components/TradeOrderList.tsx',
+  'src/components/Typography.tsx',
+  'src/components/business/TransactionRow.tsx',
+  'src/components/data-display/DetailRow.tsx',
+  'src/components/data-display/MiniMetric.tsx',
+  'src/screens/accounts/AccountBalanceScreen.tsx',
+  'src/screens/accounts/AccountOrdersScreen.tsx',
+  'src/screens/accounts/AccountScreen.tsx',
+  'src/screens/funding/FundingScreens.tsx',
+  'src/screens/markets/InstrumentDetailScreen.tsx',
+  'src/screens/markets/MarketsScreen.tsx',
+  'src/screens/portfolio/PortfolioScreen.tsx',
+  'src/screens/settings/SecurityLoginLogScreen.tsx',
+  'src/screens/trading/OrderTicketScreen.tsx',
+]);
+
 const spacingAllowedFiles = new Set([
   'src/components/ActionButton.tsx',
   'src/components/AppTopBar.tsx',
@@ -85,6 +106,10 @@ const lineWidthAllowedFiles = new Set([
   'app/appearance.tsx',
   'src/components/InstrumentIcon.tsx',
   'src/components/TradingAccountSwitchSheet.tsx',
+]);
+
+const cardBorderlessDynamicAllowlist = new Set([
+  'src/components/TradingAccountSwitchSheet.tsx#compactCard',
 ]);
 
 const legacyPageSpacingBaseline = new Set([
@@ -225,6 +250,18 @@ function createColorTokenIssues() {
     issues.push(pass('QA_COLOR_BRAND', 'brand.teal.500 remains #2EB5C4', tokenFile));
   }
 
+  if (primitive?.blue?.['500']?.$value !== '#1F72E8' || primitive?.blue?.['600']?.$value !== '#1F72E8') {
+    issues.push(fail('QA_COLOR_STANDARD_BLUE', 'blue.500 and blue.600 must be the standard blue #1F72E8', tokenFile));
+  } else {
+    issues.push(pass('QA_COLOR_STANDARD_BLUE', 'blue.500 and blue.600 use the standard blue #1F72E8', tokenFile));
+  }
+
+  if (primitive?.market?.up?.['600']?.$value !== '#2EA379') {
+    issues.push(fail('QA_COLOR_MARKET_UP', 'market.up.600 must be the trading up green #2EA379', tokenFile));
+  } else {
+    issues.push(pass('QA_COLOR_MARKET_UP', 'market.up.600 uses the trading up green #2EA379', tokenFile));
+  }
+
   ['lightBroker', 'darkTerminal', 'midnightBlue'].forEach((mode) => {
     const colors = matrix.modes?.[mode]?.colors;
     if (!colors) {
@@ -245,6 +282,31 @@ function createColorTokenIssues() {
         issues.push(typeof value === 'string' ? pass('QA_COLOR_STATE', `${mode}.market.${tone}.${field} exists`, modeFile) : fail('QA_COLOR_STATE', `${mode}.market.${tone}.${field} is required`, modeFile));
       });
     });
+
+    if (colors.market?.up?.fg !== '#2EA379' || colors.market?.up?.solid !== '#2EA379') {
+      issues.push(fail('QA_COLOR_MARKET_UP_SEMANTIC', `${mode}.market.up fg/solid must use #2EA379`, modeFile));
+    } else {
+      issues.push(pass('QA_COLOR_MARKET_UP_SEMANTIC', `${mode}.market.up fg/solid use #2EA379`, modeFile));
+    }
+
+    if (colors.status?.success?.fg === '#2EA379' || colors.status?.success?.solid === '#2EA379') {
+      issues.push(fail('QA_COLOR_SUCCESS_ISOLATION', `${mode}.status.success must remain independent from market.up #2EA379`, modeFile));
+    } else {
+      issues.push(pass('QA_COLOR_SUCCESS_ISOLATION', `${mode}.status.success remains independent from market.up #2EA379`, modeFile));
+    }
+
+    if (mode === 'lightBroker') {
+      if (colors.accent?.blue?.fg !== '#1F72E8' || colors.status?.info?.fg !== '#1F72E8' || colors.text?.link !== '#1F72E8') {
+        issues.push(fail('QA_COLOR_STANDARD_BLUE_SEMANTIC', 'lightBroker info/link/blue accent foregrounds must use #1F72E8', modeFile));
+      } else {
+        issues.push(pass('QA_COLOR_STANDARD_BLUE_SEMANTIC', 'lightBroker info/link/blue accent foregrounds use #1F72E8', modeFile));
+      }
+      if (colors.market?.down?.fg !== '#CF202F' || colors.overlay?.down?.subtle !== '#CF202F12') {
+        issues.push(fail('QA_COLOR_MARKET_DOWN_SEMANTIC', 'lightBroker market.down and overlay.down must use red semantics', modeFile));
+      } else {
+        issues.push(pass('QA_COLOR_MARKET_DOWN_SEMANTIC', 'lightBroker market.down and overlay.down use red semantics', modeFile));
+      }
+    }
   });
 
   return issues;
@@ -293,6 +355,51 @@ const appTextStyleColorIssues = sourceFiles
     const matches = read(file).match(appTextStyleColorPattern) ?? [];
     return matches.map(() => fail('QA_STYLE_TEXT_COLOR', 'Ordinary AppText color should use semantic `tone`, not direct style.color', file));
   });
+
+const appTextAutoFitGuardIssues = (() => {
+  const issues = [];
+  const typographyText = read('src/components/Typography.tsx');
+
+  if (!/MIN_AUTO_FIT_FONT_SCALE\s*=\s*0\.92/.test(typographyText)
+    || !/Math\.max\(minimumFontScale \?\? MIN_AUTO_FIT_FONT_SCALE, MIN_AUTO_FIT_FONT_SCALE\)/.test(typographyText)) {
+    issues.push(fail('QA_STYLE_TEXT_AUTO_SHRINK', 'AppText must clamp auto-fit text to minimumFontScale >= 0.92 while preserving system font scaling', 'src/components/Typography.tsx'));
+  }
+
+  allSourceFiles.forEach((file) => {
+    const text = read(file);
+    if (/minimumFontScale\s*=\s*\{?\s*(?:0(?:\.\d+)?|\.?\d+)\s*\}?/.test(text)) {
+      const matches = [...text.matchAll(/minimumFontScale\s*=\s*\{?\s*(0?\.\d+|0|1(?:\.0+)?)\s*\}?/g)];
+      matches.forEach((match) => {
+        if (Number(match[1]) < 0.92) {
+          issues.push(fail('QA_STYLE_TEXT_AUTO_SHRINK', `minimumFontScale ${match[1]} is below the governed 0.92 floor`, file));
+        }
+      });
+    }
+
+    if (file === 'src/components/Typography.tsx') {
+      return;
+    }
+
+    if (/\badjustsFontSizeToFit\b/.test(text) && !autoFitAllowedFiles.has(file)) {
+      issues.push(fail('QA_STYLE_TEXT_AUTO_SHRINK', 'adjustsFontSizeToFit is only allowed for registered numeric or constrained data-value surfaces', file));
+    }
+  });
+
+  [
+    'src/components/ActionButton.tsx',
+    'src/components/AuthFlowControls.tsx',
+    'src/components/FundActionGrid.tsx',
+    'src/components/Header.tsx',
+    'src/components/SegmentedTabs.tsx',
+    'src/screens/launch/LaunchScreen.tsx',
+  ].forEach((file) => {
+    if (/\badjustsFontSizeToFit\b/.test(read(file))) {
+      issues.push(fail('QA_STYLE_TEXT_AUTO_SHRINK', 'Key title, button, tab, launch, and auth confirmation text must keep governed token size instead of auto-shrinking', file));
+    }
+  });
+
+  return issues;
+})();
 
 const hardcodedSpacingPattern = /\b(padding|paddingHorizontal|paddingVertical|paddingTop|paddingBottom|paddingLeft|paddingRight|margin|marginTop|marginBottom|marginLeft|marginRight|gap|rowGap|columnGap)\s*:\s*-?\d+(?:\.\d+)?\b/g;
 const hardcodedSpacingIssues = sourceFiles
@@ -396,6 +503,9 @@ const bottomSheetIssues = sourceFiles.flatMap((file) => {
 
 const bottomSheetRuntimeText = read('src/components/BottomSheet.tsx');
 const screenRuntimeText = read('src/components/Screen.tsx');
+const appViewportText = read('src/components/AppViewport.tsx');
+const rootLayoutText = read('src/screens/navigation/RootLayout.tsx');
+const productControlPanelText = read('src/components/ProductControlPanel.tsx');
 const runtimeTokenText = read('src/theme/tokens.ts');
 const packageRuntimeTokenText = exists('packages/design-tokens/src/tokens.ts') ? read('packages/design-tokens/src/tokens.ts') : '';
 const spacingTokenDocText = exists('design-system/01-tokens/spacing-tokens.md') ? read('design-system/01-tokens/spacing-tokens.md') : '';
@@ -406,9 +516,13 @@ const engineeringTokenExportMapText = exists('design-system-engineering/01_token
 const fundActionGridText = read('src/components/FundActionGrid.tsx');
 const quickActionSheetText = read('src/components/QuickActionSheet.tsx');
 const headerIconButtonText = read('src/components/HeaderIconButton.tsx');
+const discoverScreenText = read('src/screens/discover/DupoinDiscoverScreen.tsx');
 const discoverModuleText = read('src/screens/discover/DiscoverModuleScreen.tsx');
 const bottomSheetFooterIssues = [];
 const semanticSpacingRoles = [
+  'contentCardPaddingX',
+  'contentPlainPaddingX',
+  'topBarPaddingX',
   'moduleGap',
   'sectionGap',
   'sectionGapLarge',
@@ -429,8 +543,12 @@ const semanticSpacingRoles = [
   'quoteGroupGap',
   'dataRowGap',
 ];
-if (!/screenPaddingX: spacing\.lg/.test(runtimeTokenText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Page and global sheet module horizontal padding must be 16px through layout.screenPaddingX', 'src/theme/tokens.ts'));
+if (!/contentCardPaddingX: spacing\.md/.test(runtimeTokenText)
+  || !/contentPlainPaddingX: spacing\.lg/.test(runtimeTokenText)
+  || !/topBarPaddingX: spacing\.lg/.test(runtimeTokenText)
+  || !/listRowPaddingX: spacing\.md/.test(runtimeTokenText)
+  || !/bottomActionArea:\s*\{[\s\S]*?paddingX: spacing\.lg/.test(runtimeTokenText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Full-site spacing must define 12px card/list content and 16px plain/header/footer insets through semantic layout tokens', 'src/theme/tokens.ts'));
 }
 semanticSpacingRoles.forEach((role) => {
   const runtimePattern = new RegExp(`${role}:\\s*spacing\\.`);
@@ -452,31 +570,89 @@ semanticSpacingRoles.forEach((role) => {
 if (!/semanticSpacing/.test(tokenExportMapText) || !/semanticSpacing/.test(engineeringTokenExportMapText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_SEMANTIC_SPACING_EXPORT', 'Token export maps must expose semantic spacing roles for future project consumption', 'packages/design-tokens/registry/token-export.map.json'));
 }
-if (!/paddingHorizontal: layout\.screenPaddingX/.test(screenRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Screen page content must use layout.screenPaddingX for 16px module alignment', 'src/components/Screen.tsx'));
+if (!/paddingHorizontal: layout\.contentCardPaddingX/.test(screenRuntimeText)
+  || !/contentPadding === 'plain' \? layout\.contentPlainPaddingX : layout\.contentCardPaddingX/.test(screenRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Screen page content must default to 12px card-mode inset and support 16px plain/form inset', 'src/components/Screen.tsx'));
+}
+const appViewportPhoneStyle = appViewportText.match(/phone:\s*\{[\s\S]*?\n\s*\},/)?.[0] ?? '';
+if (!/width:\s*layout\.appDeviceWidth/.test(appViewportPhoneStyle)
+  || !/height:\s*layout\.appDeviceHeight/.test(appViewportPhoneStyle)
+  || !/borderRadius:\s*radius\.sheet/.test(appViewportPhoneStyle)
+  || !/overflow:\s*'hidden'/.test(appViewportPhoneStyle)
+  || /maxWidth:\s*430/.test(appViewportPhoneStyle)
+  || /width:\s*'100%'/.test(appViewportPhoneStyle)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_APP_PREVIEW_VIEWPORT', 'AppViewport web phone canvas must use governed 390 x 844 device tokens plus radius.sheet clipping instead of a fluid, hardcoded, or square desktop viewport', 'src/components/AppViewport.tsx'));
+}
+if (!/initialMetrics=\{Platform\.OS === 'web' \? webAppPreviewSafeAreaMetrics : undefined\}/.test(rootLayoutText)
+  || !/height:\s*layout\.appDeviceHeight/.test(rootLayoutText)
+  || !/width:\s*layout\.appDeviceWidth/.test(rootLayoutText)
+  || !/insets:\s*layout\.appPreviewSafeAreaInsets/.test(rootLayoutText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_APP_PREVIEW_SAFE_AREA', 'RootLayout must inject web-only 390 x 844 SafeAreaProvider initialMetrics while native devices keep real safe-area metrics', 'src/screens/navigation/RootLayout.tsx'));
+}
+if (!/<AppViewport>[\s\S]*?<Stack[\s\S]*?<\/Stack>[\s\S]*?<\/AppViewport>[\s\S]*?<GlobalBottomSheetHost \/>[\s\S]*?<ProductControlPanel \/>/.test(rootLayoutText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_APP_PREVIEW_DEVTOOLS_BOUNDARY', 'Developer tools must stay outside AppViewport so the 390 x 844 phone canvas only clips product pages', 'src/screens/navigation/RootLayout.tsx'));
+}
+if (!/PanResponder\.create/.test(productControlPanelText)
+  || !/onPanResponderMove/.test(productControlPanelText)
+  || !/useWindowDimensions/.test(productControlPanelText)
+  || !/updateFabOffset/.test(productControlPanelText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_DEVTOOLS_DRAGGABLE', 'ProductControlPanel must retain draggable window-bound developer-tool behavior', 'src/components/ProductControlPanel.tsx'));
 }
 const cardRuntimeText = read('src/components/Card.tsx');
 if (!/paddingHorizontal:\s*layout\.cardPaddingX/.test(cardRuntimeText)
   || !/paddingVertical:\s*layout\.cardPaddingY/.test(cardRuntimeText)
   || !/paddingHorizontal:\s*layout\.cardPaddingCompactX/.test(cardRuntimeText)
-  || !/paddingVertical:\s*layout\.cardPaddingCompactY/.test(cardRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_CARD_AXIS_PADDING', 'Shared Card must use axis-specific card padding tokens for 12px horizontal and governed vertical rhythm', 'src/components/Card.tsx'));
+  || !/paddingVertical:\s*layout\.cardPaddingCompactY/.test(cardRuntimeText)
+  || !/borderRadius:\s*radius\.card/.test(cardRuntimeText)
+  || /\bborderWidth\b/.test(cardRuntimeText)
+  || /\bborderColor\b/.test(cardRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_CARD_AXIS_PADDING', 'Shared Card must use radius.card plus axis-specific card padding tokens for 12px radius/horizontal rhythm', 'src/components/Card.tsx'));
 }
 const cardLikeStyleIssues = allSourceFiles.flatMap((file) => {
   const text = read(file);
   const issues = [];
   const styleBlockPattern = /(\w*(?:Card|Panel|Surface|Tile)\w*)\s*:\s*\{[\s\S]*?\n\s*\},/g;
+  const borderlessStyleBlockPattern = /(\w*(?:Card|Panel|Surface|Tile|Box|Hero|Summary|Notice|Banner|Frame|Dialog)\w*)\s*:\s*\{[\s\S]*?\n\s*\},/g;
   for (const match of text.matchAll(styleBlockPattern)) {
     const styleName = match[1];
     const block = match[0];
     if (/(?:padding:\s*spacing\.lg|paddingHorizontal:\s*spacing\.lg)/.test(block)) {
       issues.push(fail('QA_STYLE_CARD_AXIS_PADDING', `${styleName} must use layout.cardPaddingX/Y axis tokens instead of scalar spacing.lg card padding`, file));
     }
+    const radiusMatch = block.match(/borderRadius:\s*([^,\n]+)/);
+    const isAllowedNonCardRadius = /fullscreenSurface|accountPanel/.test(styleName) && radiusMatch?.[1]?.trim() === 'radius.none';
+    if (radiusMatch && radiusMatch[1].trim() !== 'radius.card' && !isAllowedNonCardRadius) {
+      issues.push(fail('QA_STYLE_CARD_RADIUS', `${styleName} must use radius.card for card-like surfaces instead of ${radiusMatch[1].trim()}`, file));
+    }
+  }
+  for (const match of text.matchAll(borderlessStyleBlockPattern)) {
+    const styleName = match[1];
+    const block = match[0];
+    const borderWidthMatch = block.match(/borderWidth:\s*([^,\n]+)/);
+    if (borderWidthMatch && borderWidthMatch[1].trim() !== 'lineWidth.none') {
+      issues.push(fail('QA_STYLE_CARD_BORDERLESS', `${styleName} must not render a border; use lineWidth.none for card-like page, sheet, dialog, and business surfaces`, file));
+    }
+    if (/borderColor:/.test(block)) {
+      issues.push(fail('QA_STYLE_CARD_BORDERLESS', `${styleName} must not carry borderColor on card-like page, sheet, dialog, and business surfaces`, file));
+    }
+  }
+  const dynamicCardBorderPattern = /StyleSheet\.flatten\(\[\s*styles\.([A-Za-z0-9_]*(?:Card|Panel|Surface|Tile|Box|Hero|Summary|Notice|Banner|Frame|Dialog)\w*)\s*,\s*\{[^}]*borderColor:/g;
+  for (const match of text.matchAll(dynamicCardBorderPattern)) {
+    if (cardBorderlessDynamicAllowlist.has(`${file}#${match[1]}`)) {
+      continue;
+    }
+    issues.push(fail('QA_STYLE_CARD_BORDERLESS', `${match[1]} must not receive dynamic borderColor on card-like page, sheet, dialog, and business surfaces`, file));
   }
   return issues;
 });
 if (cardLikeStyleIssues.length > 0) {
   bottomSheetFooterIssues.push(...cardLikeStyleIssues);
+}
+const keyValueListText = read('src/components/KeyValueList.tsx');
+if (!/paddingHorizontal:\s*layout\.listRowPaddingX/.test(keyValueListText)
+  || !/inset\s*=\s*'default'/.test(keyValueListText)
+  || !/rowFlush:\s*\{[\s\S]*?paddingHorizontal: spacing\.none/.test(keyValueListText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'KeyValueList rows must default to 12px list-row horizontal inset and support explicit flush nesting', 'src/components/KeyValueList.tsx'));
 }
 if (!/useSafeAreaInsets/.test(screenRuntimeText)
   || !/const insets = useSafeAreaInsets\(\)/.test(screenRuntimeText)
@@ -498,14 +674,27 @@ if (!/enablePanDownToClose/.test(bottomSheetRuntimeText)
   || !/const \[backdropInteractive, setBackdropInteractive\] = useState\(false\)/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_DISMISS', 'Global BottomSheet must support pan-down close and app-owned backdrop tap dismissal', 'src/components/BottomSheet.tsx'));
 }
+if (!/import \{ Keyboard, Platform/.test(bottomSheetRuntimeText)
+  || !/function dismissActiveKeyboard\(\)/.test(bottomSheetRuntimeText)
+  || !/Keyboard\.dismiss\(\)/.test(bottomSheetRuntimeText)
+  || !/document\.activeElement/.test(bottomSheetRuntimeText)
+  || !/activeElement\.blur\(\)/.test(bottomSheetRuntimeText)
+  || !/const show = useCallback\(\(nextOptions: BottomSheetOptions\) => \{[\s\S]*?dismissActiveKeyboard\(\);[\s\S]*?setStack\(\[nextOptions\]\);[\s\S]*?\}, \[\]\);/.test(bottomSheetRuntimeText)
+  || !/const push = useCallback\(\(nextOptions: BottomSheetOptions\) => \{[\s\S]*?dismissActiveKeyboard\(\);[\s\S]*?setStack\(\(current\) => \[\.\.\.current, nextOptions\]\);[\s\S]*?\}, \[\]\);/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_KEYBOARD_DISMISS', 'Global BottomSheet show/push must dismiss the active keyboard and release focused web inputs before presentation', 'src/components/BottomSheet.tsx'));
+}
 if (!/const sheetEntranceProgress = useSharedValue\(0\)/.test(bottomSheetRuntimeText)
   || !/function useBottomSheetEntranceStyle/.test(bottomSheetRuntimeText)
+  || !/function useBottomSheetFooterEntranceStyle\(entranceProgress: SharedValue<number>, hiddenOffset = layout\.bottomActionArea\.contentInset\)/.test(bottomSheetRuntimeText)
   || !/entranceProgress=\{sheetEntranceProgress\}/.test(bottomSheetRuntimeText)
+  || !/interactive=\{backdropInteractive\}/.test(bottomSheetRuntimeText)
+  || !/const footerPointerEvents = interactive \? 'auto' : 'none'/.test(bottomSheetRuntimeText)
   || !/function BottomSheetHeader\([\s\S]*?const entranceStyle = useBottomSheetEntranceStyle\(entranceProgress\)/.test(bottomSheetRuntimeText)
   || !/style=\{\[styles\.headerEntrance, entranceStyle\]\}/.test(bottomSheetRuntimeText)
   || !/<BottomSheetContent[\s\S]*?entranceProgress=\{sheetEntranceProgress\}/.test(bottomSheetRuntimeText)
-  || !/<Animated\.View style=\{entranceStyle\}>[\s\S]*?<View ref=\{footerRef\}/.test(bottomSheetRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_ENTRANCE', 'Global BottomSheet header, content, and fixed footer must share synchronized entrance animation so footer never appears after content', 'src/components/BottomSheet.tsx'));
+  || !/const entranceStyle = useBottomSheetFooterEntranceStyle\(entranceProgress\)/.test(bottomSheetRuntimeText)
+  || !/<Animated\.View pointerEvents=\{footerPointerEvents\} style=\{\[styles\.footerEntrance, entranceStyle\]\}>[\s\S]*?<View ref=\{footerRef\}/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_ENTRANCE', 'Global BottomSheet header, content, and fixed footer must share synchronized entrance progress; footer actions must start hidden and follow the sheet instead of appearing at the bottom by default', 'src/components/BottomSheet.tsx'));
 }
 const pageOwnedBottomSheetShellIssues = allSourceFiles
   .filter((file) => file !== 'src/components/BottomSheet.tsx')
@@ -529,20 +718,58 @@ const pageOwnedBottomSheetShellIssues = allSourceFiles
 if (pageOwnedBottomSheetShellIssues.length > 0) {
   bottomSheetFooterIssues.push(...pageOwnedBottomSheetShellIssues);
 }
-if (!/content:\s*\{[\s\S]*?padding: layout\.screenPaddingX/.test(bottomSheetRuntimeText)
-  || !/footer:\s*\{[\s\S]*?paddingHorizontal: layout\.screenPaddingX/.test(bottomSheetRuntimeText)
-  || !/header:\s*\{[\s\S]*?paddingHorizontal: layout\.screenPaddingX/.test(bottomSheetRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Global BottomSheet header, content, and footer must use layout.screenPaddingX for 16px module alignment', 'src/components/BottomSheet.tsx'));
+const governedModalAllowlist = new Set([
+  'src/components/GlobalDialog.tsx',
+  'src/components/TextField.tsx',
+  'src/components/business/TradingTerminalChart.tsx',
+]);
+const pageOwnedModalIssues = allSourceFiles
+  .filter((file) => !governedModalAllowlist.has(file))
+  .flatMap((file) => {
+    const text = read(file);
+    const issues = [];
+    if (/\bModal\b/.test(text) && /from ['"]react-native['"]/.test(text)) {
+      issues.push(fail('QA_STYLE_GLOBAL_DIALOG_GOVERNANCE', 'Business dialogs must call GlobalDialog; only GlobalDialog may own centered feedback Modal, with TextField web select and TradingTerminalChart fullscreen as registered technical exceptions', file));
+    }
+    if (/<Modal\b/.test(text)) {
+      issues.push(fail('QA_STYLE_GLOBAL_DIALOG_GOVERNANCE', 'Business dialogs must not render page-local React Native Modal; use GlobalDialog or registered BottomSheet presets', file));
+    }
+    return issues;
+  });
+if (pageOwnedModalIssues.length > 0) {
+  bottomSheetFooterIssues.push(...pageOwnedModalIssues);
+}
+if (!/export function GlobalDialog/.test(read('src/components/GlobalDialog.tsx'))
+  || !/from ['"]react-native['"]/.test(read('src/components/GlobalDialog.tsx'))
+  || !/<Modal\b/.test(read('src/components/GlobalDialog.tsx'))) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_GLOBAL_DIALOG_GOVERNANCE', 'GlobalDialog must be the single governed centered feedback Modal host', 'src/components/GlobalDialog.tsx'));
+}
+if (/import \{[^}]*Modal[^}]*\} from ['"]react-native['"]/.test(read('src/components/AuthFlowControls.tsx'))
+  || /<Modal\b/.test(read('src/components/AuthFlowControls.tsx'))
+  || !/from ['"]\.\/GlobalDialog['"]/.test(read('src/components/AuthFlowControls.tsx'))) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_GLOBAL_DIALOG_GOVERNANCE', 'Auth feedback and confirmation dialogs must render through GlobalDialog instead of owning React Native Modal shells', 'src/components/AuthFlowControls.tsx'));
+}
+if (!/export \* from '@\/src\/components\/GlobalDialog'/.test(read('src/design-public-assets/components/index.ts'))) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_GLOBAL_DIALOG_GOVERNANCE', 'GlobalDialog must be exported through design-public-assets components for governed page consumption', 'src/design-public-assets/components/index.ts'));
+}
+if (!/content:\s*\{[\s\S]*?paddingHorizontal: layout\.contentCardPaddingX/.test(bottomSheetRuntimeText)
+  || !/contentPlain:\s*\{[\s\S]*?paddingHorizontal: layout\.contentPlainPaddingX/.test(bottomSheetRuntimeText)
+  || !/footer:\s*\{[\s\S]*?paddingHorizontal: layout\.bottomActionArea\.paddingX/.test(bottomSheetRuntimeText)
+  || !/headerEntrance:\s*\{[\s\S]*?paddingHorizontal: layout\.topBarPaddingX/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Global BottomSheet must use 12px card content, 16px plain content, and 16px header/footer horizontal inset tokens', 'src/components/BottomSheet.tsx'));
 }
 if (!/<BottomSheetContent[\s\S]*?hasFooter=\{Boolean\(options\.footer\)\}/.test(bottomSheetRuntimeText) || !/enableFooterMarginAdjustment=\{hasFooter\}/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_FOOTER', 'Global BottomSheet scroll content must reserve space for the fixed footer actions', 'src/components/BottomSheet.tsx'));
 }
-if (!/const \[footerHeight, setFooterHeight\] = useState\(0\)/.test(bottomSheetRuntimeText)
+if (!/const ESTIMATED_FOOTER_HEIGHT = layout\.bottomActionArea\.contentInset/.test(bottomSheetRuntimeText)
+  || !/const \[footerHeight, setFooterHeight\] = useState(?:<number>)?\(ESTIMATED_FOOTER_HEIGHT\)/.test(bottomSheetRuntimeText)
   || !/footerHeight=\{footerHeight\}/.test(bottomSheetRuntimeText)
   || !/onHeightChange=\{handleFooterHeightChange\}/.test(bottomSheetRuntimeText)
   || !/new ResizeObserver\(updateMeasuredHeight\)/.test(bottomSheetRuntimeText)
+  || !/const reservedFooterHeight = hasFooter \? Math\.max\(footerHeight, ESTIMATED_FOOTER_HEIGHT\) : 0/.test(bottomSheetRuntimeText)
   || !/const availableContentHeight = Math\.max\(1, maxHeight - reservedFooterHeight\)/.test(bottomSheetRuntimeText)
-  || !/const shouldScroll = contentHeight > availableContentHeight \+ 1/.test(bottomSheetRuntimeText)) {
+  || !/const shouldScroll = contentSizing === 'fill' \|\| contentHeight > availableContentHeight \+ 1/.test(bottomSheetRuntimeText)
+  || !/contentWithFooterReadingGap:\s*\{[\s\S]*?paddingBottom: layout\.bottomActionArea\.contentInset/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_SCROLL', 'Global BottomSheet must measure fixed footer height and only enable scroll when content plus footer exceeds the max-height cap', 'src/components/BottomSheet.tsx'));
 }
 if (!/icon\?: AppIconName/.test(bottomSheetRuntimeText) || !/icon=\{action\.icon\}/.test(bottomSheetRuntimeText)) {
@@ -649,8 +876,8 @@ if (
 ) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_SIZE', 'Fund action icons must use IconSurface md with hidden background to keep the governed 24px / 40px slot.', 'src/components/FundActionGrid.tsx'));
 }
-if (!/deposit: 'down'/.test(fundActionGridText) || !/withdraw: 'warning'/.test(fundActionGridText) || !/transfer: 'info'/.test(fundActionGridText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_COLOR', 'Fund action tones must map deposit to down, withdraw to warning, and transfer to info IconSurface tone families.', 'src/components/FundActionGrid.tsx'));
+if (!/deposit: 'success'/.test(fundActionGridText) || !/withdraw: 'warning'/.test(fundActionGridText) || !/transfer: 'info'/.test(fundActionGridText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_COLOR', 'Fund action tones must map deposit to success green, withdraw to warning amber, and transfer to info IconSurface tone families.', 'src/components/FundActionGrid.tsx'));
 }
 if (/tone: ['"](down|amber|blue)['"]/.test(fundActionGridText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_COLOR', 'Fund action defaults must use business tones: deposit, withdraw, and transfer', 'src/components/FundActionGrid.tsx'));
@@ -660,6 +887,9 @@ if (/\$\{action\.tone\}12/.test(quickActionSheetText) || /\$\{action\.tone\}55/.
 }
 if (/button:\s*\{[^}]*borderWidth:/m.test(headerIconButtonText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_CONTAINER', 'Header icon buttons must keep touch area without rendering an outlined circular frame', 'src/components/HeaderIconButton.tsx'));
+}
+if (!/variant === 'filled' && \{\s*backgroundColor: colors\.surface\.panel,\s*\}/m.test(headerIconButtonText) || /variant === 'filled' && \{\s*backgroundColor: colors\.surface\.subtle/m.test(headerIconButtonText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_HEADER_ICON_SURFACE', 'Filled HeaderIconButton containers on gray page or sheet backgrounds must use colors.surface.panel, not the gray subtle surface.', 'src/components/HeaderIconButton.tsx'));
 }
 if (/tone === 'default' \? 'tertiary' : tone/.test(headerIconButtonText)
   || !/const iconTone = tone === 'default' \? undefined : tone/.test(headerIconButtonText)
@@ -671,6 +901,12 @@ if (/decorativeHeaderIcon:\s*\{[^}]*borderWidth:/m.test(bottomSheetRuntimeText) 
 }
 if (!/profileMenuList:\s*\{[\s\S]*?paddingHorizontal: spacing\.none/.test(discoverModuleText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_QUICK_PROFILE_MENU_EDGE', 'Quick profile settings and support menu-card wrappers must not add extra horizontal padding around GlobalMenuList.', 'src/screens/discover/DiscoverModuleScreen.tsx'));
+}
+if (!/<AppText numberOfLines=\{2\} tone="muted" variant="body\.secondary">[\s\S]*?\{localizeText\(entry\.subtitle, locale\)\}/.test(discoverScreenText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_DISCOVER_ENTRY_DESCRIPTION', 'Discover entry card descriptions must use the 14px body.secondary typography role, not 12px caption text.', 'src/screens/discover/DupoinDiscoverScreen.tsx'));
+}
+if (!/entryCopy:\s*\{[\s\S]*?gap: spacing\.xs,[\s\S]*?\}/m.test(discoverScreenText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_DISCOVER_ENTRY_COPY_GAP', 'Discover entry title and description stack must use spacing.xs for the governed 4px visual layer.', 'src/screens/discover/DupoinDiscoverScreen.tsx'));
 }
 
 complete('qa:style', [
@@ -714,6 +950,10 @@ complete('qa:style', [
     ? pass('QA_STYLE_TEXT_COLOR', 'No page-level AppText style.color usage found outside registered foreground exceptions')
     : fail('QA_STYLE_TEXT_COLOR', 'AppText style.color usage found outside registered foreground exceptions'),
   ...appTextStyleColorIssues,
+  appTextAutoFitGuardIssues.length === 0
+    ? pass('QA_STYLE_TEXT_AUTO_SHRINK', 'AppText auto-fit is clamped and limited to registered numeric/data-value surfaces')
+    : fail('QA_STYLE_TEXT_AUTO_SHRINK', 'Ungoverned text auto-shrink usage found'),
+  ...appTextAutoFitGuardIssues,
   hardcodedSpacingIssues.length === 0
     ? pass('QA_STYLE_SPACING', 'No hardcoded spacing found outside registered spacing exceptions and legacy baseline')
     : fail('QA_STYLE_SPACING', 'Hardcoded spacing found outside registered spacing exceptions and legacy baseline'),

@@ -48,6 +48,7 @@ export const REMEMBERED_WEB_DEMO_DEVICE_LABEL = 'web-demo-device';
 export const REMEMBERED_LOCAL_DEVICE_LABEL = 'local-device';
 
 type RememberedLoginMethod = (typeof rememberedLoginMethods)[number];
+type TranslationDictionary = Partial<Record<TranslationKey, string>>;
 
 export type RememberedLoginSnapshot = {
   account: string;
@@ -514,7 +515,9 @@ export function ProductSettingsProvider({ children }: PropsWithChildren) {
   ]);
 
   const value = useMemo<ProductSettings>(() => {
-    const dictionary = translations[locale];
+    const dictionary = translations[locale] as TranslationDictionary;
+    const fallbackLocale: Locale = locale === 'zh-CN' ? 'en-US' : 'zh-CN';
+    const fallbackDictionary = translations[fallbackLocale] as TranslationDictionary;
     const resolvedThemeMode: ResolvedThemeMode =
       themeMode === 'system' ? (systemColorScheme === 'dark' ? 'darkTerminal' : FALLBACK_SYSTEM_THEME_MODE) : themeMode;
 
@@ -568,7 +571,7 @@ export function ProductSettingsProvider({ children }: PropsWithChildren) {
       setTradingAccountStatusPreset,
       setTradingAccountUsageOverride,
       t: (key, params) => {
-        let text: string = dictionary[key] ?? translations[locale === 'zh-CN' ? 'en-US' : 'zh-CN'][key] ?? key;
+        let text: string = dictionary[key] ?? fallbackDictionary[key] ?? key;
 
         if (params) {
           Object.entries(params).forEach(([paramKey, paramValue]) => {

@@ -7,7 +7,7 @@ import { useToast } from '@/src/feedback/Toast';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { useBroker } from '@/src/state/BrokerStore';
-import { lineWidth, typography } from '@/src/theme/tokens';
+import { lineWidth, radius, typography } from '@/src/theme/tokens';
 
 import { ActionButton } from './ActionButton';
 import { Card } from './Card';
@@ -114,7 +114,7 @@ export function UpgradeChatCard({ request, readonly }: UpgradeChatCardProps) {
       ) : null}
 
       {!readonly && pending ? (
-        <View style={StyleSheet.flatten([styles.waitingBox, { backgroundColor: `${colors.status.warning.fg}10`, borderColor: colors.status.warning.fg }])}>
+        <View style={StyleSheet.flatten([styles.waitingBox, { backgroundColor: `${colors.status.warning.fg}10` }])}>
           <AppIcon tone="amber" name="icon.trading.history" sizeVariant="xs" />
           <AppText tone="amber" variant="caption">
             {t('upgrade.pendingHint')}
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   messageBubble: {
-    borderRadius: 14,
+    borderRadius: radius.card,
     borderWidth: lineWidth.hairline,
     gap: 4,
     maxWidth: '86%',
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   reasonChip: {
-    borderRadius: 999,
+    borderRadius: radius.full,
     borderWidth: lineWidth.hairline,
     paddingHorizontal: 10,
     paddingVertical: 6,
@@ -170,8 +170,8 @@ const styles = StyleSheet.create({
   },
   waitingBox: {
     alignItems: 'center',
-    borderRadius: 8,
-    borderWidth: lineWidth.hairline,
+    borderRadius: radius.card,
+    borderWidth: lineWidth.none,
     flexDirection: 'row',
     gap: 8,
     marginTop: 12,

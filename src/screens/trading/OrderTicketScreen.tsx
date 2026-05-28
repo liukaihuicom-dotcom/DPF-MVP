@@ -1,30 +1,36 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { useMemo, useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { KeyboardAvoidingView, PanResponder, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { Extrapolation, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ActionButton } from '@/src/components/ActionButton';
-import { AppIcon } from '@/src/components/AppIcon';
-import { OrderInfoRow, RiskPriceRow } from '@/src/components/business';
-import { Card } from '@/src/components/Card';
-import { StepperButton, SwitchControl } from '@/src/components/forms';
-import { InstrumentIcon } from '@/src/components/InstrumentIcon';
-import { useKeyboardVisible } from '@/src/components/layout/useKeyboardVisible';
-import { NativePressable } from '@/src/components/NativePressable';
-import { Screen } from '@/src/components/Screen';
-import { SegmentedTabs } from '@/src/components/SegmentedTabs';
-import { TextField } from '@/src/components/TextField';
-import { AppText } from '@/src/components/Typography';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { AppIcon } from '@/src/design-public-assets/components';
+import { OrderInfoRow, RiskPriceRow } from '@/src/design-public-assets/business-components';
+import { Card } from '@/src/design-public-assets/components';
+import { StepperButton, SwitchControl } from '@/src/design-public-assets/components';
+import { InstrumentIcon } from '@/src/design-public-assets/components';
+import { useKeyboardVisible } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { Screen } from '@/src/design-public-assets/components';
+import { SegmentedTabs } from '@/src/design-public-assets/components';
+import { TextField } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import { directionLabel, formatMoney, formatPrice, orderTypeLabel } from '@/src/domain/format';
 import { calculateMargin, calculateNotional, getTradePrice } from '@/src/domain/trading';
 import type { Direction, Instrument, OrderType } from '@/src/domain/types';
-import type { Locale } from '@/src/i18n/translations';
+import type { Locale } from '@/src/design-public-assets/copy';
 import { useToast } from '@/src/feedback/Toast';
 import { impactLight, notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import { navigateBackOrReplace, safeRouteTargets } from '@/src/navigation/navigationPolicy';
-import { useProductSettings } from '@/src/settings/ProductSettings';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
-import { lineWidth, layout, radius, spacing, typography } from '@/src/theme/tokens';
+import { lineWidth, layout, radius, size, spacing, typography } from '@/src/design-public-assets/tokens';
+
+const ORDER_TICKET_MOTION_MS = 220;
+const ORDER_TICKET_SHEET_OFFSET = layout.topReservedSpace * 3;
+const ORDER_TICKET_DRAG_CLOSE_DISTANCE = layout.headerIconButtonSize + spacing.xxl;
+const ORDER_TICKET_DRAG_CLOSE_VELOCITY = 0.7;
 
 const orderTypes: OrderType[] = ['market', 'limit', 'stop'];
 
@@ -38,6 +44,9 @@ export default function OrderTicketScreen() {
   const [orderType, setOrderType] = useState<OrderType>(type === 'limit' || type === 'stop' ? type : 'market');
   const [lotsText, setLotsText] = useState('0.10');
   const [riskEnabled, setRiskEnabled] = useState(true);
+  const [closing, setClosing] = useState(false);
+  const entranceProgress = useSharedValue(0);
+  const dragY = useSharedValue(0);
   const instrument = findInstrument(id);
 
   const lots = Number(lotsText) > 0 ? Number(lotsText) : 0;
@@ -50,13 +59,79 @@ export default function OrderTicketScreen() {
   const takeProfitPrice = instrument ? getRiskPrice(instrument, price, side, 'takeProfit') : 0;
   const stopLossPnl = instrument ? getRiskPnl(instrument, lots, price, stopLossPrice, side) : 0;
   const takeProfitPnl = instrument ? getRiskPnl(instrument, lots, price, takeProfitPrice, side) : 0;
-  const tradeTone = side === 'buy' ? 'down' : 'up';
-  const tradeColor = side === 'buy' ? colors.market.down.fg : colors.market.up.fg;
+  const tradeTone = side === 'buy' ? 'up' : 'down';
+  const tradeColor = side === 'buy' ? colors.market.up.fg : colors.market.down.fg;
   const submitLabel = canSubmit
     ? t('order.submitCompact', { direction: directionLabel(side, locale), lots: formatLots(lots, locale) })
     : t('order.invalid');
 
   const presetLots = useMemo(() => ['0.01', '0.05', '0.10', instrument?.symbol === 'XAU/USD' ? '0.20' : '0.50'], [instrument]);
+
+  useEffect(() => {
+    entranceProgress.value = withTiming(1, { duration: ORDER_TICKET_MOTION_MS });
+  }, [entranceProgress]);
+
+  const finishClose = useCallback(() => {
+    navigateBackOrReplace(safeRouteTargets.trade);
+  }, []);
+
+  const closeTicket = useCallback(() => {
+    if (closing) {
+      return;
+    }
+
+    setClosing(true);
+    void impactLight();
+    dragY.value = withTiming(0, { duration: ORDER_TICKET_MOTION_MS });
+    entranceProgress.value = withTiming(0, { duration: ORDER_TICKET_MOTION_MS }, (finished) => {
+      if (finished) {
+        runOnJS(finishClose)();
+      }
+    });
+  }, [closing, dragY, entranceProgress, finishClose]);
+
+  const sheetCloseResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: (_event, gestureState) =>
+          gestureState.dy > spacing.sm && Math.abs(gestureState.dy) > Math.abs(gestureState.dx),
+        onPanResponderMove: (_event, gestureState) => {
+          dragY.value = Math.max(0, gestureState.dy);
+        },
+        onPanResponderRelease: (_event, gestureState) => {
+          const shouldClose =
+            gestureState.dy > ORDER_TICKET_DRAG_CLOSE_DISTANCE ||
+            gestureState.vy > ORDER_TICKET_DRAG_CLOSE_VELOCITY;
+
+          if (shouldClose) {
+            closeTicket();
+            return;
+          }
+
+          dragY.value = withTiming(0, { duration: ORDER_TICKET_MOTION_MS });
+        },
+        onPanResponderTerminate: () => {
+          dragY.value = withTiming(0, { duration: ORDER_TICKET_MOTION_MS });
+        },
+      }),
+    [closeTicket, dragY],
+  );
+
+  const backdropAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(entranceProgress.value, [0, 1], [0, 1], Extrapolation.CLAMP),
+  }));
+
+  const sheetAnimatedStyle = useAnimatedStyle(() => {
+    const translateY =
+      interpolate(entranceProgress.value, [0, 1], [ORDER_TICKET_SHEET_OFFSET, 0], Extrapolation.CLAMP) +
+      dragY.value;
+
+    return {
+      opacity: interpolate(entranceProgress.value, [0, 1], [0, 1], Extrapolation.CLAMP),
+      transform: [{ translateY }],
+    };
+  });
 
   if (!instrument) {
     return (
@@ -100,60 +175,59 @@ export default function OrderTicketScreen() {
     }
   };
 
-  const closeTicket = () => {
-    navigateBackOrReplace(safeRouteTargets.trade);
-  };
-
   return (
-    <SafeAreaView edges={['top']} style={StyleSheet.flatten([styles.modalRoot, { backgroundColor: `${colors.text.primary}66` }])}>
+    <SafeAreaView edges={['top']} style={styles.modalRoot}>
       <Stack.Screen options={{ title: `${instrument.symbol} ${t('order.titleSuffix')}` }} />
-      <Pressable accessibilityLabel={t('common.cancel')} onPress={closeTicket} style={styles.modalBackdrop} />
+      <Animated.View style={[styles.modalBackdrop, { backgroundColor: colors.overlay.scrim }, backdropAnimatedStyle]}>
+        <Pressable accessibilityLabel={t('common.cancel')} disabled={closing} onPress={closeTicket} style={styles.backdropPressTarget} />
+      </Animated.View>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.keyboardPanel}>
-        <SafeAreaView edges={keyboardVisible ? [] : ['bottom']} style={StyleSheet.flatten([styles.ticketSheet, { backgroundColor: colors.surface.canvas, borderColor: colors.border.subtle }])}>
-          <View style={styles.handleWrap}>
-            <View style={StyleSheet.flatten([styles.handle, { backgroundColor: colors.border.default }])} />
-          </View>
-          <View style={styles.sheetHeader}>
-            <View style={styles.headerAccountBlock}>
-              <AppText numberOfLines={1} tone="dim" variant="caption">
-                {t('order.accountNumber', { accountId: account.accountId })}
-              </AppText>
-              <AppText numberOfLines={1} tone="muted" variant="caption">
-                {t('order.freeMargin')}
-              </AppText>
-              <AppText adjustsFontSizeToFit numberOfLines={1} variant="titleMd">
-                {formatMoney(account.freeMargin, account.currency, 2, locale)}
-              </AppText>
-            </View>
-            <View style={styles.headerInstrumentBlock}>
-              <View style={styles.headerInstrumentIdentity}>
-                <InstrumentIcon instrument={instrument} size={32} />
-                <AppText adjustsFontSizeToFit numberOfLines={1} variant="subtitle">
-                  {instrument.symbol}
+        <Animated.View style={[styles.sheetMotionLayer, sheetAnimatedStyle]}>
+          <SafeAreaView edges={keyboardVisible ? [] : ['bottom']} style={StyleSheet.flatten([styles.ticketSheet, { backgroundColor: colors.surface.canvas, borderColor: colors.border.subtle }])}>
+            <Animated.View style={styles.handleWrap} {...sheetCloseResponder.panHandlers}>
+              <View style={StyleSheet.flatten([styles.handle, { backgroundColor: colors.border.default }])} />
+            </Animated.View>
+            <View style={styles.sheetHeader}>
+              <View style={styles.headerAccountBlock}>
+                <AppText numberOfLines={1} tone="dim" variant="caption">
+                  {t('order.accountNumber', { accountId: account.accountId })}
+                </AppText>
+                <AppText numberOfLines={1} tone="muted" variant="caption">
+                  {t('order.freeMargin')}
+                </AppText>
+                <AppText adjustsFontSizeToFit numberOfLines={1} variant="titleMd">
+                  {formatMoney(account.freeMargin, account.currency, 2, locale)}
                 </AppText>
               </View>
-              <AppText adjustsFontSizeToFit numberOfLines={1} tone={tradeTone} variant="number">
-                {formatPrice(instrument, price)}
-              </AppText>
+              <View style={styles.headerInstrumentBlock}>
+                <View style={styles.headerInstrumentIdentity}>
+                  <InstrumentIcon instrument={instrument} size={32} />
+                  <AppText numberOfLines={1} variant="subtitle">
+                    {instrument.symbol}
+                  </AppText>
+                </View>
+                <AppText adjustsFontSizeToFit numberOfLines={1} tone={tradeTone} variant="number">
+                  {formatPrice(instrument, price)}
+                </AppText>
+              </View>
             </View>
-          </View>
 
-          <ScrollView
-            contentContainerStyle={styles.sheetContent}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-            style={styles.sheetScroller}>
-            <SegmentedTabs
-              items={orderTypes.map((item) => ({
-                label: orderTypeLabel(item, locale),
-                value: item,
-              }))}
-              onValueChange={(nextOrderType) => {
-                void impactLight();
-                setOrderType(nextOrderType);
-              }}
-              value={orderType}
-            />
+            <ScrollView
+              contentContainerStyle={styles.sheetContent}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+              style={styles.sheetScroller}>
+              <SegmentedTabs
+                items={orderTypes.map((item) => ({
+                  label: orderTypeLabel(item, locale),
+                  value: item,
+                }))}
+                onValueChange={(nextOrderType) => {
+                  void impactLight();
+                  setOrderType(nextOrderType);
+                }}
+                value={orderType}
+              />
 
             <Card>
               <View style={styles.cardHeaderRow}>
@@ -163,7 +237,7 @@ export default function OrderTicketScreen() {
                     {t('order.lotHint', { baseCurrency: instrument.baseCurrency, contractSize: instrument.contractSize })}
                   </AppText>
                 </View>
-                <View style={StyleSheet.flatten([styles.sidePill, { backgroundColor: `${tradeColor}12`, borderColor: `${tradeColor}55` }])}>
+                <View style={StyleSheet.flatten([styles.sidePill, { backgroundColor: side === 'buy' ? colors.overlay.up.subtle : colors.overlay.down.subtle, borderColor: side === 'buy' ? colors.overlay.up.strong : colors.overlay.down.strong }])}>
                   <AppText tone={tradeTone} variant="caption">
                     {directionLabel(side, locale)}
                   </AppText>
@@ -237,7 +311,7 @@ export default function OrderTicketScreen() {
                     }}
                     style={StyleSheet.flatten([
                       styles.preset,
-                      { backgroundColor: lotsText === preset ? `${tradeColor}12` : colors.surface.subtle, borderColor: lotsText === preset ? tradeColor : colors.border.subtle },
+                      { backgroundColor: lotsText === preset ? side === 'buy' ? colors.overlay.up.subtle : colors.overlay.down.subtle : colors.surface.subtle, borderColor: lotsText === preset ? tradeColor : colors.border.subtle },
                     ])}>
                     <AppText tone={lotsText === preset ? tradeTone : 'default'} variant="caption">
                       {preset}
@@ -311,13 +385,14 @@ export default function OrderTicketScreen() {
             ) : null}
             <ActionButton
               accessibilityLabel={submitLabel}
-              emphasis="solid"
               label={submitLabel}
               onPress={submitOrder}
               tone={tradeTone}
+              variant="filled"
             />
           </View>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Animated.View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -362,6 +437,9 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     justifyContent: 'space-between',
   },
+  backdropPressTarget: {
+    flex: 1,
+  },
   footerStack: {
     borderTopWidth: lineWidth.hairline,
     gap: spacing.sm,
@@ -374,11 +452,13 @@ const styles = StyleSheet.create({
   },
   handle: {
     borderRadius: radius.full,
-    height: 4,
-    width: 42,
+    height: size.sheet.handleHeight,
+    width: size.sheet.handleWidth,
   },
   handleWrap: {
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: layout.headerIconButtonSize,
     paddingBottom: spacing.sm,
     paddingTop: spacing.sm,
   },
@@ -458,6 +538,11 @@ const styles = StyleSheet.create({
   },
   sheetScroller: {
     flex: 1,
+  },
+  sheetMotionLayer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    width: '100%',
   },
   sidePill: {
     borderRadius: radius.full,

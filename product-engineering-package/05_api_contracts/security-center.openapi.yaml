@@ -1,0 +1,394 @@
+openapi: 3.0.3
+info:
+  title: Security Center API Draft
+  version: 0.1.0
+  description: Contract-first API draft for DoPoin Security Center. Production implementation requires identity, TOTP secret storage, GSL scheduler, risk policy, notification, and audit services.
+tags:
+  - name: Security Center
+  - name: Alerts
+  - name: TOTP
+  - name: GSL
+  - name: Devices
+  - name: Anti Phishing
+paths:
+  /api/security-center/overview:
+    get:
+      tags: [Security Center]
+      summary: Return Security Center overview for the current signed-in user.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Overview payload containing score, active alerts, account security items, device summary, and GSL summary.
+          content:
+            application/json:
+              schema:
+                $ref: "./schema/security-center.schema.json#/definitions/overview"
+        "401":
+          $ref: "#/components/responses/AuthRequired"
+        "423":
+          $ref: "#/components/responses/SecurityRiskBlocked"
+  /api/security-center/alerts:
+    get:
+      tags: [Alerts]
+      summary: List current user's security alerts.
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [active, dismissed, resolved, snoozed, all]
+      responses:
+        "200":
+          description: Alert list sorted by risk and configured priority.
+  /api/security-center/alerts/{alertId}/dismiss:
+    post:
+      tags: [Alerts]
+      summary: Dismiss an alert. Unresolved alerts may reappear after 24 hours.
+      parameters:
+        - $ref: "#/components/parameters/AlertId"
+      requestBody:
+        $ref: "#/components/requestBodies/AuditOnly"
+      responses:
+        "200":
+          description: Alert marked dismissed.
+  /api/security-center/alerts/{alertId}/snooze:
+    post:
+      tags: [Alerts]
+      summary: Snooze an active alert for 24 hours.
+      parameters:
+        - $ref: "#/components/parameters/AlertId"
+      requestBody:
+        $ref: "#/components/requestBodies/AuditOnly"
+      responses:
+        "200":
+          description: Alert marked snoozed.
+  /api/security-center/alerts/{alertId}/resolve:
+    post:
+      tags: [Alerts]
+      summary: Resolve an alert after its underlying risk is handled.
+      parameters:
+        - $ref: "#/components/parameters/AlertId"
+      requestBody:
+        $ref: "#/components/requestBodies/AuditOnly"
+      responses:
+        "200":
+          description: Alert marked resolved.
+  /api/security-center/password/strength-check:
+    post:
+      tags: [Security Center]
+      summary: Check password strength before submit.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [newPassword]
+              properties:
+                newPassword:
+                  type: string
+                  minLength: 1
+      responses:
+        "200":
+          description: Strength result and rejected reasons.
+  /api/security-center/password/change:
+    post:
+      tags: [Security Center]
+      summary: Change login password immediately or create GSL pending change based on risk policy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "./schema/security-center.schema.json#/definitions/verificationPayload"
+                - type: object
+                  required: [currentPassword, newPassword]
+                  properties:
+                    currentPassword:
+                      type: string
+                    newPassword:
+                      type: string
+      responses:
+        "200":
+          description: Password changed or GSL change created.
+        "409":
+          $ref: "#/components/responses/GslPendingExists"
+  /api/security-center/totp/bind/start:
+    post:
+      tags: [TOTP]
+      summary: Start TOTP binding and return QR/manual secret display payload.
+      requestBody:
+        $ref: "#/components/requestBodies/AuditOnly"
+      responses:
+        "200":
+          description: TOTP binding challenge. Secret must be short-lived and never stored in frontend durable storage.
+  /api/security-center/totp/bind/verify:
+    post:
+      tags: [TOTP]
+      summary: Verify 6-digit TOTP and generate one-time recovery codes.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schema/security-center.schema.json#/definitions/verificationPayload"
+      responses:
+        "200":
+          description: TOTP active and recovery codes returned once.
+        "423":
+          $ref: "#/components/responses/OtpLocked"
+  /api/security-center/totp/disable/request:
+    post:
+      tags: [TOTP, GSL]
+      summary: Request TOTP disable; creates a 24-hour GSL pending change.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schema/security-center.schema.json#/definitions/verificationPayload"
+      responses:
+        "202":
+          description: GSL pending change created; TOTP remains active until effective.
+        "409":
+          $ref: "#/components/responses/GslPendingExists"
+  /api/security-center/totp/disable/cancel:
+    post:
+      tags: [TOTP, GSL]
+      summary: Cancel pending TOTP disable and keep TOTP active.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schema/security-center.schema.json#/definitions/verificationPayload"
+      responses:
+        "200":
+          description: Pending disable cancelled.
+  /api/security-center/totp/recovery-codes/status:
+    get:
+      tags: [TOTP]
+      summary: Return remaining recovery code count and warning state. Never returns code plaintext.
+      responses:
+        "200":
+          description: Recovery code status.
+  /api/security-center/totp/recovery-codes/regenerate:
+    post:
+      tags: [TOTP]
+      summary: Regenerate recovery codes after strong verification.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schema/security-center.schema.json#/definitions/verificationPayload"
+      responses:
+        "200":
+          description: New recovery codes returned once.
+  /api/security-center/gsl/changes:
+    get:
+      tags: [GSL]
+      summary: List GSL security changes.
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [pending, cancelled, effective, failed, superseded, expired, all]
+      responses:
+        "200":
+          description: GSL change list.
+  /api/security-center/gsl/changes/{changeId}:
+    get:
+      tags: [GSL]
+      summary: Return a single GSL change.
+      parameters:
+        - $ref: "#/components/parameters/ChangeId"
+      responses:
+        "200":
+          description: GSL detail.
+  /api/security-center/gsl/changes/{changeId}/cancel:
+    post:
+      tags: [GSL]
+      summary: Cancel a pending GSL change after TOTP or email OTP verification.
+      parameters:
+        - $ref: "#/components/parameters/ChangeId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schema/security-center.schema.json#/definitions/verificationPayload"
+      responses:
+        "200":
+          description: GSL change cancelled.
+  /api/security-center/devices:
+    get:
+      tags: [Devices]
+      summary: List active login devices, current device first, max 20 active devices.
+      responses:
+        "200":
+          description: Device list.
+  /api/security-center/devices/{deviceId}/revoke:
+    post:
+      tags: [Devices]
+      summary: Revoke a non-current device session/token.
+      parameters:
+        - $ref: "#/components/parameters/DeviceId"
+      requestBody:
+        $ref: "#/components/requestBodies/AuditOnly"
+      responses:
+        "200":
+          description: Device revoked.
+        "409":
+          $ref: "#/components/responses/CannotRevokeCurrentDevice"
+  /api/security-center/devices/revoke-others:
+    post:
+      tags: [Devices]
+      summary: Revoke all other devices and keep current device active.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schema/security-center.schema.json#/definitions/verificationPayload"
+      responses:
+        "200":
+          description: All other devices revoked.
+  /api/security-center/devices/{deviceId}/trust:
+    post:
+      tags: [Devices]
+      summary: Trust a device for low and selected medium-risk operations.
+      parameters:
+        - $ref: "#/components/parameters/DeviceId"
+      requestBody:
+        $ref: "#/components/requestBodies/AuditOnly"
+      responses:
+        "200":
+          description: Device trusted with expiry.
+    delete:
+      tags: [Devices]
+      summary: Remove trust from a device.
+      parameters:
+        - $ref: "#/components/parameters/DeviceId"
+      responses:
+        "200":
+          description: Device trust removed.
+  /api/security-center/login-history:
+    get:
+      tags: [Devices]
+      summary: Return login history for the last 7, 30, or 90 days.
+      parameters:
+        - in: query
+          name: range
+          schema:
+            type: string
+            enum: [7d, 30d, 90d]
+            default: 30d
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [all, success, failed, blocked]
+            default: all
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        "200":
+          description: Paged login history.
+  /api/security-center/anti-phishing-code:
+    get:
+      tags: [Anti Phishing]
+      summary: Return masked anti-phishing code status.
+      responses:
+        "200":
+          description: Anti-phishing code payload.
+  /api/security-center/anti-phishing-code/update:
+    post:
+      tags: [Anti Phishing]
+      summary: Update anti-phishing code after verification; no GSL required.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "./schema/security-center.schema.json#/definitions/verificationPayload"
+                - type: object
+                  required: [code]
+                  properties:
+                    code:
+                      type: string
+                      minLength: 6
+                      maxLength: 20
+      responses:
+        "200":
+          description: Code updated and notification sent.
+  /api/security-center/anti-phishing-code/regenerate:
+    post:
+      tags: [Anti Phishing]
+      summary: Regenerate a default anti-phishing code.
+      requestBody:
+        $ref: "#/components/requestBodies/AuditOnly"
+      responses:
+        "200":
+          description: Code regenerated and notification sent.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    AlertId:
+      in: path
+      name: alertId
+      required: true
+      schema:
+        type: string
+    ChangeId:
+      in: path
+      name: changeId
+      required: true
+      schema:
+        type: string
+    DeviceId:
+      in: path
+      name: deviceId
+      required: true
+      schema:
+        type: string
+  requestBodies:
+    AuditOnly:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [auditContext]
+            properties:
+              auditContext:
+                $ref: "./schema/security-center.schema.json#/definitions/auditContext"
+  responses:
+    AuthRequired:
+      description: Authentication required.
+    GslPendingExists:
+      description: SECURITY_GSL_PENDING_EXISTS. Existing pending change must be cancelled before resubmitting.
+    OtpLocked:
+      description: SECURITY_OTP_LOCKED. Verification locked after repeated failures.
+    CannotRevokeCurrentDevice:
+      description: SECURITY_CANNOT_REVOKE_CURRENT_DEVICE. Current device cannot be revoked here.
+    SecurityRiskBlocked:
+      description: SECURITY_RISK_BLOCKED or SECURITY_ACCOUNT_FROZEN.

@@ -1,0 +1,78 @@
+{
+  "$schema": "../module-contract.schema.json",
+  "module_id": "security_center",
+  "module_name": "Security Center",
+  "version": "v1.0.13-security-center-contract",
+  "platforms": ["app", "h5", "web", "admin", "dmp"],
+  "roles": [
+    "trader",
+    "partner",
+    "customer_support",
+    "risk_compliance",
+    "system_admin",
+    "dmp_admin"
+  ],
+  "pages": [
+    "app_security_center",
+    "app_security_login_log",
+    "admin_security_user_query",
+    "dmp_security_policy_config"
+  ],
+  "api_dependencies": [
+    "GET /api/security-center/overview",
+    "GET /api/security-center/alerts",
+    "POST /api/security-center/alerts/{alertId}/dismiss",
+    "POST /api/security-center/alerts/{alertId}/snooze",
+    "POST /api/security-center/alerts/{alertId}/resolve",
+    "POST /api/security-center/password/strength-check",
+    "POST /api/security-center/password/change",
+    "POST /api/security-center/totp/bind/start",
+    "POST /api/security-center/totp/bind/verify",
+    "POST /api/security-center/totp/disable/request",
+    "POST /api/security-center/totp/disable/cancel",
+    "GET /api/security-center/totp/recovery-codes/status",
+    "POST /api/security-center/totp/recovery-codes/regenerate",
+    "GET /api/security-center/gsl/changes",
+    "GET /api/security-center/gsl/changes/{changeId}",
+    "POST /api/security-center/gsl/changes/{changeId}/cancel",
+    "GET /api/security-center/devices",
+    "POST /api/security-center/devices/{deviceId}/revoke",
+    "POST /api/security-center/devices/revoke-others",
+    "POST /api/security-center/devices/{deviceId}/trust",
+    "DELETE /api/security-center/devices/{deviceId}/trust",
+    "GET /api/security-center/login-history",
+    "GET /api/security-center/anti-phishing-code",
+    "POST /api/security-center/anti-phishing-code/update",
+    "POST /api/security-center/anti-phishing-code/regenerate"
+  ],
+  "risk_level": "critical",
+  "canonical_route_decision": {
+    "future_app_route": "/settings/security-center",
+    "current_compatibility_route": "/settings/security-log",
+    "implementation_stage": "contract_first_route_not_yet_implemented",
+    "rule": "Security Login Log remains a compatibility surface and device/login sub-capability; it must not be treated as the complete Security Center."
+  },
+  "constraints": [
+    "TOTP and MFA rules are account and funds security controls; they must not re-enable mandatory local PIN setup by default.",
+    "Local PIN remains optional by default and only gates explicit local lock/unlock behavior.",
+    "Withdrawal, new withdrawal address, TOTP disable, email/phone change, and high-risk remote login are mandatory security scenarios and cannot be disabled by DMP.",
+    "Small trades, sensitive profile viewing, trusted-device duration, and device removal can be configured only within the non-mandatory DMP boundary.",
+    "All sensitive operations require audit logging with actor, device, IP, riskLevel, result, and requestId.",
+    "No page may compute final risk policy locally; risk decision, alert priority, GSL status, and verification method must come from API contract or governed mock schema."
+  ],
+  "next_stage": [
+    "Backend validates OpenAPI draft and persistence model.",
+    "Risk and compliance confirm TOTP, GSL, remote login, and withdrawal verification thresholds.",
+    "Design System confirms registered business components and security patterns before UI build.",
+    "App implementation adds /settings/security-center route only after page contract and public-resource QA pass."
+  ],
+  "qa_gate": {
+    "release_decision": "conditional_ready_for_contract_review",
+    "blockers_before_code_complete": [
+      "Production identity/session service is not connected.",
+      "TOTP secret storage, recovery-code hashing, and GSL scheduler are backend-owned and not implemented in this package.",
+      "DMP policy approval workflow and audit export permissions require security owner review.",
+      "Native/compliance review is required for high-risk English and Indonesian security copy."
+    ]
+  }
+}

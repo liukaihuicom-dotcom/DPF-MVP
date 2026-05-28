@@ -111,21 +111,104 @@ if (screenEntry) {
   );
 }
 
+const appViewportEntry = componentEntries.AppViewport;
+if (appViewportEntry) {
+  const appViewportText = read('src/components/AppViewport.tsx');
+  const rootLayoutText = read('src/screens/navigation/RootLayout.tsx');
+  const appViewportManifestText = JSON.stringify(appViewportEntry);
+  checks.push(
+    /width:\s*layout\.appDeviceWidth/.test(appViewportText)
+      && /height:\s*layout\.appDeviceHeight/.test(appViewportText)
+      && /borderRadius:\s*radius\.sheet/.test(appViewportText)
+      && /maxHeight:\s*'100%'/.test(appViewportText)
+      && /justifyContent:\s*'center'/.test(appViewportText)
+      && appViewportManifestText.includes('390 x 844 native app canvas')
+      && appViewportManifestText.includes('radius.sheet')
+      ? pass('QA_COMPONENT_APP_VIEWPORT_DEVICE_CANVAS', 'AppViewport constrains Codex web product pages to the governed 390 x 844 rounded device canvas', manifestPath)
+      : fail('QA_COMPONENT_APP_VIEWPORT_DEVICE_CANVAS', 'AppViewport must use layout.appDeviceWidth, layout.appDeviceHeight, radius.sheet, and document the rounded 390 x 844 web preview contract', 'src/components/AppViewport.tsx'),
+  );
+  checks.push(
+    /<AppViewport>[\s\S]*?<Stack[\s\S]*?<\/Stack>[\s\S]*?<\/AppViewport>[\s\S]*?<GlobalBottomSheetHost \/>[\s\S]*?<ProductControlPanel \/>/.test(rootLayoutText)
+      ? pass('QA_COMPONENT_APP_VIEWPORT_DEVTOOLS_BOUNDARY', 'ProductControlPanel remains outside AppViewport and is not clipped by the phone canvas', 'src/screens/navigation/RootLayout.tsx')
+      : fail('QA_COMPONENT_APP_VIEWPORT_DEVTOOLS_BOUNDARY', 'ProductControlPanel must remain a sibling after AppViewport, not a child inside the phone canvas', 'src/screens/navigation/RootLayout.tsx'),
+  );
+}
+
+const productControlPanelEntry = componentEntries.ProductControlPanel;
+if (productControlPanelEntry) {
+  const productControlPanelText = read('src/components/ProductControlPanel.tsx');
+  const productControlPanelManifestText = JSON.stringify(productControlPanelEntry);
+  checks.push(
+    /PanResponder\.create/.test(productControlPanelText)
+      && /onPanResponderMove/.test(productControlPanelText)
+      && /useWindowDimensions/.test(productControlPanelText)
+      && productControlPanelManifestText.includes('independent debug module')
+      ? pass('QA_COMPONENT_DEVTOOLS_DRAGGABLE', 'ProductControlPanel keeps window-bound drag behavior as an independent debug module', 'src/components/ProductControlPanel.tsx')
+      : fail('QA_COMPONENT_DEVTOOLS_DRAGGABLE', 'ProductControlPanel must keep PanResponder drag behavior and independent debug-module manifest wording', 'src/components/ProductControlPanel.tsx'),
+  );
+}
+
 const cardEntry = componentEntries.Card;
 if (cardEntry) {
   const cardText = read('src/components/Card.tsx');
   const cardManifestText = JSON.stringify(cardEntry);
+  const cardTokenBindings = Array.isArray(cardEntry.tokenBindings) ? cardEntry.tokenBindings : [];
   checks.push(
     /paddingHorizontal:\s*layout\.cardPaddingX/.test(cardText)
       && /paddingVertical:\s*layout\.cardPaddingY/.test(cardText)
       && /paddingHorizontal:\s*layout\.cardPaddingCompactX/.test(cardText)
       && /paddingVertical:\s*layout\.cardPaddingCompactY/.test(cardText)
+      && /borderRadius:\s*radius\.card/.test(cardText)
+      && !/\bborderWidth\b/.test(cardText)
+      && !/\bborderColor\b/.test(cardText)
       && !/padding:\s*spacing\.lg/.test(cardText)
       && !/padding:\s*spacing\.md/.test(cardText)
       && cardManifestText.includes('layout.cardPaddingX')
       && cardManifestText.includes('12px horizontal padding')
-      ? pass('QA_COMPONENT_CARD_AXIS_PADDING', 'Card runtime and manifest use axis-specific card padding tokens', manifestPath)
-      : fail('QA_COMPONENT_CARD_AXIS_PADDING', 'Card must use layout.cardPaddingX/Y and compact axis tokens, and manifest must document the 12px horizontal contract', 'src/components/Card.tsx'),
+      && cardManifestText.includes('borderless')
+      && cardTokenBindings.includes('radius.card')
+      && !cardTokenBindings.includes('radius.md')
+      && !cardTokenBindings.some((binding) => /^lineWidth|^color\.border/.test(binding))
+      ? pass('QA_COMPONENT_CARD_AXIS_PADDING', 'Card runtime and manifest use radius.card plus axis-specific card padding tokens', manifestPath)
+      : fail('QA_COMPONENT_CARD_AXIS_PADDING', 'Card must use radius.card, layout.cardPaddingX/Y, compact axis tokens, and manifest must document the borderless 12px radius/padding contract', 'src/components/Card.tsx'),
+  );
+}
+
+const actionButtonEntry = componentEntries.ActionButton;
+if (actionButtonEntry) {
+  const actionButtonText = read('src/components/ActionButton.tsx');
+  const actionButtonManifestText = JSON.stringify(actionButtonEntry);
+  const actionButtonVariants = Array.isArray(actionButtonEntry.variants) ? actionButtonEntry.variants.join(',') : '';
+  checks.push(
+    actionButtonVariants === 'filled,outline'
+      && /export type ActionButtonVariant = 'filled' \| 'outline';/.test(actionButtonText)
+      && !/legacySoft|variant="text"|emphasis\??:|emphasis=|textToneStyles|disabledTextButton|textButton/.test(actionButtonText)
+      && !actionButtonEntry.variants.includes('text')
+      && !actionButtonEntry.variants.includes('legacySoft')
+      ? pass('QA_COMPONENT_ACTION_BUTTON_TWO_VARIANTS', 'ActionButton exposes only filled and outline variants', manifestPath)
+      : fail('QA_COMPONENT_ACTION_BUTTON_TWO_VARIANTS', 'ActionButton must expose exactly filled and outline, with no text or legacySoft compatibility variant', 'src/components/ActionButton.tsx'),
+  );
+
+  checks.push(
+    /filledButton:\s*\{[\s\S]*?borderWidth:\s*lineWidth\.none/.test(actionButtonText)
+      && /backgroundColor:\s*'transparent'/.test(actionButtonText)
+      && /borderColor:\s*colors\.border\.default/.test(actionButtonText)
+      ? pass('QA_COMPONENT_ACTION_BUTTON_VISUAL_CONTRACT', 'ActionButton filled is background-only and outline is transparent with a token border', 'src/components/ActionButton.tsx')
+      : fail('QA_COMPONENT_ACTION_BUTTON_VISUAL_CONTRACT', 'ActionButton filled must use lineWidth.none and outline must keep transparent background with token border', 'src/components/ActionButton.tsx'),
+  );
+}
+
+const headerIconButtonEntry = componentEntries.HeaderIconButton;
+if (headerIconButtonEntry) {
+  const headerIconButtonText = read('src/components/HeaderIconButton.tsx');
+  const headerIconButtonManifestText = JSON.stringify(headerIconButtonEntry);
+  checks.push(
+    /variant === 'filled' && \{\s*backgroundColor: colors\.surface\.panel,\s*\}/m.test(headerIconButtonText)
+      && headerIconButtonManifestText.includes('color.surface.panel')
+      && headerIconButtonManifestText.includes('gray page, sheet, or canvas backgrounds')
+      && headerIconButtonManifestText.includes('Do not hardcode white')
+      ? pass('QA_COMPONENT_HEADER_ICON_PANEL_SURFACE', 'HeaderIconButton filled surfaces use the panel token on gray backgrounds', manifestPath)
+      : fail('QA_COMPONENT_HEADER_ICON_PANEL_SURFACE', 'HeaderIconButton runtime and manifest must bind filled gray-background containers to color.surface.panel', 'src/components/HeaderIconButton.tsx'),
   );
 }
 
@@ -133,11 +216,16 @@ const tradeOrderListEntry = componentEntries.TradeOrderList;
 if (tradeOrderListEntry) {
   const tradeOrderListText = read('src/components/TradeOrderList.tsx');
   const rowStyleMatch = tradeOrderListText.match(/row:\s*\{[\s\S]*?\n\s*\},/);
+  const cardStyleMatch = tradeOrderListText.match(/card:\s*\{[\s\S]*?\n\s*\},/);
   const tradeOrderListManifestText = JSON.stringify(tradeOrderListEntry);
   checks.push(
-    rowStyleMatch && !/paddingHorizontal/.test(rowStyleMatch[0]) && tradeOrderListManifestText.includes('outer container controls the list left/right width')
-      ? pass('QA_COMPONENT_TRADE_ORDER_LIST_EXTERNAL_WIDTH', 'TradeOrderList rows do not own horizontal padding; outer containers control list width', manifestPath)
-      : fail('QA_COMPONENT_TRADE_ORDER_LIST_EXTERNAL_WIDTH', 'TradeOrderList must not add row-level horizontal padding and manifest must document external width ownership', 'src/components/TradeOrderList.tsx'),
+    rowStyleMatch
+      && !/paddingHorizontal/.test(rowStyleMatch[0])
+      && cardStyleMatch
+      && /paddingHorizontal:\s*layout\.cardPaddingX/.test(cardStyleMatch[0])
+      && tradeOrderListManifestText.includes('governed horizontal list inset through layout.cardPaddingX')
+      ? pass('QA_COMPONENT_TRADE_ORDER_LIST_CARD_INSET', 'TradeOrderList card owns the governed horizontal list inset while rows keep vertical-only padding', manifestPath)
+      : fail('QA_COMPONENT_TRADE_ORDER_LIST_CARD_INSET', 'TradeOrderList card must use layout.cardPaddingX, rows must not add horizontal padding, and manifest must document the card inset contract', 'src/components/TradeOrderList.tsx'),
   );
 }
 

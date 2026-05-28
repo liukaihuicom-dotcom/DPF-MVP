@@ -8,6 +8,7 @@ Source of truth: `src/navigation/routeRegistry.ts`.
 | `brand_splash` | `/brand-splash` | App/Web | Guest / signed-in | Show brand intro and hand off to launch. | low |
 | `launch` | `/launch` | App/Web | Guest | Provide login and registration entry. | low |
 | `markets` | `/markets` | App/Web | Trader | Browse instruments, switch account, open instrument detail. | medium |
+| `markets_account_demo` | `/markets-account-demo` | App/Web | Local dev | Compare trading-account header visual variants for design review. | low |
 | `trade` | `/trade` | App/Web | Trader | Manage positions and orders from the primary tab. | high |
 | `accounts` | `/accounts` | App/Web | Trader | Review trading accounts, account details, and funding shortcuts from the primary tab. | medium |
 | `discover` | `/discover` | App/Web | Guest / signed-in | Browse growth, education, onboarding, support, and function entries. | low |
@@ -33,6 +34,7 @@ Source of truth: `src/navigation/routeRegistry.ts`.
 | `funding_transaction_list` | `/funding/transactions` | App/Web | Trader | List deposits, withdrawals, and funding records. | medium |
 | `funding_transaction_detail` | `/funding/transactions/[id]` | App/Web | Trader | Unified transaction detail for support and audit. | high |
 | `settings` | `/settings` | App/Web | Signed-in user | Profile/settings module entry. | medium |
+| `app_security_center` | `/settings/security-center` | App/Web | Signed-in user | Canonical planned Security Center overview for alerts, score, TOTP, GSL, devices, login history, anti-phishing code, and verification entry points. | critical |
 | `security_login_log` | `/settings/security-log` | App/Web | Signed-in user | Review remembered devices and local security events. | high |
 | `appearance` | `/appearance` | App/Web | Signed-in user | Select local appearance mode. | low |
 | `onboarding` | `/auth/onboarding` | App/Web | Guest | Activation path and trader/partner onboarding entry. | medium |
@@ -51,3 +53,4 @@ Source of truth: `src/navigation/routeRegistry.ts`.
 
 - Production RBAC, Partner data scope, trading execution, funding/KYC policy, and device/session mutation are not backed by server-side services yet.
 - Route permissions in the registry are delivery assumptions and must be reconciled with production entitlement policy before release.
+- `/settings/security-center` is a contract-first planned canonical route; do not add it to runtime route coverage or public-resource graph pages until the App implementation stage creates the route wrapper and screen.

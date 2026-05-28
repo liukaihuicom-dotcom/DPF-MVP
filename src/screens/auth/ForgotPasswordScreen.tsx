@@ -3,15 +3,15 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { DEMO_OTP, buildAccount, buildAuthRoute, defaultCountry, isStrongPassword, isValidEmail, safeRedirect, sanitizePhone } from '@/src/auth/authFlow';
-import { ActionButton } from '@/src/components/ActionButton';
-import { AuthDescriptionAction, AuthLink, AuthShell, AuthTextField } from '@/src/components/AuthShell';
-import { AuthErrorSheet, CountryPhoneField, OtpInput, PasswordRuleList, useCountdown } from '@/src/components/AuthFlowControls';
-import { AppText } from '@/src/components/Typography';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { AuthDescriptionAction, AuthLink, AuthShell, AuthTextField } from '@/src/design-public-assets/components';
+import { AuthErrorSheet, CountryPhoneField, OtpInput, PasswordRuleList, useCountdown } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import type { AuthChannel } from '@/src/domain/types';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import { navigateBackOrReplace } from '@/src/navigation/navigationPolicy';
-import { useProductSettings } from '@/src/settings/ProductSettings';
-import { spacing } from '@/src/theme/tokens';
+import { useProductSettings } from '@/src/design-public-assets/copy';
+import { spacing } from '@/src/design-public-assets/tokens';
 
 type ResetStep = 'account' | 'code' | 'password';
 

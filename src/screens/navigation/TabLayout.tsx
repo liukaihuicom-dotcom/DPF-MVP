@@ -1,10 +1,10 @@
 import { Tabs } from 'expo-router';
 
-import type { AppIconName } from '@/src/components/AppIcon';
-import { TabBarIcon } from '@/src/components/navigation';
+import type { AppIconName } from '@/src/design-public-assets/components';
+import { TabBarIcon } from '@/src/design-public-assets/components';
 import type { DiscoverModuleId } from '@/src/domain/types';
-import { useProductSettings } from '@/src/settings/ProductSettings';
-import { lineWidth, titleTypography } from '@/src/theme/tokens';
+import { useProductSettings } from '@/src/design-public-assets/copy';
+import { lineWidth, size, titleTypography } from '@/src/design-public-assets/tokens';
 
 export default function TabLayout() {
   const { colors, selectedDiscoverModuleId, t } = useProductSettings();
@@ -17,15 +17,15 @@ export default function TabLayout() {
         tabBarActiveTintColor: colors.brand.fg,
         tabBarInactiveTintColor: colors.text.tertiary,
         tabBarItemStyle: {
-          minHeight: 44,
+          minHeight: size.tab.itemMinHeight,
         },
         tabBarStyle: {
           backgroundColor: colors.surface.panel,
           borderTopColor: colors.border.default,
           borderTopWidth: lineWidth.hairline,
-          height: 68,
-          paddingBottom: 7,
-          paddingTop: 6,
+          height: size.tab.barHeight,
+          paddingBottom: size.tab.paddingBottom,
+          paddingTop: size.tab.paddingTop,
         },
         tabBarLabelStyle: {
           ...titleTypography.bottomTabs,

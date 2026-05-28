@@ -10,13 +10,26 @@ import { IconSurface } from './IconSurface';
 import { NativePressable } from './NativePressable';
 import { StatusPill, type StatusPillTone } from './StatusPill';
 import { AppText } from './Typography';
+import { AppIcon } from './AppIcon';
 
-type TradingAccountSwitchSheetProps = {
+export type TradingAccountSwitchSheetProps = {
   accounts: ReturnType<typeof buildTradingAccountProfiles>;
   getDisabledReason?: (profile: TradingAccountProfile) => string | undefined;
   mode?: 'compact' | 'detailed';
   onSelect: (id: string) => void;
   selectedId: string;
+};
+
+export type TradingAccountCardTrailing = 'currency' | 'radio' | 'chevron';
+
+export type TradingAccountCardProps = {
+  accessibilityLabel?: string;
+  disabledReason?: string;
+  mode?: 'compact' | 'detailed';
+  onPress: () => void;
+  profile: TradingAccountProfile;
+  selected?: boolean;
+  trailing?: TradingAccountCardTrailing;
 };
 
 export function TradingAccountSwitchSheet({
@@ -44,13 +57,14 @@ export function TradingAccountSwitchSheet({
                 {getAccountStatusLabel(group, locale)} ({groupedAccounts.length})
               </AppText>
               {groupedAccounts.map((profile) => (
-                <SwitchAccountCard
+                <TradingAccountCard
                   disabledReason={getDisabledReason?.(profile)}
                   key={profile.id}
                   mode={mode}
                   onPress={() => onSelect(profile.id)}
                   profile={profile}
                   selected={profile.id === selectedId}
+                  trailing={mode === 'detailed' ? 'radio' : 'currency'}
                 />
               ))}
             </View>
@@ -73,26 +87,22 @@ export function createTradingAccountSwitchHeader({
   return {
     rightAction: {
       accessibilityLabel: locale !== 'zh-CN' ? 'Add Account' : '添加账户',
-      icon: 'icon.account.add_user' as const,
+      icon: 'icon.system.add' as const,
       onPress: onAddAccount,
     },
     title,
   };
 }
 
-function SwitchAccountCard({
+export function TradingAccountCard({
+  accessibilityLabel,
   disabledReason,
-  mode,
+  mode = 'detailed',
   onPress,
   profile,
-  selected,
-}: {
-  disabledReason?: string;
-  mode: 'compact' | 'detailed';
-  onPress: () => void;
-  profile: TradingAccountProfile;
-  selected: boolean;
-}) {
+  selected = false,
+  trailing = mode === 'detailed' ? 'radio' : 'currency',
+}: TradingAccountCardProps) {
   const { locale, colors, t } = useProductSettings();
   const status = getAccountStatusLabel(profile.group, locale);
   const statusTone = getAccountStatusTone(profile);
@@ -104,7 +114,7 @@ function SwitchAccountCard({
 
   return (
     <NativePressable
-      accessibilityLabel={`${t('funding.account.selectSource')} ${profile.accountNo}`}
+      accessibilityLabel={accessibilityLabel ?? `${t('funding.account.selectSource')} ${profile.accountNo}`}
       accessibilityState={{ disabled, selected }}
       disabled={disabled}
       minTouch={mode === 'detailed' ? 96 : 86}
@@ -131,16 +141,18 @@ function SwitchAccountCard({
               {mode === 'detailed' && (profile.group !== 'active' || disabled) ? <StatusPill compact label={status} tone={statusTone} /> : null}
             </View>
             <View style={styles.metaRow}>
-              <CurrencyFlag currency={profile.currency} size={18} />
+              <CurrencyFlag currency={profile.currency} size={16} />
               <AppText numberOfLines={1} tone="muted" variant="caption">
                 {profile.currency} · {profile.platform} · {profile.type}
               </AppText>
             </View>
           </View>
-          {mode === 'detailed' ? (
-            <View style={StyleSheet.flatten([styles.radio, { borderColor: selected ? selectedBorderColor : colors.text.tertiary }])}>
-              {selected ? <View style={StyleSheet.flatten([styles.radioDot, { backgroundColor: selectedBorderColor }])} /> : null}
+          {trailing === 'radio' ? (
+            <View style={styles.selectionIconSlot}>
+              {selected ? <AppIcon name="icon.status.check" /> : null}
             </View>
+          ) : trailing === 'chevron' ? (
+            <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
           ) : (
             <AppText numberOfLines={1} tone="muted" variant="caption">
               {profile.currency}
@@ -191,7 +203,7 @@ function DetailedAccountStats({ profile }: { profile: TradingAccountProfile }) {
       <View style={StyleSheet.flatten([styles.divider, { backgroundColor: colors.border.subtle }])} />
       <View style={styles.values}>
         <ValueCell label={t('account.equity')} value={formatMoney(profile.equity, profile.currency, 2, locale)} />
-        <ValueCell label={t('portfolio.unrealizedPnl')} tone={profile.unrealizedPnl >= 0 ? 'down' : 'up'} value={formatMoney(profile.unrealizedPnl, profile.currency, 2, locale)} />
+        <ValueCell label={t('portfolio.unrealizedPnl')} tone={profile.unrealizedPnl >= 0 ? 'up' : 'down'} value={formatMoney(profile.unrealizedPnl, profile.currency, 2, locale)} />
       </View>
       <View style={StyleSheet.flatten([styles.divider, { backgroundColor: colors.border.subtle }])} />
       <AppText tone="muted" variant="caption">
@@ -231,7 +243,7 @@ function getAccountStatusTone(profile: TradingAccountProfile): StatusPillTone {
 const styles = StyleSheet.create({
   card: {
     alignItems: 'flex-start',
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flexDirection: 'row',
     gap: spacing.md,
@@ -262,22 +274,16 @@ const styles = StyleSheet.create({
   },
   metaRow: {
     alignItems: 'center',
+    columnGap: spacing.xxs,
     flexDirection: 'row',
-    gap: 5,
     minWidth: 0,
+    rowGap: spacing.none,
   },
-  radio: {
+  selectionIconSlot: {
     alignItems: 'center',
-    borderRadius: radius.full,
-    borderWidth: lineWidth.selected,
-    height: 24,
+    height: layout.headerIconSize,
     justifyContent: 'center',
-    width: 24,
-  },
-  radioDot: {
-    borderRadius: radius.full,
-    height: 12,
-    width: 12,
+    width: layout.headerIconSize,
   },
   sheet: {
     gap: spacing.md,

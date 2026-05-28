@@ -98,7 +98,76 @@
       "severity": "blocker",
       "rule": "Existing demo balances and demo transactions must not be represented as real withdrawable funds.",
       "test_refs": ["TC-REG-001"]
+    },
+    {
+      "id": "BR-SEC-001",
+      "domain": "alert_priority",
+      "severity": "critical",
+      "rule": "Security Center displays only the highest-priority active alert at one time and reveals the next active alert only after the current alert is resolved, dismissed, or snoozed.",
+      "test_refs": ["TC-SEC-ALERT-001", "TC-SEC-ALERT-002"]
+    },
+    {
+      "id": "BR-SEC-002",
+      "domain": "mfa",
+      "severity": "blocker",
+      "rule": "Withdrawal, new withdrawal address, TOTP disable, email/phone change, and high-risk remote login must use strong verification and cannot be disabled by DMP.",
+      "test_refs": ["TC-SEC-MFA-001", "TC-SEC-DMP-001"]
+    },
+    {
+      "id": "BR-SEC-003",
+      "domain": "totp",
+      "severity": "critical",
+      "rule": "TOTP binding requires successful 6-digit verification, generates 10 one-time recovery codes, and requires user confirmation that recovery codes were saved.",
+      "test_refs": ["TC-SEC-TOTP-001", "TC-SEC-TOTP-002"]
+    },
+    {
+      "id": "BR-SEC-004",
+      "domain": "totp",
+      "severity": "critical",
+      "rule": "TOTP verification locks for 15 minutes after five consecutive invalid attempts.",
+      "test_refs": ["TC-SEC-TOTP-003"]
+    },
+    {
+      "id": "BR-SEC-005",
+      "domain": "gsl",
+      "severity": "blocker",
+      "rule": "Closing TOTP, adding withdrawal address, changing email/phone, and high-risk password changes create a 24-hour GSL pending change that can be cancelled before it becomes effective.",
+      "test_refs": ["TC-SEC-GSL-001", "TC-SEC-GSL-002"]
+    },
+    {
+      "id": "BR-SEC-006",
+      "domain": "gsl",
+      "severity": "critical",
+      "rule": "A user cannot submit a second pending change of the same type until the existing pending change is cancelled, effective, failed, superseded, or expired.",
+      "test_refs": ["TC-SEC-GSL-003"]
+    },
+    {
+      "id": "BR-SEC-007",
+      "domain": "device",
+      "severity": "critical",
+      "rule": "Current device/session cannot be revoked through device management; revoke-all-others preserves the current device.",
+      "test_refs": ["TC-SEC-DEVICE-001", "TC-SEC-DEVICE-002"]
+    },
+    {
+      "id": "BR-SEC-008",
+      "domain": "remote_login",
+      "severity": "critical",
+      "rule": "Remote login risk is triggered by city mismatch, distance >= 500 km, country change, or high-risk IP/ASN; high and critical cases require TOTP or block login.",
+      "test_refs": ["TC-SEC-RISK-001", "TC-SEC-RISK-002", "TC-SEC-RISK-003"]
+    },
+    {
+      "id": "BR-SEC-009",
+      "domain": "local_pin_boundary",
+      "severity": "blocker",
+      "rule": "Security Center TOTP/MFA rules must not force local PIN setup by default; local PIN remains optional unless the user explicitly locks the app.",
+      "test_refs": ["TC-SEC-PIN-001"]
+    },
+    {
+      "id": "BR-SEC-010",
+      "domain": "audit",
+      "severity": "blocker",
+      "rule": "Every sensitive security operation must write an audit log with actor, actorId, target, IP, deviceId, userAgent, location, riskLevel, result, and requestId.",
+      "test_refs": ["TC-SEC-AUDIT-001"]
     }
   ]
 }
-

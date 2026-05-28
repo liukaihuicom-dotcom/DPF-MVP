@@ -3,25 +3,35 @@ import { Stack, type ErrorBoundaryProps, useNavigationContainerRef, usePathname,
 import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
 import { useEffect } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, type Metrics } from 'react-native-safe-area-context';
 
-import { AppViewport } from '@/src/components/AppViewport';
-import { BottomSheetProvider, GlobalBottomSheetHost } from '@/src/components/BottomSheet';
-import { ProductControlPanel } from '@/src/components/ProductControlPanel';
-import { AppText } from '@/src/components/Typography';
+import { AppViewport } from '@/src/design-public-assets/components';
+import { BottomSheetProvider, GlobalBottomSheetHost } from '@/src/design-public-assets/components';
+import { ProductControlPanel } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import { ToastProvider } from '@/src/feedback/Toast';
-import { ProductSettingsProvider, useProductSettings } from '@/src/settings/ProductSettings';
+import { ProductSettingsProvider, useProductSettings } from '@/src/design-public-assets/copy';
 import { BrokerProvider } from '@/src/state/BrokerStore';
-import { layout, spacing } from '@/src/theme/tokens';
+import { layout, radius, spacing } from '@/src/design-public-assets/tokens';
 
 SplashScreen.setOptions({
   duration: 300,
   fade: true,
 });
 SplashScreen.preventAutoHideAsync();
+
+const webAppPreviewSafeAreaMetrics: Metrics = {
+  frame: {
+    height: layout.appDeviceHeight,
+    width: layout.appDeviceWidth,
+    x: 0,
+    y: 0,
+  },
+  insets: layout.appPreviewSafeAreaInsets,
+};
 
 export function ErrorBoundary(props: ErrorBoundaryProps) {
   return (
@@ -32,12 +42,12 @@ export function ErrorBoundary(props: ErrorBoundaryProps) {
 }
 
 function RootErrorBoundaryContent({ error, retry }: ErrorBoundaryProps) {
-  const { colors } = useProductSettings();
+  const { colors, t } = useProductSettings();
 
   return (
     <View style={[styles.errorContainer, { backgroundColor: colors.surface.canvas }]}>
-      <View style={[styles.errorPanel, { backgroundColor: colors.surface.panel, borderColor: colors.border.default }]}>
-        <AppText variant="title">Something went wrong</AppText>
+      <View style={[styles.errorPanel, { backgroundColor: colors.surface.panel }]}>
+        <AppText variant="title">{t('root.error.title')}</AppText>
         <AppText tone="muted" variant="body.secondary">
           {error.message}
         </AppText>
@@ -53,7 +63,7 @@ function RootErrorBoundaryContent({ error, retry }: ErrorBoundaryProps) {
             },
           ]}>
           <AppText tone="white" variant="caption">
-            Retry
+            {t('common.retry')}
           </AppText>
         </Pressable>
       </View>
@@ -68,7 +78,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      <SafeAreaProvider>
+      <SafeAreaProvider initialMetrics={Platform.OS === 'web' ? webAppPreviewSafeAreaMetrics : undefined}>
         <ProductSettingsProvider>
           <RootLayoutNav />
         </ProductSettingsProvider>
@@ -204,8 +214,7 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
   },
   errorPanel: {
-    borderRadius: 8,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: radius.card,
     gap: spacing.md,
     marginHorizontal: 'auto',
     maxWidth: layout.appMaxWidth,
@@ -216,7 +225,7 @@ const styles = StyleSheet.create({
   retryButton: {
     alignItems: 'center',
     alignSelf: 'flex-start',
-    borderRadius: 8,
+    borderRadius: radius.sm,
     minHeight: layout.touchTargetMin,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,

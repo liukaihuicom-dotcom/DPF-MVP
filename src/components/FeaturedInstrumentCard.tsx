@@ -58,7 +58,7 @@ export function FeaturedInstrumentCard({ instrument }: FeaturedInstrumentCardPro
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     gap: spacing.sm,
     minHeight: size.control.lg * 3,
     padding: spacing.md,

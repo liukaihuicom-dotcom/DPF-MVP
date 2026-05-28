@@ -1,6 +1,6 @@
-import { Screen } from '@/src/components/Screen';
+import { Screen } from '@/src/design-public-assets/components';
 import { ProfileModule } from '@/src/screens/discover/DiscoverModuleScreen';
-import { useProductSettings } from '@/src/settings/ProductSettings';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
 
 export default function SettingsScreen() {

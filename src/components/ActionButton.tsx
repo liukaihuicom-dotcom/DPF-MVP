@@ -8,15 +8,12 @@ import { NativePressable } from './NativePressable';
 import { AppText, type AppTextTone } from './Typography';
 
 export type ActionButtonTone = 'up' | 'down' | 'blue' | 'brand' | 'neutral' | 'amber' | 'danger';
-export type ActionButtonVariant = 'filled' | 'outline' | 'text';
+export type ActionButtonVariant = 'filled' | 'outline';
 export type ActionButtonSizePreset = 'default' | 'lg';
-type ResolvedActionButtonVariant = ActionButtonVariant | 'legacySoft';
 
 type ActionButtonProps = {
   accessibilityLabel?: string;
   disabled?: boolean;
-  /** @deprecated Prefer `variant`. */
-  emphasis?: 'soft' | 'solid';
   icon?: AppIconName;
   label: string;
   loading?: boolean;
@@ -30,7 +27,6 @@ type ActionButtonProps = {
 export function ActionButton({
   accessibilityLabel,
   disabled,
-  emphasis = 'soft',
   icon,
   label,
   loading,
@@ -38,39 +34,9 @@ export function ActionButton({
   sizePreset = 'default',
   tone = 'neutral',
   style,
-  variant,
+  variant = 'filled',
 }: ActionButtonProps) {
   const colors = useThemeColors();
-  const legacySoftToneStyles = {
-    amber: {
-      backgroundColor: `${colors.status.warning.fg}12`,
-      borderColor: colors.status.warning.fg,
-    },
-    blue: {
-      backgroundColor: `${colors.status.info.fg}12`,
-      borderColor: colors.status.info.fg,
-    },
-    brand: {
-      backgroundColor: colors.text.primary,
-      borderColor: colors.text.primary,
-    },
-    danger: {
-      backgroundColor: `${colors.status.danger.fg}12`,
-      borderColor: colors.status.danger.fg,
-    },
-    down: {
-      backgroundColor: `${colors.market.down.fg}12`,
-      borderColor: colors.market.down.fg,
-    },
-    neutral: {
-      backgroundColor: colors.surface.subtle,
-      borderColor: colors.border.subtle,
-    },
-    up: {
-      backgroundColor: `${colors.market.up.fg}12`,
-      borderColor: colors.market.up.fg,
-    },
-  };
   const filledToneStyles = {
     amber: {
       backgroundColor: colors.status.warning.fg,
@@ -132,45 +98,6 @@ export function ActionButton({
       borderColor: colors.market.up.fg,
     },
   };
-  const textToneStyles = {
-    amber: {
-      backgroundColor: 'transparent',
-      borderColor: 'transparent',
-    },
-    blue: {
-      backgroundColor: 'transparent',
-      borderColor: 'transparent',
-    },
-    brand: {
-      backgroundColor: 'transparent',
-      borderColor: 'transparent',
-    },
-    danger: {
-      backgroundColor: 'transparent',
-      borderColor: 'transparent',
-    },
-    down: {
-      backgroundColor: 'transparent',
-      borderColor: 'transparent',
-    },
-    neutral: {
-      backgroundColor: 'transparent',
-      borderColor: 'transparent',
-    },
-    up: {
-      backgroundColor: 'transparent',
-      borderColor: 'transparent',
-    },
-  };
-  const legacySoftTextTones = {
-    amber: 'default',
-    blue: 'default',
-    brand: 'panel',
-    danger: 'danger',
-    down: 'default',
-    neutral: 'default',
-    up: 'default',
-  } satisfies Record<ActionButtonTone, AppTextTone>;
   const filledTextTones = {
     amber: 'white',
     blue: 'white',
@@ -180,7 +107,7 @@ export function ActionButton({
     neutral: 'default',
     up: 'white',
   } satisfies Record<ActionButtonTone, AppTextTone>;
-  const outlineAndTextTones = {
+  const outlineTextTones = {
     amber: 'amber',
     blue: 'blue',
     brand: 'default',
@@ -189,17 +116,8 @@ export function ActionButton({
     neutral: 'default',
     up: 'up',
   } satisfies Record<ActionButtonTone, AppTextTone>;
-  const resolvedVariant: ResolvedActionButtonVariant = variant ?? (emphasis === 'solid' ? 'filled' : 'legacySoft');
-  const toneStyles =
-    resolvedVariant === 'filled'
-      ? filledToneStyles
-      : resolvedVariant === 'outline'
-        ? outlineToneStyles
-        : resolvedVariant === 'text'
-          ? textToneStyles
-          : legacySoftToneStyles;
-  const toneForeground =
-    resolvedVariant === 'filled' ? filledTextTones : resolvedVariant === 'legacySoft' ? legacySoftTextTones : outlineAndTextTones;
+  const toneStyles = variant === 'filled' ? filledToneStyles : outlineToneStyles;
+  const toneForeground = variant === 'filled' ? filledTextTones : outlineTextTones;
   const foregroundTone = disabled ? 'disabled' : toneForeground[tone];
   const textToneColors = {
     amber: colors.status.warning.fg,
@@ -216,38 +134,31 @@ export function ActionButton({
     muted: colors.text.secondary,
     panel: colors.surface.panel,
     panelMuted: `${colors.surface.panel}CC`,
+    success: colors.status.success.fg,
     up: colors.market.up.fg,
     white: colors.text.inverse,
   } satisfies Record<AppTextTone, string>;
   const foregroundColor = textToneColors[foregroundTone];
   const iconTone: IconTone = disabled
     ? 'disabled'
-    : resolvedVariant === 'filled' && tone !== 'neutral'
+    : variant === 'filled' && tone !== 'neutral'
       ? tone === 'brand'
         ? 'panel'
         : 'white'
-      : resolvedVariant === 'legacySoft'
-        ? tone === 'danger'
-          ? 'danger'
-          : tone === 'brand'
-            ? 'panel'
-            : 'text'
-        : tone === 'neutral'
-          ? 'text'
-          : tone;
+      : tone === 'neutral'
+        ? 'text'
+        : tone;
   const spinnerColor = disabled
     ? colors.text.disabled
-    : resolvedVariant === 'filled'
+    : variant === 'filled'
       ? tone === 'neutral'
         ? colors.text.secondary
         : foregroundColor
       : foregroundColor;
   const disabledButtonStyle =
-    resolvedVariant === 'text'
-      ? styles.disabledTextButton
-      : resolvedVariant === 'outline'
-        ? { backgroundColor: 'transparent', borderColor: colors.border.disabled }
-        : { backgroundColor: colors.surface.disabled, borderColor: 'transparent' };
+    variant === 'outline'
+      ? { backgroundColor: 'transparent', borderColor: colors.border.disabled }
+      : { backgroundColor: colors.surface.disabled, borderColor: 'transparent' };
 
   return (
     <NativePressable
@@ -260,8 +171,7 @@ export function ActionButton({
       style={StyleSheet.flatten([
         styles.button,
         sizePreset === 'lg' && styles.buttonLg,
-        resolvedVariant === 'filled' && styles.filledButton,
-        resolvedVariant === 'text' && styles.textButton,
+        variant === 'filled' && styles.filledButton,
         toneStyles[tone],
         disabled && styles.disabledButton,
         disabled && disabledButtonStyle,
@@ -272,7 +182,7 @@ export function ActionButton({
       ) : (
         <View style={styles.buttonContent}>
           {icon ? <AppIcon name={icon} sizeVariant="sm" tone={iconTone} /> : null}
-          <AppText adjustsFontSizeToFit numberOfLines={1} tone={foregroundTone} variant={sizePreset === 'lg' ? 'buttonLg' : 'buttonMd'}>
+          <AppText numberOfLines={1} tone={foregroundTone} variant={sizePreset === 'lg' ? 'buttonLg' : 'buttonMd'}>
             {label}
           </AppText>
         </View>
@@ -305,14 +215,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minWidth: 0,
   },
-  disabledTextButton: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
-  },
   disabledButton: {
     opacity: 1,
-  },
-  textButton: {
-    paddingHorizontal: spacing.sm,
   },
 });

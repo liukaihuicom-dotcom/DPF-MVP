@@ -4,11 +4,11 @@ import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
-import { ActionButton } from '@/src/components/ActionButton';
-import { AppIcon } from '@/src/components/AppIcon';
-import { NativePressable } from '@/src/components/NativePressable';
-import { Screen } from '@/src/components/Screen';
-import { AppText } from '@/src/components/Typography';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { AppIcon } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { Screen } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import {
   discoverLayoutDefinitions,
   type DiscoverLayoutItem,
@@ -17,21 +17,20 @@ import {
 import { localizeText } from '@/src/domain/format';
 import { impactLight } from '@/src/feedback/haptics';
 import { navigateBackOrReplace, safeRouteTargets } from '@/src/navigation/navigationPolicy';
-import { useProductSettings } from '@/src/settings/ProductSettings';
-import { lineWidth, radius, spacing } from '@/src/theme/tokens';
+import { useProductSettings } from '@/src/design-public-assets/copy';
+import { layout, lineWidth, radius, size, spacing } from '@/src/design-public-assets/tokens';
 
-const DRAG_ROW_HEIGHT = 118;
 const viewModes: DiscoverLayoutViewMode[] = ['large', 'medium', 'list'];
 
 export default function DiscoverLayoutScreen() {
-  const { discoverLayoutItems, locale, colors, setDiscoverLayoutItems } = useProductSettings();
+  const { discoverLayoutItems, colors, locale, setDiscoverLayoutItems, t } = useProductSettings();
   const [draftItems, setDraftItems] = useState<DiscoverLayoutItem[]>(discoverLayoutItems);
   const modeLabels: Record<DiscoverLayoutViewMode, string> = {
-    large: locale !== 'zh-CN' ? 'Large' : '大卡',
-    list: locale !== 'zh-CN' ? 'List' : '列表',
-    medium: locale !== 'zh-CN' ? 'Medium' : '中卡',
+    large: t('discover.layout.mode.large'),
+    list: t('discover.layout.mode.list'),
+    medium: t('discover.layout.mode.medium'),
   };
-  const title = locale !== 'zh-CN' ? 'Layout Settings' : '布局设置';
+  const title = t('discover.layout.title');
   const close = () => {
     navigateBackOrReplace(safeRouteTargets.discover);
   };
@@ -62,20 +61,20 @@ export default function DiscoverLayoutScreen() {
     <Screen
       back
       backHref="/discover"
-      contentInsetBottom={18}
+      contentInsetBottom={spacing.lg + spacing.xxs}
       stickyFooter={
         <View style={styles.footerActions}>
-          <ActionButton label={locale !== 'zh-CN' ? 'Cancel' : '取消'} onPress={close} style={StyleSheet.flatten([styles.footerButton, { backgroundColor: colors.surface.subtle }])} tone="neutral" />
-          <ActionButton label={locale !== 'zh-CN' ? 'Save' : '保存'} onPress={save} style={styles.footerButton} tone="neutral" />
+          <ActionButton label={t('common.cancel')} onPress={close} style={styles.footerButton} tone="neutral" variant="outline" />
+          <ActionButton label={t('common.save')} onPress={save} style={styles.footerButton} tone="neutral" variant="filled" />
         </View>
       }
       title={title}>
-      <View style={StyleSheet.flatten([styles.introCard, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+      <View style={StyleSheet.flatten([styles.introCard, { backgroundColor: colors.surface.panel }])}>
         <AppIcon name="icon.system.settings" sizeVariant="sm" />
         <View style={styles.flex}>
           <AppText variant="subtitle">{title}</AppText>
           <AppText numberOfLines={2} tone="muted" variant="caption">
-            {locale !== 'zh-CN' ? 'Drag to reorder modules, then choose how each one appears on Discover.' : '拖动模块调整顺序，并设置每个内容项在发现页的展示方式。'}
+            {t('discover.layout.description')}
           </AppText>
         </View>
       </View>
@@ -126,19 +125,19 @@ function LayoutEditorRow({
   onViewModeChange: (id: DiscoverLayoutItem['id'], viewMode: DiscoverLayoutViewMode) => void;
   title: string;
 }) {
-  const { colors } = useProductSettings();
+  const { colors, t } = useProductSettings();
   const dragY = useSharedValue(0);
   const gesture = useMemo(
     () =>
       Gesture.Pan()
-        .activateAfterLongPress(120)
+        .activateAfterLongPress(size.viewport.discoverLayoutGestureDelayMs)
         .activeCursor('grabbing')
         .runOnJS(true)
         .onChange((event) => {
           dragY.value = event.translationY;
         })
         .onEnd((event) => {
-          const step = Math.round(event.translationY / DRAG_ROW_HEIGHT);
+          const step = Math.round(event.translationY / size.viewport.discoverLayoutDragRowHeight);
           dragY.value = 0;
           moveItem(index, index + step);
         }),
@@ -146,7 +145,7 @@ function LayoutEditorRow({
   );
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: dragY.value }],
-    zIndex: Math.abs(dragY.value) > 2 ? 20 : 0,
+    zIndex: Math.abs(dragY.value) > spacing.xxs ? size.viewport.discoverLayoutRaisedZIndex : spacing.none,
   }));
 
   return (
@@ -171,17 +170,17 @@ function LayoutEditorRow({
           </View>
           <View style={styles.moveButtons}>
             <NativePressable
-              accessibilityLabel={`${title} move up`}
+              accessibilityLabel={t('discover.layout.moveUp', { title })}
               disabled={!canMoveUp}
-              minTouch={32}
+              minTouch={layout.headerIconButtonSize}
               onPress={() => moveItem(index, index - 1)}
               style={StyleSheet.flatten([styles.moveButton, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
               <AppIcon name="icon.system.chevron_down" sizeVariant="xs" style={styles.moveUpIcon} />
             </NativePressable>
             <NativePressable
-              accessibilityLabel={`${title} move down`}
+              accessibilityLabel={t('discover.layout.moveDown', { title })}
               disabled={!canMoveDown}
-              minTouch={32}
+              minTouch={layout.headerIconButtonSize}
               onPress={() => moveItem(index, index + 1)}
               style={StyleSheet.flatten([styles.moveButton, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
               <AppIcon name="icon.system.chevron_down" sizeVariant="xs" />
@@ -198,7 +197,7 @@ function LayoutEditorRow({
                 accessibilityRole="button"
                 accessibilityState={{ selected }}
                 key={mode}
-                minTouch={36}
+                minTouch={layout.headerIconButtonSize}
                 onPress={() => onViewModeChange(item.id, mode)}
                 style={StyleSheet.flatten([
                   styles.segmentButton,
@@ -219,15 +218,15 @@ function LayoutEditorRow({
 const styles = StyleSheet.create({
   dragHandle: {
     alignItems: 'center',
-    height: 34,
+    height: size.control.sm - spacing.xs - spacing.xxs,
     justifyContent: 'center',
-    width: 28,
+    width: size.iconSurface.xs,
   },
   editorList: {
     gap: spacing.sm,
   },
   editorRow: {
-    borderRadius: radius.lg,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     gap: spacing.md,
     padding: spacing.md,
@@ -250,7 +249,7 @@ const styles = StyleSheet.create({
   },
   introCard: {
     alignItems: 'center',
-    borderRadius: radius.lg,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flexDirection: 'row',
     gap: spacing.md,
@@ -260,9 +259,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: radius.full,
     borderWidth: lineWidth.hairline,
-    height: 32,
+    height: size.iconSurface.sm,
     justifyContent: 'center',
-    width: 32,
+    width: size.iconSurface.sm,
   },
   moveButtons: {
     flexDirection: 'row',

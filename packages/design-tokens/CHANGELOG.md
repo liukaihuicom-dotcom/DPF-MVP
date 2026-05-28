@@ -1,5 +1,41 @@
 # Token Changelog
 
+## 3.1.0 - 2026-05-28
+
+- Added the semantic `radius.card` role at 12px for standard Card, card-like page panels, sheet content cards, and business component panels.
+- Registered `semanticRadiusRoleMap`, CSS variables, Tailwind border-radius mapping, and export-map metadata so card radius is governed separately from the legacy same-value `radius.md` alias.
+- Preserved existing sheet, pill, input, and full-screen radius roles so non-card controls keep their own shape contracts.
+
+## 3.0.1 - 2026-05-28
+
+- Softened the lightBroker neutral primary semantic color from `#0A0B0D` to `#1F2329` for `colors.text.primary`, `colors.icon.primary`, and `colors.icon.active`.
+- Preserved L1 neutral ramps, overlay blacks, inverse surfaces, and dark theme primary colors so the change remains a non-breaking light-mode readability adjustment.
+- Synchronized registry, mode matrix, runtime color exports, compatibility theme colors, and CSS variable mappings for the global primary neutral contract.
+
+## 3.0.0 - 2026-05-28
+
+- Changed the standard blue token value to `#1F72E8` across blue primitives, light-mode info/link/accent semantics, and solid blue fills while preserving accessible light-blue foregrounds for dark modes.
+- Migrated market semantics to global trading convention: `colors.market.up.*` is green with `fg/solid` at `#2EA379`, and `colors.market.down.*` is red for negative movement, sell direction, and loss PnL.
+- Kept feedback success tokens independent: `colors.status.success.*`, `colors.icon.success`, success Toast, completed states, and paid states continue to use the existing success-green family instead of `#2EA379`.
+- Added a migration rule for old code that used `down` as a green positive value: remap by business meaning to `up`, `down`, or `success`.
+
+## 2.5.0 - 2026-05-28
+
+- Added the full-site horizontal content inset contract: card-mode page and BottomSheet content use `layout.contentCardPaddingX` at 12px, while plain text/form content and top bars use 16px aliases.
+- Changed `layout.listRowPaddingX` to the governed 12px list/row horizontal inset while preserving `layout.formFieldTextInset` at 12px and footer action horizontal padding at 16px.
+- Synchronized package and runtime compatibility token registries, export maps, and spacing documentation for the new 12px/16px layout policy.
+
+## 2.4.1 - 2026-05-28
+
+- Added first-batch public-resource migration token governance for chart samples, chart dimensions, risk gauge dimensions, instrument detail visualization ratios, and app viewport semantic roles.
+- Synchronized `packages/design-tokens`, `design-system-engineering/01_tokens`, and `src/theme` token surfaces so migrated pages consume semantic roles instead of page-local numeric visual constants.
+
+## 2.4.0 - 2026-05-28
+
+- Added governed Codex app preview viewport tokens for a 390 x 844 native app canvas.
+- Added web-only preview safe-area inset tokens so Codex browser previews can simulate native top and bottom safe areas while iOS/Android keep real device metrics.
+- Changed `layout.appMaxWidth` to alias `layout.appDeviceWidth` so product pages no longer expand to desktop/tablet width in Codex web preview.
+
 ## 2.3.7 - 2026-05-27
 
 - Added `typography.captionRegular` and the semantic `label.metric` role for 14px regular-weight secondary metric labels.

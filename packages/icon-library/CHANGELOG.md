@@ -1,5 +1,21 @@
 # Icon Changelog
 
+## 4.1.11 - 2026-05-28
+
+- Added data-driven semantic `IconSurface` tones for Discover entry and campaign icons so content cards feel warmer and more emotionally expressive while staying inside the local icon registry and token-governed surface contract.
+- Kept icon assets, semantic icon keys, routes, copy, and business flows unchanged.
+
+## 4.1.10 - 2026-05-28
+
+- Added `TradingTerminalChart` to the approved public SVG renderer boundary because the registered business component owns trading chart rendering, not functional icon assets.
+- Clarified icon usage governance so route screens remain blocked from `react-native-svg` while the terminal chart can render chart primitives internally.
+- Removed the old instrument route SVG allowance so `/instrument/[id]` must consume the registered `TradingTerminalChart` boundary instead of page-local SVG.
+
+## 4.1.9 - 2026-05-28
+
+- Updated icon QA and usage governance so page-level `react-native-svg` remains blocked while registered public data visualization components may own chart/gauge SVG renderers.
+- Added `FinancialTrendChart` and `RiskGauge` to the approved public SVG renderer boundary because they are business data-visualization components, not functional icon assets.
+
 ## 4.1.8 - 2026-05-27
 
 - Updated icon usage governance so `IconSurface` neutral/default icons use the same neutral primary `color.icon.primary` rule as pure no-background `AppIcon` glyphs.

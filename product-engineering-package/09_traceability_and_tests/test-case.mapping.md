@@ -30,4 +30,20 @@
 | `TC-AUDIT-001` | Any transition occurs. | Audit log contains actor, reason, previousStatus, nextStatus, timestamp, requestId. | Blocker |
 | `TC-API-001` | Mutation request omits idempotency or audit metadata. | Reject request. | Blocker |
 | `TC-REG-001` | Existing demo account balance is shown near funding entry. | Demo remains labeled non-withdrawable; live funding mutation disabled. | Blocker |
-
+| `TC-SEC-ALERT-001` | User has multiple active security alerts. | Security Center displays only the highest-priority alert. | Critical |
+| `TC-SEC-ALERT-002` | User snoozes an unresolved alert. | Alert is hidden until snoozeUntil and can reappear after 24 hours if unresolved. | Critical |
+| `TC-SEC-MFA-001` | User attempts withdrawal or adds withdrawal address without TOTP. | Operation requires TOTP binding or manual review; email-only is not accepted as long-term high-risk policy. | Blocker |
+| `TC-SEC-DMP-001` | DMP admin attempts to disable verification for withdrawal, TOTP disable, or email/phone change. | Policy update is rejected and audited. | Blocker |
+| `TC-SEC-TOTP-001` | User enters correct TOTP during binding. | TOTP status becomes `active`. | Critical |
+| `TC-SEC-TOTP-002` | TOTP binding succeeds and recovery codes are generated. | User must confirm recovery-code save before flow completes; codes are shown once. | Critical |
+| `TC-SEC-TOTP-003` | User submits five invalid TOTP codes. | TOTP verification enters `locked` for 15 minutes. | Critical |
+| `TC-SEC-GSL-001` | User requests TOTP disable after verification. | GSL change is created with status `pending`; TOTP remains active. | Blocker |
+| `TC-SEC-GSL-002` | User cancels a pending GSL change after verification. | GSL status becomes `cancelled` and original setting remains active. | Critical |
+| `TC-SEC-GSL-003` | User submits same change type while one is pending. | Request is rejected with `SECURITY_GSL_PENDING_EXISTS`. | Critical |
+| `TC-SEC-DEVICE-001` | User attempts to revoke current device. | Request is rejected with `SECURITY_CANNOT_REVOKE_CURRENT_DEVICE`. | Critical |
+| `TC-SEC-DEVICE-002` | User revokes all other devices after verification. | All non-current sessions are destroyed; current device remains active. | Critical |
+| `TC-SEC-RISK-001` | Login city is more than 500 km from common cities. | Login is marked remote and receives medium or higher risk according to signals. | Critical |
+| `TC-SEC-RISK-002` | Remote login also uses new device or proxy IP. | TOTP is required and trusted-device waiver is not allowed. | Critical |
+| `TC-SEC-RISK-003` | Remote login includes high-risk IP or repeated failures. | Login is blocked and security alert is created. | Blocker |
+| `TC-SEC-PIN-001` | Signed-in user opens Security Center with no explicit local lock. | User is not forced into local PIN setup or unlock. | Blocker |
+| `TC-SEC-AUDIT-001` | Any sensitive security action occurs. | Audit log contains actor, target, IP, deviceId, userAgent, location, riskLevel, result, and requestId. | Blocker |

@@ -49,7 +49,11 @@ Size tokens define component dimensions and layout constraints. They are separat
 | `size.sheet.headerHeight` | 56 | Global BottomSheet title bar and spacer |
 | `size.sheet.tradeHeaderMinHeight` | 76 | Trading/order sheet information header with account and quote summary |
 | `size.sheet.handleWidth` | 40 | BottomSheet drag handle width |
-| `size.viewport.appMaxWidth` | 430 | Mobile app shell max width on web/tablet |
+| `size.viewport.appDeviceWidth` | 390 | Codex/browser product-page native app preview width |
+| `size.viewport.appDeviceHeight` | 844 | Codex/browser product-page native app preview height |
+| `size.viewport.appPreviewSafeAreaTop` | 47 | Web-only simulated top safe-area inset for Codex app preview |
+| `size.viewport.appPreviewSafeAreaBottom` | 34 | Web-only simulated bottom safe-area inset for Codex app preview |
+| `size.viewport.appMaxWidth` | 390 | Compatibility alias for the mobile app shell width |
 | `size.viewport.toastMaxWidth` | 420 | Toast max width |
 
 ## Usage Rules
@@ -71,7 +75,7 @@ Size tokens define component dimensions and layout constraints. They are separat
 | Status pill / chip / badge | `size.tag.*` |
 | Tabs | `size.tab.barHeight`, `size.tab.itemMinHeight`, `size.tab.pillMinHeight`, `size.tab.underlineMinHeight`, `size.tab.indicatorHeight`, `size.tab.indicatorWidth`, `size.tab.icon` |
 | BottomSheet | `size.sheet.headerHeight`, `size.sheet.handleWidth`, dynamic content max-height policy |
-| App viewport | `size.viewport.appMaxWidth` |
+| App viewport | `size.viewport.appDeviceWidth`, `size.viewport.appDeviceHeight`, `size.viewport.appMaxWidth` |
 | Toast / floating feedback | `size.viewport.toastMaxWidth`, `size.surface.toastMinHeight` |
 | Icon systems | `size.icon.*` and icon registry defaults |
 | Card / panel / empty state | `size.surface.*` only when a real min/max constraint is needed |
@@ -82,4 +86,5 @@ Size tokens define component dimensions and layout constraints. They are separat
 - Do not use spacing tokens for component fixed heights or width constraints.
 - Do not use size tokens for padding, margin, or gap.
 - Do not stretch mobile app content across desktop width; constrain surfaces through viewport size tokens or platform rules.
+- Do not change the Codex/browser product-page preview away from 390 x 844 without updating token registry, component manifest, QA guards, and release records.
 - Do not add new size values without documenting the semantic use, affected components, and QA rule.

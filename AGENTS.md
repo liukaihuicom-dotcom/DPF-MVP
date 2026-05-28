@@ -17,9 +17,11 @@ Before starting any task, Codex must classify the task and output:
 5. Missing Inputs
 6. Expected Outputs
 
-# Codex Automation Language Rule
+# Codex Plan And Automation Language Rule
 
-Codex 创建或更新计划任务、提醒、监控、定时执行任务时，任务名称和任务描述必须统一使用中文描述，不要使用英文描述，除非用户明确要求英文。
+Codex 在对话中提供计划、计划任务模式说明、执行计划、状态说明、面向用户的解释、自动化、提醒、监控、定时执行任务时，必须统一使用中文描述，不要使用英文或其他语言，除非用户明确要求使用其他语言。
+
+Codex 创建、更新或提议任何自动化、周期任务、提醒、监控、计划任务时，任务名称、任务描述、Prompt 摘要、状态说明和面向用户的解释默认必须使用中文。除非用户明确要求英文，否则不要输出英文描述。
 
 ## 0. Quick Local Expo Demo Startup Skill
 
@@ -226,7 +228,52 @@ Hard rules:
 - Do not generate random one-off styles.
 - Do not mark production-ready without QA.
 
-## 4. Reference Adaptation Add-on
+## 4. Design Public Resource Package Governance Add-on
+
+Use:
+
+`.codex/skills/design-system-engineering/addons/design-public-resource-package-governance/SKILL.md`
+
+Trigger when the task involves:
+
+- 变量系统
+- 组件库
+- 业务组件
+- 通用模块
+- 页面模板
+- 弹框
+- 流程
+- 状态
+- 图标
+- 插图
+- 文案
+- 多语言
+- Pattern 复用
+- 共享资产同步
+- 版本迁移
+- 影响范围分析
+- 开发交付资源治理
+
+Required outputs:
+
+- Public Resource QA Report
+- Page Readiness Matrix
+- Change Impact Report
+- Migration Plan, when needed
+- Release Decision
+
+Hard rules:
+
+- 页面必须引用公共资源，不允许复制公共资产实现。
+- 新建页面前必须检查 `public-asset-registry`、`pattern-registry`、`component-manifest`、`icon-registry`、`asset-dependency-graph`。
+- 同类模块出现 2 次以上，必须抽取为公共资源。
+- 修改公共资源前必须输出 Change Impact Report。
+- 破坏性变更必须输出 Migration Plan。
+- 废弃资产必须有 Replacement。
+- 图标必须遵循 Local Icon Asset Library Governance Skill。
+- 最后必须输出 Public Resource QA Report、Page Readiness Matrix 和 Release Decision。
+
+## 5. Reference Adaptation Add-on
 
 Use:
 
@@ -265,7 +312,7 @@ Hard rules:
 - If reference contains icons, use Icon Governance Skill.
 - If reference contains copy, use Financial Copy & Localization Skill.
 
-## 5. UX Interaction Quality Gate Add-on
+## 6. UX Interaction Quality Gate Add-on
 
 Use:
 
@@ -306,7 +353,7 @@ Hard rules:
 - Do not weaken financial risk information for visual simplicity.
 - UX Gate must run before production handoff for high-risk financial flows.
 
-## 6. Financial Copy & Localization Add-on
+## 7. Financial Copy & Localization Add-on
 
 Use:
 
@@ -355,7 +402,7 @@ Hard rules:
 - Do not hardcode user-facing copy without i18n keys.
 - High-risk copy must be marked for native or compliance review when needed.
 
-## 7. Icon Asset Library Governance Add-on
+## 8. Icon Asset Library Governance Add-on
 
 Use:
 
@@ -429,14 +476,15 @@ Codex must run UI quality governance in this order:
 
 1. Use Product Skill to confirm Page Contract and avoid changing business flow.
 2. Use Design System Skill to confirm tokens, components, patterns, and layout rules.
-3. Use Reference Adaptation Add-on if screenshots, Mobbin, or competitor references are provided.
-4. Use Icon Governance Add-on if icons are involved.
-5. Use Financial Copy & Localization Add-on if user-facing copy is involved.
-6. Use UI Build Skill to refactor the page.
-7. Use UX Interaction Quality Gate to audit task flow, feedback, error recovery, accessibility, and financial UX risk.
-8. Capture or generate a preview screenshot / visual snapshot for review.
-9. Score the page using UI Quality Scorecard.
-10. If score < 85 or any Blocker / Critical exists, fix and re-run QA.
+3. Use Design Public Resource Package Governance Add-on to confirm reusable public assets and prevent page-level copies.
+4. Use Reference Adaptation Add-on if screenshots, Mobbin, or competitor references are provided.
+5. Use Icon Governance Add-on if icons are involved.
+6. Use Financial Copy & Localization Add-on if user-facing copy is involved.
+7. Use UI Build Skill to refactor the page.
+8. Use UX Interaction Quality Gate to audit task flow, feedback, error recovery, accessibility, and financial UX risk.
+9. Capture or generate a preview screenshot / visual snapshot for review.
+10. Score the page using UI Quality Scorecard.
+11. If score < 85 or any Blocker / Critical exists, fix and re-run QA.
 
 Required outputs:
 
@@ -447,6 +495,8 @@ Required outputs:
 - State Matrix
 - Token Usage Report
 - Component Usage Report
+- Public Resource QA Report
+- Page Readiness Matrix
 - Pattern Usage Report
 - Icon Usage Report
 - Copy Table / i18n keys
@@ -483,6 +533,8 @@ Hard rules:
 - Do not change business flow unless Product Skill confirms it.
 - Do not bypass Page Contract.
 - Do not create random visual styles.
+- Do not copy public asset implementations into pages.
+- Do not skip public-asset, pattern, component, icon, and dependency-graph checks for new pages.
 - Do not hardcode color, spacing, radius, typography, shadows, icons, or copy.
 - Do not use unregistered icons.
 - Do not use user-facing copy without i18n keys.
@@ -506,28 +558,31 @@ Hard rules:
 
 1. Product Skill
 2. Design System Skill
-3. Financial Copy Add-on, if user-facing copy is involved
-4. Icon Governance Add-on, if icons are involved
-5. Reference Adaptation Add-on, if reference material is provided
-6. UI Build Skill
-7. UX Interaction Quality Gate
-8. Final QA / Release Decision
+3. Design Public Resource Package Governance Add-on, if variables, components, patterns, shared assets, migrations, or resource impact are involved
+4. Financial Copy Add-on, if user-facing copy is involved
+5. Icon Governance Add-on, if icons are involved
+6. Reference Adaptation Add-on, if reference material is provided
+7. UI Build Skill
+8. UX Interaction Quality Gate
+9. Final QA / Release Decision
 
 ## Page-only work
 
 1. Confirm or generate Page Contract
 2. Confirm Design System inputs
-3. Use Reference Add-on if screenshots or Mobbin references exist
-4. Use Financial Copy Add-on if user-facing copy is involved
-5. Use Icon Governance Add-on if icons are involved
-6. Use UI Build Skill
-7. Use UX Gate before delivery
+3. Use Design Public Resource Package Governance Add-on to check public-asset-registry, pattern-registry, component-manifest, icon-registry, and asset-dependency-graph before building or changing a page
+4. Use Reference Add-on if screenshots or Mobbin references exist
+5. Use Financial Copy Add-on if user-facing copy is involved
+6. Use Icon Governance Add-on if icons are involved
+7. Use UI Build Skill
+8. Use UX Gate before delivery
 
 ## Design system work
 
 1. Use Design System Skill
-2. Use Icon Governance Add-on if icons are involved
-3. Output QA Gate and migration notes
+2. Use Design Public Resource Package Governance Add-on if variables, components, business components, patterns, shared assets, migrations, or impact analysis are involved
+3. Use Icon Governance Add-on if icons are involved
+4. Output QA Gate and migration notes
 
 ## Copy / localization work
 
@@ -559,5 +614,6 @@ Codex must report:
 - Do not place Add-on Skills as peer Core Skills.
 - Do not use Add-on Skills to replace Product Kernel, Page Contract, Design System, or UI Build output.
 - Do not silently invent missing product, compliance, legal, risk, localization, or design-system inputs.
+- Codex 在对话中提供计划、计划任务模式说明、执行计划、状态说明、面向用户的解释、自动化、提醒、监控、定时执行任务时，必须统一使用中文描述，不要使用英文或其他语言，除非用户明确要求使用其他语言。
 - Codex 创建、更新或提议任何自动化、周期任务、提醒、监控、计划任务时，任务名称、任务描述、Prompt 摘要、状态说明和面向用户的解释默认必须使用中文。除非用户明确要求英文，否则不要输出英文描述。
 - For Expo code changes, read the exact versioned docs at `https://docs.expo.dev/versions/v54.0.0/` before writing code.

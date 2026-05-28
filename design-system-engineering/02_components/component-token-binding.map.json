@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "2.2.0",
   "allowedTokenSources": [
     "src/theme/tokens.ts",
     "src/theme/colors.ts",
@@ -36,6 +36,10 @@
       "description": "Labels, helper text, metadata, status text, badges, and compact control text must use AppText label.* variants with minimum text constrained to approved 12px roles."
     },
     {
+      "id": "text-auto-fit-governed",
+      "description": "Auto-fit text must preserve system font scaling and clamp minimumFontScale to at least 0.92; titles, buttons, tabs, launch copy, and auth confirmation text must not auto-shrink."
+    },
+    {
       "id": "screen-safe-bottom-bound",
       "description": "Screen scroll content must combine layout.screenBottomPadding with the device bottom safe-area inset; page implementations must not remove the global bottom safety gap."
     }
@@ -58,7 +62,6 @@
       "palette.*"
     ],
     "forms": [
-      "layout.formFieldTextInset",
       "size.input.*",
       "spacing.*",
       "radius.*",
@@ -100,8 +103,17 @@
       "layout.cardPaddingY",
       "layout.cardPaddingCompactX",
       "layout.cardPaddingCompactY",
-      "radius.md",
+      "radius.card",
       "palette.panel"
+    ],
+    "TradeOrderList": [
+      "layout.cardPaddingX",
+      "layout.menuDisclosureIconSize",
+      "spacing.*",
+      "size.viewport.detailSide*",
+      "lineWidth.hairline",
+      "palette.*",
+      "iconRegistry.*"
     ],
     "OrderInfoRow": [
       "palette.*",
@@ -120,6 +132,14 @@
       "radius.*",
       "lineWidth.*",
       "iconRegistry.*"
+    ],
+    "SegmentedTabs": [
+      "palette.*",
+      "spacing.*",
+      "typography.*",
+      "radius.*",
+      "lineWidth.*",
+      "size.tab.*"
     ],
     "DetailInline": [
       "spacing.*",
@@ -173,50 +193,50 @@
       "radius.*",
       "lineWidth.*"
     ],
-    "TextField": [
-      "palette.*",
-      "layout.formFieldTextInset",
-      "size.input.*",
-      "size.control.*",
-      "spacing.*",
-      "radius.*",
-      "lineWidth.*",
-      "typography.*",
-      "iconRegistry.*"
-    ],
-    "SelectField": [
-      "palette.*",
-      "layout.formFieldTextInset",
-      "size.input.*",
-      "size.control.*",
-      "spacing.*",
-      "radius.*",
-      "lineWidth.*",
-      "typography.*",
-      "iconRegistry.*"
-    ],
-    "RichTextField": [
-      "palette.*",
-      "layout.formFieldTextInset",
-      "size.input.*",
-      "size.control.*",
-      "spacing.*",
-      "radius.*",
-      "lineWidth.*",
-      "typography.*",
-      "iconRegistry.*"
-    ],
     "SheetGroupTitle": [
       "palette.*",
       "spacing.*",
       "typography.*"
     ],
     "Screen": [
-      "layout.screenPaddingX",
+      "layout.contentCardPaddingX",
+      "layout.contentPlainPaddingX",
+      "layout.topBarPaddingX",
       "layout.screenGap",
       "layout.screenBottomPadding",
       "layout.bottomActionArea.*",
       "palette.*"
+    ],
+    "HeaderIconButton": [
+      "layout.headerIconButtonSize",
+      "layout.headerIconSize",
+      "radius.full",
+      "color.surface.panel",
+      "color.icon.primary",
+      "iconRegistry.*"
+    ],
+    "AuthShell": [
+      "layout.headerIconButtonSize",
+      "layout.headerIconSize",
+      "layout.bottomActionArea.*",
+      "layout.screenPaddingX",
+      "spacing.xs",
+      "spacing.*",
+      "typography.*",
+      "radius.full",
+      "color.surface.subtle",
+      "palette.*",
+      "iconRegistry.*"
+    ],
+    "GlobalDialog": [
+      "layout.appMaxWidth",
+      "radius.sheet",
+      "spacing.*",
+      "typography.*",
+      "palette.*",
+      "color.overlay.*",
+      "size.iconSurface.*",
+      "iconRegistry.*"
     ]
   }
 }

@@ -125,12 +125,30 @@ const semanticColorKeys = [
   "text.tertiary"
 ];
 
+const semanticSpacing = {
+  "bottom-action-area-padding-x": "var(--layout-bottom-action-area-padding-x)",
+  "card-padding-x": "var(--layout-card-padding-x)",
+  "content-card-padding-x": "var(--layout-content-card-padding-x)",
+  "content-plain-padding-x": "var(--layout-content-plain-padding-x)",
+  "form-field-text-inset": "var(--layout-form-field-text-inset)",
+  "list-row-padding-x": "var(--layout-list-row-padding-x)",
+  "top-bar-padding-x": "var(--layout-top-bar-padding-x)",
+};
+
+const semanticRadius = {
+  card: "var(--radius-card)",
+  sheet: "var(--radius-sheet)",
+  full: "var(--radius-full)",
+};
+
 module.exports = {
   theme: {
     extend: {
       colors: Object.fromEntries(
         semanticColorKeys.map((key) => [key.replace(/\./g, '-'), `var(--color-${key.replace(/\./g, '-')})`]),
       ),
+      borderRadius: semanticRadius,
+      spacing: semanticSpacing,
     },
   },
 };

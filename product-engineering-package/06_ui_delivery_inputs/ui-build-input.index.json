@@ -4,11 +4,23 @@
     "Financial copy and localization package not generated.",
     "Design System component usage needs review before implementation.",
     "UX Interaction Quality Gate is required before production handoff.",
-    "Provider-specific payment instructions and compliance copy are not confirmed."
+    "Provider-specific payment instructions and compliance copy are not confirmed.",
+    "Security Center backend identity, TOTP, GSL scheduler, risk policy, notification, and audit services are not implemented.",
+    "Security Center route /settings/security-center is contract-first and not yet implemented in Expo Router."
   ],
   "page_contracts": [
     "product-engineering-package/04_page_contracts/pages/app-funding.page-contract.json",
-    "product-engineering-package/04_page_contracts/pages/admin-funding.page-contract.json"
-  ]
+    "product-engineering-package/04_page_contracts/pages/admin-funding.page-contract.json",
+    "product-engineering-package/04_page_contracts/pages/app-security-center.page-contract.json",
+    "product-engineering-package/04_page_contracts/pages/app-security-login-log.page-contract.json"
+  ],
+  "security_center_inputs": {
+    "module_contract": "product-engineering-package/01_modules_and_navigation/modules/security-center.module-contract.json",
+    "api_contract": "product-engineering-package/05_api_contracts/security-center.openapi.yaml",
+    "schema": "product-engineering-package/05_api_contracts/schema/security-center.schema.json",
+    "root_api_mock": "api-contracts/mocks/security-center-overview.mock.json",
+    "copy_namespace": "securityCenter",
+    "icon_registry": "packages/icon-library/registry/icon-registry.json",
+    "public_resource_status": "planned_asset_registered_contract_only"
+  }
 }
-

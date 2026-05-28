@@ -127,5 +127,14 @@
       "requiredPixels": 1024,
       "format": "png"
     }
+  },
+  "svgRendererBoundary": {
+    "pageLevelReactNativeSvg": "blocked",
+    "allowedPublicDataVisualizations": [
+      "src/components/Sparkline.tsx",
+      "src/components/business/FinancialTrendChart.tsx",
+      "src/components/business/RiskGauge.tsx"
+    ],
+    "rule": "Reusable chart and gauge SVG may live only inside registered public data-visualization components; route screens and page components must not import react-native-svg."
   }
 }

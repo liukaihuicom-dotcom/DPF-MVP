@@ -1,17 +1,16 @@
 import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
-import { lineWidth } from '@/src/theme/tokens';
-import { Card } from '@/src/components/Card';
-import { NativePressable } from '@/src/components/NativePressable';
-import { AppIcon, type AppIconName, type IconTone } from '@/src/components/AppIcon';
-import { Screen } from '@/src/components/Screen';
-import { StatusPill } from '@/src/components/StatusPill';
-import { AppText } from '@/src/components/Typography';
+import { lineWidth, radius, size, spacing } from '@/src/design-public-assets/tokens';
+import { Card } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { AppIcon, type AppIconName, type IconTone } from '@/src/design-public-assets/components';
+import { Screen } from '@/src/design-public-assets/components';
+import { StatusPill } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import type { DiscoverModuleId } from '@/src/domain/types';
 import { impactLight } from '@/src/feedback/haptics';
-import { useProductSettings } from '@/src/settings/ProductSettings';
-import { resolveThemeTone, type ThemeColors } from '@/src/theme/colors';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 
 export default function PartnerToolsScreen() {
   const { colors, role, selectedDiscoverModuleId, setSelectedDiscoverModule, t } = useProductSettings();
@@ -68,8 +67,8 @@ export default function PartnerToolsScreen() {
               accessibilityRole="button"
               minTouch={72}
               onPress={() => router.push('/partner/client-orders' as never)}
-              style={StyleSheet.flatten([styles.partnerShortcut, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
-              <AppIcon name="icon.trading.order_ticket" sizeVariant="sm" tone="up" />
+              style={StyleSheet.flatten([styles.partnerShortcut, { backgroundColor: colors.surface.subtle }])}>
+              <AppIcon name="icon.trading.order_ticket" sizeVariant="sm" />
               <View style={styles.copyBlock}>
                 <AppText variant="subtitle">{t('portfolio.partnerTitle')}</AppText>
                 <AppText numberOfLines={2} tone="muted" variant="caption">
@@ -81,7 +80,7 @@ export default function PartnerToolsScreen() {
               accessibilityRole="button"
               minTouch={72}
               onPress={() => router.push('/partner/commission' as never)}
-              style={StyleSheet.flatten([styles.partnerShortcut, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
+              style={StyleSheet.flatten([styles.partnerShortcut, { backgroundColor: colors.surface.subtle }])}>
               <AppIcon name="icon.wallet.balance" sizeVariant="sm" tone="tertiary" />
               <View style={styles.copyBlock}>
                 <AppText variant="subtitle">{t('commission.title')}</AppText>
@@ -141,7 +140,6 @@ type DiscoverTile = {
 
 function DiscoverSelectableTile({ onPress, selected, tile }: { onPress: () => void; selected: boolean; tile: DiscoverTile }) {
   const { colors, t } = useProductSettings();
-  const tileColor = resolvePaletteIconTone(colors, tile.tone);
 
   return (
     <NativePressable
@@ -153,7 +151,6 @@ function DiscoverSelectableTile({ onPress, selected, tile }: { onPress: () => vo
         styles.selectableTile,
         {
           backgroundColor: colors.surface.panel,
-          borderColor: selected ? colors.text.primary : colors.border.subtle,
         },
       ])}>
       <View style={styles.tileHead}>
@@ -161,8 +158,8 @@ function DiscoverSelectableTile({ onPress, selected, tile }: { onPress: () => vo
           style={StyleSheet.flatten([
             styles.tileIcon,
             {
-              backgroundColor: `${tileColor}12`,
-              borderColor: selected ? colors.text.primary : `${tileColor}55`,
+              backgroundColor: selected ? colors.surface.subtle : colors.surface.subtle,
+              borderColor: selected ? colors.text.primary : colors.border.subtle,
             },
           ])}>
           <AppIcon name={tile.icon} sizeVariant="sm" tone={tile.tone} />
@@ -184,11 +181,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 4,
+    marginTop: spacing.xs,
   },
   copyBlock: {
     flex: 1,
-    gap: 4,
+    gap: spacing.xs,
     minWidth: 0,
   },
   tileHead: {
@@ -199,66 +196,62 @@ const styles = StyleSheet.create({
   tileGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: spacing.sm + spacing.xxs,
   },
   tileIcon: {
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: radius.sm,
     borderWidth: lineWidth.hairline,
-    height: 34,
+    height: size.tag.chipMinHeight,
     justifyContent: 'center',
-    width: 34,
+    width: size.tag.chipMinHeight,
   },
   selectableTile: {
-    borderRadius: 12,
-    borderWidth: lineWidth.selected,
+    borderRadius: radius.card,
+    borderWidth: lineWidth.none,
     flexBasis: '30.5%',
     flexGrow: 1,
-    gap: 8,
+    gap: spacing.sm,
     minHeight: 118,
     minWidth: 104,
-    padding: 10,
+    padding: spacing.sm + spacing.xxs,
   },
   selectedDot: {
-    borderRadius: 999,
-    height: 8,
-    width: 8,
+    borderRadius: radius.full,
+    height: size.indicator.dotSm,
+    width: size.indicator.dotSm,
   },
   partnerShortcut: {
     alignItems: 'center',
-    borderRadius: 12,
-    borderWidth: lineWidth.hairline,
+    borderRadius: radius.card,
+    borderWidth: lineWidth.none,
     flex: 1,
     flexDirection: 'row',
-    gap: 10,
+    gap: spacing.sm + spacing.xxs,
     minWidth: 152,
-    padding: 12,
+    padding: spacing.md,
   },
   partnerShortcutGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: spacing.sm + spacing.xxs,
   },
   selectedSummary: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
     justifyContent: 'space-between',
   },
   menuHero: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
     justifyContent: 'space-between',
   },
   groupBlock: {
-    gap: 8,
+    gap: spacing.sm,
   },
   groupTitle: {
-    paddingLeft: 2,
+    paddingLeft: spacing.xxs,
   },
 });
-
-function resolvePaletteIconTone(colors: ThemeColors, tone: IconTone) {
-  return resolveThemeTone(colors, tone);
-}

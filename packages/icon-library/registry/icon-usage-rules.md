@@ -15,6 +15,7 @@
 - Single-select selected rows must use the plain check mark `icon.status.check`; do not use radio dots, circled check icons, or a second selected ring when the row container already carries selected state.
 - Page and feature code must omit decorative icon tones such as `brand`, `blue`, `text`, `textMuted`, or `textDim`; use explicit `tone` only for governed selected, status, risk, disabled, market, tertiary low-emphasis, or inverse contrast contexts.
 - Brand assets, launcher icon, splash icon, favicon, content logo, Apple sign-in mark, and country flags are retained visual assets, not functional Iconsax replacements.
+- Data visualizations are not functional icons. Reusable chart and gauge SVG must live only inside registered public components such as `FinancialTrendChart`, `TradingTerminalChart`, `RiskGauge`, or `Sparkline`; route screens must not import `react-native-svg`.
 - Custom icons require a Custom Icon Request with ownership, style, license, token, and QA approval before use.
 
 ## Financial Product Rules

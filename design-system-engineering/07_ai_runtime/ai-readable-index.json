@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "readOrder": [
     "product-engineering-package/00_product_kernel/product.kernel.json",
     "product-engineering-package/04_page_contracts/page-contract.index.md",
@@ -16,6 +16,10 @@
     "design-system-engineering/06_platform_modes/mode-matrix.json",
     "packages/design-tokens/mappings/css-variable.mapping.css",
     "packages/design-tokens/mappings/tailwind.mapping.js",
+    "design-system-engineering/11_public_resources/registry/public-asset-registry.json",
+    "design-system-engineering/11_public_resources/registry/asset-dependency-graph.json",
+    "design-system-engineering/11_public_resources/copy/copy-table.json",
+    "design-system-engineering/11_public_resources/illustrations/illustration-registry.json",
     "qa/production-gates.json"
   ],
   "blockedWithout": [
@@ -24,14 +28,20 @@
     "component-library package manifest",
     "icon-library package registry for functional icons",
     "pattern registry",
-    "QA gate decision"
+    "QA gate decision",
+    "public asset registry",
+    "asset dependency graph",
+    "copy table for visible copy surfaces"
   ],
   "outputRequirements": [
     "Token Usage Report",
     "Component Usage Report",
     "Pattern Usage Report",
     "Icon Usage Report when icons are involved",
-    "QA Gate result"
+    "QA Gate result",
+    "Public Resource Usage Report",
+    "Asset Dependency Graph Impact Report",
+    "Copy Table / i18n Key Report"
   ],
   "sourceOfTruth": "workspace-packages",
   "compatibilityPaths": {
@@ -39,5 +49,10 @@
     "components": "design-system-engineering/02_components mirrors packages/component-library during migration",
     "icons": "design-system-engineering/04_icons mirrors packages/icon-library during migration",
     "runtime": "src/theme, src/components, and src/icons remain runtime compatibility surfaces until imports migrate"
+  },
+  "publicResourceGovernance": {
+    "source": "design-system-engineering/11_public_resources",
+    "rule": "Pages must reference registered tokens, components, business components, patterns, icons, and copy assets through the dependency graph before production release.",
+    "qaGate": "pnpm qa:public-resources"
   }
 }

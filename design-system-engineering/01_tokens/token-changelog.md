@@ -1,5 +1,17 @@
 # Token Changelog
 
+## v3.1.0-card-radius-governance
+
+- Added `radius.card` as the semantic 12px role for standard Card, card-like page panels, sheet content cards, and business component panels.
+- Registered `semanticRadiusRoleMap`, CSS variables, Tailwind border-radius mapping, and export-map metadata so card radius is governed separately from the legacy same-value `radius.md` alias.
+- Preserved sheet, pill, input, and full-screen radius roles so non-card controls keep their existing shape contracts.
+
+## v2.3.8-lightbroker-primary-neutral-softening
+
+- Softened lightBroker `color.semantic.text.primary`, `color.semantic.icon.primary`, and `color.semantic.icon.active` from `#0A0B0D` to `#1F2329`.
+- Kept primitive neutral ramps, overlay black tokens, inverse surfaces, darkTerminal, and midnightBlue unchanged to avoid expanding the global color impact.
+- Synced package token source, engineering mirror, runtime color exports, compatibility theme colors, and CSS variable mappings.
+
 ## v2.3.7-metric-label-typography
 
 - Added `typography.captionRegular` and `label.metric` for 14px regular-weight secondary metric labels beside a primary financial figure.

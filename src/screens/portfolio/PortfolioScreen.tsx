@@ -1,37 +1,31 @@
 import { StyleSheet, View } from "react-native";
 import { router } from "expo-router";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 
-import { layout, lineWidth, radius, spacing } from '@/src/theme/tokens';
-import { ActionButton } from "@/src/components/ActionButton";
-import { bottomSheetPresets, useBottomSheet } from "@/src/components/BottomSheet";
-import { Card } from "@/src/components/Card";
-import { ConfirmActionSheet } from "@/src/components/ConfirmActionSheet";
-import { DetailInline, MiniBarChart, TradeOrderList } from "@/src/components/data-display";
-import { EmptyState } from "@/src/components/feedback";
-import { FundActionGrid } from "@/src/components/FundActionGrid";
-import { GlobalMenuList } from "@/src/components/GlobalMenuList";
-import { SheetGroupTitle } from "@/src/components/layout";
-import { IconSurface } from "@/src/components/IconSurface";
+import { layout, lineWidth, radius, spacing } from '@/src/design-public-assets/tokens';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { ClosedOrderDetailSheet as SharedClosedOrderDetailSheet, createTradingAccountContextSwitcherHeader, FilterPillGroup, OrderPositionDetailSheet, TradingAccountContextSwitcher } from '@/src/design-public-assets/business-components';
+import { Card } from '@/src/design-public-assets/components';
+import { ConfirmActionSheet } from '@/src/design-public-assets/components';
+import { MiniBarChart, TradeOrderList } from '@/src/design-public-assets/components';
+import { EmptyState } from '@/src/design-public-assets/components';
+import { FundActionGrid } from '@/src/design-public-assets/components';
+import { GlobalMenuList } from '@/src/design-public-assets/components';
+import { SheetGroupTitle } from '@/src/design-public-assets/components';
+import { IconSurface } from '@/src/design-public-assets/components';
 import {
   KeyValueList,
   type KeyValueListItem,
-} from "@/src/components/KeyValueList";
-import { Metric } from "@/src/components/Metric";
-import { NativePressable } from "@/src/components/NativePressable";
-import { AppIcon } from "@/src/components/AppIcon";
-import { Screen } from "@/src/components/Screen";
-import { SegmentedTabs } from "@/src/components/SegmentedTabs";
-import { StatusPill, type StatusPillTone } from "@/src/components/StatusPill";
-import { TradeDirectionIcon } from "@/src/components/TradeDirectionIcon";
-import { createTradingAccountSwitchHeader, TradingAccountSwitchSheet } from "@/src/components/TradingAccountSwitchSheet";
-import { AppText } from "@/src/components/Typography";
-import {
-  buildTradingAccountProfiles,
-  getAccountStatusLabel,
-  tradingAccountStatusGroups,
-  type TradingAccountProfile,
-} from "@/src/domain/accountProfiles";
+} from '@/src/design-public-assets/components';
+import { Metric } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { AppIcon } from '@/src/design-public-assets/components';
+import { Screen } from '@/src/design-public-assets/components';
+import { SegmentedTabs } from '@/src/design-public-assets/components';
+import { StatusPill, type StatusPillTone } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
+import { getAccountStatusLabel, type TradingAccountProfile } from "@/src/domain/accountProfiles";
 import {
   directionLabel,
   formatMoney,
@@ -44,20 +38,20 @@ import {
 import { getFundingOperationActions } from "@/src/domain/funding";
 import { buildSharedTradingAccountProfiles } from "@/src/domain/tradingAccountView";
 import type { Instrument, OrderType } from "@/src/domain/types";
-import type { Locale } from "@/src/i18n/translations";
+import type { Locale } from '@/src/design-public-assets/copy';
 import { useToast } from "@/src/feedback/Toast";
 import { notifySuccess, notifyWarning } from "@/src/feedback/haptics";
-import type { AppIconName } from "@/src/icons/iconRegistry";
-import { useProductSettings } from "@/src/settings/ProductSettings";
+import type { AppIconName } from '@/src/design-public-assets/icons';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from "@/src/state/BrokerStore";
 
 function signedPnlTone(value: number) {
   if (value > 0) {
-    return "down";
+    return "up";
   }
 
   if (value < 0) {
-    return "up";
+    return "down";
   }
 
   return "default";
@@ -250,22 +244,19 @@ export function TraderPortfolioScreen() {
   const openAccountSwitcher = () => {
     const showAddAccountFeedback = () => {
       toast.show({
-        message:
-          locale === "en-US"
-            ? "Action unavailable. No account was created."
-            : "当前操作暂不可用，未创建新账户。",
-        title: locale !== "zh-CN" ? "Add Account" : "添加账户",
+        message: t("common.demoActionNoAccount"),
+        title: t("account.addAccount"),
       });
     };
 
     bottomSheet.show(bottomSheetPresets.selection({
-      ...createTradingAccountSwitchHeader({
+      ...createTradingAccountContextSwitcherHeader({
         locale,
         onAddAccount: showAddAccountFeedback,
-        title: locale !== "zh-CN" ? "Switch Trading Account" : "切换交易账号",
+        title: t("funding.account.switchTitle"),
       }),
       content: (
-        <TradingAccountSwitchSheet
+        <TradingAccountContextSwitcher
           accounts={accountProfiles}
           mode="detailed"
           onSelect={(nextId) => {
@@ -305,10 +296,7 @@ export function TraderPortfolioScreen() {
         <PositionOptionsSheet
           onAction={(title) => {
             toast.show({
-              message:
-                locale === "en-US"
-                  ? "Action unavailable. No position was changed."
-                  : "当前操作暂不可用，未改变持仓。",
+              message: t("common.demoActionNoPosition"),
               title,
               tone: "default",
             });
@@ -326,10 +314,7 @@ export function TraderPortfolioScreen() {
         <PendingOrderOptionsSheet
           onAction={(title) => {
             toast.show({
-              message:
-                locale === "en-US"
-                  ? "Action unavailable. No pending order was changed."
-                  : "当前操作暂不可用，未改变挂单。",
+              message: t("common.demoActionNoPendingOrder"),
               title,
               tone: "default",
             });
@@ -345,14 +330,11 @@ export function TraderPortfolioScreen() {
       footer: [
         {
           icon: "icon.system.settings",
-          label: locale !== "zh-CN" ? "Modify Position" : "修改持仓",
+          label: t("portfolio.action.modifyPosition"),
           onPress: () => {
             toast.show({
-              message:
-                locale === "en-US"
-                  ? "Modify position is not available for this position yet."
-                  : "当前持仓暂不支持修改。",
-              title: locale !== "zh-CN" ? "Modify Position" : "修改持仓",
+              message: t("portfolio.positionCannotModify"),
+              title: t("portfolio.action.modifyPosition"),
               tone: "default",
             });
           },
@@ -360,17 +342,14 @@ export function TraderPortfolioScreen() {
         },
         {
           icon: "icon.system.close",
-          label: locale !== "zh-CN" ? "Close Position" : "平仓",
+          label: t("portfolio.action.closePosition"),
           onPress: () => {
             if (position.closable) {
               confirmClose(position.id, position.symbol);
             } else {
               toast.show({
-                message:
-                  locale === "en-US"
-                    ? "This position cannot be closed."
-                    : "该持仓暂不支持平仓。",
-                title: locale !== "zh-CN" ? "Position" : "持仓",
+                message: t("portfolio.positionCannotClose"),
+                title: t("portfolio.positionMutationTitle"),
                 tone: "warning",
               });
             }
@@ -383,7 +362,7 @@ export function TraderPortfolioScreen() {
   const openClosedOrderDetail = (order: HistoryOrderRow) => {
     bottomSheet.show(bottomSheetPresets.detail({
       leftIcon: "icon.trading.history",
-      title: locale !== "zh-CN" ? "History Order Detail" : "历史订单详情",
+      title: t("portfolio.closedOrderDetailTitle"),
       content: <ClosedOrderDetailSheet order={order} />,
     }));
   };
@@ -393,15 +372,12 @@ export function TraderPortfolioScreen() {
       footer: [
         {
           icon: "icon.system.settings",
-          label: locale !== "zh-CN" ? "Modify Order" : "修改订单",
+          label: t("portfolio.action.modifyOrder"),
           onPress: () => {
             if (!order.canEdit) {
               toast.show({
-                message:
-                  locale === "en-US"
-                    ? "This pending order cannot be modified."
-                    : "该挂单暂不支持修改。",
-                title: locale !== "zh-CN" ? "Order" : "订单",
+                message: t("portfolio.orderCannotModify"),
+                title: t("portfolio.orderMutationTitle"),
                 tone: "warning",
               });
               return;
@@ -409,11 +385,8 @@ export function TraderPortfolioScreen() {
 
             modifyOrder(order.id);
             toast.show({
-              message:
-                locale === "en-US"
-                  ? `${order.symbol} lots were adjusted.`
-                  : `${order.symbol} 手数已调整。`,
-              title: locale !== "zh-CN" ? "Order Modified" : "订单已修改",
+              message: t("portfolio.orderModifiedMessage", { symbol: order.symbol }),
+              title: t("portfolio.orderModifiedTitle"),
               tone: "success",
             });
           },
@@ -421,15 +394,12 @@ export function TraderPortfolioScreen() {
         },
         {
           icon: "icon.system.close",
-          label: locale !== "zh-CN" ? "Delete Order" : "删除订单",
+          label: t("portfolio.action.deleteOrder"),
           onPress: () => {
             if (!order.canEdit) {
               toast.show({
-                message:
-                  locale === "en-US"
-                    ? "This pending order cannot be deleted."
-                    : "该挂单暂不支持删除。",
-                title: locale !== "zh-CN" ? "Order" : "订单",
+                message: t("portfolio.orderCannotDelete"),
+                title: t("portfolio.orderMutationTitle"),
                 tone: "warning",
               });
               return;
@@ -437,15 +407,12 @@ export function TraderPortfolioScreen() {
 
             deleteOrder(order.id);
             toast.show({
-              message:
-                locale === "en-US"
-                  ? `${order.symbol} pending order was deleted.`
-                  : `${order.symbol} 挂单已删除。`,
-              title: locale !== "zh-CN" ? "Order Deleted" : "订单已删除",
+              message: t("portfolio.orderDeletedMessage", { symbol: order.symbol }),
+              title: t("portfolio.orderDeletedTitle"),
               tone: "success",
             });
           },
-          tone: "up",
+          tone: "down",
         },
       ],
     }));
@@ -466,26 +433,20 @@ export function TraderPortfolioScreen() {
               {formatMoney(pnl, selectedAccount.currency, 2, locale)}
             </AppText>
             <NativePressable
-              accessibilityLabel={
-                locale !== "zh-CN" ? "Switch Trading Account" : "切换交易账号"
-              }
-              minTouch={32}
+              accessibilityLabel={t("funding.account.accessibilitySwitch")}
+              minTouch={layout.touchTargetMin}
               onPress={openAccountSwitcher}
               style={styles.accountSelector}
             >
               <AppText numberOfLines={1} variant="body">
-                {locale === "en-US"
-                  ? `Margin Account (${accountSuffix})`
-                  : `保证金账户 (${accountSuffix})`}
+                {t("funding.account.marginLabel", { suffix: accountSuffix })}
               </AppText>
               <AppIcon name="icon.system.chevron_down" sizeVariant="xs" />
             </NativePressable>
           </View>
           <NativePressable
-            accessibilityLabel={
-              locale !== "zh-CN" ? "Trading Account Shortcuts" : "交易账号快捷入口"
-            }
-            minTouch={44}
+            accessibilityLabel={t("portfolio.accountShortcutsAccessibility")}
+            minTouch={layout.touchTargetMin}
             onPress={openAccountMenu}
             style={styles.accountMenuButton}
           >
@@ -493,7 +454,7 @@ export function TraderPortfolioScreen() {
           </NativePressable>
         </View>
 
-        <KeyValueList items={accountMetricItems} />
+        <KeyValueList inset="none" items={accountMetricItems} />
       </Card>
 
       <View style={styles.orderPageBody}>
@@ -512,9 +473,7 @@ export function TraderPortfolioScreen() {
           <>
             <OrderSectionToolbar
               accessibilityLabel={
-                locale === "en-US"
-                  ? "Position display and bulk actions"
-                  : "持仓显示与批量操作"
+                t("portfolio.toolbar.positionAccessibility")
               }
               actionLabel={t("top.more")}
               onPress={openPositionOptions}
@@ -567,9 +526,7 @@ export function TraderPortfolioScreen() {
           <>
             <OrderSectionToolbar
               accessibilityLabel={
-                locale === "en-US"
-                  ? "Pending order filters and batch actions"
-                  : "挂单筛选与批量操作"
+                t("portfolio.toolbar.pendingAccessibility")
               }
               actionLabel={t("top.more")}
               onPress={openPendingOrderOptions}
@@ -647,11 +604,11 @@ function OrderViewTabs({
   current: "history" | "pending" | "positions";
   onChange: (view: "history" | "pending" | "positions") => void;
 }) {
-  const { locale } = useProductSettings();
+  const { t } = useProductSettings();
   const items: { id: "history" | "pending" | "positions"; label: string }[] = [
-    { id: "positions", label: locale !== "zh-CN" ? "Position" : "持仓" },
-    { id: "pending", label: locale !== "zh-CN" ? "Pending" : "挂单" },
-    { id: "history", label: locale !== "zh-CN" ? "History" : "历史" },
+    { id: "positions", label: t("portfolio.tab.positions") },
+    { id: "pending", label: t("portfolio.tab.pending") },
+    { id: "history", label: t("portfolio.tab.history") },
   ];
 
   return (
@@ -726,7 +683,7 @@ function AccountMenuSheet({
 
       <NativePressable
         accessibilityLabel={t("accountDetails.open")}
-        minTouch={58}
+        minTouch={spacing.xxl + spacing.xl + spacing.xxs}
         onPress={onViewDetails}
         style={StyleSheet.flatten([
           styles.viewDetailsButton,
@@ -899,134 +856,71 @@ type PendingOrderRow = {
 };
 
 function PendingOrderDetailSheet({ order }: { order: PendingOrderRow }) {
-  const { locale, colors } = useProductSettings();
+  const { locale, t } = useProductSettings();
   const direction = directionLabel(order.direction, locale).toLowerCase();
   const details = [
-    { label: locale !== "zh-CN" ? "Symbol" : "品种", value: order.symbol },
+    { label: t("portfolio.detail.symbol"), value: order.symbol },
     {
-      label: locale !== "zh-CN" ? "Direction" : "交易方向",
+      label: t("portfolio.detail.direction"),
       value: `${direction} ${order.lots}`,
     },
     {
-      label: locale !== "zh-CN" ? "Order Type" : "订单类型",
+      label: t("common.orderType"),
       value: order.type,
     },
-    { label: locale !== "zh-CN" ? "Price" : "价格", value: order.priceRange },
-    { label: locale !== "zh-CN" ? "Status" : "状态", value: order.status },
+    { label: t("portfolio.detail.price"), value: order.priceRange },
+    { label: t("portfolio.detail.status"), value: order.status },
   ];
 
   return (
-    <View style={styles.positionDetailSheet}>
-      <View style={styles.positionDetailHero}>
-        <TradeDirectionIcon direction={order.direction} sizeVariant="lg" />
-        <AppText variant="title">
-          {locale !== "zh-CN" ? "Pending Order" : "挂单详情"}
-        </AppText>
-        <View style={styles.inlineTitle}>
-          <AppText variant="subtitle">{order.symbol}</AppText>
-          <AppText
-            tone={order.direction === "buy" ? "down" : "up"}
-            variant="subtitle"
-          >
-            {direction} {order.lots}
-          </AppText>
-        </View>
-        <AppText tone="muted" variant="caption">
-          {order.priceRange}
-        </AppText>
-      </View>
-
-      <View
-        style={StyleSheet.flatten([
-          styles.positionDetailCard,
-          { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle },
-        ])}
-      >
-        <KeyValueList divided items={details} variant="detail" />
-      </View>
-    </View>
+    <OrderPositionDetailSheet
+      detailItems={details}
+      summary={{
+        direction: order.direction,
+        label: direction,
+        lots: order.lots,
+        priceRange: order.priceRange,
+        symbol: order.symbol,
+      }}
+      title={t("portfolio.detail.pendingOrderTitle")}
+    />
   );
 }
 
 function PositionDetailSheet({ position }: { position: PositionDetailRow }) {
-  const { locale, colors } = useProductSettings();
+  const { locale, t } = useProductSettings();
   const direction = directionLabel(position.direction, locale).toLowerCase();
   const details = [
-    { label: locale !== "zh-CN" ? "Symbol" : "品种", value: position.symbol },
+    { label: t("portfolio.detail.symbol"), value: position.symbol },
     {
-      label: locale !== "zh-CN" ? "Direction" : "交易方向",
+      label: t("portfolio.detail.direction"),
       value: `${direction} ${position.lots}`,
     },
-    { label: "Ticket", value: `${"#"}3339900` },
-    { label: "Commission", value: "-10.00" },
-    { label: "Swap", value: "-7.00" },
-    { label: "Open Time", value: "05/01/2026 14:22:39" },
-    { label: "Stop Loss", value: "--" },
-    { label: "Take Profit", value: "--" },
+    { label: t("portfolio.ticket"), value: `${"#"}3339900` },
+    { label: t("accountDetails.commission"), value: "-10.00" },
+    { label: t("accountDetails.swap"), value: "-7.00" },
+    { label: t("portfolio.openTime"), value: "05/01/2026 14:22:39" },
+    { label: t("order.stopLoss"), value: "--" },
+    { label: t("order.takeProfit"), value: "--" },
   ];
 
   return (
-    <View style={styles.positionDetailSheet}>
-      <DataSummaryHero
-        emphasis="strong"
-        label={locale !== "zh-CN" ? "Unrealized PnL" : "浮动盈亏"}
-        supportingValue={`${position.openPrice} - ${position.currentPrice}`}
-        tone={signedPnlTone(position.pnl)}
-        value={formatMoney(position.pnl, "USD", 2, locale)}
-      />
-
-      <View
-        style={StyleSheet.flatten([
-          styles.positionDetailCard,
-          { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle },
-        ])}
-      >
-        <KeyValueList divided items={details} variant="detail" />
-      </View>
-    </View>
-  );
-}
-
-function DataSummaryHero({
-  emphasis = "default",
-  icon,
-  label,
-  supportingValue,
-  tone,
-  value,
-}: {
-  emphasis?: "default" | "strong";
-  icon?: ReactNode;
-  label: string;
-  supportingValue?: string;
-  tone?: "amber" | "danger" | "default" | "down" | "up";
-  value: string;
-}) {
-  return (
-    <View style={styles.dataSummaryHero}>
-      <View style={styles.dataSummaryCopy}>
-        <View style={styles.dataSummaryValueGroup}>
-          <AppText
-            adjustsFontSizeToFit
-            numberOfLines={1}
-            tone={tone}
-            variant={emphasis === "strong" ? "largeNumber" : "number"}
-          >
-            {value}
-          </AppText>
-          <AppText numberOfLines={1} tone="muted" variant="caption">
-            {label}
-          </AppText>
-        </View>
-        {supportingValue ? (
-          <View style={styles.dataSummarySupportGroup}>
-            <AppText numberOfLines={1} variant="subtitle">
-              {supportingValue}
-            </AppText>
-          </View>
-        ) : null}
-      </View>
-    </View>
+    <OrderPositionDetailSheet
+      detailItems={details}
+      summary={{
+        direction: position.direction,
+        label: direction,
+        lots: position.lots,
+        symbol: position.symbol,
+      }}
+      valueHero={{
+        emphasis: "strong",
+        label: t("portfolio.detail.unrealizedPnl"),
+        supportingValue: `${position.openPrice} - ${position.currentPrice}`,
+        tone: signedPnlTone(position.pnl),
+        value: formatMoney(position.pnl, "USD", 2, locale),
+      }}
+    />
   );
 }
 
@@ -1052,23 +946,23 @@ function HistoryOrdersView({
   onOpenOrder: (order: HistoryOrderRow) => void;
   orders: HistoryOrderRow[];
 }) {
-  const { locale, colors } = useProductSettings();
+  const { locale, colors, t } = useProductSettings();
   const realized = orders.reduce((total, order) => total + order.pnl, 0);
   const volume = orders.reduce((total, order) => total + Number(order.lots), 0);
   const profitableOrders = orders.filter((order) => order.pnl >= 0).length;
   const losingOrders = Math.max(0, orders.length - profitableOrders);
   const summaryItems = [
     {
-      label: locale !== "zh-CN" ? "Realized P/L" : "已实现盈亏",
+      label: t("portfolio.history.realizedPnl"),
       tone: realized >= 0 ? ("down" as const) : ("up" as const),
       value: formatMoney(realized, "USD", 2, locale),
     },
     {
-      label: locale !== "zh-CN" ? "Total Volume" : "总手数",
-      value: `${formatNumber(volume, 2, locale)} ${locale !== "zh-CN" ? "lot" : "手"}`,
+      label: t("portfolio.history.totalVolume"),
+      value: `${formatNumber(volume, 2, locale)} ${t("portfolio.volumeUnit.lot")}`,
     },
     {
-      label: locale !== "zh-CN" ? "Closed Orders" : "历史订单",
+      label: t("portfolio.history.closedOrders"),
       value: `${orders.length}`,
     },
   ];
@@ -1079,18 +973,16 @@ function HistoryOrdersView({
         <View style={styles.historySummaryTop}>
           <View style={styles.historySummaryTitle}>
             <AppText variant="subtitle">
-              {locale !== "zh-CN" ? "History Summary" : "历史概览"}
+              {t("portfolio.history.summaryTitle")}
             </AppText>
             <AppText tone="muted" variant="caption">
-              {locale === "en-US"
-                ? "Closed orders in the selected period"
-                : "当前周期内的已平仓订单"}
+              {t("portfolio.history.closedOrderPeriod")}
             </AppText>
           </View>
           <StatusPill
             compact
             icon="icon.trading.history"
-            label={locale !== "zh-CN" ? "Last 30 days" : "近 30 天"}
+            label={t("portfolio.history.filter.last30")}
             tone="neutral"
           />
         </View>
@@ -1125,26 +1017,22 @@ function HistoryOrdersView({
             <View
               style={StyleSheet.flatten([
                 styles.legendDot,
-                { backgroundColor: colors.market.down.fg },
+                { backgroundColor: colors.market.up.fg },
               ])}
             />
             <AppText tone="muted" variant="caption">
-              {locale === "en-US"
-                ? `Profit ${profitableOrders}`
-                : `盈利 ${profitableOrders}`}
+              {t("portfolio.history.profitCount", { count: profitableOrders })}
             </AppText>
           </View>
           <View style={styles.historyOutcomeItem}>
             <View
               style={StyleSheet.flatten([
                 styles.legendDot,
-                { backgroundColor: colors.market.up.fg },
+                { backgroundColor: colors.market.down.fg },
               ])}
             />
             <AppText tone="muted" variant="caption">
-              {locale === "en-US"
-                ? `Loss ${losingOrders}`
-                : `亏损 ${losingOrders}`}
+              {t("portfolio.history.lossCount", { count: losingOrders })}
             </AppText>
           </View>
         </View>
@@ -1154,41 +1042,41 @@ function HistoryOrdersView({
         <View style={styles.historySummaryTop}>
           <View style={styles.historySummaryTitle}>
             <AppText variant="subtitle">
-              {locale !== "zh-CN" ? "Realized P/L" : "已实现盈亏"}
+              {t("portfolio.history.realizedPnl")}
             </AppText>
             <AppText tone="muted" variant="caption">
-              {locale === "en-US"
-                ? "Closed order profit and loss"
-                : "已平仓订单盈亏走势"}
+              {t("portfolio.history.realizedPnlDescription")}
             </AppText>
           </View>
-          <FilterPill
-            icon="icon.trading.history"
-            label={locale !== "zh-CN" ? "Last 30 days" : "近 30 天"}
+          <FilterPillGroup
+            items={[{ icon: "icon.trading.history", label: t("portfolio.history.filter.last30"), value: "last30" }]}
+            onChange={() => undefined}
+            value="last30"
+            variant="status"
           />
         </View>
         <MiniBarChart
-          tone="down"
+          tone="up"
           values={[190, 420, 70, 1600, 180, 7600, 180, 1200]}
         />
         <View style={styles.chartLegend}>
           <View
             style={StyleSheet.flatten([
               styles.legendDot,
-              { backgroundColor: colors.market.down.fg },
+              { backgroundColor: colors.market.up.fg },
             ])}
           />
           <AppText tone="muted" variant="caption">
-            {locale !== "zh-CN" ? "Profit" : "盈利"}
+            {t("portfolio.history.profitLegend")}
           </AppText>
           <View
             style={StyleSheet.flatten([
               styles.legendDot,
-              { backgroundColor: colors.market.up.fg, marginLeft: 14 },
+              { backgroundColor: colors.market.down.fg, marginLeft: radius.lg },
             ])}
           />
           <AppText tone="muted" variant="caption">
-            {locale !== "zh-CN" ? "Loss" : "亏损"}
+            {t("portfolio.history.lossLegend")}
           </AppText>
         </View>
       </Card>
@@ -1197,24 +1085,21 @@ function HistoryOrdersView({
         <View style={styles.historySummaryTop}>
           <View style={styles.historySummaryTitle}>
             <AppText variant="subtitle">
-              {locale !== "zh-CN" ? "Volume" : "成交手数"}
+              {t("portfolio.history.volumeTitle")}
             </AppText>
             <AppText tone="muted" variant="caption">
-              {locale === "en-US"
-                ? "Standard lots by day"
-                : "按日期统计标准手数"}
+              {t("portfolio.history.volumeDescription")}
             </AppText>
           </View>
-          <View style={styles.historyFilterRow}>
-            <FilterPill
-              icon="icon.trading.group_by_symbol"
-              label={locale !== "zh-CN" ? "Symbols" : "品种"}
-            />
-            <FilterPill
-              icon="icon.trading.history"
-              label={locale !== "zh-CN" ? "Last 30 days" : "近 30 天"}
-            />
-          </View>
+          <FilterPillGroup
+            items={[
+              { icon: "icon.trading.group_by_symbol", label: t("portfolio.history.filter.symbols"), value: "symbols" },
+              { icon: "icon.trading.history", label: t("portfolio.history.filter.last30"), value: "last30" },
+            ]}
+            onChange={() => undefined}
+            value="symbols"
+            variant="status"
+          />
         </View>
         <MiniBarChart
           tone="amber"
@@ -1229,28 +1114,27 @@ function HistoryOrdersView({
             ])}
           />
           <AppText tone="muted" variant="caption">
-            {locale !== "zh-CN" ? "Standard Lots" : "标准手数"}
+            {t("portfolio.history.volumeLegend")}
           </AppText>
         </View>
       </Card>
 
       <View style={styles.historyToolbar}>
         <AppText variant="subtitle">
-          {locale !== "zh-CN" ? "Orders History" : "历史订单"}
+          {t("portfolio.history.orderListTitle")}
         </AppText>
-        <View style={styles.historyFilterRow}>
-          <FilterPill
-            icon="icon.trading.history"
-            label={locale !== "zh-CN" ? "Last 7 days" : "近 7 天"}
-          />
-          <FilterPill
-            icon="icon.system.settings"
-            label={locale !== "zh-CN" ? "Sort" : "排序"}
-          />
-        </View>
+        <FilterPillGroup
+          items={[
+            { icon: "icon.trading.history", label: t("portfolio.history.filter.last7"), value: "last7" },
+            { icon: "icon.system.settings", label: t("portfolio.history.filter.sort"), value: "sort" },
+          ]}
+          onChange={() => undefined}
+          value="last7"
+          variant="status"
+        />
       </View>
       <TradeOrderList
-        rowMinTouch={62}
+        rowMinTouch={spacing.section + radius.lg}
         rows={orders.map((order) => ({
           accessibilityLabel: `${order.symbol} ${directionLabel(order.direction, locale)} ${order.lots}`,
           direction: order.direction,
@@ -1267,124 +1151,49 @@ function HistoryOrdersView({
   );
 }
 
-function FilterPill({
-  icon,
-  label,
-}: {
-  icon: "icon.trading.group_by_symbol" | "icon.trading.history" | "icon.system.settings";
-  label: string;
-}) {
-  return <StatusPill icon={icon} label={label} tone="neutral" />;
-}
-
 function ClosedOrderDetailSheet({ order }: { order: HistoryOrderRow }) {
-  const { locale, colors, t } = useProductSettings();
+  const { locale, t } = useProductSettings();
+  const direction = directionLabel(order.direction, locale).toLowerCase();
   const details = [
-    [t("portfolio.openTime"), order.openTime],
-    [t("portfolio.closeTime"), order.closeTime],
-    [
-      t("portfolio.commissionSwap"),
-      `${formatNumber(order.commission, 2, locale)} / ${formatNumber(order.swap, 2, locale)}`,
-    ],
-    ["SL / TP", "-/-"],
+    { label: t("portfolio.openTime"), value: order.openTime },
+    { label: t("portfolio.closeTime"), value: order.closeTime },
+    {
+      label: t("portfolio.commissionSwap"),
+      value: `${formatNumber(order.commission, 2, locale)} / ${formatNumber(order.swap, 2, locale)}`,
+    },
+    { label: t("portfolio.stopLossTakeProfit"), value: "-/-" },
   ];
   const deals = [0, 1, 2, 3];
 
   return (
-    <View style={styles.closedOrderSheet}>
-      <AppText variant="title">{t("portfolio.ticket")} {"#"}14808934</AppText>
-      <View
-        style={StyleSheet.flatten([
-          styles.closedOrderCard,
-          { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle },
-        ])}
-      >
-        <View style={styles.closedOrderTop}>
-          <View style={styles.closedOrderIdentity}>
-            <TradeDirectionIcon direction={order.direction} sizeVariant="lg" />
-            <View style={styles.tradeRowMain}>
-              <View style={styles.inlineTitle}>
-                <AppText variant="title">{order.symbol}</AppText>
-                <AppText
-                  tone={order.direction === "buy" ? "down" : "up"}
-                  variant="title"
-                >
-                  {directionLabel(order.direction, locale).toLowerCase()} {order.lots}
-                </AppText>
-              </View>
-              <AppText tone="muted" variant="subtitle">
-                {order.priceRange}
-              </AppText>
-            </View>
-          </View>
-          <View style={styles.closedOrderPnl}>
-            <AppText tone={signedPnlTone(order.pnl)} variant="title">
-              {formatNumber(order.pnl, 2, "en-US")}
-            </AppText>
-            <AppText tone={signedPnlTone(order.pnl)} variant="body">
-              {order.delta}
-            </AppText>
-          </View>
-        </View>
-        {details.map(([label, value]) => (
-          <View key={label} style={styles.closedDetailRow}>
-            <AppText tone="muted" variant="body">
-              {label}
-            </AppText>
-            <AppText variant="body">{value}</AppText>
-          </View>
-        ))}
-      </View>
-
-      <View
-        style={StyleSheet.flatten([
-          styles.closedOrderCard,
-          { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle },
-        ])}
-      >
-        <AppText style={styles.dealsTitle} variant="subtitle">
-          {t("portfolio.dealsCount", { count: 3 })}
-        </AppText>
-        {deals.map((deal, index) => (
-          <View
-            key={deal}
-            style={StyleSheet.flatten([
-              styles.dealRow,
-              index < deals.length - 1 && {
-                borderBottomColor: colors.border.subtle,
-                borderBottomWidth: lineWidth.hairline,
-              },
-            ])}
-          >
-            <TradeDirectionIcon direction={order.direction} sizeVariant="sm" />
-            <View style={styles.tradeRowMain}>
-              <AppText variant="subtitle">
-                {order.symbol} {order.lots}
-              </AppText>
-              <AppText tone="muted" variant="body">
-                {order.priceRange}
-              </AppText>
-              {index === 1 ? (
-                <View style={styles.dealMeta}>
-                  <DetailInline label={t("portfolio.deal")} value={order.dealId} />
-                  <DetailInline label={t("accountDetails.swap")} value="0.90" />
-                  <DetailInline label={t("portfolio.openTime")} value={order.openTime} />
-                  <DetailInline label={t("portfolio.closeTime")} value={order.closeTime} />
-                </View>
-              ) : null}
-            </View>
-            <View style={styles.closedOrderPnl}>
-              <AppText tone="down" variant="subtitle">
-                {formatNumber(order.pnl, 2, "en-US")}
-              </AppText>
-              <AppText tone="down" variant="body">
-                {order.delta}
-              </AppText>
-            </View>
-          </View>
-        ))}
-      </View>
-    </View>
+    <SharedClosedOrderDetailSheet
+      dealCountLabel={t("portfolio.dealsCount", { count: 3 })}
+      deals={deals.map((deal, index) => ({
+        delta: order.delta,
+        detailItems: index === 1 ? [
+          { label: t("portfolio.deal"), value: order.dealId },
+          { label: t("accountDetails.swap"), value: "0.90" },
+          { label: t("portfolio.openTime"), value: order.openTime },
+          { label: t("portfolio.closeTime"), value: order.closeTime },
+        ] : undefined,
+        id: `${order.id}-${deal}`,
+        lots: order.lots,
+        pnlText: formatNumber(order.pnl, 2, locale),
+        priceRange: order.priceRange,
+      }))}
+      detailItems={details}
+      pnlDelta={order.delta}
+      pnlText={formatNumber(order.pnl, 2, locale)}
+      summary={{
+        direction: order.direction,
+        label: direction,
+        lots: order.lots,
+        priceRange: order.priceRange,
+        symbol: order.symbol,
+      }}
+      ticketLabel={t("portfolio.ticket")}
+      ticketValue={`${"#"}14808934`}
+    />
   );
 }
 
@@ -1412,7 +1221,7 @@ function OrderSectionToolbar({
       </AppText>
       <NativePressable
         accessibilityLabel={accessibilityLabel ?? actionLabel}
-        minTouch={36}
+        minTouch={layout.headerIconButtonSize}
         onPress={onPress}
         style={StyleSheet.flatten([
           styles.orderToolbarAction,
@@ -1523,7 +1332,7 @@ export function PartnerClientsScreen({ showBack = false }: { showBack?: boolean 
         <View style={styles.metricRow}>
           <Metric
             label={t("partner.activeClients")}
-            tone="down"
+            tone="up"
             value={`${active}`}
           />
           <Metric
@@ -1605,6 +1414,7 @@ export function PartnerClientsScreen({ showBack = false }: { showBack?: boolean 
             label={t("upgrade.viewProfile")}
             onPress={() => router.push(`/client/${client.id}`)}
             tone={client.upgradeStatus === "pending" ? "amber" : "neutral"}
+            variant="outline"
           />
         </Card>
       ))}
@@ -1618,153 +1428,97 @@ export function PartnerClientOrdersRoute() {
 
 const styles = StyleSheet.create({
   accountHeaderSide: {
-    height: 44,
-    width: 44,
+    height: layout.touchTargetMin,
+    width: layout.touchTargetMin,
   },
   accountMenuButton: {
     alignItems: "center",
-    borderRadius: 999,
-    height: 44,
+    borderRadius: radius.full,
+    height: layout.touchTargetMin,
     justifyContent: "center",
-    width: 44,
+    width: layout.touchTargetMin,
   },
   accountPanel: {
-    borderLeftWidth: 0,
-    borderRadius: 0,
-    borderRightWidth: 0,
-    borderTopWidth: 0,
-    gap: 14,
+    borderLeftWidth: lineWidth.none,
+    borderRadius: radius.none,
+    borderRightWidth: lineWidth.none,
+    borderTopWidth: lineWidth.none,
+    gap: radius.lg,
     paddingHorizontal: layout.cardPaddingX,
     paddingVertical: layout.cardPaddingY,
   },
   accountPanelHeader: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 8,
-    minHeight: 52,
+    gap: spacing.sm,
+    minHeight: layout.touchTargetMin + spacing.sm,
   },
   accountSelector: {
     alignItems: "center",
     alignSelf: "center",
     flexDirection: "row",
-    gap: 6,
-    minHeight: 20,
+    gap: spacing.xs + spacing.xxs,
+    minHeight: spacing.xl - spacing.xs,
   },
   accountTitleBlock: {
     alignItems: "center",
     flex: 1,
-    gap: 0,
+    gap: spacing.none,
     minWidth: 0,
   },
   badgeStack: {
     alignItems: "flex-end",
-    gap: 5,
+    gap: spacing.xs + lineWidth.strong,
   },
   chartLegend: {
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "center",
   },
-  closedDetailRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    minHeight: 28,
-  },
-  closedOrderCard: {
-    borderRadius: 14,
-    borderWidth: lineWidth.none,
-    gap: 8,
-    padding: 14,
-  },
-  closedOrderIdentity: {
-    alignItems: "center",
-    flex: 1,
-    flexDirection: "row",
-    gap: 10,
-    minWidth: 0,
-  },
-  closedOrderPnl: {
-    alignItems: "flex-end",
-  },
-  closedOrderSheet: {
-    gap: 12,
-  },
-  closedOrderTop: {
-    alignItems: "flex-start",
-    flexDirection: "row",
-    gap: 12,
-    justifyContent: "space-between",
-  },
-  dealMeta: {
-    gap: 6,
-    marginTop: 12,
-  },
-  dealRow: {
-    flexDirection: "row",
-    gap: 12,
-    paddingVertical: 12,
-  },
-  dealsTitle: {
-    paddingBottom: 4,
-  },
   grid: {
     flexDirection: "row",
-    gap: 10,
-    marginBottom: 12,
-    marginTop: 12,
+    gap: spacing.sm + spacing.xxs,
+    marginBottom: spacing.md,
+    marginTop: spacing.md,
   },
   metricRow: {
     flexDirection: "row",
-    gap: 12,
+    gap: spacing.md,
   },
   accountMenuSheet: {
-    gap: 16,
+    gap: spacing.lg,
   },
   menuAccountHeader: {
     alignItems: "center",
-    gap: 5,
-    paddingBottom: 4,
-    paddingTop: 8,
+    gap: spacing.xs + lineWidth.strong,
+    paddingBottom: spacing.xs,
+    paddingTop: spacing.sm,
   },
   menuAccountNo: {
     textAlign: "center",
   },
   menuListInset: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     overflow: "hidden",
   },
-  inlineTitle: {
-    alignItems: "baseline",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 5,
-  },
   listCard: {
-    paddingVertical: 0,
+    paddingVertical: spacing.none,
   },
   historyDivider: {
-    height: 6,
-    marginHorizontal: -16,
-  },
-  historyFilterRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    justifyContent: "flex-end",
+    height: spacing.xs + spacing.xxs,
+    marginHorizontal: -spacing.lg,
   },
   historyOutcomeItem: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 6,
+    gap: spacing.xs + spacing.xxs,
   },
   historyOutcomeRow: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 14,
-    paddingHorizontal: 2,
+    gap: radius.lg,
+    paddingHorizontal: spacing.xxs,
   },
   historyRowSide: {
     alignItems: "flex-end",
@@ -1772,32 +1526,32 @@ const styles = StyleSheet.create({
     minWidth: 86,
   },
   historyChartCard: {
-    gap: 10,
-    padding: 14,
+    gap: spacing.sm + spacing.xxs,
+    padding: radius.lg,
   },
   historySummaryCard: {
-    gap: 12,
-    padding: 14,
+    gap: spacing.md,
+    padding: radius.lg,
   },
   historySummaryGrid: {
     flexDirection: "row",
-    marginHorizontal: -8,
+    marginHorizontal: -spacing.sm,
   },
   historySummaryItem: {
     flex: 1,
-    gap: 2,
+    gap: spacing.xxs,
     minWidth: 0,
-    paddingHorizontal: 8,
+    paddingHorizontal: spacing.sm,
   },
   historySummaryTitle: {
     flex: 1,
-    gap: 2,
+    gap: spacing.xxs,
     minWidth: 0,
   },
   historySummaryTop: {
     alignItems: "flex-start",
     flexDirection: "row",
-    gap: 10,
+    gap: spacing.sm + spacing.xxs,
     justifyContent: "space-between",
   },
   historyToolbar: {
@@ -1806,10 +1560,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   legendDot: {
-    borderRadius: 4,
-    height: 10,
-    marginRight: 6,
-    width: 10,
+    borderRadius: radius.xs,
+    height: spacing.sm + spacing.xxs,
+    marginRight: spacing.xs + spacing.xxs,
+    width: spacing.sm + spacing.xxs,
   },
   orderMain: {
     flex: 1,
@@ -1819,93 +1573,64 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomWidth: lineWidth.hairline,
     flexDirection: "row",
-    gap: 12,
-    minHeight: 58,
-    paddingVertical: 10,
+    gap: spacing.md,
+    minHeight: spacing.xxl + spacing.xl + spacing.xxs,
+    paddingVertical: spacing.sm + spacing.xxs,
   },
   orderSide: {
     alignItems: "flex-end",
     minWidth: 92,
   },
   orderContent: {
-    gap: 10,
-    minHeight: 242,
+    gap: spacing.sm + spacing.xxs,
+    minHeight: spacing.section * 5 + spacing.xxs,
   },
   orderPageBody: {
-    gap: 12,
-    paddingHorizontal: spacing.lg,
+    gap: spacing.md,
+    paddingHorizontal: layout.screenPaddingX,
   },
   orderTabs: {
-    height: 58,
+    height: spacing.xxl + spacing.xl + spacing.xxs,
   },
   orderToolbar: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 12,
+    gap: spacing.md,
     justifyContent: "space-between",
-    minHeight: 40,
-    paddingHorizontal: 2,
+    minHeight: layout.headerIconButtonSize,
+    paddingHorizontal: spacing.xxs,
   },
   orderToolbarAction: {
     alignItems: "center",
-    borderRadius: 999,
+    borderRadius: radius.full,
     borderWidth: lineWidth.hairline,
     flexDirection: "row",
-    gap: 6,
-    paddingHorizontal: 12,
+    gap: spacing.xs + spacing.xxs,
+    paddingHorizontal: spacing.md,
   },
   orderToolbarText: {
     flex: 1,
     minWidth: 0,
   },
-  dataSummaryCopy: {
-    alignItems: "center",
-    gap: 3,
-  },
-  dataSummaryHero: {
-    alignItems: "center",
-    paddingBottom: 6,
-  },
-  dataSummarySupportGroup: {
-    paddingTop: 10,
-  },
-  dataSummaryValueGroup: {
-    alignItems: "center",
-    gap: 4,
-  },
   positionTop: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 10,
+    gap: spacing.sm + spacing.xxs,
     justifyContent: "space-between",
   },
   positionOptionsSheet: {
     gap: layout.sectionGap,
-    paddingTop: 2,
+    paddingTop: spacing.xxs,
   },
   positionOptionsModule: {
     gap: layout.controlGap,
   },
-  positionDetailSheet: {
-    gap: 14,
-  },
-  positionDetailHero: {
-    alignItems: "center",
-    gap: 8,
-    paddingBottom: 10,
-  },
-  positionDetailCard: {
-    borderRadius: radius.xl,
-    borderWidth: lineWidth.none,
-    overflow: "hidden",
-    paddingHorizontal: layout.cardPaddingX,
-  },
   sectionTitle: {
     alignItems: "center",
     flexDirection: "row",
-    height: 48,
+    height: layout.touchTargetMin + spacing.xs,
     justifyContent: "space-between",
-    paddingHorizontal: 8,
+    paddingHorizontal: spacing.sm,
   },
   sectionAction: {
     alignItems: "center",
@@ -1914,18 +1639,12 @@ const styles = StyleSheet.create({
   tradeRow: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 12,
-  },
-  tradeRowMain: {
-    flex: 1,
-    gap: 3,
-    justifyContent: "center",
-    minWidth: 0,
+    gap: spacing.md,
   },
   viewDetailsButton: {
     alignItems: "center",
     borderRadius: radius.xl,
     borderWidth: lineWidth.hairline,
-    minHeight: 58,
+    minHeight: spacing.xxl + spacing.xl + spacing.xxs,
   },
 });

@@ -1,4 +1,4 @@
-import type { Account, Direction, Instrument, Order, OrderType, Position } from './types';
+import type { Account, Direction, Instrument, InstrumentCandle, InstrumentChartTimeframe, Order, OrderType, Position } from './types';
 
 export function getMidPrice(instrument: Instrument) {
   return (instrument.bid + instrument.ask) / 2;
@@ -128,7 +128,10 @@ export function moveQuote(instrument: Instrument, tick: number): Instrument {
     ask: Number(nextAsk.toFixed(instrument.pipSize >= 0.01 ? 3 : 5)),
     dayHigh: Math.max(instrument.dayHigh, nextMid),
     dayLow: Math.min(instrument.dayLow, nextMid),
+    quoteStatus: 'live',
+    quoteUpdatedAt: new Date().toISOString(),
     sparkline: [...instrument.sparkline.slice(-9), nextMid],
+    candlesByTimeframe: appendLatestCandle(instrument, nextMid),
   };
 }
 
@@ -143,7 +146,35 @@ export function applyQuote(instrument: Instrument, bid: number, ask: number, opt
     bid: Number(bid.toFixed(digits)),
     dayHigh: Math.max(instrument.dayHigh, nextMid),
     dayLow: Math.min(instrument.dayLow, nextMid),
+    quoteStatus: 'live',
+    quoteUpdatedAt: new Date().toISOString(),
     sparkline: updateSparkline ? [...instrument.sparkline.slice(-9), nextMid] : instrument.sparkline,
     spread: Number(((ask - bid) / instrument.pipSize).toFixed(1)),
+    candlesByTimeframe: updateSparkline ? appendLatestCandle(instrument, nextMid) : instrument.candlesByTimeframe,
   };
+}
+
+function appendLatestCandle(instrument: Instrument, nextMid: number) {
+  return (Object.entries(instrument.candlesByTimeframe) as [InstrumentChartTimeframe, InstrumentCandle[]][]).reduce(
+    (nextCandles, [timeframe, candles]) => {
+      const lastCandle = candles[candles.length - 1];
+      const nextClose = roundInstrumentPrice(instrument, nextMid);
+      const updatedCandle: InstrumentCandle = {
+        close: nextClose,
+        high: roundInstrumentPrice(instrument, Math.max(lastCandle?.high ?? nextClose, nextClose)),
+        low: roundInstrumentPrice(instrument, Math.min(lastCandle?.low ?? nextClose, nextClose)),
+        open: lastCandle?.open ?? nextClose,
+        time: new Date().toISOString(),
+        volume: Math.max((lastCandle?.volume ?? 0) + 1, 1),
+      };
+
+      nextCandles[timeframe] = [...candles.slice(-95), updatedCandle];
+      return nextCandles;
+    },
+    {} as Instrument['candlesByTimeframe'],
+  );
+}
+
+function roundInstrumentPrice(instrument: Instrument, value: number) {
+  return Number(value.toFixed(instrument.pipSize >= 0.01 ? 3 : 5));
 }

@@ -1,7 +1,7 @@
 import { StyleSheet, StyleProp, View, ViewStyle } from 'react-native';
 
 import { useThemeColors } from '@/src/settings/ProductSettings';
-import { lineWidth, spacing } from '@/src/theme/tokens';
+import { layout, lineWidth, spacing } from '@/src/theme/tokens';
 import { AppText, type AppTextTone } from './Typography';
 
 export type KeyValueListVariant = 'compact' | 'detail';
@@ -16,6 +16,7 @@ export type KeyValueListItem = {
 type KeyValueListProps = {
   divided?: boolean;
   fill?: boolean;
+  inset?: 'default' | 'none';
   items: KeyValueListItem[];
   style?: StyleProp<ViewStyle>;
   variant?: KeyValueListVariant;
@@ -24,6 +25,7 @@ type KeyValueListProps = {
 export function KeyValueList({
   divided = false,
   fill = false,
+  inset = 'default',
   items,
   style,
   variant = 'compact',
@@ -46,6 +48,7 @@ export function KeyValueList({
           style={StyleSheet.flatten([
             styles.row,
             isDetail && styles.detailRow,
+            inset === 'none' && styles.rowFlush,
             fill && styles.fillRow,
             divided &&
               index < items.length - 1 && {
@@ -103,6 +106,10 @@ const styles = StyleSheet.create({
     gap: spacing.lg,
     justifyContent: 'space-between',
     minHeight: 24,
+    paddingHorizontal: layout.listRowPaddingX,
+  },
+  rowFlush: {
+    paddingHorizontal: spacing.none,
   },
   value: {
     flexShrink: 1,

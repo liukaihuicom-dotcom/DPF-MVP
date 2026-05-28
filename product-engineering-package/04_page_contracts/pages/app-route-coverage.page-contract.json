@@ -3,7 +3,7 @@
   "page_id": "app_route_coverage",
   "platform": "app_h5",
   "roles": ["guest", "signed_in_user", "trader", "partner"],
-  "purpose": "Minimum route-level Page Contract coverage for every current Expo Router product page registered in src/navigation/routeRegistry.ts.",
+  "purpose": "Minimum route-level Page Contract coverage for every current Expo Router product page and local design review route registered in src/navigation/routeRegistry.ts.",
   "source_of_truth": "src/navigation/routeRegistry.ts",
   "coverage_version": "v1.0.8-design-system-compliance-remediation",
   "states": [
@@ -40,6 +40,7 @@
     { "path": "/brand-splash", "page_component": "BrandSplashScreen", "module": "Launch", "permission": "guest", "presentation": "screen", "risk_level": "low", "primary_actions": ["Show brand intro", "Continue to launch"], "related_modals": [], "states": ["default", "redirecting", "error"], "contract_status": "covered_minimum" },
     { "path": "/launch", "page_component": "LaunchScreen", "module": "Launch", "permission": "guest", "presentation": "screen", "risk_level": "low", "primary_actions": ["Start login", "Start registration"], "related_modals": ["global.toastFeedback"], "states": ["default", "loading", "error"], "contract_status": "covered_minimum" },
     { "path": "/markets", "page_component": "MarketsScreen", "module": "Markets", "permission": "signedIn.trader", "presentation": "tab", "risk_level": "medium", "primary_actions": ["Search instruments", "Switch trading account", "Open instrument detail"], "related_modals": ["tradingAccount.switchSheet", "global.toastFeedback", "global.webSelectMenu"], "states": ["default", "loading", "empty", "error", "permission_denied", "restricted"], "permission_gap": "Production market access still needs server-side quote entitlement and account scope.", "contract_status": "covered_minimum" },
+    { "path": "/markets-account-demo", "page_component": "MarketsAccountHeaderDemoScreen", "module": "Markets", "permission": "local.devOnly", "presentation": "screen", "risk_level": "low", "primary_actions": ["Compare trading-account header visual variants"], "related_modals": [], "states": ["default", "loading", "empty", "error"], "routing_review": "Local design review route for account-header variants; not a production trading route.", "contract_status": "covered_minimum_local_dev" },
     { "path": "/trade", "page_component": "PortfolioScreen", "module": "Trading", "permission": "signedIn.trader", "presentation": "tab", "risk_level": "high", "primary_actions": ["Review positions", "Review pending orders", "Close position", "Modify or delete order", "Open account menu"], "related_modals": ["portfolio.accountMenuSheet", "portfolio.closePositionConfirm", "portfolio.pendingOrderDetailSheet", "portfolio.pendingOrderFeedbackToast", "portfolio.positionDetailSheet", "tradingAccount.switchSheet", "global.toastFeedback"], "states": ["default", "loading", "empty", "error", "permission_denied", "restricted"], "risk_controls": ["Close-position confirmation must use registered ConfirmActionSheet.", "Server-side order and account scope validation is required."], "contract_status": "covered_minimum_high_risk" },
     { "path": "/accounts", "page_component": "AccountScreen", "module": "Accounts", "permission": "signedIn.trader", "presentation": "tab", "risk_level": "medium", "primary_actions": ["Inspect trading accounts", "Open account detail", "Review funding shortcuts"], "related_modals": ["account.metricDescriptionSheet", "global.bottomSheet", "global.toastFeedback"], "states": ["default", "loading", "empty", "error", "permission_denied", "restricted"], "permission_gap": "Trading account ownership and ledger access require production account scope.", "contract_status": "covered_minimum" },
     { "path": "/discover", "page_component": "DupoinDiscoverScreen", "module": "Discover", "permission": "guest", "presentation": "tab", "risk_level": "low", "primary_actions": ["Browse discovery modules", "Open function entry", "Open layout settings"], "related_modals": ["discover.layout.route", "global.toastFeedback"], "states": ["default", "loading", "empty", "error"], "contract_status": "covered_minimum" },
@@ -80,8 +81,8 @@
     { "path": "/(not-found)", "page_component": "NotFoundScreen", "module": "Navigation", "permission": "guest", "presentation": "notFound", "risk_level": "low", "primary_actions": ["Explain missing route", "Return to app"], "related_modals": [], "states": ["not_found"], "contract_status": "covered_minimum" }
   ],
   "coverage_summary": {
-    "registered_route_count": 42,
-    "covered_route_count": 42,
+    "registered_route_count": 43,
+    "covered_route_count": 43,
     "high_risk_routes": [
       "/trade",
       "/portfolio",

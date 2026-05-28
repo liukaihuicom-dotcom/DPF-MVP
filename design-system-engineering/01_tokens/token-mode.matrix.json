@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "3.0.1",
   "modes": {
     "darkTerminal": {
       "colors": {
@@ -9,7 +9,7 @@
             "border": "#1D4ED8",
             "fg": "#74A8FF",
             "onSolid": "#FAFAFA",
-            "solid": "#3B82F6"
+            "solid": "#1F72E8"
           },
           "cyan": {
             "bg": "#083344",
@@ -61,7 +61,7 @@
           "diverging": {
             "negative": "#FF6478",
             "neutral": "#B8B8B8",
-            "positive": "#24C985"
+            "positive": "#2EA379"
           },
           "sequential": {
             "high": "#67E8F9",
@@ -69,13 +69,25 @@
             "mid": "#2EB5C4"
           }
         },
+        "icon": {
+          "active": "#F8FAFC",
+          "danger": "#FF6B7E",
+          "disabled": "#B8B8B8",
+          "info": "#74A8FF",
+          "inverse": "#FFFFFF",
+          "primary": "#F8FAFC",
+          "secondary": "#E2E2E2",
+          "success": "#24C985",
+          "tertiary": "#B8B8B8",
+          "warning": "#F4B000"
+        },
         "market": {
           "down": {
-            "bg": "#022C22",
-            "border": "#047857",
-            "fg": "#24C985",
+            "bg": "#450A0A",
+            "border": "#CF202F",
+            "fg": "#FF5A68",
             "onSolid": "#FAFAFA",
-            "solid": "#10B981"
+            "solid": "#EF4444"
           },
           "flat": {
             "bg": "#222222",
@@ -85,11 +97,11 @@
             "solid": "#71717A"
           },
           "up": {
-            "bg": "#450A0A",
-            "border": "#CF202F",
-            "fg": "#FF5A68",
+            "bg": "#022C22",
+            "border": "#047857",
+            "fg": "#2EA379",
             "onSolid": "#FAFAFA",
-            "solid": "#EF4444"
+            "solid": "#2EA379"
           }
         },
         "overlay": {
@@ -113,10 +125,10 @@
             "subtle": "#FF6B7E12"
           },
           "down": {
-            "muted": "#24C98518",
-            "scrim": "#24C98566",
-            "strong": "#24C98555",
-            "subtle": "#24C98512"
+            "muted": "#FF5A6818",
+            "scrim": "#FF5A6866",
+            "strong": "#FF5A6855",
+            "subtle": "#FF5A6812"
           },
           "info": {
             "muted": "#74A8FF18",
@@ -132,10 +144,10 @@
           },
           "scrim": "#070707CC",
           "up": {
-            "muted": "#FF5A6818",
-            "scrim": "#FF5A6866",
-            "strong": "#FF5A6855",
-            "subtle": "#FF5A6812"
+            "muted": "#2EA37918",
+            "scrim": "#2EA37966",
+            "strong": "#2EA37955",
+            "subtle": "#2EA37912"
           },
           "warning": {
             "muted": "#FBBF2418",
@@ -163,7 +175,7 @@
             "border": "#1D4ED8",
             "fg": "#74A8FF",
             "onSolid": "#FAFAFA",
-            "solid": "#3B82F6"
+            "solid": "#1F72E8"
           },
           "neutral": {
             "bg": "#222222",
@@ -211,9 +223,9 @@
           "blue": {
             "bg": "#EFF6FF",
             "border": "#BFDBFE",
-            "fg": "#2563EB",
+            "fg": "#1F72E8",
             "onSolid": "#FAFAFA",
-            "solid": "#2563EB"
+            "solid": "#1F72E8"
           },
           "cyan": {
             "bg": "#ECFEFF",
@@ -250,7 +262,7 @@
         "chart": {
           "categorical": [
             "#2EB5C4",
-            "#2563EB",
+            "#1F72E8",
             "#D97706",
             "#9333EA",
             "#05A66B",
@@ -265,7 +277,7 @@
           "diverging": {
             "negative": "#CF202F",
             "neutral": "#71717A",
-            "positive": "#05A66B"
+            "positive": "#2EA379"
           },
           "sequential": {
             "high": "#0E7490",
@@ -273,13 +285,25 @@
             "mid": "#2EB5C4"
           }
         },
+        "icon": {
+          "active": "#1F2329",
+          "danger": "#CF202F",
+          "disabled": "#6D747E",
+          "info": "#1F72E8",
+          "inverse": "#FFFFFF",
+          "primary": "#1F2329",
+          "secondary": "#5B616E",
+          "success": "#05A66B",
+          "tertiary": "#7C828A",
+          "warning": "#A86D00"
+        },
         "market": {
           "down": {
-            "bg": "#ECFDF5",
-            "border": "#A7F3D0",
-            "fg": "#05A66B",
+            "bg": "#FEF2F2",
+            "border": "#FECACA",
+            "fg": "#CF202F",
             "onSolid": "#FAFAFA",
-            "solid": "#05A66B"
+            "solid": "#CF202F"
           },
           "flat": {
             "bg": "#F4F4F5",
@@ -289,11 +313,11 @@
             "solid": "#71717A"
           },
           "up": {
-            "bg": "#FEF2F2",
-            "border": "#FECACA",
-            "fg": "#CF202F",
+            "bg": "#ECFDF5",
+            "border": "#A7F3D0",
+            "fg": "#2EA379",
             "onSolid": "#FAFAFA",
-            "solid": "#CF202F"
+            "solid": "#2EA379"
           }
         },
         "overlay": {
@@ -317,16 +341,16 @@
             "subtle": "#CF202F12"
           },
           "down": {
-            "muted": "#05A66B18",
-            "scrim": "#05A66B66",
-            "strong": "#05A66B55",
-            "subtle": "#05A66B12"
+            "muted": "#CF202F18",
+            "scrim": "#CF202F66",
+            "strong": "#CF202F55",
+            "subtle": "#CF202F12"
           },
           "info": {
-            "muted": "#2563EB18",
-            "scrim": "#2563EB66",
-            "strong": "#2563EB55",
-            "subtle": "#2563EB12"
+            "muted": "#1F72E818",
+            "scrim": "#1F72E866",
+            "strong": "#1F72E855",
+            "subtle": "#1F72E812"
           },
           "inverse": {
             "muted": "#FFFFFF18",
@@ -336,10 +360,10 @@
           },
           "scrim": "#09090B80",
           "up": {
-            "muted": "#CF202F18",
-            "scrim": "#CF202F66",
-            "strong": "#CF202F55",
-            "subtle": "#CF202F12"
+            "muted": "#2EA37918",
+            "scrim": "#2EA37966",
+            "strong": "#2EA37955",
+            "subtle": "#2EA37912"
           },
           "warning": {
             "muted": "#A86D0018",
@@ -365,9 +389,9 @@
           "info": {
             "bg": "#EFF6FF",
             "border": "#BFDBFE",
-            "fg": "#2563EB",
+            "fg": "#1F72E8",
             "onSolid": "#FAFAFA",
-            "solid": "#2563EB"
+            "solid": "#1F72E8"
           },
           "neutral": {
             "bg": "#F4F4F5",
@@ -402,8 +426,8 @@
         "text": {
           "disabled": "#6D747E",
           "inverse": "#FFFFFF",
-          "link": "#2563EB",
-          "primary": "#0A0B0D",
+          "link": "#1F72E8",
+          "primary": "#1F2329",
           "secondary": "#5B616E",
           "tertiary": "#7C828A"
         }
@@ -417,7 +441,7 @@
             "border": "#1D4ED8",
             "fg": "#7AB8FF",
             "onSolid": "#FAFAFA",
-            "solid": "#3B82F6"
+            "solid": "#1F72E8"
           },
           "cyan": {
             "bg": "#083344",
@@ -469,7 +493,7 @@
           "diverging": {
             "negative": "#FF6478",
             "neutral": "#BDBDBD",
-            "positive": "#24C985"
+            "positive": "#2EA379"
           },
           "sequential": {
             "high": "#67E8F9",
@@ -477,13 +501,25 @@
             "mid": "#2EB5C4"
           }
         },
+        "icon": {
+          "active": "#F8FAFC",
+          "danger": "#FF7391",
+          "disabled": "#BCBCBC",
+          "info": "#7AB8FF",
+          "inverse": "#FFFFFF",
+          "primary": "#F8FAFC",
+          "secondary": "#E3E3E3",
+          "success": "#24C985",
+          "tertiary": "#BDBDBD",
+          "warning": "#F4B000"
+        },
         "market": {
           "down": {
-            "bg": "#022C22",
-            "border": "#047857",
-            "fg": "#24C985",
+            "bg": "#450A0A",
+            "border": "#CF202F",
+            "fg": "#FF6478",
             "onSolid": "#FAFAFA",
-            "solid": "#10B981"
+            "solid": "#EF4444"
           },
           "flat": {
             "bg": "#242424",
@@ -493,11 +529,11 @@
             "solid": "#71717A"
           },
           "up": {
-            "bg": "#450A0A",
-            "border": "#CF202F",
-            "fg": "#FF6478",
+            "bg": "#022C22",
+            "border": "#047857",
+            "fg": "#2EA379",
             "onSolid": "#FAFAFA",
-            "solid": "#EF4444"
+            "solid": "#2EA379"
           }
         },
         "overlay": {
@@ -521,10 +557,10 @@
             "subtle": "#FF739112"
           },
           "down": {
-            "muted": "#24C98518",
-            "scrim": "#24C98566",
-            "strong": "#24C98555",
-            "subtle": "#24C98512"
+            "muted": "#FF647818",
+            "scrim": "#FF647866",
+            "strong": "#FF647855",
+            "subtle": "#FF647812"
           },
           "info": {
             "muted": "#7AB8FF18",
@@ -540,10 +576,10 @@
           },
           "scrim": "#080808CC",
           "up": {
-            "muted": "#FF647818",
-            "scrim": "#FF647866",
-            "strong": "#FF647855",
-            "subtle": "#FF647812"
+            "muted": "#2EA37918",
+            "scrim": "#2EA37966",
+            "strong": "#2EA37955",
+            "subtle": "#2EA37912"
           },
           "warning": {
             "muted": "#FBBF2418",
@@ -571,7 +607,7 @@
             "border": "#1D4ED8",
             "fg": "#7AB8FF",
             "onSolid": "#FAFAFA",
-            "solid": "#3B82F6"
+            "solid": "#1F72E8"
           },
           "neutral": {
             "bg": "#242424",
@@ -613,45 +649,5 @@
         }
       }
     }
-  },
-  "requiredRampSteps": [
-    "50",
-    "100",
-    "200",
-    "300",
-    "400",
-    "500",
-    "600",
-    "700",
-    "800",
-    "900",
-    "950"
-  ],
-  "requiredStateFields": [
-    "fg",
-    "bg",
-    "border",
-    "solid",
-    "onSolid"
-  ],
-  "deprecatedAliases": {
-    "bg": "surface.canvas",
-    "panel": "surface.panel",
-    "panelHigh": "surface.raised",
-    "panelSoft": "surface.subtle",
-    "line": "border.default",
-    "lineSoft": "border.subtle",
-    "text": "text.primary",
-    "textMuted": "text.secondary",
-    "textDim": "text.tertiary",
-    "brand": "brand.fg",
-    "amber": "status.warning.fg",
-    "danger": "status.danger.fg",
-    "blue": "status.info.fg",
-    "up": "market.up.fg",
-    "down": "market.down.fg",
-    "disabledSurface": "surface.disabled",
-    "disabledText": "text.disabled",
-    "disabledBorder": "border.disabled"
   }
 }

@@ -33,13 +33,14 @@ export function resolveIconSurfaceTone(colors: ThemeColors, tone: IconSurfaceTon
     case 'brand':
       return { backgroundColor: colors.overlay.brand.subtle, iconTone: 'brand' };
     case 'success':
+      return { backgroundColor: `${colors.status.success.fg}12`, iconTone: 'success' };
     case 'down':
-      return { backgroundColor: colors.overlay.down.subtle, iconTone: 'success' };
+      return { backgroundColor: colors.overlay.down.subtle, iconTone: 'down' };
     case 'warning':
       return { backgroundColor: colors.overlay.warning.subtle, iconTone: 'warning' };
     case 'danger':
     case 'up':
-      return { backgroundColor: colors.overlay.up.subtle, iconTone: 'danger' };
+      return { backgroundColor: colors.overlay.up.subtle, iconTone: 'up' };
     case 'info':
       return { backgroundColor: colors.overlay.info.subtle, iconTone: 'info' };
     case 'tertiary':

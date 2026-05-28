@@ -29,6 +29,7 @@ export type AppTextTone =
   | 'muted'
   | 'panel'
   | 'panelMuted'
+  | 'success'
   | 'up'
   | 'white';
 
@@ -50,12 +51,29 @@ type AppTextProps = PropsWithChildren<
   }
 >;
 
-export function AppText({ children, tone = 'default', variant = 'body', style, ...props }: AppTextProps) {
+const MIN_AUTO_FIT_FONT_SCALE = 0.92;
+
+export function AppText({
+  adjustsFontSizeToFit,
+  children,
+  minimumFontScale,
+  tone = 'default',
+  variant = 'body',
+  style,
+  ...props
+}: AppTextProps) {
   const colors = useThemeColors();
   const variantStyle = variantStyles[variant];
+  const resolvedMinimumFontScale = adjustsFontSizeToFit
+    ? Math.max(minimumFontScale ?? MIN_AUTO_FIT_FONT_SCALE, MIN_AUTO_FIT_FONT_SCALE)
+    : minimumFontScale;
 
   return (
-    <Text {...props} style={StyleSheet.flatten([styles.base, variantStyle, { color: resolveThemeTone(colors, tone) }, style])}>
+    <Text
+      {...props}
+      adjustsFontSizeToFit={adjustsFontSizeToFit}
+      minimumFontScale={resolvedMinimumFontScale}
+      style={StyleSheet.flatten([styles.base, variantStyle, { color: resolveThemeTone(colors, tone) }, style])}>
       {children}
     </Text>
   );

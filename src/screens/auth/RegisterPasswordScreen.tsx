@@ -3,15 +3,15 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { isStrongPassword, safeRedirect } from '@/src/auth/authFlow';
-import { ActionButton } from '@/src/components/ActionButton';
-import { AppIcon } from '@/src/components/AppIcon';
-import { AuthShell, AuthTextField } from '@/src/components/AuthShell';
-import { AuthErrorSheet, AuthLeaveVerifiedStepDialog, PasswordRuleList } from '@/src/components/AuthFlowControls';
-import { NativePressable } from '@/src/components/NativePressable';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { AppIcon } from '@/src/design-public-assets/components';
+import { AuthShell, AuthTextField } from '@/src/design-public-assets/components';
+import { AuthErrorSheet, AuthLeaveVerifiedStepDialog, PasswordRuleList } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import type { NavigationTarget } from '@/src/navigation/navigationPolicy';
-import { REMEMBERED_WEB_DEMO_DEVICE_LABEL, useProductSettings } from '@/src/settings/ProductSettings';
-import { spacing } from '@/src/theme/tokens';
+import { REMEMBERED_WEB_DEMO_DEVICE_LABEL, useProductSettings } from '@/src/design-public-assets/copy';
+import { spacing } from '@/src/design-public-assets/tokens';
 
 export default function RegisterPasswordScreen() {
   const params = useLocalSearchParams<{ email?: string; phone?: string; redirect?: string }>();

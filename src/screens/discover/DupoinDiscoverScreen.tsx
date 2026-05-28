@@ -1,11 +1,11 @@
 import { router } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { AppIcon, type AppIconName } from '@/src/components/AppIcon';
-import { IconSurface } from '@/src/components/IconSurface';
-import { NativePressable } from '@/src/components/NativePressable';
-import { Screen } from '@/src/components/Screen';
-import { AppText } from '@/src/components/Typography';
+import { AppIcon, type AppIconName } from '@/src/design-public-assets/components';
+import { IconSurface } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { Screen } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import {
   discoverCampaignDefinitions,
   discoverEntryDefinitions,
@@ -14,8 +14,8 @@ import {
 } from '@/src/domain/discoverEntries';
 import { localizeText } from '@/src/domain/format';
 import { impactLight } from '@/src/feedback/haptics';
-import { useProductSettings } from '@/src/settings/ProductSettings';
-import { lineWidth, layout, radius, spacing } from '@/src/theme/tokens';
+import { useProductSettings } from '@/src/design-public-assets/copy';
+import { lineWidth, layout, radius, size, spacing } from '@/src/design-public-assets/tokens';
 
 export default function DupoinDiscoverScreen() {
   const { role, t } = useProductSettings();
@@ -51,9 +51,9 @@ function LatestCampaigns({ campaigns }: { campaigns: DiscoverCampaignDefinition[
               void impactLight();
               router.replace('/quick' as never);
             }}
-            style={StyleSheet.flatten([styles.campaignCard, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+            style={StyleSheet.flatten([styles.campaignCard, { backgroundColor: colors.surface.panel }])}>
             <View style={styles.campaignCopy}>
-              <View style={StyleSheet.flatten([styles.campaignBadge, { backgroundColor: `${colors.brand.fg}12`, borderColor: `${colors.brand.fg}55` }])}>
+              <View style={StyleSheet.flatten([styles.campaignBadge, { backgroundColor: colors.overlay.brand.subtle, borderColor: colors.overlay.brand.strong }])}>
                 <AppText numberOfLines={1} tone="brand" variant="caption">
                   {localizeText(campaign.badge, locale)}
                 </AppText>
@@ -65,7 +65,7 @@ function LatestCampaigns({ campaigns }: { campaigns: DiscoverCampaignDefinition[
                 {localizeText(campaign.subtitle, locale)}
               </AppText>
             </View>
-            <IconSurface icon={campaign.icon} sizeVariant="xl" />
+            <IconSurface icon={campaign.icon} sizeVariant="xl" tone={campaign.iconTone} />
           </NativePressable>
         ))}
       </ScrollView>
@@ -86,12 +86,12 @@ function DiscoverEntryRow({ entry }: { entry: DiscoverEntryDefinition }) {
         router.replace('/quick' as never);
       }}
       style={StyleSheet.flatten([styles.entryRow, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-      <IconSurface icon={entry.icon} sizeVariant="md" />
+      <IconSurface icon={entry.icon} sizeVariant="md" tone={entry.iconTone} />
       <View style={styles.entryCopy}>
         <AppText numberOfLines={1} style={styles.entryTitle} variant="subtitle">
           {localizeText(entry.title, locale)}
         </AppText>
-        <AppText numberOfLines={2} tone="muted" variant="caption">
+        <AppText numberOfLines={2} tone="muted" variant="body.secondary">
           {localizeText(entry.subtitle, locale)}
         </AppText>
       </View>
@@ -103,7 +103,7 @@ function DiscoverEntryRow({ entry }: { entry: DiscoverEntryDefinition }) {
 const styles = StyleSheet.create({
   entryCopy: {
     flex: 1,
-    gap: spacing.sm,
+    gap: spacing.xs,
     minWidth: 0,
   },
   entryList: {
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   entryRow: {
     alignItems: 'center',
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flexDirection: 'row',
     gap: spacing.md,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
   },
   campaignCard: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flexDirection: 'row',
     gap: spacing.md,
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingHorizontal: layout.cardPaddingX,
     paddingVertical: layout.cardPaddingY,
-    width: 282,
+    width: size.discover.campaignCardWidth,
   },
   campaignCopy: {
     flex: 1,

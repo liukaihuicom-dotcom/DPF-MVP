@@ -1,5 +1,165 @@
 # @dpf/component-library Changelog
 
+## 2.2.0 - 2026-05-28
+
+- Added governed `GlobalDialog` as the single centered feedback and confirmation Modal host while preserving the existing centered auth feedback visual design.
+- Migrated `AuthContactConfirmDialog`, `AuthLeaveVerifiedStepDialog`, and `AuthErrorDialog` to render through `GlobalDialog` instead of owning local React Native Modal shells.
+- Strengthened bottom-sheet governance so page-level bottom sheets must call the global `BottomSheet` system through `bottomSheetPresets`, with QA guards blocking page-owned Modal/scrim/sheet shells.
+
+## 2.1.14 - 2026-05-28
+
+- Removed residual border rendering from page, sheet, dialog, demo, chart, Discover, and developer-console card-like surfaces while preserving functional input, button, chip, icon, and divider borders.
+- Strengthened the Card manifest so Card and card-like page/sheet/dialog/business surfaces are explicitly borderless and must not carry `borderWidth` or `borderColor`.
+- Added style and component QA coverage to block future card-like border regressions outside functional controls.
+
+## 2.1.13 - 2026-05-28
+
+- Expanded the shared auth country/region picker from the eight-option sample list to 128 mainstream global phone regions while preserving Indonesia as the default first option.
+- Kept search over country/region name, ISO code, and dial code, and added a localized empty state for unmatched searches.
+- Synchronized the `CountryPickerModal` contract with the shared BottomSheet list behavior: white panel surface, plain list body, max-height scrolling, backdrop dismissal, pan-down dismissal, and default-size selected check icon.
+
+## 2.1.12 - 2026-05-28
+
+- Standardized shared `Card` and card-like panel governance on the semantic `radius.card` token instead of the legacy `radius.md` alias.
+- Migrated remaining card-like runtime surfaces in the developer scenario tile, metric description sheet value card, and root error panel to `radius.card`.
+- Added manifest and QA coverage so card-like surfaces cannot regress to `radius.sm`, `radius.md`, `radius.lg`, `radius.xl`, or numeric `borderRadius` values.
+
+## 2.1.11 - 2026-05-28
+
+- Stabilized `CountryPickerModal` so opening the sheet does not re-run on parent callback or selected-country reference changes.
+- Added an explicit country-picker snap point so the long country/region list uses the shared BottomSheet max-height and scroll behavior.
+- Restored reliable dismissal through the shared BottomSheet backdrop, pan-down, and selected-option paths.
+
+## 2.1.10 - 2026-05-28
+
+- Added a governed `sheetSurface` option to shared `BottomSheet` presets so list-only sheets can use a white panel surface without changing every sheet.
+- Updated `CountryPickerModal` to use the panel sheet surface and plain list padding because its content is a simple country/region list, not a card layout.
+- Preserved country selection behavior, registered flag assets, and the default-size `icon.status.check` selected indicator.
+
+## 2.1.9 - 2026-05-28
+
+- Fixed shared `BottomSheet` header and content rendering so sheet text keeps full opacity after presentation in the app web preview.
+- Preserved the governed sheet entrance translation and fixed-footer entrance behavior while preventing content from remaining visually washed out.
+
+## 2.1.8 - 2026-05-28
+
+- Updated `AuthShell` top navigation so the right-side action area reserves a stable two-icon slot across login, registration, onboarding, PIN, and password recovery flows.
+- Kept single right-side actions right-aligned inside the reserved slot to avoid horizontal jumps when auth pages switch between one and two top-right icons.
+- Preserved route behavior, icon registry keys, left close/back button treatment, and right action touch targets.
+
+## 2.1.7 - 2026-05-28
+
+- Updated `AppViewport` so Codex/browser product-page previews clip the governed 390 x 844 canvas with the token-bound `radius.sheet` corner treatment.
+- Preserved native iOS/Android full-device sizing, web preview dimensions, safe-area metrics, and the developer control panel outside the clipped phone canvas.
+- Added component and style QA coverage so the app preview canvas cannot regress to square corners.
+
+## 2.1.6 - 2026-05-28
+
+- Updated `AuthShell` left-side close/back actions to keep a visible token-bound background in login, registration, onboarding, PIN, and password recovery flows.
+- Scoped the visual correction to the shared auth shell navigation action while preserving route behavior, icon registry keys, labels, touch target size, and right-side language action behavior.
+
+## 2.1.5 - 2026-05-28
+
+- Updated the shared `CountryPickerModal` country rows to stack dial code above the country or region name for clearer scanning in auth bottom sheets.
+- Kept the selected country indicator on the registered `icon.status.check` AppIcon and restored it to the component default 24px icon size.
+- Changed country options to expose radio semantics with checked state while preserving the existing selection behavior and BottomSheet host.
+
+## 2.1.4 - 2026-05-28
+
+- Updated the shared `BottomSheet` lifecycle so header, content, and fixed footer actions dismiss through the same progress before the sheet stack is cleared.
+- Added a governed content-to-footer reading gap for short and scrollable sheets so trading detail content does not sit against fixed action buttons.
+- Kept fixed footer height measured with a conservative first-frame estimate so short content does not clip action buttons before layout measurement completes.
+
+## 2.1.3 - 2026-05-28
+
+- Updated `TradingAccountCard` metadata rows to use a 16px currency flag, 2px horizontal gap, and 0px row gap.
+- Switched the account-switcher add action to the generic registered `icon.system.add` plus glyph instead of the add-user profile glyph.
+- Made selection bottom sheets default to fill sizing so long account-switcher content uses the governed scroll container.
+- Kept selected check indicators on the default-size, no-background `AppIcon` contract.
+
+## 2.1.2 - 2026-05-28
+
+- Updated `TradingAccountCard` radio trailing state to use the registered `icon.status.check` AppIcon at the component default icon size.
+- Removed the hand-built radio circle/dot treatment from the account selection card so the selected indicator has no icon-surface background.
+- Kept selection state, account switching behavior, and account card layout unchanged.
+
+## 2.1.1 - 2026-05-28
+
+- Tightened the Discover entry card title-to-description stack to the governed 4px `spacing.xs` layer.
+- Updated filled `HeaderIconButton` containers to use the white panel surface token on gray page, sheet, and canvas backgrounds while preserving neutral primary icon glyph color.
+- Synced component manifests, token-binding maps, and QA coverage for the Discover entry copy rhythm and header icon surface contract.
+
+## 2.1.0 - 2026-05-28
+
+- Promoted the shared trading account row into exported `TradingAccountCard` with governed `radio`, `chevron`, and `currency` trailing variants.
+- Updated `/accounts` to reuse the same detailed trading account card composition as `TradingAccountSwitchSheet`, changing only the right-side control from radio to disclosure chevron.
+- Kept account routing, data, copy, icon registry usage, and funding account selection behavior unchanged.
+
+## 2.0.0 - 2026-05-28
+
+- Breaking: restricted `ActionButton` to exactly two visual variants, `filled` and `outline`.
+- Removed the legacy soft-tint mixed background plus outline treatment and the text-button variant from the global Button contract.
+- Migrated existing global Button call sites to explicit `filled` or `outline`, and moved text-only actions to `NativePressable` plus `AppText` patterns.
+- Added component QA coverage so `text`, `legacySoft`, and `emphasis` cannot re-enter the `ActionButton` runtime or manifest.
+
+## 1.8.3 - 2026-05-28
+
+- Updated the shared `BottomSheet` fixed footer action area so it starts hidden below the sheet and follows the same `sheetEntranceProgress` as the header and content.
+- Disabled footer pointer events until the shared entrance completes, preventing bottom actions from being visible or interactive by default during sheet presentation.
+- Synced component manifests and style QA coverage for the public BottomSheet footer entrance contract.
+
+## 1.8.2 - 2026-05-28
+
+- Updated Discover entry card descriptions to use the governed 14px `body.secondary` typography role instead of 12px caption text.
+- Kept the change scoped to the Discover entry card copy hierarchy without changing entry order, copy, icons, routes, touch targets, or global typography token values.
+- Added style QA coverage so Discover entry descriptions do not regress to the compact caption role.
+
+## 1.8.1 - 2026-05-28
+
+- Updated `TradeOrderList` so its Card container owns the governed horizontal list inset through `layout.cardPaddingX`, while rows keep vertical-only touch rhythm and no row-level horizontal padding.
+- Updated the Trade workspace order-list section to use semantic `layout.screenPaddingX` outside spacing so position, pending-order, and history lists align to the full-site spacing contract.
+- Synced component manifests, token-binding maps, business-component QA wording, and component QA guards for the card-container order-list contract.
+
+## 1.8.0 - 2026-05-28
+
+- Added governed `TradingTerminalChart` for mobile instrument detail charts with K-line, line, area, timeframe switching, pan/zoom, crosshair OHLCV, indicator toggles, drawing tools, fullscreen mode, and quote exception states.
+- Registered the component as the only owner of the instrument terminal chart SVG rendering so route screens continue to consume public business components instead of importing `react-native-svg`.
+- Updated `/instrument/[id]` to consume the terminal chart and a dense quote/specification surface while preserving the fixed Sell / Buy order-entry footer.
+
+## 1.7.3 - 2026-05-28
+
+- Updated `FundActionGrid` icon tone mapping so deposit actions use the green `success` semantic tone, withdrawal actions keep the amber `warning` tone, and transfer actions remain `info`.
+- Kept icon assets, labels, routes, touch targets, and funding operation behavior unchanged.
+
+## 1.7.2 - 2026-05-28
+
+- Tuned the `/accounts` trading account list card composition so currency metadata uses the governed 2px micro gap, title-to-description spacing gains a token-bound layer, and financial metric labels use the regular caption role.
+- Kept the correction local to the account-list card composition with no route, copy, data, icon, or base component API change.
+
+## 1.7.1 - 2026-05-28
+
+- Updated `BottomSheetProvider.show` and `BottomSheetProvider.push` so shared BottomSheet openings dismiss the active keyboard and release the focused input before presenting a new sheet.
+- Kept `hide` and `back` behavior unchanged so dismissal, nested sheet back navigation, and footer actions returning `false` preserve their existing flow.
+- Added governance and QA coverage requiring the shared BottomSheet host to own keyboard dismissal instead of scattering page-local fixes.
+
+## 1.7.0 - 2026-05-28
+
+- Updated `Screen` so card-mode route content defaults to the full-site 12px horizontal inset, while plain/form content can opt into the 16px inset.
+- Updated `BottomSheet` so header and fixed footer action areas stay at 16px, card-mode content defaults to 12px, and plain/form content can opt into 16px through the shared preset contract.
+- Updated `AppTopBar`, global list/row components, component manifests, token-binding maps, and QA guards so header/footer, Card, and List spacing follow the governed 16px/12px policy without page-local padding.
+
+## 1.6.13 - 2026-05-28
+
+- Added the governed `AppText` auto-fit floor so Expo Go phone previews keep `adjustsFontSizeToFit` text at `minimumFontScale >= 0.92` while preserving system font scaling.
+- Removed auto-fit shrinking from key title, button, tab, launch, and auth confirmation text surfaces so typography roles keep their token size on mobile preview.
+- Added style QA coverage that blocks ungoverned text auto-shrink and sub-0.92 `minimumFontScale` usage.
+- Updated `AppViewport` governance so Codex web preview constrains product routes to the 390 x 844 app device canvas using design tokens.
+- Kept `ProductControlPanel` as an independent web-only developer module outside the phone canvas so drag, expand/collapse, click handling, and z-index behavior remain uncropped.
+- Added component QA guards for the app preview viewport contract and developer-tool boundary.
+- Registered `OrderPositionDetailSheet` / `ClosedOrderDetailSheet` as governed business sheet bodies so dense PnL/value auto-fit usage is explicit and covered by component QA.
+- Registered `TradingAccountContextSwitcher` as the governed business wrapper around `TradingAccountSwitchSheet` for account-selection contexts.
+- Completed first-batch public-resource references for the migrated page set by routing Portfolio, Discover, Markets, Account Details, Instrument Detail, and Appearance through registered business components and patterns.
+
 ## 1.6.12 - 2026-05-27
 
 - Updated `DescribedLabel` primary metric labels to use the governed 16px medium `typography.titleSm` role.
@@ -87,7 +247,7 @@
 
 ## 1.5.3 - 2026-05-27
 
-- Updated `TradeOrderList` card horizontal padding to 0px so row touch/highlight areas follow the global menu-list edge contract.
+- Earlier `TradeOrderList` spacing work moved horizontal inset responsibility out of individual rows so the list container could own left/right spacing.
 - Preserved governed row content padding, dividers, direction-icon sizing, and right-side value alignment.
 
 ## 1.5.2 - 2026-05-27

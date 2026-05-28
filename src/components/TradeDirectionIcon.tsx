@@ -10,7 +10,7 @@ type TradeDirectionIconProps = {
 };
 
 export function TradeDirectionIcon({ direction, sizeVariant = 'lg', style }: TradeDirectionIconProps) {
-  const tone: IconSurfaceTone = direction === 'buy' ? 'down' : 'up';
+  const tone: IconSurfaceTone = direction === 'buy' ? 'up' : 'down';
   const iconName = direction === 'buy' ? 'icon.trading.buy' : 'icon.trading.sell';
 
   return <IconSurface icon={iconName} sizeVariant={sizeVariant} style={style} tone={tone} />;

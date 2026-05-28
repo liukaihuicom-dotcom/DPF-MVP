@@ -4,7 +4,11 @@
     "reactNative": {
       "runtimeTokens": "src/theme/tokens.ts",
       "runtimeColors": "src/theme/colors.ts",
-      "semanticSpacing": "layout.* spacing roles"
+      "semanticRadius": "radius.card, radius.sheet, radius.full, radius.* roles",
+      "semanticSpacing": "layout.* spacing roles",
+      "tabSize": "size.tab.* component sizing roles",
+      "viewport": "size.viewport.appDeviceWidth, size.viewport.appDeviceHeight, layout.appPreviewSafeAreaInsets",
+      "semanticSizes": "size.sheet.*, size.profile.*, size.indicator.*, size.discover.*, size.chart.*, size.tab.*"
     },
     "cssVariables": {
       "file": "design-system-engineering/08_code_mapping/css-variable.mapping.css",
@@ -23,12 +27,19 @@
     "Page-local hardcoded colors",
     "Page-local spacing scales",
     "Page-local semantic spacing aliases",
-    "Unmapped icon colors"
+    "Page-local card radius aliases or numeric card borderRadius",
+    "Unmapped icon colors",
+    "Page-local preview viewport width or height",
+    "Developer tools inside AppViewport phone canvas"
   ],
   "package": "@dpf/design-tokens",
   "compatibilityRuntime": {
     "runtimeTokens": "src/theme/tokens.ts",
     "runtimeColors": "src/theme/colors.ts",
-    "semanticSpacing": "layout.moduleGap, layout.sectionGap, layout.cardPaddingX, layout.cardPaddingY, layout.cardPaddingCompactX, layout.cardPaddingCompactY, layout.cardPadding, layout.cardPaddingCompact, layout.listRowPaddingX, layout.formFieldTextInset, layout.formGroupGap"
+    "semanticRadius": "radius.card, radius.sheet, radius.full; card-like surfaces must consume radius.card",
+    "semanticSpacing": "layout.contentCardPaddingX, layout.contentPlainPaddingX, layout.topBarPaddingX, layout.moduleGap, layout.sectionGap, layout.cardPaddingX, layout.cardPaddingY, layout.cardPaddingCompactX, layout.cardPaddingCompactY, layout.cardPadding, layout.cardPaddingCompact, layout.listRowPaddingX, layout.formFieldTextInset, layout.formGroupGap",
+    "tabSize": "size.tab.indicatorHeight, size.tab.indicatorWidth, size.tab.pillMinHeight, size.tab.underlineMinHeight",
+    "viewport": "layout.appDeviceWidth, layout.appDeviceHeight, layout.appMaxWidth, layout.appPreviewSafeAreaInsets",
+    "semanticSizes": "size.sheet.handleHeight, size.sheet.handleWidth, size.profile.clientAvatar, size.indicator.dotSm, size.discover.campaignCardWidth, size.chart.funding*, size.tab.paddingTop, size.tab.paddingBottom"
   }
 }

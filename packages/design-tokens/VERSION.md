@@ -1,6 +1,6 @@
 # @dpf/design-tokens Version
 
-Current version: `2.3.7`
+Current version: `3.1.0`
 
 This package owns design tokens, token schemas, theme modes, runtime token exports, CSS variable mapping, and Tailwind mapping.
 

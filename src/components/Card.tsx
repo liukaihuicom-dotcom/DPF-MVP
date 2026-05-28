@@ -32,7 +32,7 @@ export function Card({ children, compact, highlight, style }: CardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     paddingHorizontal: layout.cardPaddingX,
     paddingVertical: layout.cardPaddingY,
   },

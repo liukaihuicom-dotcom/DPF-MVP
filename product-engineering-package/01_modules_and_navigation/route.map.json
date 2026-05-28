@@ -12,6 +12,7 @@
     "brand_splash": "/brand-splash",
     "launch": "/launch",
     "markets": "/markets",
+    "markets_account_demo": "/markets-account-demo",
     "trade": "/trade",
     "accounts": "/accounts",
     "discover": "/discover",
@@ -74,6 +75,18 @@
     "index_redirect": "/",
     "verify_legacy_redirect": "/auth/verify"
   },
+  "planned_routes": {
+    "app_security_center": {
+      "path": "/settings/security-center",
+      "status": "contract_first_not_in_runtime_route_registry",
+      "required_before_runtime": [
+        "Add thin app/settings/security-center.tsx wrapper",
+        "Add SecurityCenterScreen runtime implementation",
+        "Add routeRegistry and RootLayout entries",
+        "Update public-resource graph pages/readiness rows after route exists"
+      ]
+    }
+  },
   "admin_routes": {
     "admin_funding_review_list": "/admin/funding/reviews",
     "admin_funding_review_detail": "/admin/funding/reviews/:id",
@@ -86,6 +99,7 @@
     "Ordinary confirmation, success, failure, toast, tips, delete confirmation, and picker sheets must stay in src/navigation/modalRegistry.ts with routeable false.",
     "Routeable modals must map to a real route path and match RootLayout transparentModal presentation when applicable.",
     "Routeable false modal entries must not define routePath.",
-    "Partner client orders and commission settlement are secondary Partner detail routes; primary tabs /trade and /accounts remain trader workspace routes."
+    "Partner client orders and commission settlement are secondary Partner detail routes; primary tabs /trade and /accounts remain trader workspace routes.",
+    "Security Center canonical route /settings/security-center is planned contract-first and must be added to src/navigation/routeRegistry.ts only during the App implementation stage."
   ]
 }

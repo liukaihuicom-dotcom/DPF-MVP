@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Platform, Pressable, StyleSheet, useWindowDimensions, View, type LayoutChangeEvent } from 'react-native';
-import Animated, { Extrapolation, interpolate, useAnimatedStyle, useSharedValue, withTiming, type SharedValue } from 'react-native-reanimated';
+import { Keyboard, Platform, Pressable, StyleSheet, useWindowDimensions, View, type LayoutChangeEvent } from 'react-native';
+import Animated, { Easing, Extrapolation, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withTiming, type SharedValue } from 'react-native-reanimated';
 import {
   BottomSheetFooter as GorhomBottomSheetFooter,
   BottomSheetModal,
@@ -54,10 +54,12 @@ export type BottomSheetHeaderOptions = {
 
 export type BottomSheetOptions = {
   content: ReactNode;
+  contentPadding?: 'card' | 'flush' | 'plain';
   contentSizing?: 'auto' | 'fill';
   footer?: ReactNode | BottomSheetAction[];
   header?: false | BottomSheetHeaderOptions;
   onDismiss?: () => void;
+  sheetSurface?: 'canvas' | 'panel';
   snapPoints?: Array<string | number>;
   /** @deprecated Use `header.title` or `header: false` so the header mode is explicit. */
   subtitle?: string;
@@ -65,7 +67,7 @@ export type BottomSheetOptions = {
   title?: string;
 };
 
-type BottomSheetPresetBaseOptions = Pick<BottomSheetOptions, 'content' | 'contentSizing' | 'footer' | 'onDismiss' | 'snapPoints'>;
+type BottomSheetPresetBaseOptions = Pick<BottomSheetOptions, 'content' | 'contentPadding' | 'contentSizing' | 'footer' | 'onDismiss' | 'sheetSurface' | 'snapPoints'>;
 type BottomSheetHeaderPresetOptions = BottomSheetPresetBaseOptions & BottomSheetHeaderOptions;
 
 export const bottomSheetPresets = {
@@ -76,7 +78,7 @@ export const bottomSheetPresets = {
     };
   },
   detail(options: BottomSheetHeaderPresetOptions): BottomSheetOptions {
-    const { content, contentSizing, footer, onDismiss, snapPoints, ...header } = options;
+    const { content, contentSizing, footer, onDismiss, sheetSurface, snapPoints, ...header } = options;
 
     return {
       content,
@@ -84,18 +86,20 @@ export const bottomSheetPresets = {
       footer,
       header,
       onDismiss,
+      sheetSurface,
       snapPoints,
     };
   },
   selection(options: BottomSheetHeaderPresetOptions): BottomSheetOptions {
-    const { content, contentSizing, footer, onDismiss, snapPoints, ...header } = options;
+    const { content, contentSizing, footer, onDismiss, sheetSurface, snapPoints, ...header } = options;
 
     return {
       content,
-      contentSizing,
+      contentSizing: contentSizing ?? 'fill',
       footer,
       header,
       onDismiss,
+      sheetSurface,
       snapPoints,
     };
   },
@@ -111,36 +115,109 @@ type BottomSheetContextValue = {
 const TOP_RESERVED_SPACE = layout.topReservedSpace;
 const MAX_PAGE_SHEET_WIDTH = layout.appMaxWidth;
 const SHEET_HEADER_HEIGHT = layout.sheetHeaderHeight;
+const SHEET_ANIMATION_DURATION = 220;
+const SHEET_CLOSE_CLEANUP_DELAY = SHEET_ANIMATION_DURATION + 40;
+const SHEET_ANIMATION_CONFIG = {
+  duration: SHEET_ANIMATION_DURATION,
+  easing: Easing.out(Easing.cubic),
+};
+const ESTIMATED_FOOTER_HEIGHT = layout.bottomActionArea.contentInset;
 
 const BottomSheetContext = createContext<BottomSheetContextValue | null>(null);
 const BottomSheetOptionsContext = createContext<BottomSheetOptions | null>(null);
 const BottomSheetStackDepthContext = createContext(0);
+const BottomSheetClosingContext = createContext(false);
 
 export function BottomSheetProvider({ children }: PropsWithChildren) {
   const [stack, setStack] = useState<BottomSheetOptions[]>([]);
+  const [closingStack, setClosingStack] = useState<BottomSheetOptions[] | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const finishClose = useCallback((nextStack: BottomSheetOptions[] = []) => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+
+    setStack(nextStack);
+    setClosingStack(null);
+  }, []);
+
+  const scheduleClose = useCallback((currentStack: BottomSheetOptions[], nextStack: BottomSheetOptions[] = []) => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+    }
+
+    currentStack.at(-1)?.onDismiss?.();
+    setClosingStack(currentStack);
+    closeTimerRef.current = setTimeout(() => finishClose(nextStack), SHEET_CLOSE_CLEANUP_DELAY);
+  }, [finishClose]);
+
+  useEffect(() => () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+    }
+  }, []);
+
   const hide = useCallback(() => {
     setStack((current) => {
-      current.at(-1)?.onDismiss?.();
+      if (!current.length) {
+        return current;
+      }
+
+      scheduleClose(current);
       return [];
     });
-  }, []);
-  const show = useCallback((nextOptions: BottomSheetOptions) => setStack([nextOptions]), []);
-  const push = useCallback((nextOptions: BottomSheetOptions) => setStack((current) => [...current, nextOptions]), []);
+  }, [scheduleClose]);
+  const show = useCallback((nextOptions: BottomSheetOptions) => {
+    dismissActiveKeyboard();
+    finishClose();
+    setStack([nextOptions]);
+  }, [finishClose]);
+  const push = useCallback((nextOptions: BottomSheetOptions) => {
+    dismissActiveKeyboard();
+    finishClose(stack);
+    setStack((current) => [...current, nextOptions]);
+  }, [finishClose, stack]);
   const back = useCallback(() => {
-    setStack((current) => (current.length > 1 ? current.slice(0, -1) : []));
-  }, []);
+    setStack((current) => {
+      if (!current.length) {
+        return current;
+      }
+
+      const nextStack = current.length > 1 ? current.slice(0, -1) : [];
+      scheduleClose(current, nextStack);
+      return nextStack;
+    });
+  }, [scheduleClose]);
   const value = useMemo(() => ({ back, hide, push, show }), [back, hide, push, show]);
-  const options = stack.at(-1) ?? null;
+  const visibleStack = closingStack ?? stack;
+  const options = visibleStack.at(-1) ?? null;
 
   return (
     <BottomSheetContext.Provider value={value}>
-      <BottomSheetStackDepthContext.Provider value={stack.length}>
+      <BottomSheetStackDepthContext.Provider value={visibleStack.length}>
         <BottomSheetOptionsContext.Provider value={options}>
-          <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+          <BottomSheetClosingContext.Provider value={Boolean(closingStack)}>
+            <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+          </BottomSheetClosingContext.Provider>
         </BottomSheetOptionsContext.Provider>
       </BottomSheetStackDepthContext.Provider>
     </BottomSheetContext.Provider>
   );
+}
+
+function dismissActiveKeyboard() {
+  Keyboard.dismiss();
+
+  if (Platform.OS !== 'web' || typeof document === 'undefined') {
+    return;
+  }
+
+  const activeElement = document.activeElement;
+  if (activeElement instanceof HTMLElement) {
+    activeElement.blur();
+  }
 }
 
 export function useBottomSheet() {
@@ -156,6 +233,7 @@ export function useBottomSheet() {
 export function GlobalBottomSheetHost() {
   const options = useContext(BottomSheetOptionsContext);
   const stackDepth = useContext(BottomSheetStackDepthContext);
+  const isClosing = useContext(BottomSheetClosingContext);
   const { back, hide } = useBottomSheet();
   const { height, width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -163,12 +241,13 @@ export function GlobalBottomSheetHost() {
   const modalRef = useRef<BottomSheetModal>(null);
   const sheetEntranceProgress = useSharedValue(0);
   const [backdropInteractive, setBackdropInteractive] = useState(false);
-  const [footerHeight, setFooterHeight] = useState(0);
+  const [footerHeight, setFooterHeight] = useState<number>(ESTIMATED_FOOTER_HEIGHT);
+  const optionsRef = useRef(options);
   const maxHeight = Math.max(1, height - insets.top - TOP_RESERVED_SPACE);
   const sheetWidth = Math.min(width, MAX_PAGE_SHEET_WIDTH);
   const horizontalInset = Math.max(0, (width - sheetWidth) / 2);
   const backdropColor = colors.overlay.backdrop;
-  const sheetBackgroundColor = colors.surface.canvas;
+  const sheetBackgroundColor = options?.sheetSurface === 'panel' ? colors.surface.panel : colors.surface.canvas;
   const hasFooter = Boolean(options?.footer);
   const snapPoints = useMemo(() => {
     if (options?.snapPoints?.length) {
@@ -182,6 +261,9 @@ export function GlobalBottomSheetHost() {
   const handleFooterHeightChange = useCallback((nextHeight: number) => {
     setFooterHeight((currentHeight) => (Math.abs(currentHeight - nextHeight) > 1 ? nextHeight : currentHeight));
   }, []);
+  const dismissModal = useCallback(() => {
+    modalRef.current?.dismiss();
+  }, []);
   const footerComponent = useCallback(
     (props: BottomSheetFooterProps) => (
       options?.footer ? (
@@ -191,31 +273,38 @@ export function GlobalBottomSheetHost() {
           entranceProgress={sheetEntranceProgress}
           footer={options.footer}
           hide={hide}
+          interactive={backdropInteractive}
           onHeightChange={handleFooterHeightChange}
         />
       ) : null
     ),
-    [handleFooterHeightChange, hide, options?.footer, sheetBackgroundColor, sheetEntranceProgress],
+    [backdropInteractive, handleFooterHeightChange, hide, options?.footer, sheetBackgroundColor, sheetEntranceProgress],
   );
 
   useEffect(() => {
-    if (options) {
+    const wasOpen = Boolean(optionsRef.current);
+    optionsRef.current = options;
+
+    if (options && !isClosing) {
       setBackdropInteractive(false);
-      setFooterHeight(0);
+      setFooterHeight(ESTIMATED_FOOTER_HEIGHT);
       sheetEntranceProgress.value = 0;
       modalRef.current?.present();
-      sheetEntranceProgress.value = withTiming(1, { duration: 220 });
+      sheetEntranceProgress.value = withTiming(1, SHEET_ANIMATION_CONFIG);
       const timer = setTimeout(() => {
         setBackdropInteractive(true);
-      }, 250);
+      }, SHEET_ANIMATION_DURATION);
 
       return () => clearTimeout(timer);
-    } else {
+    } else if ((options && isClosing) || wasOpen) {
       setBackdropInteractive(false);
-      sheetEntranceProgress.value = 0;
-      modalRef.current?.dismiss();
+      sheetEntranceProgress.value = withTiming(0, SHEET_ANIMATION_CONFIG, (finished) => {
+        if (finished) {
+          runOnJS(dismissModal)();
+        }
+      });
     }
-  }, [options, sheetEntranceProgress]);
+  }, [dismissModal, isClosing, options, sheetEntranceProgress]);
 
   const renderBackdrop = useCallback((props: BottomSheetBackdropProps) => <AppBottomSheetBackdrop {...props} backgroundColor={backdropColor} />, [backdropColor]);
   if (!options) {
@@ -411,17 +500,20 @@ function BottomSheetContent({
   const options = useContext(BottomSheetOptionsContext);
   const hasHeader = Boolean(options && resolveHeaderOptions(options));
   const contentSizing = options?.contentSizing ?? 'auto';
+  const contentPadding = options?.contentPadding ?? 'card';
   const [contentHeight, setContentHeight] = useState(0);
   const staticContentRef = useRef<View | null>(null);
   const baseContentStyle = StyleSheet.flatten([
     styles.content,
     { backgroundColor },
+    contentPadding === 'plain' && styles.contentPlain,
+    contentPadding === 'flush' && styles.contentFlush,
     contentSizing === 'fill' && styles.contentFill,
     hasHeader && styles.contentWithHeader,
   ]);
-  const reservedFooterHeight = hasFooter ? footerHeight : 0;
+  const reservedFooterHeight = hasFooter ? Math.max(footerHeight, ESTIMATED_FOOTER_HEIGHT) : 0;
   const availableContentHeight = Math.max(1, maxHeight - reservedFooterHeight);
-  const shouldScroll = contentHeight > availableContentHeight + 1;
+  const shouldScroll = contentSizing === 'fill' || contentHeight > availableContentHeight + 1;
   const entranceStyle = useBottomSheetEntranceStyle(entranceProgress);
 
   useEffect(() => {
@@ -472,7 +564,7 @@ function BottomSheetContent({
   return shouldScroll ? (
     <BottomSheetScrollView
       enableFooterMarginAdjustment={hasFooter}
-      contentContainerStyle={baseContentStyle}
+      contentContainerStyle={StyleSheet.flatten([baseContentStyle, hasFooter && styles.contentWithFooterReadingGap])}
       keyboardShouldPersistTaps="handled"
       onContentSizeChange={(_, nextHeight) => updateContentHeight(nextHeight)}
       showsVerticalScrollIndicator={false}>
@@ -481,7 +573,10 @@ function BottomSheetContent({
   ) : (
     <BottomSheetView enableFooterMarginAdjustment={hasFooter}>
       <Animated.View style={entranceStyle}>
-        <View ref={staticContentRef} {...staticContentLayoutProps} style={baseContentStyle}>
+        <View
+          ref={staticContentRef}
+          {...staticContentLayoutProps}
+          style={StyleSheet.flatten([baseContentStyle, hasFooter && styles.contentWithFooterReadingGap])}>
           {content}
         </View>
       </Animated.View>
@@ -492,7 +587,6 @@ function BottomSheetContent({
 function useBottomSheetEntranceStyle(entranceProgress: SharedValue<number>) {
   return useAnimatedStyle(
     () => ({
-      opacity: interpolate(entranceProgress.value, [0, 0.35, 1], [0, 0.35, 1], Extrapolation.CLAMP),
       transform: [
         {
           translateY: interpolate(entranceProgress.value, [0, 1], [18, 0], Extrapolation.CLAMP),
@@ -500,6 +594,20 @@ function useBottomSheetEntranceStyle(entranceProgress: SharedValue<number>) {
       ],
     }),
     [entranceProgress],
+  );
+}
+
+function useBottomSheetFooterEntranceStyle(entranceProgress: SharedValue<number>, hiddenOffset = layout.bottomActionArea.contentInset) {
+  return useAnimatedStyle(
+    () => ({
+      opacity: interpolate(entranceProgress.value, [0, 0.35, 1], [0, 0.35, 1], Extrapolation.CLAMP),
+      transform: [
+        {
+          translateY: interpolate(entranceProgress.value, [0, 1], [hiddenOffset, 0], Extrapolation.CLAMP),
+        },
+      ],
+    }),
+    [entranceProgress, hiddenOffset],
   );
 }
 
@@ -520,6 +628,7 @@ function AppBottomSheetFooter({
   entranceProgress,
   footer,
   hide,
+  interactive,
   onHeightChange,
 }: {
   animatedFooterPosition: BottomSheetFooterProps['animatedFooterPosition'];
@@ -527,6 +636,7 @@ function AppBottomSheetFooter({
   entranceProgress: SharedValue<number>;
   footer: ReactNode | BottomSheetAction[];
   hide: () => void;
+  interactive: boolean;
   onHeightChange: (height: number) => void;
 }) {
   const insets = useSafeAreaInsets();
@@ -545,7 +655,8 @@ function AppBottomSheetFooter({
     [onHeightChange],
   );
   const footerLayoutProps: { onLayout?: (event: LayoutChangeEvent) => void } = Platform.OS === 'web' ? {} : { onLayout: handleFooterViewLayout };
-  const entranceStyle = useBottomSheetEntranceStyle(entranceProgress);
+  const entranceStyle = useBottomSheetFooterEntranceStyle(entranceProgress);
+  const footerPointerEvents = interactive ? 'auto' : 'none';
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
@@ -573,7 +684,7 @@ function AppBottomSheetFooter({
   if (!Array.isArray(footer)) {
     return (
       <GorhomBottomSheetFooter animatedFooterPosition={animatedFooterPosition}>
-        <Animated.View style={entranceStyle}>
+        <Animated.View pointerEvents={footerPointerEvents} style={[styles.footerEntrance, entranceStyle]}>
           <View ref={footerRef} {...footerLayoutProps} style={footerStyle}>{footer}</View>
         </Animated.View>
       </GorhomBottomSheetFooter>
@@ -582,7 +693,7 @@ function AppBottomSheetFooter({
 
   return (
     <GorhomBottomSheetFooter animatedFooterPosition={animatedFooterPosition}>
-      <Animated.View style={entranceStyle}>
+      <Animated.View pointerEvents={footerPointerEvents} style={[styles.footerEntrance, entranceStyle]}>
         <View ref={footerRef} {...footerLayoutProps} style={footerStyle}>
           {footer.map((action) => (
             <ActionButton
@@ -599,7 +710,7 @@ function AppBottomSheetFooter({
                 }
               }}
               tone={action.tone}
-              variant={action.variant}
+              variant={action.variant ?? 'filled'}
             />
           ))}
         </View>
@@ -636,11 +747,21 @@ const styles = StyleSheet.create({
   },
   content: {
     gap: spacing.md,
-    padding: layout.screenPaddingX,
+    paddingHorizontal: layout.contentCardPaddingX,
+    paddingBottom: layout.contentCardPaddingX,
     paddingTop: spacing.md,
+  },
+  contentWithFooterReadingGap: {
+    paddingBottom: layout.bottomActionArea.contentInset,
   },
   contentFill: {
     flexGrow: 1,
+  },
+  contentFlush: {
+    paddingHorizontal: spacing.none,
+  },
+  contentPlain: {
+    paddingHorizontal: layout.contentPlainPaddingX,
   },
   contentWithHeader: {
     paddingTop: 0,
@@ -649,6 +770,9 @@ const styles = StyleSheet.create({
     gap: layout.bottomActionArea.gap,
     paddingHorizontal: layout.bottomActionArea.paddingX,
     paddingTop: layout.bottomActionArea.paddingTop,
+  },
+  footerEntrance: {
+    width: '100%',
   },
   handle: {
     paddingBottom: 5,
@@ -674,7 +798,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.md,
     height: SHEET_HEADER_HEIGHT,
-    paddingHorizontal: layout.screenPaddingX,
+    paddingHorizontal: layout.topBarPaddingX,
     width: '100%',
   },
   headerCopy: {

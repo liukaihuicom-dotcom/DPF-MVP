@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DPF Asset Dependency Graph",
+  "type": "object",
+  "required": ["version", "pages", "assetNodes", "edges", "pageReadinessMatrix", "releaseDecision"],
+  "properties": {
+    "version": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "source_of_truth": { "type": "array", "items": { "type": "string" } },
+    "model": { "type": "string" },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "page_id",
+          "route",
+          "component",
+          "module",
+          "platform",
+          "riskLevel",
+          "patterns",
+          "businessComponents",
+          "baseComponents",
+          "tokens",
+          "copyNamespaces",
+          "migrationStatus"
+        ]
+      }
+    },
+    "assetNodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["asset_id", "asset_type", "name", "source_path", "status", "qa_status"]
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "relation"]
+      }
+    },
+    "pageReadinessMatrix": { "type": "array", "items": { "type": "object" } },
+    "migrationPriority": { "type": "array", "items": { "type": "object" } },
+    "releaseDecision": {
+      "type": "object",
+      "required": ["decision", "reason", "canEnterNextStage", "nextStage"]
+    }
+  }
+}

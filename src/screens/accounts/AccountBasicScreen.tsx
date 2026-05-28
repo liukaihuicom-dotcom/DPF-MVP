@@ -1,19 +1,20 @@
 import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
-import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
-import { Card } from '@/src/components/Card';
-import { NativePressable } from '@/src/components/NativePressable';
-import { Screen } from '@/src/components/Screen';
-import { StatusPill, type StatusPillTone } from '@/src/components/StatusPill';
-import { AppText, type AppTextTone } from '@/src/components/Typography';
+import { MetricDescriptionSheet } from '@/src/design-public-assets/business-components';
+import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { Card } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { Screen } from '@/src/design-public-assets/components';
+import { StatusPill, type StatusPillTone } from '@/src/design-public-assets/components';
+import { AppText, type AppTextTone } from '@/src/design-public-assets/components';
 import { buildSharedTradingAccountProfiles } from '@/src/domain/tradingAccountView';
 import { getAccountStatusLabel, type TradingAccountProfile } from '@/src/domain/accountProfiles';
 import { formatMoney, formatNumber, localizeText } from '@/src/domain/format';
-import type { Locale, TranslationKey } from '@/src/i18n/translations';
-import { useProductSettings } from '@/src/settings/ProductSettings';
+import type { Locale, TranslationKey } from '@/src/design-public-assets/copy';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
-import { lineWidth, spacing } from '@/src/theme/tokens';
+import { lineWidth, spacing } from '@/src/design-public-assets/tokens';
 
 type ProfileRow = {
   descriptionKey?: TranslationKey;
@@ -136,34 +137,6 @@ function InfoLabel({ onPress, row }: { onPress: () => void; row: ProfileRow }) {
   );
 }
 
-function MetricDescriptionSheet({
-  description,
-  label,
-  value,
-}: {
-  description: string;
-  label: string;
-  value: string;
-}) {
-  const { colors } = useProductSettings();
-
-  return (
-    <View style={styles.descriptionSheet}>
-      <View style={StyleSheet.flatten([styles.descriptionValueCard, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-        <AppText tone="muted" variant="caption">
-          {label}
-        </AppText>
-        <AppText numberOfLines={1} variant="subtitle">
-          {value}
-        </AppText>
-      </View>
-      <AppText tone="muted" variant="body">
-        {description}
-      </AppText>
-    </View>
-  );
-}
-
 function buildProfileSections({
   accountName,
   closedPnl,
@@ -268,11 +241,11 @@ function buildProfileSections({
 
 function toneForSigned(value: number): AppTextTone | undefined {
   if (value > 0) {
-    return 'down';
+    return 'up';
   }
 
   if (value < 0) {
-    return 'up';
+    return 'down';
   }
 
   return undefined;
@@ -310,17 +283,6 @@ function calculateVolumeLots(
 }
 
 const styles = StyleSheet.create({
-  descriptionSheet: {
-    gap: spacing.lg,
-    paddingHorizontal: spacing.xs,
-    paddingTop: spacing.xs,
-  },
-  descriptionValueCard: {
-    borderRadius: 10,
-    borderWidth: lineWidth.none,
-    gap: spacing.xs,
-    padding: spacing.md,
-  },
   explainableLabel: {
     alignSelf: 'flex-start',
     borderBottomWidth: lineWidth.hairline,

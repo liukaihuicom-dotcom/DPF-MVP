@@ -2,22 +2,23 @@ import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import type { DimensionValue } from 'react-native';
 
-import { ActionButton } from '@/src/components/ActionButton';
-import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
-import { Card } from '@/src/components/Card';
-import { GlobalMenuList, type GlobalMenuListItem } from '@/src/components/GlobalMenuList';
-import { InstrumentIcon } from '@/src/components/InstrumentIcon';
-import { IconSurface, type IconSurfaceTone } from '@/src/components/IconSurface';
-import { Metric } from '@/src/components/Metric';
-import { NativePressable } from '@/src/components/NativePressable';
-import { AppIcon, type AppIconName, type IconTone } from '@/src/components/AppIcon';
-import { getQuoteChangeVisual } from '@/src/components/quoteVisuals';
-import { Screen } from '@/src/components/Screen';
-import { Sparkline } from '@/src/components/Sparkline';
-import { StatusPill } from '@/src/components/StatusPill';
-import { TextField } from '@/src/components/TextField';
-import { AppText } from '@/src/components/Typography';
-import { ProfileAvatar, getProfileAvatarUri, profileAvatarOptions, type ProfileAvatarId } from '@/src/components/ProfileAvatar';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { PartnerPortalSummary, RelationshipManagerCard, RewardSummaryCard, VerificationStatusCard } from '@/src/design-public-assets/business-components';
+import { Card } from '@/src/design-public-assets/components';
+import { GlobalMenuList, type GlobalMenuListItem } from '@/src/design-public-assets/components';
+import { InstrumentIcon } from '@/src/design-public-assets/components';
+import { IconSurface, type IconSurfaceTone } from '@/src/design-public-assets/components';
+import { Metric } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { AppIcon, type AppIconName, type IconTone } from '@/src/design-public-assets/components';
+import { getQuoteChangeVisual } from '@/src/design-public-assets/components';
+import { Screen } from '@/src/design-public-assets/components';
+import { Sparkline } from '@/src/design-public-assets/components';
+import { StatusPill } from '@/src/design-public-assets/components';
+import { TextField } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
+import { ProfileAvatar, getProfileAvatarUri, profileAvatarOptions, type ProfileAvatarId } from '@/src/design-public-assets/components';
 import { dupoinInsights, dupoinOnboardingSteps } from '@/src/domain/dupoinMvp';
 import { formatCompactMoney, formatMoney, formatPercent, formatPrice, localizeText } from '@/src/domain/format';
 import { partnerMetrics } from '@/src/domain/mockData';
@@ -25,9 +26,9 @@ import { getDisplayChange } from '@/src/domain/trading';
 import type { Account, DiscoverModuleId, Instrument } from '@/src/domain/types';
 import { useToast } from '@/src/feedback/Toast';
 import { impactLight, notifySuccess, notifyWarning } from '@/src/feedback/haptics';
-import { useProductSettings } from '@/src/settings/ProductSettings';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
-import { lineWidth, layout, radius, size, spacing, typography } from '@/src/theme/tokens';
+import { lineWidth, layout, radius, size, spacing, typography } from '@/src/design-public-assets/tokens';
 
 export default function DiscoverModuleScreen() {
   const { account, instruments, positions, role, submitUpgradeRequest, upgradeRequest } = useBroker();
@@ -65,7 +66,7 @@ export default function DiscoverModuleScreen() {
               </AppText>
             </View>
           </View>
-          <ActionButton label={t('discover.menuTitle')} onPress={() => router.push('/partner-tools' as never)} style={styles.heroAction} tone="neutral" />
+          <ActionButton label={t('discover.menuTitle')} onPress={() => router.push('/partner-tools' as never)} style={styles.heroAction} tone="neutral" variant="outline" />
         </View>
       </Card>
 
@@ -90,7 +91,7 @@ export default function DiscoverModuleScreen() {
               accessibilityRole="button"
               accessibilityState={{ selected }}
               key={moduleId}
-              minTouch={92}
+              minTouch={size.control.lg + spacing.xxl + spacing.xs}
               onPress={() => {
                 setSelectedDiscoverModule(moduleId);
                 void impactLight();
@@ -116,30 +117,30 @@ export default function DiscoverModuleScreen() {
 }
 
 function ChallengeModule({ instrument }: { instrument: Instrument }) {
-  const { locale, colors } = useProductSettings();
+  const { locale, colors, t } = useProductSettings();
   const { changePercent } = getDisplayChange(instrument);
   const quoteVisual = getQuoteChangeVisual(changePercent, colors);
   const rows = [
-    { label: locale !== 'zh-CN' ? 'Weekly ROI' : '周收益率', tone: 'down', value: '+18.6%' },
-    { label: locale !== 'zh-CN' ? 'Risk Score' : '风险评分', tone: 'amber', value: '82' },
-    { label: locale !== 'zh-CN' ? 'Rank' : '排名', tone: 'brand', value: '#12' },
+    { label: t('discover.challenge.weeklyRoi'), tone: 'down', value: '+18.6%' },
+    { label: t('discover.challenge.riskScore'), tone: 'amber', value: '82' },
+    { label: t('discover.challenge.rank'), tone: 'brand', value: '#12' },
   ] as const;
 
   return (
     <>
       <Card>
         <View style={styles.marketFocusTop}>
-          <InstrumentIcon instrument={instrument} size={42} />
+          <InstrumentIcon instrument={instrument} size={layout.touchTargetMin - spacing.xxs} />
           <View style={styles.flex}>
             <AppText tone="dim" variant="eyebrow">
-              {locale !== 'zh-CN' ? 'Challenge Market' : '挑战赛品种'}
+              {t('discover.challenge.market')}
             </AppText>
             <AppText variant="subtitle">{instrument.symbol}</AppText>
             <AppText numberOfLines={1} tone="muted" variant="caption">
               {localizeText(instrument.name, locale)}
             </AppText>
           </View>
-          <View style={StyleSheet.flatten([styles.changeBadge, { backgroundColor: `${quoteVisual.color}12` }])}>
+          <View style={StyleSheet.flatten([styles.changeBadge, { backgroundColor: changePercent >= 0 ? colors.overlay.up.subtle : colors.overlay.down.subtle }])}>
             <AppText tone={quoteVisual.tone} variant="caption">
               {formatPercent(changePercent)}
             </AppText>
@@ -148,7 +149,7 @@ function ChallengeModule({ instrument }: { instrument: Instrument }) {
         <View style={styles.sparklineWrap}>
           <Sparkline color={quoteVisual.color} height={58} values={instrument.sparkline} width={232} />
         </View>
-        <ActionButton label={locale !== 'zh-CN' ? 'Open Challenge Ticket' : '打开挑战赛订单'} onPress={() => router.push(`/order/${instrument.id}?direction=buy` as never)} tone="brand" />
+        <ActionButton label={t('discover.challenge.openTicket')} onPress={() => router.push(`/order/${instrument.id}?direction=buy` as never)} tone="brand" variant="filled" />
       </Card>
       <Card compact>
         <View style={styles.metricRow}>
@@ -162,11 +163,11 @@ function ChallengeModule({ instrument }: { instrument: Instrument }) {
 }
 
 function EducationModule() {
-  const { locale, colors } = useProductSettings();
+  const { colors, t } = useProductSettings();
   const lessons = [
-    [locale !== 'zh-CN' ? 'Spread Basics' : '点差基础', locale !== 'zh-CN' ? 'Bid, Ask, and Cost' : '买价、卖价与成本'],
-    [locale !== 'zh-CN' ? 'Margin Call' : '保证金追缴', locale !== 'zh-CN' ? 'When Equity Drops' : '净值下行时的规则'],
-    [locale !== 'zh-CN' ? 'CFD Risk' : 'CFD 风险', locale !== 'zh-CN' ? 'Leverage Before Order' : '下单前理解杠杆'],
+    [t('discover.education.lesson.spread.title'), t('discover.education.lesson.spread.body')],
+    [t('discover.education.lesson.marginCall.title'), t('discover.education.lesson.marginCall.body')],
+    [t('discover.education.lesson.cfdRisk.title'), t('discover.education.lesson.cfdRisk.body')],
   ];
 
   return (
@@ -188,7 +189,7 @@ function EducationModule() {
           </View>
         ))}
       </View>
-      <ActionButton label={locale !== 'zh-CN' ? 'Practice with EUR/USD' : '用 EUR/USD 练习'} onPress={() => router.push('/order/eur-usd' as never)} style={styles.cardAction} tone="brand" />
+      <ActionButton label={t('discover.education.practiceCta')} onPress={() => router.push('/order/eur-usd' as never)} style={styles.cardAction} tone="brand" variant="filled" />
     </Card>
   );
 }
@@ -250,33 +251,33 @@ export function ProfileModule({
   const bottomSheet = useBottomSheet();
   const rebateValue = role === 'partner' || upgradeStatus === 'approved' ? partnerMetrics.pendingCommission + partnerMetrics.settledCommission : 10005;
   const statCards = [
-    { icon: 'icon.wallet.deposit' as AppIconName, label: locale !== 'zh-CN' ? 'Deposit' : '入金', value: '$10K' },
-    { icon: 'icon.trading.volume' as AppIconName, label: locale !== 'zh-CN' ? 'Volume' : '交易量', value: '990' },
-    { icon: 'icon.status.verified' as AppIconName, label: locale !== 'zh-CN' ? 'New Verified' : '新增认证', value: '10' },
+    { icon: 'icon.wallet.deposit' as AppIconName, label: t('discover.profile.stat.deposit'), value: '$10K' },
+    { icon: 'icon.trading.volume' as AppIconName, label: t('discover.profile.stat.volume'), value: '990' },
+    { icon: 'icon.status.verified' as AppIconName, label: t('discover.profile.stat.newVerified'), value: '10' },
   ];
   const settingsRows: GlobalMenuListItem[] = [
     {
       accessory: {
-        accessibilityLabel: locale !== 'zh-CN' ? 'Toggle one-click trading' : '切换一键交易',
+        accessibilityLabel: t('discover.profile.setting.oneClickTradingToggle'),
         onValueChange: () => undefined,
         type: 'switch',
         value: false,
       },
       icon: 'icon.trading.order_ticket',
-      label: locale !== 'zh-CN' ? 'One-click Trading' : '一键交易',
+      label: t('discover.profile.setting.oneClickTrading'),
     },
     {
       accessory: {
-        accessibilityLabel: locale !== 'zh-CN' ? 'Toggle sound' : '切换声音',
+        accessibilityLabel: t('discover.profile.setting.soundToggle'),
         onValueChange: () => undefined,
         type: 'switch',
         value: true,
       },
       icon: 'icon.notification.bell',
-      label: locale !== 'zh-CN' ? 'Sound' : '声音',
+      label: t('discover.profile.setting.sound'),
     },
     { icon: 'icon.notification.bell', label: t('top.notifications') },
-    { icon: 'icon.trading.market', label: locale !== 'zh-CN' ? 'Language' : '语言' },
+    { icon: 'icon.trading.market', label: t('discover.profile.setting.language') },
     {
       accessory: {
         type: 'value',
@@ -295,32 +296,32 @@ export function ProfileModule({
     {
       accessory: {
         type: 'value',
-        value: getThemeModeLabel(themeMode, resolvedThemeMode, locale),
+        value: getThemeModeLabel(themeMode, resolvedThemeMode, t),
       },
       icon: 'icon.system.settings' as AppIconName,
-      label: locale !== 'zh-CN' ? 'Appearance' : '外观',
+      label: t('settings.appearance.title'),
       onPress: () => router.push('/appearance' as never),
     },
   ];
   const supportRows: GlobalMenuListItem[] = [
-    { icon: 'icon.security.risk_shield', label: locale !== 'zh-CN' ? 'Fraud Prevention' : '反诈保护' },
-    { icon: 'icon.notification.feedback', label: locale !== 'zh-CN' ? 'Feedback' : '反馈' },
-    { icon: 'icon.support.help_center', label: locale !== 'zh-CN' ? 'Help Center' : '帮助中心' },
-    { accessory: { type: 'rating' }, icon: 'icon.feedback.rating', label: locale !== 'zh-CN' ? 'Rating App' : '应用评分' },
-    { icon: 'icon.support.about', label: locale !== 'zh-CN' ? 'About Us' : '关于我们' },
+    { icon: 'icon.security.risk_shield', label: t('discover.profile.support.fraudPrevention') },
+    { icon: 'icon.notification.feedback', label: t('discover.profile.support.feedback') },
+    { icon: 'icon.support.help_center', label: t('discover.profile.support.helpCenter') },
+    { accessory: { type: 'rating' }, icon: 'icon.feedback.rating', label: t('discover.profile.support.ratingApp') },
+    { icon: 'icon.support.about', label: t('discover.profile.support.aboutUs') },
   ];
   const openManagerChat = () => {
     void impactLight();
     bottomSheet.show(bottomSheetPresets.detail({
-      content: <ManagerChatSheet locale={locale} />,
+      content: <ManagerChatSheet />,
       leftIcon: 'icon.notification.feedback',
-      title: locale !== 'zh-CN' ? 'Alexander Smith' : 'Alexander Smith',
+      title: t('discover.profile.manager.name'),
     }));
   };
   const openProfileEditSheet = () => {
     bottomSheet.show(bottomSheetPresets.detail({
       content: <ProfileEditSheetContent />,
-      title: locale !== 'zh-CN' ? 'Edit Profile' : '编辑资料',
+      title: t('discover.profile.edit.title'),
     }));
   };
   const logout = () => {
@@ -345,55 +346,43 @@ export function ProfileModule({
     <>
       <View style={styles.profileHeader}>
         <NativePressable
-          accessibilityLabel={locale !== 'zh-CN' ? 'Edit Profile Avatar' : '编辑头像'}
-          minTouch={58}
+          accessibilityLabel={t('discover.profile.edit.avatarAccessibility')}
+          minTouch={size.control.lg + spacing.xxs}
           onPress={openProfileEditSheet}
           style={styles.avatarPressable}>
-          <ProfileAvatar id={profileAvatarId} key={avatarUri} size={58} />
+          <ProfileAvatar id={profileAvatarId} key={avatarUri} size={size.control.lg + spacing.xxs} />
           <View style={StyleSheet.flatten([styles.avatarEditBadge, { backgroundColor: colors.brand.fg, borderColor: colors.surface.panel }])}>
             <AppIcon tone="white" name="icon.system.settings" sizeVariant="micro" />
           </View>
         </NativePressable>
         <View style={styles.profileIdentity}>
           <NativePressable
-            accessibilityLabel={locale !== 'zh-CN' ? 'Edit Nickname and Avatar' : '编辑昵称和头像'}
-            minTouch={44}
+            accessibilityLabel={t('discover.profile.edit.identityAccessibility')}
+            minTouch={layout.touchTargetMin}
             onPress={openProfileEditSheet}
             style={styles.profileNameRow}>
             <AppText variant="title">{profileNickname.trim() || t('auth.profile.noNickname')}</AppText>
           </NativePressable>
           <View style={styles.profileTagRow}>
-            <StatusPill compact icon="icon.security.risk_shield" label={locale !== 'zh-CN' ? 'ID verified' : '身份已认证'} style={styles.profileTag} tone="brand" />
-            <StatusPill compact icon="icon.status.verified" label={locale !== 'zh-CN' ? 'Video Verified' : '视频认证'} style={styles.profileTag} tone="brand" />
+            <StatusPill compact icon="icon.security.risk_shield" label={t('discover.profile.tag.idVerified')} style={styles.profileTag} tone="brand" />
+            <StatusPill compact icon="icon.status.verified" label={t('discover.profile.tag.videoVerified')} style={styles.profileTag} tone="brand" />
           </View>
         </View>
       </View>
 
-      <ProfileListCard
-        icon="icon.status.verified"
-        iconTone="brand"
-        subtitle={locale !== 'zh-CN' ? 'Build trust with a verified badge.' : '通过认证徽章建立信任。'}
-        title={locale !== 'zh-CN' ? 'Video Verified' : '视频认证'}
+      <VerificationStatusCard
+        subtitle={t('discover.profile.verification.subtitle')}
+        title={t('discover.profile.verification.title')}
       />
 
-      <Card compact style={styles.partnerPortalCard}>
-        <ProfileCardHeader icon="icon.ib.network" iconTone="blue" title={locale !== 'zh-CN' ? 'Partner Portal' : 'Partner Portal'} />
-        <View style={styles.rebateDataBlock}>
-          <AppText variant="body">{locale !== 'zh-CN' ? 'Total Rebate · USD' : '总返佣 · USD'}</AppText>
-          <View style={styles.rebateAmountRow}>
-            <AppText style={styles.rebateCurrency} variant="largeNumber">$</AppText>
-            <AppText style={styles.rebateMajor} variant="largeNumber">
-              {formatCompactProfileNumber(rebateValue)}
-            </AppText>
-            <AppText style={styles.rebateMinor} variant="number">.09</AppText>
-          </View>
-          <View style={styles.rebateMetaRow}>
-            <AppText variant="number">{formatMoney(rebateValue, account.currency, 2, locale)}</AppText>
-            <StatusPill appearance="filled" compact label={locale !== 'zh-CN' ? '↑ 2.20% vs yesterday' : '↑ 2.20% 较昨日'} tone="success" />
-          </View>
-        </View>
-        <MiniTrendLine color={colors.market.down.fg} />
-      </Card>
+      <PartnerPortalSummary
+        accountCurrency={account.currency}
+        locale={locale}
+        rebateValue={rebateValue}
+        title={t('discover.profile.partnerPortal.title')}
+        totalLabel={t('discover.profile.partnerPortal.totalRebate')}
+        trendLabel={t('discover.profile.partnerPortal.trendYesterday')}
+      />
 
       <View style={styles.profileStatsGrid}>
         {statCards.map((item) => (
@@ -401,48 +390,25 @@ export function ProfileModule({
             <IconSurface icon={item.icon} sizeVariant="md" />
             <AppText variant="body">{item.label}</AppText>
             <AppText variant="title">{item.value}</AppText>
-            <AppText tone="down" variant="caption">
-              {locale !== 'zh-CN' ? '↑ 0.23% today' : '↑ 0.23% 今日'}
+            <AppText tone="up" variant="caption">
+              {t('discover.profile.stat.todayChange')}
             </AppText>
           </Card>
         ))}
       </View>
 
-      <Card compact style={styles.profileCard}>
-        <ProfileCardHeader icon="icon.promotion.reward" iconTone="amber" title={t('discover.module.rewards.title')} />
-        <View style={StyleSheet.flatten([styles.profileDivider, { backgroundColor: colors.border.subtle }])} />
-        <View style={styles.rewardProfileBody}>
-          <View style={styles.flex}>
-            <AppText variant="body">{locale !== 'zh-CN' ? 'Total Rewards Value' : '总奖励价值'}</AppText>
-            <View style={styles.rebateAmountRow}>
-              <AppText style={styles.rebateCurrency} variant="largeNumber">$</AppText>
-              <AppText style={styles.rebateMajor} variant="largeNumber">10</AppText>
-              <AppText style={styles.rebateMinor} variant="number">.09</AppText>
-            </View>
-          </View>
-          <GiftIllustration />
-        </View>
-        <View style={StyleSheet.flatten([styles.profileDivider, { backgroundColor: colors.border.subtle }])} />
-        <AppText tone="muted" variant="body">
-          {locale !== 'zh-CN' ? 'Participating in 3 Campaigns' : '正在参与 3 个活动'}
-        </AppText>
-      </Card>
+      <RewardSummaryCard
+        activeCampaignsLabel={t('discover.profile.reward.activeCampaigns', { count: 3 })}
+        title={t('discover.module.rewards.title')}
+        totalLabel={t('discover.profile.reward.totalValue')}
+      />
 
-      <Card compact style={styles.managerCard}>
-        <ProfileAvatar id="alex" size={50} />
-        <View style={styles.flex}>
-          <AppText variant="body">{locale !== 'zh-CN' ? 'My Relationship Manager' : '我的客户经理'}</AppText>
-          <AppText variant="subtitle">Alexander Smith</AppText>
-        </View>
-        <NativePressable
-          accessibilityLabel={locale !== 'zh-CN' ? 'Open IM chat with Alexander Smith' : '打开与 Alexander Smith 的 IM 对话'}
-          accessibilityRole="button"
-          minTouch={layout.iconSurface.md.container}
-          onPress={openManagerChat}
-          style={styles.managerChat}>
-          <IconSurface icon="icon.notification.feedback" sizeVariant="md" styleVariant="fill" />
-        </NativePressable>
-      </Card>
+      <RelationshipManagerCard
+        accessibilityLabel={t('discover.profile.manager.openChat', { name: t('discover.profile.manager.name') })}
+        managerName={t('discover.profile.manager.name')}
+        onPress={openManagerChat}
+        title={t('discover.profile.manager.title')}
+      />
 
       <View style={StyleSheet.flatten([styles.profileMenuList, { backgroundColor: colors.surface.panel }])}>
         <GlobalMenuList contained items={settingsRows} />
@@ -458,7 +424,7 @@ export function ProfileModule({
 }
 
 function ProfileEditSheetContent() {
-  const { locale, colors, profileAvatarId, profileNickname, setProfileAvatarId, setProfileNickname, t } = useProductSettings();
+  const { colors, profileAvatarId, profileNickname, setProfileAvatarId, setProfileNickname, t } = useProductSettings();
   const chooseAvatar = (nextId: ProfileAvatarId) => {
     void impactLight();
     setProfileAvatarId(nextId);
@@ -470,11 +436,11 @@ function ProfileEditSheetContent() {
   return (
     <View style={styles.profileEditSheet}>
       <View style={styles.profileEditHero}>
-        <ProfileAvatar id={profileAvatarId} size={64} />
+        <ProfileAvatar id={profileAvatarId} size={size.icon.display} />
         <View style={styles.flex}>
           <AppText variant="subtitle">{profileNickname.trim() || t('auth.profile.noNickname')}</AppText>
           <AppText tone="muted" variant="caption">
-            {locale !== 'zh-CN' ? 'Choose a display avatar and nickname.' : '设置展示头像与昵称。'}
+            {t('discover.profile.edit.description')}
           </AppText>
         </View>
       </View>
@@ -490,7 +456,7 @@ function ProfileEditSheetContent() {
 
           return (
             <Pressable
-              accessibilityLabel={`${locale !== 'zh-CN' ? 'Choose Avatar' : '选择头像'} ${option.name}`}
+              accessibilityLabel={t('discover.profile.edit.chooseAvatar', { name: option.name })}
               accessibilityRole="button"
               accessibilityState={{ selected }}
               key={option.id}
@@ -502,7 +468,7 @@ function ProfileEditSheetContent() {
                   borderColor: selected ? colors.text.primary : colors.border.subtle,
                 },
               ])}>
-              <ProfileAvatar id={option.id} selected={selected} size={36} />
+              <ProfileAvatar id={option.id} selected={selected} size={size.control.sm - spacing.xs} />
               <AppText numberOfLines={1} tone={selected ? 'default' : 'muted'} variant="caption">
                 {option.name}
               </AppText>
@@ -514,25 +480,19 @@ function ProfileEditSheetContent() {
   );
 }
 
-function ManagerChatSheet({ locale }: { locale: ReturnType<typeof useProductSettings>['locale'] }) {
-  const { colors } = useProductSettings();
+function ManagerChatSheet() {
+  const { colors, t } = useProductSettings();
   const messages = [
     {
-      body: locale !== 'zh-CN'
-        ? 'Hi, I can help with account questions, rebate records, and product setup.'
-        : '你好，我可以协助处理账户问题、返佣记录和产品使用设置。',
+      body: t('discover.profile.manager.messageIntro'),
       side: 'manager',
     },
     {
-      body: locale !== 'zh-CN'
-        ? "I want to check today's rebate and account status."
-        : '我想确认今天的返佣和账户状态。',
+      body: t('discover.profile.manager.messageUser'),
       side: 'user',
     },
     {
-      body: locale !== 'zh-CN'
-        ? 'I can see your Partner Portal summary. The latest rebate data is already synced in this profile module.'
-        : '我已看到你的 Partner Portal 汇总，最新返佣数据已经同步在当前个人中心模块。',
+      body: t('discover.profile.manager.messageSync'),
       side: 'manager',
     },
   ] as const;
@@ -540,11 +500,11 @@ function ManagerChatSheet({ locale }: { locale: ReturnType<typeof useProductSett
   return (
     <View style={styles.managerChatSheet}>
       <View style={StyleSheet.flatten([styles.managerChatProfile, { backgroundColor: colors.surface.panel }])}>
-        <ProfileAvatar id="alex" size={44} />
+        <ProfileAvatar id="alex" size={layout.touchTargetMin} />
         <View style={styles.flex}>
-          <AppText variant="subtitle">Alexander Smith</AppText>
+          <AppText variant="subtitle">{t('discover.profile.manager.name')}</AppText>
           <AppText tone="muted" variant="body.secondary">
-            {locale !== 'zh-CN' ? 'Relationship Manager · IM online' : '客户经理 · IM 在线'}
+            {t('discover.profile.manager.status')}
           </AppText>
         </View>
       </View>
@@ -574,7 +534,7 @@ function ManagerChatSheet({ locale }: { locale: ReturnType<typeof useProductSett
       </View>
       <View style={StyleSheet.flatten([styles.managerComposer, { backgroundColor: colors.surface.panel }])}>
         <AppText tone="muted" variant="body.secondary">
-          {locale !== 'zh-CN' ? 'IM conversation opened' : '已进入 IM 对话'}
+          {t('discover.profile.manager.composerState')}
         </AppText>
         <AppIcon name="icon.notification.feedback" size={layout.menuDisclosureIconSize} styleVariant="fill" tone="tertiary" />
       </View>
@@ -582,118 +542,37 @@ function ManagerChatSheet({ locale }: { locale: ReturnType<typeof useProductSett
   );
 }
 
-function ProfileListCard({
-  icon,
-  iconTone,
-  subtitle,
-  title,
-}: {
-  icon: AppIconName;
-  iconTone: IconTone;
-  subtitle?: string;
-  title: string;
-}) {
-  return (
-    <Card compact style={styles.profileListCard}>
-      <IconSurface icon={icon} sizeVariant="md" tone={resolveDiscoverIconSurfaceTone(iconTone)} />
-      <View style={styles.flex}>
-        <AppText variant="subtitle">{title}</AppText>
-        {subtitle ? (
-          <AppText numberOfLines={1} tone="muted" variant="caption">
-            {subtitle}
-          </AppText>
-        ) : null}
-      </View>
-      <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
-    </Card>
-  );
-}
-
-function ProfileCardHeader({ icon, iconTone, title }: { icon: AppIconName; iconTone: IconTone; title: string }) {
-  return (
-    <View style={styles.profileCardHeader}>
-      <IconSurface icon={icon} sizeVariant="md" tone={resolveDiscoverIconSurfaceTone(iconTone)} />
-      <AppText style={styles.profileCardTitle} variant="subtitle">
-        {title}
-      </AppText>
-      <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
-    </View>
-  );
-}
-
-function MiniTrendLine({ color }: { color: string }) {
-  return (
-    <View style={styles.trendLine}>
-      <Sparkline color={color} edgeToEdge height={70} values={[2, 2.4, 3.2, 3, 4.6, 4.3, 3.4, 3.1, 4.2, 4, 4.4, 5.8, 6.5, 7.1]} width="100%" />
-    </View>
-  );
-}
-
-function GiftIllustration() {
-  const { colors } = useProductSettings();
-
-  return (
-    <View style={styles.giftScene}>
-      <View style={StyleSheet.flatten([styles.coin, styles.coinOne, { backgroundColor: `${colors.status.warning.fg}25`, borderColor: `${colors.status.warning.fg}66` }])}>
-        <AppText tone="amber" variant="eyebrow">$</AppText>
-      </View>
-      <View style={StyleSheet.flatten([styles.coin, styles.coinTwo, { backgroundColor: `${colors.status.warning.fg}25`, borderColor: `${colors.status.warning.fg}66` }])}>
-        <AppText tone="amber" variant="eyebrow">$</AppText>
-      </View>
-      <View style={StyleSheet.flatten([styles.giftBox, { backgroundColor: `${colors.brand.fg}16`, borderColor: `${colors.brand.fg}33` }])}>
-        <AppIcon name="icon.promotion.reward" sizeVariant="xl" />
-      </View>
-    </View>
-  );
-}
-
-function formatCompactProfileNumber(value: number) {
-  if (value >= 1000) {
-    return `${Math.floor(value / 1000)}K`;
-  }
-
-  return String(Math.floor(value));
-}
-
-function getThemeModeLabel(themeMode: ReturnType<typeof useProductSettings>['themeMode'], resolvedThemeMode: ReturnType<typeof useProductSettings>['resolvedThemeMode'], locale: ReturnType<typeof useProductSettings>['locale']) {
+function getThemeModeLabel(themeMode: ReturnType<typeof useProductSettings>['themeMode'], resolvedThemeMode: ReturnType<typeof useProductSettings>['resolvedThemeMode'], t: ReturnType<typeof useProductSettings>['t']) {
   if (themeMode === 'system') {
-    if (locale !== 'zh-CN') {
-      return resolvedThemeMode === 'lightBroker' ? 'System · Light' : 'System · Dark';
-    }
-
-    return resolvedThemeMode === 'lightBroker' ? '跟随系统 · 浅色' : '跟随系统 · 深色';
+    return resolvedThemeMode === 'lightBroker' ? t('theme.systemLight') : t('theme.systemDark');
   }
 
-  if (locale !== 'zh-CN') {
-    return themeMode === 'lightBroker' ? 'Light' : 'Dark';
-  }
-
-  return themeMode === 'lightBroker' ? '浅色' : '深色';
+  return t(themeMode === 'lightBroker' ? 'theme.light' : 'theme.dark');
 }
 
 function OnboardingModule() {
-  const { locale, colors } = useProductSettings();
+  const { locale, colors, t } = useProductSettings();
 
   return (
     <Card>
       <View style={styles.timeline}>
         {dupoinOnboardingSteps.map((step, index) => (
           <View key={step.id} style={styles.timelineRow}>
-            <View style={StyleSheet.flatten([styles.timelineMark, { backgroundColor: index < 2 ? colors.market.down.fg : colors.brand.fg, borderColor: index < 2 ? colors.market.down.fg : colors.brand.fg }])}>
+            <View style={StyleSheet.flatten([styles.timelineMark, { backgroundColor: index < 2 ? colors.status.success.fg : colors.brand.fg, borderColor: index < 2 ? colors.status.success.fg : colors.brand.fg }])}>
               <AppText tone="white" variant="eyebrow">
                 {index + 1}
               </AppText>
             </View>
             <View style={styles.flex}>
               <AppText variant="body">{localizeText(step.label, locale)}</AppText>
-              <AppText tone={index < 2 ? 'down' : 'brand'} variant="caption">
+              <AppText tone={index < 2 ? 'success' : 'brand'} variant="caption">
                 {localizeText(step.state, locale)}
               </AppText>
             </View>
           </View>
         ))}
       </View>
-      <ActionButton label={locale !== 'zh-CN' ? 'Continue Opening Account' : '继续开户'} onPress={() => router.push('/auth/onboarding' as never)} style={styles.cardAction} tone="brand" />
+      <ActionButton label={t('discover.onboarding.continueCta')} onPress={() => router.push('/auth/onboarding' as never)} style={styles.cardAction} tone="brand" variant="filled" />
     </Card>
   );
 }
@@ -707,7 +586,7 @@ function PartnerModule({
   submitUpgradeRequest: (reason: string) => void;
   upgradeStatus: 'none' | 'pending' | 'approved' | 'rejected';
 }) {
-  const { locale, t } = useProductSettings();
+  const { t } = useProductSettings();
   const toast = useToast();
   const isPartner = role === 'partner' || upgradeStatus === 'approved';
   const actionLabel = isPartner
@@ -721,8 +600,8 @@ function PartnerModule({
       <Card>
         <View style={styles.metricRow}>
           <Metric label={t('partner.monthClients')} value={String(partnerMetrics.clients)} />
-          <Metric label={t('partner.activeClients')} tone="down" value={String(partnerMetrics.activeClients)} />
-          <Metric label={locale !== 'zh-CN' ? 'Conversion' : '转化率'} tone="brand" value={formatPercent(partnerMetrics.conversionRate)} />
+          <Metric label={t('partner.activeClients')} tone="up" value={String(partnerMetrics.activeClients)} />
+          <Metric label={t('partner.conversion')} tone="brand" value={formatPercent(partnerMetrics.conversionRate)} />
         </View>
         <ActionButton
           label={actionLabel}
@@ -744,6 +623,7 @@ function PartnerModule({
           }}
           style={styles.cardAction}
           tone={isPartner ? 'brand' : upgradeStatus === 'pending' ? 'amber' : 'neutral'}
+          variant={isPartner ? 'filled' : 'outline'}
         />
       </Card>
     </>
@@ -764,10 +644,10 @@ function MarketsModule({ instruments }: { instruments: Instrument[] }) {
           <NativePressable
             accessibilityLabel={instrument.symbol}
             key={instrument.id}
-            minTouch={64}
+            minTouch={size.icon.display}
             onPress={() => router.push(`/instrument/${instrument.id}` as never)}
             style={StyleSheet.flatten([styles.instrumentRow, index < movers.length - 1 && { borderBottomColor: colors.border.subtle, borderBottomWidth: lineWidth.hairline }])}>
-            <InstrumentIcon instrument={instrument} size={36} />
+            <InstrumentIcon instrument={instrument} size={size.control.sm - spacing.xs} />
             <View style={styles.flex}>
               <AppText variant="subtitle">{instrument.symbol}</AppText>
               <AppText numberOfLines={1} tone="muted" variant="caption">
@@ -807,19 +687,19 @@ function AccountsModule({ account, positionsCount }: { account: Account; positio
           <DetailRow label={t('account.marginRate')} value={account.marginLevel > 0 ? `${account.marginLevel.toFixed(2)}%` : t('home.noMargin')} />
           <DetailRow label={t('account.credit')} value={formatMoney(account.credit, account.currency, 0, locale)} />
         </View>
-        <ActionButton label={locale !== 'zh-CN' ? 'Open Account List' : '打开账户列表'} onPress={() => router.push('/accounts' as never)} style={styles.cardAction} tone="neutral" />
+        <ActionButton label={t('discover.accounts.openList')} onPress={() => router.push('/accounts' as never)} style={styles.cardAction} tone="neutral" variant="outline" />
       </Card>
     </>
   );
 }
 
 function SupportModule() {
-  const { locale, colors, t } = useProductSettings();
+  const { t } = useProductSettings();
   const toast = useToast();
   const rows = [
-    [t('top.support'), locale !== 'zh-CN' ? 'Online Help Desk' : '在线帮助中心'],
-    [t('top.notifications'), locale !== 'zh-CN' ? 'Account and Service Alerts' : '账户与服务通知'],
-    [locale !== 'zh-CN' ? 'Service Status' : '服务状态', locale !== 'zh-CN' ? 'Quote proxy and workspace health' : '报价代理与工作区状态'],
+    [t('top.support'), t('discover.support.helpDesk')],
+    [t('top.notifications'), t('discover.support.alerts')],
+    [t('discover.support.serviceStatus'), t('discover.support.serviceStatusBody')],
   ];
 
   return (
@@ -835,26 +715,27 @@ function SupportModule() {
           void impactLight();
           toast.show({ message: t('top.placeholderMessage'), title: t('top.placeholderTitle', { action: t('top.support') }) });
         }}
-        style={StyleSheet.flatten([styles.cardAction, { borderColor: colors.border.subtle }])}
+        style={styles.cardAction}
         tone="neutral"
+        variant="outline"
       />
     </Card>
   );
 }
 
 function RewardsModule() {
-  const { locale, colors } = useProductSettings();
+  const { colors, t } = useProductSettings();
   const missions = [
-    [locale !== 'zh-CN' ? 'Watchlist' : '自选任务', '75%'],
-    [locale !== 'zh-CN' ? 'First Order' : '首单任务', '40%'],
-    [locale !== 'zh-CN' ? 'Risk Quiz' : '风险测验', '100%'],
+    [t('discover.rewards.mission.watchlist'), '75%'],
+    [t('discover.rewards.mission.firstOrder'), '40%'],
+    [t('discover.rewards.mission.riskQuiz'), '100%'],
   ] as const satisfies readonly (readonly [string, DimensionValue])[];
 
   return (
     <Card>
       <View style={styles.rewardHeader}>
-        <Metric label={locale !== 'zh-CN' ? 'Practice Credits' : '练习体验金'} tone="amber" value="$2K" />
-        <Metric label={locale !== 'zh-CN' ? 'Badges' : '徽章'} tone="brand" value="6" />
+        <Metric label={t('discover.rewards.practiceCredits')} tone="amber" value="$2K" />
+        <Metric label={t('discover.rewards.badges')} tone="brand" value="6" />
       </View>
       <View style={styles.rewardList}>
         {missions.map(([label, value]) => (
@@ -926,151 +807,112 @@ function resolveDiscoverIconSurfaceTone(tone: IconTone): IconSurfaceTone {
 const styles = StyleSheet.create({
   avatarEditBadge: {
     alignItems: 'center',
-    borderRadius: 999,
+    borderRadius: radius.full,
     borderWidth: lineWidth.selected,
-    bottom: 0,
-    height: 21,
+    bottom: spacing.none,
+    height: spacing.xl - spacing.xxs - lineWidth.strong,
     justifyContent: 'center',
     position: 'absolute',
-    right: -1,
-    width: 21,
+    right: -lineWidth.strong,
+    width: spacing.xl - spacing.xxs - lineWidth.strong,
   },
   avatarRail: {
-    gap: 8,
-    paddingHorizontal: 2,
-    paddingRight: 16,
+    gap: spacing.sm,
+    paddingHorizontal: spacing.xxs,
+    paddingRight: spacing.lg,
   },
   avatarRailItem: {
     alignItems: 'center',
-    borderRadius: 999,
+    borderRadius: radius.full,
     borderWidth: lineWidth.hairline,
     flexDirection: 'row',
-    gap: 6,
-    minHeight: 46,
-    paddingHorizontal: 8,
-    paddingVertical: 5,
+    gap: spacing.xs + spacing.xxs,
+    minHeight: layout.touchTargetMin + spacing.xxs,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs + lineWidth.strong,
   },
   avatarPressable: {
-    height: 64,
+    height: size.icon.display,
     justifyContent: 'center',
     position: 'relative',
-    width: 64,
+    width: size.icon.display,
     zIndex: 2,
   },
   cardAction: {
-    marginTop: 14,
+    marginTop: radius.lg,
   },
   changeBadge: {
-    borderRadius: 999,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    borderRadius: radius.full,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
   },
   detailRow: {
     alignItems: 'center',
     borderBottomWidth: lineWidth.hairline,
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
     justifyContent: 'space-between',
-    minHeight: 42,
+    minHeight: layout.touchTargetMin - spacing.xxs,
   },
   detailRows: {
-    gap: 2,
-  },
-  coin: {
-    alignItems: 'center',
-    borderRadius: 999,
-    borderWidth: lineWidth.hairline,
-    height: 22,
-    justifyContent: 'center',
-    position: 'absolute',
-    width: 22,
-    zIndex: 2,
-  },
-  coinOne: {
-    left: 4,
-    top: 20,
-  },
-  coinTwo: {
-    left: 20,
-    top: 46,
+    gap: spacing.xxs,
   },
   flex: {
     flex: 1,
-    gap: 3,
+    gap: spacing.xxs + lineWidth.strong,
     minWidth: 0,
   },
   gainBadge: {
     alignSelf: 'flex-start',
-    borderRadius: 4,
-    marginTop: 6,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-  },
-  giftBox: {
-    alignItems: 'center',
-    borderRadius: 14,
-    borderWidth: lineWidth.hairline,
-    height: 72,
-    justifyContent: 'center',
-    marginLeft: 28,
-    width: 82,
-  },
-  giftScene: {
-    height: 84,
-    justifyContent: 'center',
-    position: 'relative',
-    width: 116,
+    borderRadius: radius.xs,
+    marginTop: spacing.xs + spacing.xxs,
+    paddingHorizontal: spacing.xs + spacing.xxs,
+    paddingVertical: spacing.xxs,
   },
   hero: {
-    gap: 14,
+    gap: radius.lg,
   },
   heroAction: {
     alignSelf: 'flex-start',
-    minHeight: 38,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    minHeight: size.control.sm - spacing.xxs,
+    paddingHorizontal: radius.lg,
+    paddingVertical: spacing.sm,
   },
   heroCopy: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
   },
   insightList: {
-    gap: 2,
+    gap: spacing.xxs,
   },
   insightRow: {
     alignItems: 'flex-start',
     borderTopWidth: lineWidth.hairline,
     flexDirection: 'row',
-    gap: 12,
-    paddingTop: 12,
+    gap: spacing.md,
+    paddingTop: spacing.md,
   },
   instrumentRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    paddingVertical: spacing.sm + spacing.xxs,
   },
   instrumentSide: {
     alignItems: 'flex-end',
-    gap: 2,
+    gap: spacing.xxs,
   },
   marketFocusTop: {
     alignItems: 'flex-start',
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
     justifyContent: 'space-between',
   },
   metricRow: {
     flexDirection: 'row',
-    gap: 12,
-  },
-  managerCard: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 12,
-    minHeight: 78,
+    gap: spacing.md,
   },
   managerChat: {
     alignItems: 'center',
@@ -1078,7 +920,7 @@ const styles = StyleSheet.create({
   },
   managerChatProfile: {
     alignItems: 'center',
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     flexDirection: 'row',
     gap: spacing.md,
     padding: spacing.md,
@@ -1097,7 +939,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   managerMessageBubble: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     maxWidth: '84%',
     padding: spacing.md,
   },
@@ -1112,133 +954,79 @@ const styles = StyleSheet.create({
   },
   modulePill: {
     alignItems: 'center',
-    borderRadius: 12,
+    borderRadius: radius.card,
     borderWidth: lineWidth.hairline,
-    gap: 7,
-    minWidth: 82,
-    padding: 10,
+    gap: spacing.xs + spacing.xxs + lineWidth.strong,
+    minWidth: size.control.lg + spacing.xl + spacing.xxs,
+    padding: spacing.sm + spacing.xxs,
   },
   moduleRail: {
-    gap: 8,
-    paddingRight: 16,
+    gap: spacing.sm,
+    paddingRight: spacing.lg,
   },
   rewardHeader: {
     flexDirection: 'row',
-    gap: 12,
-  },
-  rebateAmountRow: {
-    alignItems: 'flex-end',
-    flexDirection: 'row',
-    marginTop: spacing.xs,
-  },
-  rebateCurrency: {
-    ...typography.quote,
-  },
-  rebateDataBlock: {
-    gap: spacing.xs,
-  },
-  rebateMajor: {
-    ...typography.quoteLg,
-  },
-  rebateMetaRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
-  rebateMinor: {
-    ...typography.displayXl,
-    marginBottom: 4,
-  },
-  rewardProfileBody: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 12,
-    justifyContent: 'space-between',
+    gap: spacing.md,
   },
   rewardList: {
-    gap: 12,
-    marginTop: 14,
+    gap: spacing.md,
+    marginTop: radius.lg,
   },
   rewardProgressFill: {
-    borderRadius: 999,
-    height: 7,
+    borderRadius: radius.full,
+    height: spacing.sm - lineWidth.strong,
   },
   rewardProgressTrack: {
-    borderRadius: 999,
+    borderRadius: radius.full,
     flex: 1,
-    height: 7,
+    height: spacing.sm - lineWidth.strong,
     overflow: 'hidden',
   },
   rewardRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 10,
-  },
-  profileCard: {
-    gap: 12,
-  },
-  partnerPortalCard: {
-    gap: spacing.md,
-    paddingBottom: spacing.sm,
-  },
-  profileCardHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 12,
-  },
-  profileCardTitle: {
-    flex: 1,
-  },
-  profileDivider: {
-    height: lineWidth.hairline,
+    gap: spacing.sm + spacing.xxs,
   },
   profileEditHero: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
   },
   profileEditSheet: {
-    gap: 16,
+    gap: spacing.lg,
   },
   profileHeader: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 12,
-    paddingHorizontal: 2,
-    paddingTop: 2,
+    gap: spacing.md,
+    paddingHorizontal: spacing.xxs,
+    paddingTop: spacing.xxs,
   },
   profileIdentity: {
     flex: 1,
-    gap: 5,
+    gap: spacing.xs + lineWidth.strong,
     minWidth: 0,
   },
-  profileListCard: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 12,
-    minHeight: 70,
-  },
   profileMenuList: {
-    borderRadius: 12,
+    borderRadius: radius.card,
     overflow: 'hidden',
     paddingHorizontal: spacing.none,
   },
   profileNameRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 10,
+    gap: spacing.sm + spacing.xxs,
     justifyContent: 'space-between',
   },
   profileStatCard: {
     flex: 1,
-    gap: 7,
-    minHeight: 126,
+    gap: spacing.xs + spacing.xxs + lineWidth.strong,
+    minHeight: size.icon.display + size.iconSurface.lg + radius.lg,
     minWidth: 0,
   },
   profileStatsGrid: {
     flexDirection: 'row',
-    gap: 8,
+    gap: spacing.sm,
   },
   profileTag: {
     flex: 1,
@@ -1246,43 +1034,38 @@ const styles = StyleSheet.create({
   },
   profileTagRow: {
     flexDirection: 'row',
-    gap: 6,
+    gap: spacing.xs + spacing.xxs,
     width: '100%',
   },
   sparklineWrap: {
     alignItems: 'center',
-    marginVertical: 14,
+    marginVertical: radius.lg,
     overflow: 'hidden',
   },
   timeline: {
-    gap: 12,
+    gap: spacing.md,
   },
   timelineMark: {
     alignItems: 'center',
-    borderRadius: 999,
+    borderRadius: radius.full,
     borderWidth: lineWidth.hairline,
-    height: 28,
+    height: size.iconSurface.xs,
     justifyContent: 'center',
-    width: 28,
+    width: size.iconSurface.xs,
   },
   timelineRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 10,
-  },
-  trendLine: {
-    overflow: 'hidden',
-    paddingTop: spacing.xs,
-    width: '100%',
+    gap: spacing.sm + spacing.xxs,
   },
   verifiedBadge: {
     alignItems: 'center',
     alignSelf: 'flex-start',
-    borderRadius: 4,
+    borderRadius: radius.xs,
     borderWidth: lineWidth.hairline,
     flexDirection: 'row',
-    gap: 3,
-    paddingHorizontal: 5,
-    paddingVertical: 2,
+    gap: spacing.xxs + lineWidth.strong,
+    paddingHorizontal: spacing.xs + lineWidth.strong,
+    paddingVertical: spacing.xxs,
   },
 });

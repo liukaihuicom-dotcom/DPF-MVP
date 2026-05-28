@@ -1,6 +1,6 @@
 # @dpf/icon-library Version
 
-Current version: `4.1.8`
+Current version: `4.1.11`
 
 This package owns semantic icon registry, local icon assets, icon runtime contract, naming, source policy, and icon QA.
 

@@ -324,6 +324,65 @@ export const iconRegistry = {
       "Trading account workspace, account switcher, account list, and margin account identity"
     ]
   },
+  "icon.system.add": {
+    category: "system",
+    defaultSize: 24,
+    defaultTone: "text",
+    forbidden: [
+      "Do not use for profile invitation when addUser carries the account-person meaning."
+    ],
+    legacyNames: [],
+    license: {
+      attributionRequired: false,
+      name: "custom-owned",
+      url: "local"
+    },
+    localAssetPath: "src/icons/local/iconsax/LocalAddIcon.tsx",
+    meaning: "Generic add, create, or append action",
+    modified: true,
+    platforms: [
+      "app",
+      "h5",
+      "web"
+    ],
+    sizes: [
+      8,
+      12,
+      16,
+      20,
+      24,
+      32,
+      40,
+      48,
+      64
+    ],
+    sourceIconName: "Add",
+    sourceLibrary: "custom",
+    states: [
+      "default",
+      "active",
+      "disabled"
+    ],
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
+    },
+    tokenBinding: {
+      color: "color.icon.primary",
+      size: "size.icon.md"
+    },
+    toneTokens: [
+      "text",
+      "textMuted",
+      "brand"
+    ],
+    usage: [
+      "Generic add, create, or append action.",
+      "Use when the action is add/create rather than adding a person or profile."
+    ]
+  },
   "icon.notification.bell": {
     category: "notification",
     defaultSize: 24,
@@ -580,7 +639,7 @@ export const iconRegistry = {
       name: "MIT",
       url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
     },
-    localAssetPath: "src/icons/local/iconsax/LocalChart21Icon.tsx",
+    localAssetPath: "src/icons/local/iconsax/LocalChartSquareIcon.tsx",
     meaning: "Market trend, quote movement, chart entry, or trading direction",
     modified: false,
     platforms: [
@@ -599,7 +658,7 @@ export const iconRegistry = {
       48,
       64
     ],
-    sourceIconName: "Chart21",
+    sourceIconName: "ChartSquare",
     sourceLibrary: "iconsax",
     states: [
       "default",
@@ -2003,6 +2062,122 @@ export const iconRegistry = {
     usage: [
       "Toggle password hidden state in credential fields.",
       "Use when the password is currently visible and the next action will hide it."
+    ]
+  },
+  "icon.account.amount_visible": {
+    category: "account",
+    defaultSize: 24,
+    defaultTone: "textDim",
+    forbidden: [
+      "Do not use for credential password visibility."
+    ],
+    legacyNames: [
+      "showAccountAmount"
+    ],
+    license: {
+      attributionRequired: false,
+      name: "MIT",
+      url: "https://github.com/rendinjast/iconsax-react/blob/master/LICENSE"
+    },
+    localAssetPath: "src/icons/local/iconsax/LocalEyeIcon.tsx",
+    meaning: "Toggle account amount visibility for financial balance and PnL values",
+    modified: false,
+    platforms: [
+      "app",
+      "h5",
+      "web"
+    ],
+    sizes: [
+      8,
+      12,
+      16,
+      20,
+      24,
+      32,
+      40,
+      48,
+      64
+    ],
+    sourceIconName: "Eye",
+    sourceLibrary: "iconsax",
+    states: [
+      "default",
+      "active"
+    ],
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
+    },
+    tokenBinding: {
+      color: "color.icon.tertiary",
+      size: "size.icon.md"
+    },
+    toneTokens: [
+      "textDim",
+      "text"
+    ],
+    usage: [
+      "Toggle account balance, equity, margin, or PnL values between visible and masked states."
+    ]
+  },
+  "icon.account.amount_hidden": {
+    category: "account",
+    defaultSize: 24,
+    defaultTone: "textDim",
+    forbidden: [
+      "Do not use for credential password visibility."
+    ],
+    legacyNames: [
+      "hideAccountAmount"
+    ],
+    license: {
+      attributionRequired: false,
+      name: "custom-owned",
+      url: "internal-custom-icon-request"
+    },
+    localAssetPath: "src/icons/local/iconsax/LocalEyeSlashIcon.tsx",
+    meaning: "Toggle account amount hidden state for financial balance and PnL values",
+    modified: true,
+    platforms: [
+      "app",
+      "h5",
+      "web"
+    ],
+    sizes: [
+      8,
+      12,
+      16,
+      20,
+      24,
+      32,
+      40,
+      48,
+      64
+    ],
+    sourceIconName: "EyeSlash",
+    sourceLibrary: "custom",
+    states: [
+      "default",
+      "active"
+    ],
+    status: "approved",
+    style: {
+      default: "line",
+      active: "fill",
+      disabled: "line"
+    },
+    tokenBinding: {
+      color: "color.icon.tertiary",
+      size: "size.icon.md"
+    },
+    toneTokens: [
+      "textDim",
+      "text"
+    ],
+    usage: [
+      "Use when financial account amounts are currently visible and the next action will mask them."
     ]
   },
   "icon.system.search": {
@@ -3824,6 +3999,8 @@ export const legacyIconNameMap = {
   "keyboardDigits": "icon.system.keyboard_digits",
   "showPassword": "icon.system.password_visible",
   "hidePassword": "icon.system.password_hidden",
+  "showAccountAmount": "icon.account.amount_visible",
+  "hideAccountAmount": "icon.account.amount_hidden",
   "searchGlass": "icon.system.search",
   "qrCode": "icon.wallet.deposit",
   "partnerNetwork": "icon.ib.network",
@@ -3878,15 +4055,16 @@ export function resolveIconTone(colors: ThemeColors, tone: IconTone | string): s
       return colors.icon.danger;
     case 'disabled':
       return colors.icon.disabled;
-    case 'down':
     case 'success':
       return colors.icon.success;
     case 'inverse':
     case 'panel':
     case 'white':
       return colors.icon.inverse;
-    case 'up':
+    case 'down':
       return colors.icon.danger;
+    case 'up':
+      return colors.market.up.fg;
     case 'amber':
     case 'warning':
       return colors.icon.warning;

@@ -6,6 +6,14 @@
   "transfer_form": ["form-pattern", "review-pattern"],
   "transfer_detail": ["detail-pattern", "transaction-timeline"],
   "funding_transaction_list": ["list-pattern", "empty-error-pattern"],
-  "admin_funding_review_detail": ["review-pattern", "detail-pattern"]
+  "admin_funding_review_detail": ["review-pattern", "detail-pattern"],
+  "app_security_center": [
+    "security-center-overview-pattern",
+    "list-pattern",
+    "detail-pattern",
+    "empty-error-pattern",
+    "security-verification-pattern",
+    "security-gsl-cooling-pattern"
+  ],
+  "app_security_login_log": ["detail-pattern", "list-pattern", "security-verification-pattern"]
 }
-

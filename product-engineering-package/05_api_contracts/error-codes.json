@@ -17,6 +17,14 @@
     { "code": "FX_QUOTE_EXPIRED", "category": "fx_fee", "severity": "critical", "message_key": "funding.error.fxQuoteExpired" },
     { "code": "FX_RATE_UNAVAILABLE", "category": "fx_fee", "severity": "critical", "message_key": "funding.error.fxRateUnavailable" },
     { "code": "FEE_RULE_MISSING", "category": "fx_fee", "severity": "critical", "message_key": "funding.error.feeRuleMissing" }
+    ,
+    { "code": "SECURITY_OTP_INVALID", "category": "security_verification", "severity": "major", "message_key": "securityCenter.error.SECURITY_OTP_INVALID" },
+    { "code": "SECURITY_OTP_LOCKED", "category": "security_verification", "severity": "critical", "message_key": "securityCenter.error.SECURITY_OTP_LOCKED" },
+    { "code": "SECURITY_TOTP_REQUIRED", "category": "security_verification", "severity": "critical", "message_key": "securityCenter.error.SECURITY_TOTP_REQUIRED" },
+    { "code": "SECURITY_GSL_PENDING_EXISTS", "category": "security_gsl", "severity": "critical", "message_key": "securityCenter.error.SECURITY_GSL_PENDING_EXISTS" },
+    { "code": "SECURITY_DEVICE_NOT_FOUND", "category": "security_device", "severity": "major", "message_key": "securityCenter.error.SECURITY_DEVICE_NOT_FOUND" },
+    { "code": "SECURITY_CANNOT_REVOKE_CURRENT_DEVICE", "category": "security_device", "severity": "critical", "message_key": "securityCenter.error.SECURITY_CANNOT_REVOKE_CURRENT_DEVICE" },
+    { "code": "SECURITY_RISK_BLOCKED", "category": "security_risk", "severity": "blocker", "message_key": "securityCenter.error.SECURITY_RISK_BLOCKED" },
+    { "code": "SECURITY_ACCOUNT_FROZEN", "category": "security_risk", "severity": "blocker", "message_key": "securityCenter.error.SECURITY_ACCOUNT_FROZEN" }
   ]
 }
-

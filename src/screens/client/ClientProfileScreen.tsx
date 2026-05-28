@@ -1,18 +1,18 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
-import { lineWidth } from '@/src/theme/tokens';
-import { ActionButton } from '@/src/components/ActionButton';
-import { Card } from '@/src/components/Card';
-import { Metric } from '@/src/components/Metric';
-import { Screen } from '@/src/components/Screen';
-import { StatusPill } from '@/src/components/StatusPill';
-import { AppText } from '@/src/components/Typography';
-import { UpgradeChatCard } from '@/src/components/UpgradeChatCard';
+import { lineWidth, radius, size, spacing } from '@/src/design-public-assets/tokens';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { Card } from '@/src/design-public-assets/components';
+import { Metric } from '@/src/design-public-assets/components';
+import { Screen } from '@/src/design-public-assets/components';
+import { StatusPill } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
+import { UpgradeChatCard } from '@/src/design-public-assets/components';
 import { formatMoney, formatVolumeMillions, localizeText, statusLabel } from '@/src/domain/format';
 import { useToast } from '@/src/feedback/Toast';
 import { notifySuccess } from '@/src/feedback/haptics';
-import { useProductSettings } from '@/src/settings/ProductSettings';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
 
 export default function ClientProfileScreen() {
@@ -47,7 +47,7 @@ export default function ClientProfileScreen() {
       backHref="/trade"
       contentInsetBottom={canApprove ? 18 : 0}
       stickyFooter={
-        canApprove ? <ActionButton accessibilityLabel={t('upgrade.approve')} label={t('upgrade.approve')} onPress={approve} tone="brand" /> : undefined
+        canApprove ? <ActionButton accessibilityLabel={t('upgrade.approve')} label={t('upgrade.approve')} onPress={approve} tone="brand" variant="filled" /> : undefined
       }
       subtitle={`${client.country} · ${localizeText(client.lastActive, locale)}`}
       title={client.name}>
@@ -93,16 +93,16 @@ export default function ClientProfileScreen() {
 const styles = StyleSheet.create({
   avatar: {
     alignItems: 'center',
-    borderRadius: 999,
+    borderRadius: radius.full,
     borderWidth: lineWidth.hairline,
-    height: 42,
+    height: size.profile.clientAvatar,
     justifyContent: 'center',
-    width: 42,
+    width: size.profile.clientAvatar,
   },
   metricRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 12,
+    gap: spacing.sm + spacing.xxs,
+    marginTop: spacing.md,
   },
   profileCopy: {
     flex: 1,
@@ -111,6 +111,6 @@ const styles = StyleSheet.create({
   profileTop: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 10,
+    gap: spacing.sm + spacing.xxs,
   },
 });

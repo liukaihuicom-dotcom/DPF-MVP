@@ -4,6 +4,8 @@
   "common.invalidInstrument": "Instrument not found",
   "order.errorLots": "Enter a lot size greater than 0.",
   "order.errorMargin": "Free margin is not enough for this simulated order.",
-  "auth.lockedToastTitle": "Login required"
+  "auth.lockedToastTitle": "Login required",
+  "common.retry": "Retry",
+  "root.error.title": "Something went wrong",
+  "instrument.marketBriefBrand": "Dupoin Market"
 }
-

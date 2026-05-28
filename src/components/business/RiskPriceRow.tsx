@@ -15,8 +15,8 @@ type RiskPriceRowProps = {
 
 export function RiskPriceRow({ caption, label, pnl, price }: RiskPriceRowProps) {
   const { locale, colors } = useProductSettings();
-  const pnlTone = pnl >= 0 ? 'down' : 'up';
-  const pnlColor = pnl >= 0 ? colors.market.down.fg : colors.market.up.fg;
+  const pnlTone = pnl >= 0 ? 'up' : 'down';
+  const pnlColor = pnl >= 0 ? colors.market.up.fg : colors.market.down.fg;
 
   return (
     <View style={StyleSheet.flatten([styles.row, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   row: {
     alignItems: 'center',
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flexDirection: 'row',
     gap: spacing.md,

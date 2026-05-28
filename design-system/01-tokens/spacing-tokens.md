@@ -22,7 +22,10 @@ The base scale is intentionally small and stable. It should not grow during page
 
 | Layout Token | Runtime Mapping | Use |
 |---|---|---|
-| `layout.screenPaddingX` | `spacing.lg` / 16 | Full-site page horizontal padding and bottom-sheet horizontal alignment |
+| `layout.contentCardPaddingX` | `spacing.md` / 12 | Full-site gray/card-mode page and BottomSheet content horizontal inset |
+| `layout.contentPlainPaddingX` | `spacing.lg` / 16 | Full-site white/plain text and form content horizontal inset |
+| `layout.topBarPaddingX` | `spacing.lg` / 16 | Full-site page header, title bar, and sheet header horizontal inset |
+| `layout.screenPaddingX` | `spacing.lg` / 16 | Legacy page horizontal padding alias; new page content chooses card/plain content padding |
 | `layout.screenGap` | `spacing.md` / 12 | Default vertical gap between page modules |
 | `layout.screenBottomPadding` | `spacing.xxl` / 32 | Full-site scroll content bottom safety gap; `Screen` combines it with the device bottom safe-area inset |
 | `layout.moduleGap` | `spacing.md` / 12 | Default gap between repeated modules in standard density screens |
@@ -34,7 +37,7 @@ The base scale is intentionally small and stable. It should not grow during page
 | `layout.cardPaddingCompactY` | `spacing.md` / 12 | Compact card and dense panel vertical content inset |
 | `layout.cardPadding` | `spacing.lg` / 16 | Legacy scalar alias for older card padding code; new implementations must use `layout.cardPaddingX` + `layout.cardPaddingY` |
 | `layout.cardPaddingCompact` | `spacing.md` / 12 | Legacy scalar alias for older compact card padding code; new implementations must use `layout.cardPaddingCompactX` + `layout.cardPaddingCompactY` |
-| `layout.listRowPaddingX` | `spacing.lg` / 16 | Menu, option, account, transaction, and settings row horizontal padding |
+| `layout.listRowPaddingX` | `spacing.md` / 12 | Menu, option, account, transaction, and settings row horizontal padding |
 | `layout.listRowPaddingY` | `spacing.md` / 12 | Menu, option, account, transaction, and settings row vertical padding |
 | `layout.formFieldTextInset` | `spacing.md` / 12 | Shared form field shell horizontal text inset |
 | `layout.formGroupGap` | `spacing.md` / 12 | Gap between fields in one form group |
@@ -53,13 +56,14 @@ The base scale is intentionally small and stable. It should not grow during page
 
 | Area | Use This | Do Not Use |
 |---|---|---|
-| Page shell | `layout.screenPaddingX`, `layout.screenGap`, `layout.screenBottomPadding` plus device bottom safe-area through `Screen` | Page-local `paddingHorizontal: 16`, arbitrary top margins, or removing the bottom safe gap |
+| Page shell | `layout.contentCardPaddingX` for card-mode pages, `layout.contentPlainPaddingX` for white/plain text and form pages, `layout.screenGap`, `layout.screenBottomPadding` plus device bottom safe-area through `Screen` | Page-local `paddingHorizontal: 16`, arbitrary top margins, or removing the bottom safe gap |
+| Header/title/footer bars | `layout.topBarPaddingX` and `layout.bottomActionArea.paddingX` | Page-local title bar or footer horizontal padding |
 | Business module stack | `layout.moduleGap`, `layout.sectionGap`, `layout.sectionGapLarge` | Child `marginTop` chains |
 | Cards and panels | `layout.cardPaddingX`, `layout.cardPaddingY`, `layout.cardPaddingCompactX`, `layout.cardPaddingCompactY`; legacy scalar aliases only for compatibility | Page-owned card padding overrides or new `padding: layout.cardPadding` usage |
 | Menu/list rows | `layout.listRowPaddingX`, `layout.listRowPaddingY` inside the row component | Page-local row padding or hidden spacer hacks |
 | Forms | `layout.formFieldTextInset`, `layout.formGroupGap`, `layout.fieldGap` | One-off `10`, `14`, `18`, or field-specific margins |
 | Controls | `layout.controlGap`, `layout.inlineGap` | Per-button icon/text gap guesses |
-| BottomSheet | `layout.screenPaddingX`, `layout.sheetContentGap`, `layout.sheetFooterGap` | Header/content/footer alignment drift |
+| BottomSheet | `layout.topBarPaddingX` for header, `layout.contentCardPaddingX` or `layout.contentPlainPaddingX` for content, `layout.bottomActionArea.paddingX`, `layout.sheetContentGap`, `layout.sheetFooterGap` | Header/content/footer alignment drift |
 | Quote/data/chart areas | `layout.quoteGroupGap`, `layout.dataRowGap`, component-owned chart offsets | Absolute offsets to repair normal flow |
 | Empty states and major breaks | `spacing.section` only through documented pattern tokens | Expanding the base scale for one page |
 
@@ -85,12 +89,12 @@ The base scale is intentionally small and stable. It should not grow during page
 ### Padding
 
 - Use `padding` for internal space owned by a container.
-- Page horizontal padding must come from `Screen` or `layout.screenPaddingX`.
+- Page horizontal padding must come from `Screen` content modes or semantic `layout.contentCardPaddingX` / `layout.contentPlainPaddingX`.
 - Page scroll content bottom padding must come from `Screen`; it must not be removed by page-local props or page-local padding overrides.
 - Card padding must come from `layout.cardPaddingX`, `layout.cardPaddingY`, `layout.cardPaddingCompactX`, `layout.cardPaddingCompactY`, or a shared `Card` variant unless a business component documents another rule.
 - `layout.cardPadding` and `layout.cardPaddingCompact` are legacy scalar aliases only. New card, panel, surface, and tile implementations must use the axis-specific card padding tokens so horizontal content inset remains 12 px while default vertical rhythm remains 16 px.
 - List row padding must be owned by the row/list component through `layout.listRowPaddingX` and `layout.listRowPaddingY`.
-- BottomSheet header, content, and footer must share `layout.screenPaddingX`.
+- BottomSheet header and footer must use 16 px horizontal inset, while card-mode sheet content uses 12 px and plain/form sheet content uses 16 px.
 - Form groups, list rows, status panels, and operation areas must declare their spacing in the component or pattern documentation.
 - Shared form field horizontal content inset must use `layout.formFieldTextInset`.
 
@@ -116,9 +120,9 @@ The base scale is intentionally small and stable. It should not grow during page
 
 ## Runtime Mapping
 
-- `Screen` uses 16 px horizontal padding, 12 px top gap, and a bottom safety gap of `layout.screenBottomPadding` / 32 px plus the device bottom safe-area inset.
+- `Screen` defaults to card-mode 12 px horizontal content padding, supports plain/form 16 px content padding, uses 12 px top gap, and applies a bottom safety gap of `layout.screenBottomPadding` / 32 px plus the device bottom safe-area inset.
 - White-background page shells, including `AuthShell`, use 16 px horizontal padding through `layout.screenPaddingX`.
-- Global BottomSheet content, header, and footer use the same 16 px horizontal padding through `layout.screenPaddingX`.
+- Global BottomSheet header and footer use 16 px horizontal padding; card-mode content defaults to 12 px and plain/form content uses 16 px.
 - `Card` uses 12 px horizontal padding through `layout.cardPaddingX` and 16 px vertical padding through `layout.cardPaddingY`.
 - `Card compact` uses 12 px horizontal padding through `layout.cardPaddingCompactX` and 12 px vertical padding through `layout.cardPaddingCompactY`.
 - `ActionButton` uses 18 px horizontal and 12 px vertical padding.

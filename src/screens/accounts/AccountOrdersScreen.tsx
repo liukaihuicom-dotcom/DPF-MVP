@@ -1,19 +1,19 @@
 import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
-import { AppIcon } from '@/src/components/AppIcon';
-import { Card } from '@/src/components/Card';
-import { DetailRow } from '@/src/components/data-display';
-import { EmptyState } from '@/src/components/feedback';
-import { NativePressable } from '@/src/components/NativePressable';
-import { Screen } from '@/src/components/Screen';
-import { StatusPill } from '@/src/components/StatusPill';
-import { TradeDirectionIcon } from '@/src/components/TradeDirectionIcon';
-import { AppText } from '@/src/components/Typography';
+import { AppIcon } from '@/src/design-public-assets/components';
+import { Card } from '@/src/design-public-assets/components';
+import { DetailRow } from '@/src/design-public-assets/components';
+import { EmptyState } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { Screen } from '@/src/design-public-assets/components';
+import { StatusPill } from '@/src/design-public-assets/components';
+import { TradeDirectionIcon } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import { closedOrderHistory, getCloseDateTitle, type ClosedOrder } from '@/src/domain/closedOrders';
 import { directionLabel, formatMoney, formatNumber } from '@/src/domain/format';
-import { useProductSettings } from '@/src/settings/ProductSettings';
-import { lineWidth, layout, radius, size, spacing } from '@/src/theme/tokens';
+import { useProductSettings } from '@/src/design-public-assets/copy';
+import { lineWidth, layout, radius, size, spacing } from '@/src/design-public-assets/tokens';
 
 export default function AccountOrdersScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -34,7 +34,7 @@ export default function AccountOrdersScreen() {
           <StatusPill compact icon="icon.trading.history" label={t('status.closed')} tone="neutral" />
         </View>
         <View style={StyleSheet.flatten([styles.summaryGrid, { borderTopColor: colors.border.subtle }])}>
-          <SummaryMetric label={t('accountOrders.realizedPnl')} tone={realized >= 0 ? 'down' : 'up'} value={formatMoney(realized, 'USD', 2, locale)} />
+          <SummaryMetric label={t('accountOrders.realizedPnl')} tone={realized >= 0 ? 'up' : 'down'} value={formatMoney(realized, 'USD', 2, locale)} />
           <SummaryMetric label={t('accountOrders.closedCount')} value={String(closedOrderHistory.length)} />
         </View>
       </Card>
@@ -47,7 +47,7 @@ export default function AccountOrdersScreen() {
             {groups.map((group) => (
               <View key={group.title} style={styles.dateGroup}>
                 <AppText tone="muted" variant="caption">{group.title}</AppText>
-                <View style={StyleSheet.flatten([styles.listFrame, { borderColor: colors.border.subtle }])}>
+                <View style={styles.listFrame}>
                   {group.rows.map((order, index) => (
                     <ClosedOrderRow key={order.id} order={order} showDivider={index < group.rows.length - 1} />
                   ))}
@@ -74,19 +74,19 @@ function ClosedOrderRow({ order, showDivider }: { order: ClosedOrder; showDivide
         <View style={styles.orderMain}>
           <View style={styles.orderTitleRow}>
             <AppText numberOfLines={1} variant="subtitle">{order.symbol}</AppText>
-            <AppText numberOfLines={1} tone={order.direction === 'buy' ? 'down' : 'up'} variant="caption">
+            <AppText numberOfLines={1} tone={order.direction === 'buy' ? 'up' : 'down'} variant="caption">
               {directionLabel(order.direction, locale)} {order.lots}
             </AppText>
           </View>
           <AppText numberOfLines={1} tone="muted" variant="caption">{order.priceRange}</AppText>
         </View>
         <View style={styles.orderSide}>
-          <AppText tone={order.pnl >= 0 ? 'down' : 'up'} variant="subtitle">{formatNumber(order.pnl, 2, locale)}</AppText>
+          <AppText tone={order.pnl >= 0 ? 'up' : 'down'} variant="subtitle">{formatNumber(order.pnl, 2, locale)}</AppText>
           <AppText tone="muted" variant="caption">{t('portfolio.ticket')} {order.dealId}</AppText>
         </View>
         <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
       </View>
-      <View style={StyleSheet.flatten([styles.detailBox, { borderColor: colors.border.subtle }])}>
+      <View style={styles.detailBox}>
         <DetailRow row={{ label: t('portfolio.openTime'), value: order.openTime }} showDivider />
         <DetailRow row={{ label: t('portfolio.closeTime'), value: order.closeTime }} showDivider />
         <DetailRow row={{ label: t('portfolio.commissionSwap'), value: `${formatNumber(order.commission, 2, locale)} / ${formatNumber(order.swap, 2, locale)}` }} />
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   detailBox: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     marginTop: spacing.sm,
     overflow: 'hidden',
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   listFrame: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     overflow: 'hidden',
   },

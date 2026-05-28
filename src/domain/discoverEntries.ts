@@ -1,4 +1,5 @@
 import type { AppIconName } from '@/src/components/AppIcon';
+import type { IconSurfaceTone } from '@/src/components/IconSurface';
 
 import type { DiscoverModuleId, LocalizedText, Role } from './types';
 
@@ -19,6 +20,7 @@ export type DiscoverEntryId =
 export type DiscoverEntryDefinition = {
   group: DiscoverEntryGroup;
   icon: AppIconName;
+  iconTone: IconSurfaceTone;
   id: DiscoverEntryId;
   moduleId: DiscoverModuleId;
   roles: Array<Role | 'guest'>;
@@ -33,6 +35,7 @@ export type DiscoverCampaignId = 'referCommission' | 'riskQuizCredit' | 'paperCh
 export type DiscoverCampaignDefinition = {
   badge: LocalizedText;
   icon: AppIconName;
+  iconTone: IconSurfaceTone;
   id: DiscoverCampaignId;
   moduleId: DiscoverModuleId;
   roles: Array<Role | 'guest'>;
@@ -53,6 +56,7 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
   {
     group: 'profile',
     icon: 'icon.account.avatar',
+    iconTone: 'info',
     id: 'profile',
     moduleId: 'profile',
     roles: ['trader', 'partner'],
@@ -64,6 +68,7 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
   {
     group: 'partner',
     icon: 'icon.ib.network',
+    iconTone: 'brand',
     id: 'partnerPortal',
     moduleId: 'partner',
     roles: ['trader', 'partner'],
@@ -75,6 +80,7 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
   {
     group: 'onboarding',
     icon: 'icon.kyc.identity',
+    iconTone: 'success',
     id: 'openAccount',
     moduleId: 'onboarding',
     roles: ['guest', 'trader'],
@@ -86,6 +92,7 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
   {
     group: 'learning',
     icon: 'icon.education.academy',
+    iconTone: 'info',
     id: 'education',
     moduleId: 'education',
     roles: ['guest', 'trader', 'partner'],
@@ -97,6 +104,7 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
   {
     group: 'growth',
     icon: 'icon.promotion.achievement',
+    iconTone: 'warning',
     id: 'challenge',
     moduleId: 'challenge',
     roles: ['trader', 'partner'],
@@ -108,6 +116,7 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
   {
     group: 'growth',
     icon: 'icon.promotion.reward',
+    iconTone: 'warning',
     id: 'rewards',
     moduleId: 'rewards',
     roles: ['trader', 'partner'],
@@ -119,6 +128,7 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
   {
     group: 'growth',
     icon: 'icon.copy.community',
+    iconTone: 'success',
     id: 'community',
     moduleId: 'community',
     roles: ['trader', 'partner'],
@@ -130,6 +140,7 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
   {
     group: 'service',
     icon: 'icon.support.headset',
+    iconTone: 'info',
     id: 'support',
     moduleId: 'support',
     roles: ['guest', 'trader', 'partner'],
@@ -144,6 +155,7 @@ export const discoverCampaignDefinitions: DiscoverCampaignDefinition[] = [
   {
     badge: { 'en-US': 'Referral', 'id-ID': 'Referral', 'zh-CN': '邀请' },
     icon: 'icon.promotion.reward',
+    iconTone: 'warning',
     id: 'referCommission',
     moduleId: 'partner',
     roles: ['partner'],
@@ -157,6 +169,7 @@ export const discoverCampaignDefinitions: DiscoverCampaignDefinition[] = [
   {
     badge: { 'en-US': 'Risk first', 'id-ID': 'Risiko dulu', 'zh-CN': '先学风险' },
     icon: 'icon.education.academy',
+    iconTone: 'info',
     id: 'riskQuizCredit',
     moduleId: 'education',
     roles: ['guest', 'trader', 'partner'],
@@ -170,6 +183,7 @@ export const discoverCampaignDefinitions: DiscoverCampaignDefinition[] = [
   {
     badge: { 'en-US': 'Weekly', 'id-ID': 'Mingguan', 'zh-CN': '每周' },
     icon: 'icon.promotion.achievement',
+    iconTone: 'warning',
     id: 'paperChallenge',
     moduleId: 'challenge',
     roles: ['trader', 'partner'],
@@ -183,6 +197,7 @@ export const discoverCampaignDefinitions: DiscoverCampaignDefinition[] = [
   {
     badge: { 'en-US': '3 min', 'id-ID': '3 mnt', 'zh-CN': '3 分钟' },
     icon: 'icon.promotion.ticket',
+    iconTone: 'success',
     id: 'academySprint',
     moduleId: 'rewards',
     roles: ['guest', 'trader', 'partner'],
@@ -196,6 +211,7 @@ export const discoverCampaignDefinitions: DiscoverCampaignDefinition[] = [
   {
     badge: { 'en-US': 'IB', 'id-ID': 'IB', 'zh-CN': 'IB' },
     icon: 'icon.ib.network',
+    iconTone: 'brand',
     id: 'partnerBooster',
     moduleId: 'partner',
     roles: ['partner'],

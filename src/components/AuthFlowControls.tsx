@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Keyboard, Modal, StyleSheet, TextInput, View } from 'react-native';
+import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
 
 import { countryOptions, getPasswordChecks, sanitizeOtp, type CountryOption } from '@/src/auth/authFlow';
 import { layout, lineWidth, radius, size, spacing, typography } from '@/src/theme/tokens';
@@ -10,11 +10,13 @@ import { AppIcon } from './AppIcon';
 import { AuthTextField } from './AuthShell';
 import { bottomSheetPresets, useBottomSheet } from './BottomSheet';
 import { FlagIcon } from './FlagIcon';
+import { GlobalDialog } from './GlobalDialog';
 import { IconSurface } from './IconSurface';
 import { NativePressable } from './NativePressable';
 import { AppText } from './Typography';
 
 const phoneFieldVisibleHeight = size.input.floatingMinHeight + lineWidth.selected * 2;
+const countryPickerSnapPoint = layout.appDeviceHeight - layout.topReservedSpace;
 
 export function CountryPhoneField({
   autoFocus,
@@ -100,8 +102,17 @@ export function CountryPickerModal({
   open: boolean;
   selected: CountryOption;
 }) {
-  const { colors, t } = useProductSettings();
+  const { t } = useProductSettings();
   const bottomSheet = useBottomSheet();
+  const selectedRef = useRef(selected);
+  const onCloseRef = useRef(onClose);
+  const onSelectRef = useRef(onSelect);
+
+  useEffect(() => {
+    selectedRef.current = selected;
+    onCloseRef.current = onClose;
+    onSelectRef.current = onSelect;
+  }, [onClose, onSelect, selected]);
 
   useEffect(() => {
     if (!open) {
@@ -112,18 +123,21 @@ export function CountryPickerModal({
       content: (
         <CountryPickerSheetContent
           onSelect={(country) => {
-            onSelect(country);
+            onSelectRef.current(country);
             bottomSheet.hide();
           }}
-          selected={selected}
+          selected={selectedRef.current}
         />
       ),
-      onDismiss: onClose,
+      contentPadding: 'plain',
+      onDismiss: () => onCloseRef.current(),
+      sheetSurface: 'panel',
+      snapPoints: [countryPickerSnapPoint],
       title: t('auth.country.select'),
     }));
 
     return undefined;
-  }, [bottomSheet, onClose, onSelect, open, selected, t]);
+  }, [bottomSheet, open, t]);
 
   return null;
 }
@@ -161,29 +175,42 @@ function CountryPickerSheetContent({
         value={query}
       />
       <View style={styles.countryList}>
-        {filtered.map((country) => {
+        {filtered.length ? filtered.map((country) => {
           const active = country.code === selected.code;
 
           return (
             <NativePressable
               accessibilityLabel={`${country.name} ${country.dialCode}`}
-              accessibilityRole="button"
-              accessibilityState={{ selected: active }}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: active, selected: active }}
               key={country.code}
               minTouch={44}
               onPress={() => onSelect(country)}
               style={styles.countryRow}>
               <FlagBadge code={country.flag} />
-              <AppText style={styles.countryDial} tone="muted" variant="body">
-                {country.dialCode}
-              </AppText>
-              <AppText numberOfLines={1} style={styles.countryName} variant="body">
-                {country.name}
-              </AppText>
-              {active ? <AppIcon name="icon.status.check" sizeVariant="sm" /> : null}
+              <View style={styles.countryCopyStack}>
+                <AppText numberOfLines={1} style={styles.countryDial} variant="titleSm">
+                  {country.dialCode}
+                </AppText>
+                <AppText numberOfLines={1} style={styles.countryName} tone="muted" variant="caption">
+                  {country.name}
+                </AppText>
+              </View>
+              <View style={styles.countrySelectSlot}>
+                {active ? <AppIcon name="icon.status.check" /> : null}
+              </View>
             </NativePressable>
           );
-        })}
+        }) : (
+          <View
+            accessibilityLabel={t('auth.country.noResults')}
+            accessibilityRole="text"
+            style={styles.countryEmptyState}>
+            <AppText style={styles.centerText} tone="muted" variant="caption">
+              {t('auth.country.noResults')}
+            </AppText>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -355,43 +382,32 @@ export function AuthContactConfirmDialog({
   open: boolean;
   target: string;
 }) {
-  const { colors, resolvedThemeMode, t } = useProductSettings();
+  const { t } = useProductSettings();
   const accessibilityLabel = channel === 'phone'
     ? t('auth.confirmContact.phoneAccessibility', { target })
     : t('auth.confirmContact.emailAccessibility', { target });
-  const scrimColor = `${resolvedThemeMode === 'darkTerminal' || resolvedThemeMode === 'midnightBlue' ? colors.surface.canvas : colors.text.primary}99`;
-
-  if (!open) {
-    return null;
-  }
 
   return (
-    <Modal animationType="fade" onRequestClose={onCancel} transparent visible>
-      <View style={StyleSheet.flatten([styles.confirmBackdrop, { backgroundColor: scrimColor }])}>
-        <View style={styles.confirmStage}>
-          <View
-            accessibilityLabel={accessibilityLabel}
-            accessibilityRole="alert"
-            style={StyleSheet.flatten([styles.confirmDialog, { backgroundColor: colors.surface.raised, borderColor: colors.border.subtle }])}>
-            <View style={styles.confirmCopyStack}>
-              <View style={styles.confirmTargetRow}>
-                {channel === 'phone' && countryFlag ? <FlagBadge code={countryFlag} /> : null}
-                <AppText adjustsFontSizeToFit numberOfLines={1} style={styles.confirmTargetText} variant="titleMd">
-                  {target}
-                </AppText>
-              </View>
-              <AppText style={styles.centerText} tone="muted" variant="bodyLg">
-                {t(channel === 'phone' ? 'auth.confirmContact.phoneBody' : 'auth.confirmContact.emailBody')}
-              </AppText>
-            </View>
-            <View style={styles.confirmActions}>
-              <ActionButton label={t('auth.confirmContact.confirm')} onPress={onConfirm} tone="brand" variant="filled" />
-              <ActionButton label={t('auth.confirmContact.goBack')} onPress={onCancel} tone="neutral" variant="filled" />
-            </View>
-          </View>
+    <GlobalDialog
+      accessibilityLabel={accessibilityLabel}
+      actions={[
+        { label: t('auth.confirmContact.confirm'), onPress: onConfirm, tone: 'brand', variant: 'filled' },
+        { label: t('auth.confirmContact.goBack'), onPress: onCancel, tone: 'neutral', variant: 'filled' },
+      ]}
+      onRequestClose={onCancel}
+      open={open}>
+      <View style={styles.confirmCopyStack}>
+        <View style={styles.confirmTargetRow}>
+          {channel === 'phone' && countryFlag ? <FlagBadge code={countryFlag} /> : null}
+          <AppText numberOfLines={1} style={styles.confirmTargetText} variant="titleMd">
+            {target}
+          </AppText>
         </View>
+        <AppText style={styles.centerText} tone="muted" variant="bodyLg">
+          {t(channel === 'phone' ? 'auth.confirmContact.phoneBody' : 'auth.confirmContact.emailBody')}
+        </AppText>
       </View>
-    </Modal>
+    </GlobalDialog>
   );
 }
 
@@ -408,37 +424,26 @@ export function AuthLeaveVerifiedStepDialog({
   open: boolean;
   title: string;
 }) {
-  const { colors, resolvedThemeMode, t } = useProductSettings();
-  const scrimColor = `${resolvedThemeMode === 'darkTerminal' || resolvedThemeMode === 'midnightBlue' ? colors.surface.canvas : colors.text.primary}99`;
-
-  if (!open) {
-    return null;
-  }
+  const { t } = useProductSettings();
 
   return (
-    <Modal animationType="fade" onRequestClose={onCancel} transparent visible>
-      <View style={StyleSheet.flatten([styles.confirmBackdrop, { backgroundColor: scrimColor }])}>
-        <View style={styles.confirmStage}>
-          <View
-            accessibilityLabel={`${title} ${body}`}
-            accessibilityRole="alert"
-            style={StyleSheet.flatten([styles.confirmDialog, { backgroundColor: colors.surface.raised, borderColor: colors.border.subtle }])}>
-            <View style={styles.errorCopy}>
-              <AppText numberOfLines={2} style={styles.centerText} variant="title.dialog">
-                {title}
-              </AppText>
-              <AppText style={styles.centerText} tone="muted" variant="bodyMd">
-                {body}
-              </AppText>
-            </View>
-            <View style={styles.confirmActions}>
-              <ActionButton label={t('auth.register.leaveStay')} onPress={onCancel} tone="brand" variant="filled" />
-              <ActionButton label={t('auth.register.leaveConfirm')} onPress={onConfirm} tone="neutral" variant="outline" />
-            </View>
-          </View>
-        </View>
+    <GlobalDialog
+      actions={[
+        { label: t('auth.register.leaveStay'), onPress: onCancel, tone: 'brand', variant: 'filled' },
+        { label: t('auth.register.leaveConfirm'), onPress: onConfirm, tone: 'neutral', variant: 'outline' },
+      ]}
+      accessibilityLabel={`${title} ${body}`}
+      onRequestClose={onCancel}
+      open={open}>
+      <View style={styles.errorCopy}>
+        <AppText numberOfLines={2} style={styles.centerText} variant="title.dialog">
+          {title}
+        </AppText>
+        <AppText style={styles.centerText} tone="muted" variant="bodyMd">
+          {body}
+        </AppText>
       </View>
-    </Modal>
+    </GlobalDialog>
   );
 }
 
@@ -462,7 +467,7 @@ export function PasswordRuleList({ password }: { password: string }) {
             <View style={styles.ruleIconSlot}>
               <AppIcon tone={passed ? 'success' : 'textMuted'} name="icon.status.check" sizeVariant="xs" />
             </View>
-            <AppText tone={passed ? 'down' : 'muted'} variant="caption">
+            <AppText tone={passed ? 'success' : 'muted'} variant="caption">
               {label}
             </AppText>
           </View>
@@ -483,7 +488,7 @@ export function AuthErrorSheet({
   open: boolean;
   title: string;
 }) {
-  const { colors, t } = useProductSettings();
+  const { t } = useProductSettings();
   const bottomSheet = useBottomSheet();
 
   useEffect(() => {
@@ -533,39 +538,28 @@ export function AuthErrorDialog({
   open: boolean;
   title: string;
 }) {
-  const { colors, resolvedThemeMode, t } = useProductSettings();
-  const scrimColor = `${resolvedThemeMode === 'darkTerminal' || resolvedThemeMode === 'midnightBlue' ? colors.surface.canvas : colors.text.primary}99`;
-
-  if (!open) {
-    return null;
-  }
+  const { t } = useProductSettings();
 
   return (
-    <Modal animationType="fade" onRequestClose={onClose} transparent visible>
-      <View style={StyleSheet.flatten([styles.confirmBackdrop, { backgroundColor: scrimColor }])}>
-        <View style={styles.confirmStage}>
-          <View
-            accessibilityLabel={`${title} ${body}`}
-            accessibilityRole="alert"
-            style={StyleSheet.flatten([styles.confirmDialog, { backgroundColor: colors.surface.raised, borderColor: colors.border.subtle }])}>
-            <View style={styles.errorFeedbackContent}>
-              <IconSurface icon="icon.system.close" sizeVariant="md" tone="danger" />
-              <View style={styles.errorCopy}>
-                <AppText numberOfLines={2} style={styles.centerText} variant="title.dialog">
-                  {title}
-                </AppText>
-                <AppText style={styles.centerText} tone="muted" variant="caption">
-                  {body}
-                </AppText>
-              </View>
-            </View>
-            <View style={styles.confirmActions}>
-              <ActionButton label={t('auth.error.gotIt')} onPress={onClose} tone="brand" variant="filled" />
-            </View>
-          </View>
+    <GlobalDialog
+      actions={[
+        { label: t('auth.error.gotIt'), onPress: onClose, tone: 'brand', variant: 'filled' },
+      ]}
+      accessibilityLabel={`${title} ${body}`}
+      onRequestClose={onClose}
+      open={open}>
+      <View style={styles.errorFeedbackContent}>
+        <IconSurface icon="icon.system.close" sizeVariant="md" tone="danger" />
+        <View style={styles.errorCopy}>
+          <AppText numberOfLines={2} style={styles.centerText} variant="title.dialog">
+            {title}
+          </AppText>
+          <AppText style={styles.centerText} tone="muted" variant="caption">
+            {body}
+          </AppText>
         </View>
       </View>
-    </Modal>
+    </GlobalDialog>
   );
 }
 
@@ -595,33 +589,6 @@ const styles = StyleSheet.create({
   centerText: {
     textAlign: 'center',
   },
-  confirmActions: {
-    alignSelf: 'stretch',
-    gap: spacing.md,
-  },
-  confirmBackdrop: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  confirmCopyStack: {
-    alignItems: 'center',
-    gap: spacing.xs,
-    width: '100%',
-  },
-  confirmDialog: {
-    alignItems: 'center',
-    borderRadius: radius.sheet,
-    borderWidth: lineWidth.hairline,
-    gap: spacing.xl,
-    padding: spacing.xl,
-    width: '100%',
-  },
-  confirmStage: {
-    maxWidth: layout.appMaxWidth,
-    paddingHorizontal: spacing.xxl,
-    width: '100%',
-  },
   confirmTargetRow: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -649,14 +616,25 @@ const styles = StyleSheet.create({
   countryChipDial: {
     flexShrink: 0,
   },
+  countryCopyStack: {
+    flex: 1,
+    gap: spacing.xxs,
+    minWidth: 0,
+  },
   countryDial: {
-    width: size.input.countryDialWidth,
+    minWidth: 0,
+  },
+  countryEmptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: size.input.countryRowMinHeight,
+    paddingHorizontal: spacing.md,
   },
   countryList: {
     gap: spacing.xs,
   },
   countryName: {
-    flex: 1,
+    minWidth: 0,
   },
   countryPickerContent: {
     gap: spacing.md,
@@ -666,8 +644,18 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     flexDirection: 'row',
     gap: spacing.md,
-    minHeight: size.control.md,
+    minHeight: size.input.countryRowMinHeight,
     paddingHorizontal: spacing.md,
+  },
+  countrySelectSlot: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: size.icon.md,
+  },
+  confirmCopyStack: {
+    alignItems: 'center',
+    gap: spacing.xs,
+    width: '100%',
   },
   errorCopy: {
     gap: spacing.sm,

@@ -30,7 +30,7 @@ export function HeaderIconButton({
   const buttonStyle = StyleSheet.flatten([
     styles.button,
     variant === 'filled' && {
-      backgroundColor: colors.surface.subtle,
+      backgroundColor: colors.surface.panel,
     },
     variant === 'ghost' && styles.ghost,
     style,

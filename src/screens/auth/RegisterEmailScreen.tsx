@@ -2,12 +2,12 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 
 import { isValidEmail, safeRedirect } from '@/src/auth/authFlow';
-import { ActionButton } from '@/src/components/ActionButton';
-import { AuthShell, AuthTextField } from '@/src/components/AuthShell';
-import { AuthContactConfirmDialog, AuthErrorSheet, AuthLeaveVerifiedStepDialog } from '@/src/components/AuthFlowControls';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { AuthShell, AuthTextField } from '@/src/design-public-assets/components';
+import { AuthContactConfirmDialog, AuthErrorSheet, AuthLeaveVerifiedStepDialog } from '@/src/design-public-assets/components';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import type { NavigationTarget } from '@/src/navigation/navigationPolicy';
-import { useProductSettings } from '@/src/settings/ProductSettings';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 
 export default function RegisterEmailScreen() {
   const params = useLocalSearchParams<{ phone?: string; redirect?: string }>();

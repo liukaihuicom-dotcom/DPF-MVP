@@ -76,7 +76,7 @@ export function SegmentedTabs<T extends string>({
         minTouch={isUnderline ? size.touch.min : size.tab.pillMinHeight}
         onPress={() => onValueChange(item.value)}
         style={StyleSheet.flatten(tabStyle)}>
-        <AppText adjustsFontSizeToFit numberOfLines={1} tone={selected ? 'default' : 'muted'} variant={labelVariant}>
+        <AppText numberOfLines={1} tone={selected ? 'default' : 'muted'} variant={labelVariant}>
           {item.label}
         </AppText>
         {isUnderline ? (

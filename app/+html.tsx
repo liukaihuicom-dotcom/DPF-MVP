@@ -1,6 +1,6 @@
 import { ScrollViewStyleReset } from 'expo-router/html';
 
-import { themeColors } from '@/src/theme/colors';
+import { themeColors } from '@/src/design-public-assets/tokens';
 
 // This file is web-only and used to configure the root HTML for every
 // web page during static rendering.

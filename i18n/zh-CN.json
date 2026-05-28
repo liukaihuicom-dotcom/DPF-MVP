@@ -4,5 +4,8 @@
   "common.invalidInstrument": "品种不存在",
   "order.errorLots": "请输入大于 0 的交易手数。",
   "order.errorMargin": "当前可用保证金不足以提交该模拟订单。",
-  "auth.lockedToastTitle": "需要登录"
+  "auth.lockedToastTitle": "需要登录",
+  "common.retry": "重试",
+  "root.error.title": "出现错误",
+  "instrument.marketBriefBrand": "Dupoin 市场"
 }

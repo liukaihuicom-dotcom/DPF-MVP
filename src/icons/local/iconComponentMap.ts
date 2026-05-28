@@ -1,4 +1,5 @@
 import type { LocalIconComponent } from './types';
+import { LocalCustomAddIcon } from '@/src/icons/local/iconsax/LocalAddIcon';
 import { LocalCustomArrowLeftLineIcon } from '@/src/icons/local/iconsax/LocalArrowLeftLineIcon';
 import { LocalCustomCloseIcon } from '@/src/icons/local/iconsax/LocalCloseIcon';
 import { LocalIconsaxAppleIcon } from '@/src/icons/local/iconsax/LocalAppleIcon';
@@ -64,6 +65,7 @@ import { LocalIconsaxVerifyIcon } from '@/src/icons/local/iconsax/LocalVerifyIco
 import { LocalIconsaxWalletIcon } from '@/src/icons/local/iconsax/LocalWalletIcon';
 
 export const localIconComponents = {
+  "custom:Add": LocalCustomAddIcon,
   "custom:ArrowLeftLine": LocalCustomArrowLeftLineIcon,
   "custom:Close": LocalCustomCloseIcon,
   "custom:Apple": LocalIconsaxAppleIcon,

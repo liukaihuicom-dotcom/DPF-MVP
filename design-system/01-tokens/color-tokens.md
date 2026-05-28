@@ -22,16 +22,18 @@ Every primitive ramp uses the 11-step mainstream scale `50, 100, 200, 300, 400, 
 |---|---|---|
 | Neutral | `colorPrimitives.neutral.*` | Surfaces, text, borders, disabled states |
 | Brand Teal | `colorPrimitives.brand.teal.*` | Dupoin brand, focus, selected states |
-| Red | `colorPrimitives.red.*` | Danger, destructive, rejected, market up base |
-| Green | `colorPrimitives.green.*` | Success, completed, market down base |
+| Red | `colorPrimitives.red.*` | Danger, destructive, rejected, market down base |
+| Green | `colorPrimitives.green.*` | Success, completed, feedback states |
 | Amber | `colorPrimitives.amber.*` | Warning, pending, review, caution |
-| Blue | `colorPrimitives.blue.*` | Information, links, guidance, transfer |
+| Blue | `colorPrimitives.blue.*` | Standard blue, information, links, guidance, transfer |
 | Cyan | `colorPrimitives.cyan.*` | Secondary accent and data visualization |
 | Purple | `colorPrimitives.purple.*` | Chart categorical/data visualization |
-| Market Up | `colorPrimitives.market.up.*` | China-style positive/up movement, red |
-| Market Down | `colorPrimitives.market.down.*` | China-style negative/down movement, green |
+| Market Up | `colorPrimitives.market.up.*` | Global positive/up movement, positive trading amount, profitable PnL, green |
+| Market Down | `colorPrimitives.market.down.*` | Global negative/down movement, negative trading amount, loss PnL, red |
 
 `brand.teal.500` remains `#2EB5C4`.
+`blue.500` and `blue.600` are the standard blue `#1F72E8`.
+`market.up.600` is the trading up green `#2EA379`; it is separate from `status.success.*`.
 
 ## L2 Semantic Runtime
 
@@ -82,7 +84,7 @@ All text color decisions start from information meaning, not visual preference. 
 | text.brand | `AppText tone="brand"` / `colors.brand.fg` | Current module, selected state, brand entry | Making ordinary headings brighter |
 | text.warning | `AppText tone="amber"` / `colors.status.warning.fg` | Pending, review, caution, risk attention | Decorative labels |
 | text.danger | `AppText tone="danger"` / `colors.status.danger.fg` | Error, failed, rejected, destructive action | Marketing urgency |
-| text.up/down | `AppText tone="up/down"` / `colors.market.*.fg` | Market movement, PnL, trade direction | Generic success/failure |
+| text.up/down | `AppText tone="up/down"` / `colors.market.*.fg` | Market movement, PnL, trade direction, signed trading amounts | Generic success/failure or completed states |
 | text.info | `AppText tone="blue"` / `colors.status.info.fg` | Informational hints, links, guidance | Arbitrary visual variety |
 | text.inverse | component-owned foreground | Filled buttons, toast/status fills, logo marks | Page-level direct inverse text |
 
@@ -93,4 +95,6 @@ All text color decisions start from information meaning, not visual preference. 
 3. Page code must not use deprecated `palette.*`; use `colors.*` or shared component props.
 4. Do not concatenate alpha strings such as `${color}14`; use `colors.overlay.*`.
 5. Status, market, and brand states must carry `fg`, `bg`, `border`, `solid`, and `onSolid`.
-6. `up` and `down` keep China-style financial semantics: `up = red`, `down = green`.
+6. `up` and `down` follow global trading semantics: `up = green`, `down = red`.
+7. `status.success.*`, `colors.icon.success`, success Toast, completed, and paid states remain feedback success semantics. They must not be remapped to `market.up` or `#2EA379`.
+8. Migration note: old code that used `down` only because it was green must be remapped by business meaning. Positive trading values, upward movement, buy direction, and profitable PnL use `up`; negative trading values, downward movement, sell direction, and loss PnL use `down`; completed feedback states use `success`.

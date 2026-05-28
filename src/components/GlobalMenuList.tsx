@@ -139,7 +139,7 @@ function GlobalMenuListRight({
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     overflow: 'hidden',
   },

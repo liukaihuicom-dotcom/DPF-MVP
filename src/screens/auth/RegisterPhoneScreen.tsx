@@ -2,11 +2,11 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 
 import { buildAccount, buildAuthRoute, defaultCountry, safeRedirect, sanitizePhone } from '@/src/auth/authFlow';
-import { ActionButton } from '@/src/components/ActionButton';
-import { AuthDescriptionAction, AuthShell } from '@/src/components/AuthShell';
-import { AuthContactConfirmDialog, AuthErrorSheet, CountryPhoneField } from '@/src/components/AuthFlowControls';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { AuthDescriptionAction, AuthShell } from '@/src/design-public-assets/components';
+import { AuthContactConfirmDialog, AuthErrorSheet, CountryPhoneField } from '@/src/design-public-assets/components';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
-import { useProductSettings } from '@/src/settings/ProductSettings';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 
 export default function RegisterPhoneScreen() {
   const params = useLocalSearchParams<{ entry?: string; redirect?: string }>();

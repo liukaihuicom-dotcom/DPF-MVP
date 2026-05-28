@@ -15,7 +15,7 @@ type ScreenProps = PropsWithChildren<{
   backHref?: NavigationTarget;
   contentBottomPadding?: 'default' | 'none';
   contentInsetBottom?: number;
-  contentPadding?: 'default' | 'flush';
+  contentPadding?: 'card' | 'default' | 'flush' | 'plain';
   dismissKeyboardOnTap?: boolean;
   keyboardAware?: boolean;
   overlay?: ReactNode;
@@ -56,6 +56,7 @@ export function Screen({
   const screenContentBottomPadding = layout.screenBottomPadding + insets.bottom;
   const baseBottomPadding = stickyFooter ? bottomActionInset : screenContentBottomPadding;
   const bottomPadding = baseBottomPadding + contentInsetBottom;
+  const contentHorizontalPadding = contentPadding === 'plain' ? layout.contentPlainPaddingX : layout.contentCardPaddingX;
   const stickyFooterBackgroundColor = stickyFooterBackground === 'page' ? colors.surface.canvas : colors.surface.raised;
   const wrapDismiss = (node: ReactNode) =>
     dismissKeyboardOnTap ? (
@@ -73,6 +74,7 @@ export function Screen({
       contentContainerStyle={[
         styles.content,
         contentPadding === 'flush' && styles.contentFlush,
+        contentPadding !== 'flush' && { paddingHorizontal: contentHorizontalPadding },
         { paddingBottom: bottomPadding },
       ]}
       contentInsetAdjustmentBehavior="never"
@@ -119,7 +121,7 @@ const styles = StyleSheet.create({
   },
   content: {
     gap: layout.screenGap,
-    paddingHorizontal: layout.screenPaddingX,
+    paddingHorizontal: layout.contentCardPaddingX,
     paddingTop: spacing.xs,
   },
   contentFlush: {

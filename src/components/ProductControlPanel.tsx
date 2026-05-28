@@ -695,7 +695,7 @@ export function ProductControlPanel() {
                 {contextControls}
 
                 <SectionTitle title={t('control.pageConsole.menu.pages')} />
-                <View style={StyleSheet.flatten([styles.formSurface, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+                <View style={StyleSheet.flatten([styles.formSurface, { backgroundColor: colors.surface.panel }])}>
                   <ModuleAction
                     body={t('control.pageConsole.menu.pagesBody')}
                     icon="icon.navigation.function_center"
@@ -731,7 +731,7 @@ export function ProductControlPanel() {
                 ) : null}
 
                 <SectionTitle title={t('control.devConsole.quickScenarios')} />
-                <View style={StyleSheet.flatten([styles.formSurface, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+                <View style={StyleSheet.flatten([styles.formSurface, { backgroundColor: colors.surface.panel }])}>
                   <View style={styles.scenarioGrid}>
                     {visibleScenarios.map((scenario) => (
                       <ScenarioTile key={scenario.id} onPress={() => applyScenario(scenario)} scenario={scenario} />
@@ -740,7 +740,7 @@ export function ProductControlPanel() {
                 </View>
 
                 <SectionTitle title={t('control.pageConsole.menu.runtime')} />
-                <View style={StyleSheet.flatten([styles.statusLine, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+                <View style={StyleSheet.flatten([styles.statusLine, { backgroundColor: colors.surface.panel }])}>
                   <CompactMetric label={t('control.pageConsole.quoteState')} value={quoteStatus} />
                   <CompactMetric label={t('control.tradingUsage.positions')} value={formatNumber(positions.length, 0, locale)} />
                   <CompactMetric label={t('control.tradingUsage.orders')} value={formatNumber(orders.length, 0, locale)} />
@@ -764,7 +764,7 @@ export function ProductControlPanel() {
               </View>
             ) : (
               <View style={styles.detailStack}>
-                <View style={StyleSheet.flatten([styles.stateSummary, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
+                <View style={StyleSheet.flatten([styles.stateSummary, { backgroundColor: colors.surface.panel }])}>
                   <IconSurface background="hidden" icon="icon.security.risk_shield" sizeVariant="xs" tone="neutral" />
                   <View style={styles.rowText}>
                     <AppText numberOfLines={1} variant="caption">
@@ -969,7 +969,7 @@ function ScenarioTile({ onPress, scenario }: { onPress: () => void; scenario: Qu
       accessibilityRole="button"
       minTouch={40}
       onPress={onPress}
-      style={StyleSheet.flatten([styles.scenarioTile, { borderColor: colors.border.subtle }])}>
+      style={styles.scenarioTile}>
       <IconSurface background="hidden" icon={scenario.icon} sizeVariant="xs" tone="neutral" />
       <View style={styles.rowText}>
         <AppText numberOfLines={1} variant="caption">
@@ -1191,8 +1191,8 @@ const styles = StyleSheet.create({
     rowGap: spacing.sm,
   },
   formSurface: {
-    borderRadius: radius.md,
-    borderWidth: lineWidth.hairline,
+    borderRadius: radius.card,
+    borderWidth: lineWidth.none,
     gap: spacing.xs,
     padding: spacing.xs,
   },
@@ -1239,13 +1239,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   moduleBlock: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     gap: spacing.sm,
     padding: spacing.sm,
   },
   panel: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     overflow: 'hidden',
     width: 360,
@@ -1305,13 +1305,13 @@ const styles = StyleSheet.create({
     rowGap: spacing.sm,
   },
   scenarioPanel: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     padding: spacing.sm,
   },
   scenarioTile: {
     alignItems: 'center',
-    borderRadius: radius.sm,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flexBasis: '48%',
     flexDirection: 'row',
@@ -1334,8 +1334,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
   },
   statusLine: {
-    borderRadius: radius.md,
-    borderWidth: lineWidth.hairline,
+    borderRadius: radius.card,
+    borderWidth: lineWidth.none,
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.xs,
@@ -1343,7 +1343,7 @@ const styles = StyleSheet.create({
   },
   stateSummary: {
     alignItems: 'center',
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flexDirection: 'row',
     gap: spacing.sm,

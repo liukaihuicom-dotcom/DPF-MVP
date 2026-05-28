@@ -15,7 +15,7 @@ export function Header({ eyebrow, title, subtitle }: HeaderProps) {
         <AppText tone="dim" variant="eyebrow">
           {eyebrow}
         </AppText>
-        <AppText adjustsFontSizeToFit numberOfLines={1} variant="title.pageCompact">
+        <AppText numberOfLines={1} variant="title.pageCompact">
           {title}
         </AppText>
         {subtitle ? (

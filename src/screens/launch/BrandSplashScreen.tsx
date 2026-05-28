@@ -11,8 +11,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { useThemeColors } from '@/src/settings/ProductSettings';
-import { layout, size } from '@/src/theme/tokens';
+import { useThemeColors } from '@/src/design-public-assets/copy';
+import { layout, size } from '@/src/design-public-assets/tokens';
 
 const LOGO_SIZE = Math.round(size.viewport.appMaxWidth * 0.58);
 const INTRO_DURATION_MS = 780;

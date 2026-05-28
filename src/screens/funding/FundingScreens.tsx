@@ -2,21 +2,21 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { ActionButton } from '@/src/components/ActionButton';
-import { AppIcon, type AppIconName, type IconTone } from '@/src/components/AppIcon';
-import { bottomSheetPresets, useBottomSheet } from '@/src/components/BottomSheet';
-import { Card } from '@/src/components/Card';
-import { DetailRow } from '@/src/components/data-display';
-import { EmptyState } from '@/src/components/feedback';
-import { FundActionGrid } from '@/src/components/FundActionGrid';
-import { IconSurface, type IconSurfaceTone } from '@/src/components/IconSurface';
-import { NativePressable } from '@/src/components/NativePressable';
-import { Screen } from '@/src/components/Screen';
-import { SegmentedTabs } from '@/src/components/SegmentedTabs';
-import { StatusPill, type StatusPillTone } from '@/src/components/StatusPill';
-import { TextField } from '@/src/components/TextField';
-import { createTradingAccountSwitchHeader, TradingAccountSwitchSheet } from '@/src/components/TradingAccountSwitchSheet';
-import { AppText } from '@/src/components/Typography';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { AppIcon, type AppIconName, type IconTone } from '@/src/design-public-assets/components';
+import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { createTradingAccountContextSwitcherHeader, TradingAccountContextSwitcher } from '@/src/design-public-assets/business-components';
+import { Card } from '@/src/design-public-assets/components';
+import { DetailRow } from '@/src/design-public-assets/components';
+import { EmptyState } from '@/src/design-public-assets/components';
+import { FundActionGrid } from '@/src/design-public-assets/components';
+import { IconSurface, type IconSurfaceTone } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { Screen } from '@/src/design-public-assets/components';
+import { SegmentedTabs } from '@/src/design-public-assets/components';
+import { StatusPill, type StatusPillTone } from '@/src/design-public-assets/components';
+import { TextField } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import { buildTradingAccountProfiles } from '@/src/domain/accountProfiles';
 import {
   buildFundingMeta,
@@ -36,12 +36,12 @@ import {
   type FundingTransaction,
 } from '@/src/domain/funding';
 import { formatMoney, formatNumber, localizeText } from '@/src/domain/format';
-import type { Locale, TranslationKey } from '@/src/i18n/translations';
+import type { Locale, TranslationKey } from '@/src/design-public-assets/copy';
 import { mockFundingApi } from '@/src/services/fundingApi';
 import { useToast } from '@/src/feedback/Toast';
-import { useProductSettings } from '@/src/settings/ProductSettings';
+import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
-import { lineWidth, layout, radius, size, spacing } from '@/src/theme/tokens';
+import { lineWidth, layout, radius, size, spacing } from '@/src/design-public-assets/tokens';
 import type { KycStatus, TradingAccountUsageStatus } from '@/src/domain/types';
 
 type OperationFilter = FundingOperation | 'all';
@@ -113,12 +113,21 @@ export function FundingHomeScreen() {
       <Card>
         <View style={styles.sectionHeader}>
           <AppText variant="subtitle">{t('funding.home.recent')}</AppText>
-          <ActionButton label={t('funding.action.openTransactions')} onPress={() => router.push('/funding/transactions' as never)} tone="neutral" variant="text" />
+          <NativePressable
+            accessibilityLabel={t('funding.action.openTransactions')}
+            accessibilityRole="button"
+            minTouch={size.button.textMinTouch}
+            onPress={() => router.push('/funding/transactions' as never)}
+            style={styles.textAction}>
+            <AppText tone="link" variant="subtitle">
+              {t('funding.action.openTransactions')}
+            </AppText>
+          </NativePressable>
         </View>
         {recent.length === 0 ? (
           <EmptyState body={t('funding.transactions.empty')} />
         ) : (
-          <View style={StyleSheet.flatten([styles.listFrame, { borderColor: colors.border.subtle }])}>
+          <View style={styles.listFrame}>
             {recent.map((transaction, index) => (
               <FundingTransactionRow
                 key={transaction.id}
@@ -280,13 +289,13 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
 
   const openAccountSheet = (mode: 'source' | 'target') => {
     bottomSheet.show(bottomSheetPresets.selection({
-      ...createTradingAccountSwitchHeader({
+      ...createTradingAccountContextSwitcherHeader({
         locale,
         onAddAccount: showAddAccountFeedback,
         title: t('funding.account.switchTitle'),
       }),
       content: (
-        <TradingAccountSwitchSheet
+        <TradingAccountContextSwitcher
           accounts={profiles}
           getDisabledReason={(profile) => {
             const account = accounts.find((item) => item.id === profile.id);
@@ -427,6 +436,7 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
       align="center"
       back
       backHref="/funding"
+      contentPadding="plain"
       keyboardAware
       stickyFooter={(
         <View style={styles.fundingFooter}>
@@ -501,7 +511,7 @@ export function FundingTransactionsScreen() {
             {groupedRows.map((group) => (
               <View key={group.title} style={styles.transactionDateGroup}>
                 <AppText tone="muted" variant="caption">{group.title}</AppText>
-                <View style={StyleSheet.flatten([styles.listFrame, { borderColor: colors.border.subtle }])}>
+                <View style={styles.listFrame}>
                   {group.rows.map((transaction, index) => (
                     <FundingTransactionRow
                       key={transaction.id}
@@ -552,7 +562,7 @@ export function FundingTransactionDetailScreen() {
         <View style={styles.detailHero}>
           <IconSurface icon={detailStatusIcon(transaction.status)} sizeVariant="lg" tone={resolveStatusSurfaceTone(transaction.status)} />
           <StatusPill compact label={statusText(transaction.status, t)} tone={statusTone} />
-          <AppText adjustsFontSizeToFit numberOfLines={1} tone={signedAmount >= 0 ? 'down' : 'up'} variant="largeNumber">
+          <AppText adjustsFontSizeToFit numberOfLines={1} tone={signedAmount >= 0 ? 'up' : 'down'} variant="largeNumber">
             {formatSignedMoney(signedAmount, 'USD', locale)}
           </AppText>
           <AppText tone="muted" variant="caption">{operationText(transaction.operation, t)}</AppText>
@@ -938,7 +948,7 @@ function FundingRiskBanner() {
   }
 
   return (
-    <View style={StyleSheet.flatten([styles.riskBanner, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
+    <View style={StyleSheet.flatten([styles.riskBanner, { backgroundColor: colors.surface.subtle }])}>
       <AppIcon tone="amber" name="icon.security.risk_shield" sizeVariant="sm" />
       <View style={styles.flex}>
         <AppText variant="caption">{t('funding.kyc.required')}</AppText>
@@ -978,7 +988,7 @@ function FundingTransactionRow({ onPress, showDivider, transaction }: { onPress:
         <AppText numberOfLines={1} tone="muted" variant="caption">{formatDateTime(transaction.createdAt, locale)} · {transaction.reference}</AppText>
       </View>
       <View style={styles.rowSide}>
-        <AppText adjustsFontSizeToFit numberOfLines={1} tone={getFundingSignedAmount(transaction) >= 0 ? 'down' : 'up'} variant="subtitle">
+        <AppText adjustsFontSizeToFit numberOfLines={1} tone={getFundingSignedAmount(transaction) >= 0 ? 'up' : 'down'} variant="subtitle">
           {formatSignedMoney(getFundingSignedAmount(transaction), 'USD', locale)}
         </AppText>
         <StatusPill compact label={statusText(transaction.status, t)} tone={getStatusTone(transaction.status)} />
@@ -1108,34 +1118,34 @@ function detailStatusIcon(status: FundingStatus): AppIconName {
 }
 
 function resolveStatusColor(status: FundingStatus, colors: ReturnType<typeof useProductSettings>['colors']) {
-  if (status === 'completed' || status === 'paid') return colors.market.down.fg;
+  if (status === 'completed' || status === 'paid') return colors.status.success.fg;
   if (status === 'failed' || status === 'rejected' || status === 'expired') return colors.status.danger.fg;
   if (status === 'reviewing' || status === 'awaiting_payment' || status === 'processing') return colors.status.warning.fg;
   return colors.status.info.fg;
 }
 
 function resolveStatusIconTone(status: FundingStatus): IconTone {
-  if (status === 'completed' || status === 'paid') return 'down';
+  if (status === 'completed' || status === 'paid') return 'success';
   if (status === 'failed' || status === 'rejected' || status === 'expired') return 'danger';
   if (status === 'reviewing' || status === 'awaiting_payment' || status === 'processing') return 'amber';
   return 'blue';
 }
 
 function resolveStatusSurfaceTone(status: FundingStatus): IconSurfaceTone {
-  if (status === 'completed' || status === 'paid') return 'down';
+  if (status === 'completed' || status === 'paid') return 'success';
   if (status === 'failed' || status === 'rejected' || status === 'expired') return 'danger';
   if (status === 'reviewing' || status === 'awaiting_payment' || status === 'processing') return 'warning';
   return 'info';
 }
 
 function resolveOperationIconTone(operation: FundingOperation): IconTone {
-  if (operation === 'deposit') return 'down';
+  if (operation === 'deposit') return 'success';
   if (operation === 'withdrawal') return 'amber';
   return 'blue';
 }
 
 function resolveOperationSurfaceTone(operation: FundingOperation): IconSurfaceTone {
-  if (operation === 'deposit') return 'down';
+  if (operation === 'deposit') return 'success';
   if (operation === 'withdrawal') return 'warning';
   return 'info';
 }
@@ -1298,7 +1308,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   detailRows: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     overflow: 'hidden',
   },
@@ -1378,7 +1388,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.none,
   },
   amountStageWrap: {
-    borderRadius: radius.lg,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     gap: spacing.md,
     paddingHorizontal: layout.cardPaddingX,
@@ -1402,7 +1412,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   listFrame: {
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     overflow: 'hidden',
   },
@@ -1411,7 +1421,7 @@ const styles = StyleSheet.create({
   },
   methodRow: {
     alignItems: 'center',
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.hairline,
     flexDirection: 'row',
     gap: spacing.md,
@@ -1442,7 +1452,7 @@ const styles = StyleSheet.create({
   },
   riskBanner: {
     alignItems: 'flex-start',
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flexDirection: 'row',
     gap: spacing.md,
@@ -1490,6 +1500,11 @@ const styles = StyleSheet.create({
   timeline: {
     gap: spacing.md,
     marginTop: spacing.md,
+  },
+  textAction: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.sm,
   },
   timelineDot: {
     borderRadius: radius.full,

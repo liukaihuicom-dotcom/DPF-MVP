@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Security Center Contract Schemas",
+  "type": "object",
+  "definitions": {
+    "riskLevel": {
+      "type": "string",
+      "enum": ["Critical", "High", "Medium", "Low"]
+    },
+    "alert": {
+      "type": "object",
+      "required": ["alertId", "alertType", "riskLevel", "title", "description", "status", "triggeredAt"],
+      "properties": {
+        "alertId": { "type": "string" },
+        "alertType": {
+          "type": "string",
+          "enum": [
+            "account_frozen_by_admin",
+            "remote_login_blocked",
+            "totp_disable_pending",
+            "security_change_pending",
+            "abnormal_withdrawal_detected",
+            "new_device_login_success",
+            "trusted_device_changed"
+          ]
+        },
+        "riskLevel": { "$ref": "#/definitions/riskLevel" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "primaryAction": { "$ref": "#/definitions/action" },
+        "secondaryAction": { "$ref": "#/definitions/action" },
+        "status": { "type": "string", "enum": ["active", "dismissed", "resolved", "snoozed"] },
+        "triggeredAt": { "type": "string", "format": "date-time" },
+        "snoozeUntil": { "type": "string", "format": "date-time" },
+        "relatedEntityId": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "action": {
+      "type": "object",
+      "required": ["label", "actionType"],
+      "properties": {
+        "label": { "type": "string" },
+        "actionType": {
+          "type": "string",
+          "enum": ["contact_support", "view_detail", "cancel_gsl_change", "freeze_account", "view_device", "dismiss", "snooze"]
+        },
+        "targetId": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "score": {
+      "type": "object",
+      "required": ["total", "level", "suggestions"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "level": { "type": "string", "enum": ["excellent", "good", "fair", "risk"] },
+        "suggestions": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/securitySuggestion" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "securitySuggestion": {
+      "type": "object",
+      "required": ["suggestionId", "title", "scoreGain", "priority", "actionType"],
+      "properties": {
+        "suggestionId": { "type": "string" },
+        "title": { "type": "string" },
+        "scoreGain": { "type": "integer", "minimum": 0, "maximum": 30 },
+        "priority": { "type": "integer", "minimum": 1 },
+        "actionType": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "accountSecurityItem": {
+      "type": "object",
+      "required": ["itemId", "label", "status", "primaryAction"],
+      "properties": {
+        "itemId": {
+          "type": "string",
+          "enum": ["password", "totp", "email", "phone", "anti_phishing_code", "gsl"]
+        },
+        "label": { "type": "string" },
+        "status": { "type": "string" },
+        "statusTone": { "type": "string", "enum": ["success", "info", "warning", "danger", "neutral"] },
+        "description": { "type": "string" },
+        "primaryAction": { "$ref": "#/definitions/action" }
+      },
+      "additionalProperties": false
+    },
+    "gslChange": {
+      "type": "object",
+      "required": ["changeId", "changeType", "status", "createdAt", "effectiveAt", "riskLevel", "canCancel"],
+      "properties": {
+        "changeId": { "type": "string" },
+        "changeType": {
+          "type": "string",
+          "enum": ["password", "email", "phone", "totp_disable", "withdraw_address"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "cancelled", "effective", "failed", "superseded", "expired"]
+        },
+        "oldValueMasked": { "type": "string" },
+        "newValueMasked": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "effectiveAt": { "type": "string", "format": "date-time" },
+        "cancelledAt": { "type": "string", "format": "date-time" },
+        "riskLevel": { "$ref": "#/definitions/riskLevel" },
+        "requestIp": { "type": "string" },
+        "requestDevice": { "type": "string" },
+        "canCancel": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "device": {
+      "type": "object",
+      "required": ["deviceId", "deviceName", "platform", "lastActiveAt", "isCurrent", "isTrusted", "riskLevel", "sessionStatus"],
+      "properties": {
+        "deviceId": { "type": "string" },
+        "deviceName": { "type": "string" },
+        "platform": { "type": "string", "enum": ["iOS", "Android", "Web", "Desktop"] },
+        "browser": { "type": "string" },
+        "os": { "type": "string" },
+        "ip": { "type": "string" },
+        "country": { "type": "string" },
+        "city": { "type": "string" },
+        "lastActiveAt": { "type": "string", "format": "date-time" },
+        "firstLoginAt": { "type": "string", "format": "date-time" },
+        "isCurrent": { "type": "boolean" },
+        "isTrusted": { "type": "boolean" },
+        "trustExpireAt": { "type": "string", "format": "date-time" },
+        "riskLevel": { "$ref": "#/definitions/riskLevel" },
+        "sessionStatus": { "type": "string", "enum": ["active", "revoked", "expired"] }
+      },
+      "additionalProperties": false
+    },
+    "loginHistory": {
+      "type": "object",
+      "required": ["loginId", "loginAt", "status", "ip", "riskLevel", "verificationMethod"],
+      "properties": {
+        "loginId": { "type": "string" },
+        "loginAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["success", "failed", "blocked"] },
+        "failureReason": { "type": "string" },
+        "ip": { "type": "string" },
+        "country": { "type": "string" },
+        "city": { "type": "string" },
+        "deviceName": { "type": "string" },
+        "browser": { "type": "string" },
+        "riskLevel": { "$ref": "#/definitions/riskLevel" },
+        "verificationMethod": { "type": "string", "enum": ["none", "email", "totp", "recovery_code"] }
+      },
+      "additionalProperties": false
+    },
+    "overview": {
+      "type": "object",
+      "required": ["score", "alerts", "accountSecurity", "devicesSummary", "gslSummary"],
+      "properties": {
+        "score": { "$ref": "#/definitions/score" },
+        "alerts": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/alert" }
+        },
+        "accountSecurity": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/accountSecurityItem" }
+        },
+        "devicesSummary": {
+          "type": "object",
+          "required": ["activeDeviceCount", "riskDeviceCount", "currentDeviceName"],
+          "properties": {
+            "activeDeviceCount": { "type": "integer", "minimum": 0 },
+            "riskDeviceCount": { "type": "integer", "minimum": 0 },
+            "currentDeviceName": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "gslSummary": {
+          "type": "object",
+          "required": ["pendingCount", "highestRiskLevel"],
+          "properties": {
+            "pendingCount": { "type": "integer", "minimum": 0 },
+            "highestRiskLevel": { "$ref": "#/definitions/riskLevel" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "auditContext": {
+      "type": "object",
+      "required": ["requestId", "actorType", "actorId", "deviceId", "ip"],
+      "properties": {
+        "requestId": { "type": "string" },
+        "actorType": { "type": "string", "enum": ["user", "admin", "system"] },
+        "actorId": { "type": "string" },
+        "deviceId": { "type": "string" },
+        "ip": { "type": "string" },
+        "riskLevel": { "$ref": "#/definitions/riskLevel" }
+      },
+      "additionalProperties": false
+    },
+    "verificationPayload": {
+      "type": "object",
+      "required": ["method", "code", "auditContext"],
+      "properties": {
+        "method": { "type": "string", "enum": ["totp", "email", "recovery_code", "manual_review"] },
+        "code": { "type": "string" },
+        "auditContext": { "$ref": "#/definitions/auditContext" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

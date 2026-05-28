@@ -534,7 +534,7 @@ function FieldMessage({
 
   if (successText) {
     return (
-      <AppText tone="down" variant="caption">
+      <AppText tone="success" variant="caption">
         {successText}
       </AppText>
     );
@@ -643,7 +643,7 @@ function getFieldStateColors(colors: ThemeColors, state: FormFieldState) {
   if (state === 'success') {
     return {
       ...base,
-      border: colors.market.down.fg,
+      border: colors.status.success.fg,
       icon: colors.text.tertiary,
       label: colors.text.secondary,
     };

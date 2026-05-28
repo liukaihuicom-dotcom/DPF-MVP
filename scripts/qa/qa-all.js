@@ -14,6 +14,7 @@ const scripts = [
   'check-security-rules.js',
   'check-version-record.js',
   'check-workspace-boundary.js',
+  'check-public-resources.js',
   'check-icons.js',
   'check-component-boundary.js',
   'check-component-manifest.js',

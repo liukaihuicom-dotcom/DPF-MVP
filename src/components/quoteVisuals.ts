@@ -9,11 +9,11 @@ type QuoteChangeVisual = {
 
 export function getQuoteChangeVisual(changePercent: number, colors: ThemeColors): QuoteChangeVisual {
   if (changePercent > 0) {
-    return { color: colors.market.down.fg, tone: 'down' };
+    return { color: colors.market.up.fg, tone: 'up' };
   }
 
   if (changePercent < 0) {
-    return { color: colors.market.up.fg, tone: 'up' };
+    return { color: colors.market.down.fg, tone: 'down' };
   }
 
   return { color: colors.text.secondary, tone: 'muted' };

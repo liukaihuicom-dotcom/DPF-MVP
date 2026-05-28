@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SecurityCenterOverview",
+  "type": "object",
+  "required": ["score", "alerts", "accountSecurity", "devicesSummary", "gslSummary"],
+  "properties": {
+    "score": {
+      "type": "object",
+      "required": ["total", "level", "suggestions"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "level": { "type": "string", "enum": ["excellent", "good", "fair", "risk"] },
+        "suggestions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["suggestionId", "titleKey", "scoreGain", "priority", "actionType"],
+            "properties": {
+              "suggestionId": { "type": "string" },
+              "titleKey": { "type": "string" },
+              "scoreGain": { "type": "integer", "minimum": 0, "maximum": 30 },
+              "priority": { "type": "integer", "minimum": 1 },
+              "actionType": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "alerts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/securityAlert" }
+    },
+    "accountSecurity": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["itemId", "labelKey", "status", "primaryActionType"],
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "enum": ["password", "totp", "email", "phone", "anti_phishing_code", "gsl"]
+          },
+          "labelKey": { "type": "string" },
+          "status": { "type": "string" },
+          "statusTone": { "type": "string", "enum": ["success", "info", "warning", "danger", "neutral"] },
+          "descriptionKey": { "type": "string" },
+          "primaryActionType": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "devicesSummary": {
+      "type": "object",
+      "required": ["activeDeviceCount", "riskDeviceCount", "currentDeviceName"],
+      "properties": {
+        "activeDeviceCount": { "type": "integer", "minimum": 0 },
+        "riskDeviceCount": { "type": "integer", "minimum": 0 },
+        "currentDeviceName": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "gslSummary": {
+      "type": "object",
+      "required": ["pendingCount", "highestRiskLevel"],
+      "properties": {
+        "pendingCount": { "type": "integer", "minimum": 0 },
+        "highestRiskLevel": { "type": "string", "enum": ["Critical", "High", "Medium", "Low"] }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "securityAlert": {
+      "type": "object",
+      "required": ["alertId", "alertType", "riskLevel", "titleKey", "descriptionKey", "status", "triggeredAt"],
+      "properties": {
+        "alertId": { "type": "string" },
+        "alertType": {
+          "type": "string",
+          "enum": [
+            "account_frozen_by_admin",
+            "remote_login_blocked",
+            "totp_disable_pending",
+            "security_change_pending",
+            "abnormal_withdrawal_detected",
+            "new_device_login_success",
+            "trusted_device_changed"
+          ]
+        },
+        "riskLevel": { "type": "string", "enum": ["Critical", "High", "Medium", "Low"] },
+        "titleKey": { "type": "string" },
+        "descriptionKey": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "dismissed", "resolved", "snoozed"] },
+        "triggeredAt": { "type": "string", "format": "date-time" },
+        "snoozeUntil": { "type": "string", "format": "date-time" },
+        "relatedEntityId": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

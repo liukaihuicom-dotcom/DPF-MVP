@@ -34,7 +34,7 @@ export function FundActionGrid({ accountId, items }: FundActionGridProps) {
   const iconToneByTone: Record<FundActionTone, IconSurfaceTone> = {
     blue: 'info',
     brand: 'brand',
-    deposit: 'down',
+    deposit: 'success',
     transfer: 'info',
     up: 'up',
     withdraw: 'warning',
@@ -53,7 +53,7 @@ export function FundActionGrid({ accountId, items }: FundActionGridProps) {
             onPress={onPress}
             style={StyleSheet.flatten([styles.tile, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
             <IconSurface background="hidden" icon={item.icon} sizeVariant="md" tone={iconToneByTone[item.tone]} />
-            <AppText adjustsFontSizeToFit numberOfLines={1} variant="buttonMd">
+            <AppText numberOfLines={1} variant="buttonMd">
               {item.label}
             </AppText>
           </NativePressable>
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
   tile: {
     alignItems: 'center',
-    borderRadius: radius.lg,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flexBasis: '30%',
     flexGrow: 1,

@@ -95,6 +95,112 @@ paths:
                 $ref: "#/components/schemas/UpgradeRequest"
         "403":
           $ref: "#/components/responses/Forbidden"
+  /api/security-center/overview:
+    get:
+      operationId: getSecurityCenterOverview
+      summary: Get current user's Security Center overview
+      description: Contract-first endpoint for alerts, score, account security cards, device summary, and GSL summary. Page code must not compute final risk policy locally.
+      responses:
+        "200":
+          description: Security Center overview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SecurityCenterOverview"
+        "401":
+          $ref: "#/components/responses/Forbidden"
+        "423":
+          $ref: "#/components/responses/RiskRestricted"
+  /api/security-center/alerts/{alertId}/snooze:
+    post:
+      operationId: snoozeSecurityAlert
+      summary: Snooze a security alert for 24 hours when unresolved
+      parameters:
+        - name: alertId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [auditContext]
+              properties:
+                auditContext:
+                  type: object
+                  required: [requestId, actorId, deviceId, ip]
+                  properties:
+                    requestId:
+                      type: string
+                    actorId:
+                      type: string
+                    deviceId:
+                      type: string
+                    ip:
+                      type: string
+      responses:
+        "200":
+          description: Alert snoozed
+        "404":
+          $ref: "#/components/responses/BadRequest"
+  /api/security-center/gsl/changes/{changeId}/cancel:
+    post:
+      operationId: cancelSecurityGslChange
+      summary: Cancel a pending GSL security change after verification
+      parameters:
+        - name: changeId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [method, code, auditContext]
+              properties:
+                method:
+                  type: string
+                  enum: [totp, email, recovery_code]
+                code:
+                  type: string
+                auditContext:
+                  type: object
+                  required: [requestId, actorId, deviceId, ip]
+                  properties:
+                    requestId:
+                      type: string
+                    actorId:
+                      type: string
+                    deviceId:
+                      type: string
+                    ip:
+                      type: string
+      responses:
+        "200":
+          description: GSL change cancelled
+        "409":
+          $ref: "#/components/responses/BadRequest"
+  /api/security-center/devices/{deviceId}/revoke:
+    post:
+      operationId: revokeSecurityDevice
+      summary: Revoke a non-current login device
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Device revoked
+        "409":
+          $ref: "#/components/responses/BadRequest"
 components:
   responses:
     BadRequest:
@@ -105,6 +211,12 @@ components:
             $ref: "#/components/schemas/ErrorResponse"
     Forbidden:
       description: Permission denied
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    RiskRestricted:
+      description: Security or risk policy restricted the operation
       content:
         application/json:
           schema:
@@ -130,6 +242,8 @@ components:
       $ref: "./schemas/partner-client.schema.json"
     UpgradeRequest:
       $ref: "./schemas/upgrade-request.schema.json"
+    SecurityCenterOverview:
+      $ref: "./schemas/security-center-overview.schema.json"
     ErrorResponse:
       type: object
       required: [code, messageKey]
@@ -141,4 +255,3 @@ components:
         details:
           type: object
           additionalProperties: true
-

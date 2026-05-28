@@ -3,14 +3,14 @@ import { useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 
 import { buildAuthRoute, isValidEmail, maskDisplayAccount, safeRedirect, sanitizePhone } from '@/src/auth/authFlow';
-import { ActionButton } from '@/src/components/ActionButton';
-import { AuthDescriptionAction, AuthLanguageAction, AuthShell, AuthTextField } from '@/src/components/AuthShell';
-import { AuthErrorSheet } from '@/src/components/AuthFlowControls';
-import { AppIcon } from '@/src/components/AppIcon';
-import { HeaderIconButton } from '@/src/components/HeaderIconButton';
-import { NativePressable } from '@/src/components/NativePressable';
-import { ProfileAvatar } from '@/src/components/ProfileAvatar';
-import { AppText } from '@/src/components/Typography';
+import { ActionButton } from '@/src/design-public-assets/components';
+import { AuthDescriptionAction, AuthLanguageAction, AuthShell, AuthTextField } from '@/src/design-public-assets/components';
+import { AuthErrorSheet } from '@/src/design-public-assets/components';
+import { AppIcon } from '@/src/design-public-assets/components';
+import { HeaderIconButton } from '@/src/design-public-assets/components';
+import { NativePressable } from '@/src/design-public-assets/components';
+import { ProfileAvatar } from '@/src/design-public-assets/components';
+import { AppText } from '@/src/design-public-assets/components';
 import type { AuthChannel } from '@/src/domain/types';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import {
@@ -18,8 +18,8 @@ import {
   REMEMBERED_WEB_DEMO_DEVICE_LABEL,
   type RememberedLoginSnapshot,
   useProductSettings,
-} from '@/src/settings/ProductSettings';
-import { lineWidth, radius, size, spacing } from '@/src/theme/tokens';
+} from '@/src/design-public-assets/copy';
+import { lineWidth, radius, size, spacing } from '@/src/design-public-assets/tokens';
 
 export default function LoginScreen() {
   const params = useLocalSearchParams<{ account?: string; channel?: AuthChannel; redirect?: string }>();
@@ -132,7 +132,7 @@ export default function LoginScreen() {
       subtitle={remembered ? t('auth.login.returningSubtitle') : t('auth.login.subtitleV2')}
       title={remembered ? t('auth.login.welcomeBack') : t('auth.login.title')}>
       {remembered && rememberedLoginSnapshot ? (
-        <View style={StyleSheet.flatten([styles.accountSummary, { backgroundColor: colors.surface.subtle, borderColor: colors.border.subtle }])}>
+        <View style={StyleSheet.flatten([styles.accountSummary, { backgroundColor: colors.surface.subtle }])}>
           <ProfileAvatar id={rememberedLoginSnapshot.avatarId} size={48} />
           <View style={styles.flex}>
             <AppText numberOfLines={1} variant="subtitle">
@@ -294,7 +294,7 @@ function formatDeviceLabel(label: string, t: ReturnType<typeof useProductSetting
 const styles = StyleSheet.create({
   accountSummary: {
     alignItems: 'center',
-    borderRadius: radius.md,
+    borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flexDirection: 'row',
     gap: spacing.md,
