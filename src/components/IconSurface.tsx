@@ -39,6 +39,7 @@ export function resolveIconSurfaceTone(colors: ThemeColors, tone: IconSurfaceTon
     case 'warning':
       return { backgroundColor: colors.overlay.warning.subtle, iconTone: 'warning' };
     case 'danger':
+      return { backgroundColor: colors.overlay.danger.subtle, iconTone: 'danger' };
     case 'up':
       return { backgroundColor: colors.overlay.up.subtle, iconTone: 'up' };
     case 'info':

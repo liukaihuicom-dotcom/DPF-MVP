@@ -8,6 +8,7 @@ import { AppIcon } from '@/src/design-public-assets/components';
 import { AuthShell, AuthTextField } from '@/src/design-public-assets/components';
 import { AuthErrorSheet, AuthLeaveVerifiedStepDialog, PasswordRuleList } from '@/src/design-public-assets/components';
 import { NativePressable } from '@/src/design-public-assets/components';
+import { useDirtyStateGuard } from '@/src/design-public-assets/components';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import type { NavigationTarget } from '@/src/navigation/navigationPolicy';
 import { REMEMBERED_WEB_DEMO_DEVICE_LABEL, useProductSettings } from '@/src/design-public-assets/copy';
@@ -33,6 +34,14 @@ export default function RegisterPasswordScreen() {
   const confirmError = passwordValid && (submitted || confirmTouched) && !confirmValid ? t('auth.error.confirmPassword') : '';
   const emailStepTarget = `/auth/register-phone?phone=${encodeURIComponent(phone)}&redirect=${encodeURIComponent(String(redirect))}` as NavigationTarget;
   const phoneStepTarget = `/auth/register?redirect=${encodeURIComponent(String(redirect))}` as NavigationTarget;
+
+  useDirtyStateGuard({
+    body: t('auth.register.leaveAfterEmailBody'),
+    confirmLabel: t('auth.register.leaveConfirm'),
+    dirty: Boolean(phone && email),
+    stayLabel: t('auth.register.leaveStay'),
+    title: t('auth.register.leaveAfterEmailTitle'),
+  });
 
   useEffect(() => {
     if (!phone) {

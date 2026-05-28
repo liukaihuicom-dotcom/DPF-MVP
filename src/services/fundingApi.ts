@@ -98,7 +98,7 @@ const initialTransactions: FundingTransaction[] = [
     fxQuote: baseFxQuote,
     id: 'fund_txn_deposit_100001',
     method: paymentMethods.deposit[0],
-    note: idText('IDR deposit to trading account', 'IDR 入金至交易账号', 'Setoran IDR ke akun trading'),
+    note: idText('IDR deposit to trading account', 'IDR 入金至交易账号', 'Setoran dana IDR ke akun trading'),
     operation: 'deposit',
     reference: 'REF-0524-DP1001',
     requestedIdrAmount: 1500000,
@@ -107,7 +107,7 @@ const initialTransactions: FundingTransaction[] = [
     status: 'awaiting_payment',
     targetTradingAccountId: 'account-900054',
     timeline: [
-      { at: '2026-05-24 10:00', label: idText('Request submitted', '申请已提交', 'Permintaan dikirim'), status: 'submitted' },
+      { at: '2026-05-24 10:00', label: idText('Request submitted', '申请已提交', 'Pengajuan dikirim'), status: 'submitted' },
       { at: '2026-05-24 10:01', label: idText('Waiting for payment', '等待付款', 'Menunggu pembayaran'), status: 'awaiting_payment' },
     ],
     tradingAccountId: 'account-900054',
@@ -121,7 +121,7 @@ const initialTransactions: FundingTransaction[] = [
     fxQuote: baseFxQuote,
     id: 'fund_txn_withdrawal_100002',
     method: paymentMethods.withdrawal[0],
-    note: idText('Withdrawal under review', '出金审核中', 'Penarikan sedang ditinjau'),
+    note: idText('Withdrawal under review', '出金审核中', 'Penarikan dana sedang ditinjau'),
     operation: 'withdrawal',
     reference: 'REF-0522-WD1002',
     requestedIdrAmount: 4540000,
@@ -129,7 +129,7 @@ const initialTransactions: FundingTransaction[] = [
     riskFlags: ['manual_review'],
     status: 'reviewing',
     timeline: [
-      { at: '2026-05-22 14:20', label: idText('Request submitted', '申请已提交', 'Permintaan dikirim'), status: 'submitted' },
+      { at: '2026-05-22 14:20', label: idText('Request submitted', '申请已提交', 'Pengajuan dikirim'), status: 'submitted' },
       { at: '2026-05-22 14:22', label: idText('Manual review required', '需要人工审核', 'Perlu tinjauan manual'), status: 'reviewing' },
     ],
     tradingAccountId: 'account-900055',
@@ -150,7 +150,7 @@ const initialTransactions: FundingTransaction[] = [
     status: 'completed',
     targetTradingAccountId: 'account-900055',
     timeline: [
-      { at: '2026-05-20 09:16', label: idText('Request submitted', '申请已提交', 'Permintaan dikirim'), status: 'submitted' },
+      { at: '2026-05-20 09:16', label: idText('Request submitted', '申请已提交', 'Pengajuan dikirim'), status: 'submitted' },
       { at: '2026-05-20 09:17', label: idText('Transfer completed', '转账已完成', 'Transfer selesai'), status: 'completed' },
     ],
     updatedAt: '2026-05-20 09:17',
@@ -252,7 +252,7 @@ function buildRules(operation: FundingOperation): FundingRuleConfig {
 }
 
 function createTimeline(operation: FundingOperation, status: FundingStatus) {
-  const base = [{ at: '2026-05-24 10:00', label: idText('Request submitted', '申请已提交', 'Permintaan dikirim'), status: 'submitted' as FundingStatus }];
+  const base = [{ at: '2026-05-24 10:00', label: idText('Request submitted', '申请已提交', 'Pengajuan dikirim'), status: 'submitted' as FundingStatus }];
 
   if (operation === 'deposit') {
     return [
@@ -325,7 +325,7 @@ export const mockFundingApi: FundingApi = {
       fee,
       fxQuote: baseFxQuote,
       method,
-      note: idText('IDR deposit to trading account', 'IDR 入金至交易账号', 'Setoran IDR ke akun trading'),
+      note: idText('IDR deposit to trading account', 'IDR 入金至交易账号', 'Setoran dana IDR ke akun trading'),
       operation: 'deposit',
       requestedIdrAmount: payload.requestedIdrAmount,
       requestedUsdAmount: usd,
@@ -365,7 +365,7 @@ export const mockFundingApi: FundingApi = {
       fee,
       fxQuote: baseFxQuote,
       method,
-      note: idText('Withdrawal under review', '出金审核中', 'Penarikan sedang ditinjau'),
+      note: idText('Withdrawal under review', '出金审核中', 'Penarikan dana sedang ditinjau'),
       operation: 'withdrawal',
       requestedIdrAmount: payload.requestedIdrAmount,
       requestedUsdAmount: usd,

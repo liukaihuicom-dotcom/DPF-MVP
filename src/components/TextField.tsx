@@ -3,7 +3,7 @@ import { Modal, Platform, StyleProp, StyleSheet, TextInput, TextInputProps, Text
 
 import { useThemeColors } from '@/src/settings/ProductSettings';
 import type { ThemeColors } from '@/src/theme/colors';
-import { layout, lineWidth, radius, size, spacing, typography } from '@/src/theme/tokens';
+import { layout, lineWidth, radius, size, spacing, typography, zIndex } from '@/src/theme/tokens';
 
 import { AppIcon, type AppIconName, type IconTone } from './AppIcon';
 import { NativePressable } from './NativePressable';
@@ -76,7 +76,7 @@ const selectMenuMaxHeight = 240;
 const selectMenuMinHeight = 140;
 const selectMenuViewportInset = 8;
 const selectMenuOffset = spacing.xs;
-const selectMenuZIndex = 100000;
+const selectMenuZIndex = zIndex.webSelect;
 const fieldBaseBorderWidth = lineWidth.strong;
 const fieldActiveBorderWidth = lineWidth.selected;
 const fieldHorizontalPadding = layout.formFieldTextInset;
@@ -758,11 +758,11 @@ const styles = StyleSheet.create({
     opacity: 0,
   },
   inputFloating: {
-    paddingTop: 16,
+    paddingTop: layout.formFieldFloatingInputPaddingTop,
   },
   inputMultiline: {
     minHeight: size.input.multilineContentMinHeight,
-    paddingTop: 20,
+    paddingTop: layout.formFieldMultilineInputPaddingTop,
   },
   inputStack: {
     flex: 1,
@@ -786,7 +786,7 @@ const styles = StyleSheet.create({
     marginRight: -fieldRightSlotFlushOffset,
   },
   selectText: {
-    paddingTop: 16,
+    paddingTop: layout.formFieldFloatingInputPaddingTop,
   },
   selectValueText: {
     ...typography.bodyLg,
@@ -842,10 +842,10 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   selectShellOpen: {
-    zIndex: 31,
+    zIndex: zIndex.raised,
   },
   selectWrapOpen: {
-    zIndex: 30,
+    zIndex: zIndex.base,
   },
   webSelectBackdrop: {
     bottom: 0,
@@ -870,7 +870,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
     borderWidth: lineWidth.strong,
     gap: spacing.xs,
-    maxHeight: 240,
+    maxHeight: selectMenuMaxHeight,
     overflowY: 'auto' as unknown as 'visible',
     padding: spacing.xs,
     position: 'fixed' as unknown as 'absolute',

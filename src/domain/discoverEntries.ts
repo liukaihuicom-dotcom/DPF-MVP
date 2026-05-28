@@ -44,12 +44,12 @@ export type DiscoverCampaignDefinition = {
 };
 
 export const discoverEntryGroups: { id: DiscoverEntryGroup; title: LocalizedText }[] = [
-  { id: 'profile', title: { 'en-US': 'Profile', 'zh-CN': '我的' } },
-  { id: 'onboarding', title: { 'en-US': 'Open & verify', 'zh-CN': '开户认证' } },
-  { id: 'learning', title: { 'en-US': 'Learning & risk', 'zh-CN': '学习风控' } },
-  { id: 'growth', title: { 'en-US': 'Growth', 'zh-CN': '成长活动' } },
-  { id: 'partner', title: { 'en-US': 'Partner / IB', 'zh-CN': 'Partner / IB' } },
-  { id: 'service', title: { 'en-US': 'Service', 'zh-CN': '服务支持' } },
+  { id: 'profile', title: { 'en-US': 'Profile', 'id-ID': 'Profil', 'zh-CN': '我的' } },
+  { id: 'onboarding', title: { 'en-US': 'Open & verify', 'id-ID': 'Buka akun & verifikasi', 'zh-CN': '开户认证' } },
+  { id: 'learning', title: { 'en-US': 'Learning & risk', 'id-ID': 'Edukasi & risiko', 'zh-CN': '学习风控' } },
+  { id: 'growth', title: { 'en-US': 'Growth', 'id-ID': 'Pertumbuhan', 'zh-CN': '成长活动' } },
+  { id: 'partner', title: { 'en-US': 'Partner / IB', 'id-ID': 'Partner / IB', 'zh-CN': 'Partner / IB' } },
+  { id: 'service', title: { 'en-US': 'Service', 'id-ID': 'Layanan', 'zh-CN': '服务支持' } },
 ];
 
 export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
@@ -62,8 +62,8 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
     roles: ['trader', 'partner'],
     route: '/me',
     status: 'ready',
-    subtitle: { 'en-US': 'Profile, verification tags, settings, and relationship manager.', 'zh-CN': '个人资料、认证标签、设置和客户经理。' },
-    title: { 'en-US': 'Me', 'zh-CN': '我的' },
+    subtitle: { 'en-US': 'Profile, verification tags, settings, and relationship manager.', 'id-ID': 'Profil, tag verifikasi, pengaturan, dan manajer relasi.', 'zh-CN': '个人资料、认证标签、设置和客户经理。' },
+    title: { 'en-US': 'Me', 'id-ID': 'Saya', 'zh-CN': '我的' },
   },
   {
     group: 'partner',
@@ -74,8 +74,8 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
     roles: ['trader', 'partner'],
     route: '/partner',
     status: 'demo',
-    subtitle: { 'en-US': 'Partner function center, client funnel, and commission progress.', 'zh-CN': 'Partner 功能中心、客户漏斗和返佣进度。' },
-    title: { 'en-US': 'Partner Portal', 'zh-CN': 'Partner Portal' },
+    subtitle: { 'en-US': 'Partner function center, client funnel, and commission progress.', 'id-ID': 'Pusat fungsi Partner, funnel klien, dan progres komisi.', 'zh-CN': 'Partner 功能中心、客户漏斗和返佣进度。' },
+    title: { 'en-US': 'Partner Portal', 'id-ID': 'Portal Partner', 'zh-CN': 'Partner Portal' },
   },
   {
     group: 'onboarding',
@@ -86,8 +86,8 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
     roles: ['guest', 'trader'],
     route: '/open-account',
     status: 'demo',
-    subtitle: { 'en-US': 'Guided registration, account setup, and risk acknowledgement.', 'zh-CN': '注册引导、开户设置和风险确认。' },
-    title: { 'en-US': 'Open account', 'zh-CN': '开户' },
+    subtitle: { 'en-US': 'Guided registration, account setup, and risk acknowledgement.', 'id-ID': 'Pendaftaran terpandu, pengaturan akun, dan konfirmasi risiko.', 'zh-CN': '注册引导、开户设置和风险确认。' },
+    title: { 'en-US': 'Open account', 'id-ID': 'Buka akun', 'zh-CN': '开户' },
   },
   {
     group: 'learning',
@@ -98,8 +98,8 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
     roles: ['guest', 'trader', 'partner'],
     route: '/academy',
     status: 'placeholder',
-    subtitle: { 'en-US': 'Spread, leverage, margin call, and CFD basics.', 'zh-CN': '点差、杠杆、保证金追缴和 CFD 基础。' },
-    title: { 'en-US': 'Derivative academy', 'zh-CN': '衍生品学堂' },
+    subtitle: { 'en-US': 'Spread, leverage, margin call, and CFD basics.', 'id-ID': 'Dasar spread, leverage, margin call, dan CFD.', 'zh-CN': '点差、杠杆、保证金追缴和 CFD 基础。' },
+    title: { 'en-US': 'Derivative academy', 'id-ID': 'Akademi derivatif', 'zh-CN': '衍生品学堂' },
   },
   {
     group: 'growth',
@@ -110,8 +110,8 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
     roles: ['trader', 'partner'],
     route: '/challenge',
     status: 'placeholder',
-    subtitle: { 'en-US': 'Paper-trading challenge with virtual ROI and drawdown context.', 'zh-CN': '练习交易挑战赛，展示虚拟收益率与回撤。' },
-    title: { 'en-US': 'Paper FX challenge', 'zh-CN': '外汇挑战赛' },
+    subtitle: { 'en-US': 'Paper-trading challenge with virtual ROI and drawdown context.', 'id-ID': 'Tantangan trading paper dengan ROI virtual dan konteks drawdown.', 'zh-CN': '练习交易挑战赛，展示虚拟收益率与回撤。' },
+    title: { 'en-US': 'Paper FX challenge', 'id-ID': 'Tantangan FX paper', 'zh-CN': '外汇挑战赛' },
   },
   {
     group: 'growth',
@@ -122,8 +122,8 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
     roles: ['trader', 'partner'],
     route: '/rewards',
     status: 'placeholder',
-    subtitle: { 'en-US': 'Reward ledger, badges, and growth missions.', 'zh-CN': '奖励台账、成长徽章和任务。' },
-    title: { 'en-US': 'Rewards', 'zh-CN': '奖励' },
+    subtitle: { 'en-US': 'Reward ledger, badges, and growth missions.', 'id-ID': 'Buku besar hadiah, badge, dan misi pertumbuhan.', 'zh-CN': '奖励台账、成长徽章和任务。' },
+    title: { 'en-US': 'Rewards', 'id-ID': 'Hadiah', 'zh-CN': '奖励' },
   },
   {
     group: 'growth',
@@ -134,8 +134,8 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
     roles: ['trader', 'partner'],
     route: '/community',
     status: 'placeholder',
-    subtitle: { 'en-US': 'Signal posts, trade reviews, and trader community updates.', 'zh-CN': '信号帖、交易复盘和交易社区动态。' },
-    title: { 'en-US': 'Community', 'zh-CN': '社区' },
+    subtitle: { 'en-US': 'Signal posts, trade reviews, and trader community updates.', 'id-ID': 'Unggahan sinyal, ulasan trading, dan update komunitas trader.', 'zh-CN': '信号帖、交易复盘和交易社区动态。' },
+    title: { 'en-US': 'Community', 'id-ID': 'Komunitas', 'zh-CN': '社区' },
   },
   {
     group: 'service',
@@ -146,8 +146,8 @@ export const discoverEntryDefinitions: DiscoverEntryDefinition[] = [
     roles: ['guest', 'trader', 'partner'],
     route: '/support',
     status: 'placeholder',
-    subtitle: { 'en-US': 'Help center, support desk, notifications, and service status.', 'zh-CN': '帮助中心、客服、通知和服务状态。' },
-    title: { 'en-US': 'Support center', 'zh-CN': '客服中心' },
+    subtitle: { 'en-US': 'Help center, support desk, notifications, and service status.', 'id-ID': 'Pusat bantuan, meja dukungan, notifikasi, dan status layanan.', 'zh-CN': '帮助中心、客服、通知和服务状态。' },
+    title: { 'en-US': 'Support center', 'id-ID': 'Pusat dukungan', 'zh-CN': '客服中心' },
   },
 ];
 
@@ -161,7 +161,7 @@ export const discoverCampaignDefinitions: DiscoverCampaignDefinition[] = [
     roles: ['partner'],
     subtitle: {
       'en-US': 'Invite qualified clients and review rebate rules before sharing.',
-      'id-ID': 'Undang klien yang memenuhi syarat dan tinjau aturan rebate sebelum berbagi.',
+      'id-ID': 'Undang klien yang memenuhi syarat dan tinjau aturan komisi sebelum berbagi.',
       'zh-CN': '邀请合格客户，分享前请先查看返佣规则。',
     },
     title: { 'en-US': 'Earn up to 10,000 USDC commission', 'id-ID': 'Komisi hingga 10.000 USDC', 'zh-CN': '最高 10,000 USDC 返佣活动' },
@@ -192,7 +192,7 @@ export const discoverCampaignDefinitions: DiscoverCampaignDefinition[] = [
       'id-ID': 'Latihan trading pada major dan metal dengan konteks drawdown.',
       'zh-CN': '用练习账户交易主要货币对与贵金属，并查看回撤。',
     },
-    title: { 'en-US': 'Paper FX challenge is live', 'id-ID': 'Challenge FX latihan berlangsung', 'zh-CN': '外汇挑战赛进行中' },
+    title: { 'en-US': 'Paper FX challenge is live', 'id-ID': 'Tantangan FX latihan berlangsung', 'zh-CN': '外汇挑战赛进行中' },
   },
   {
     badge: { 'en-US': '3 min', 'id-ID': '3 mnt', 'zh-CN': '3 分钟' },
@@ -206,7 +206,7 @@ export const discoverCampaignDefinitions: DiscoverCampaignDefinition[] = [
       'id-ID': 'Bangun rutinitas trading yang lebih terukur lewat misi CFD singkat.',
       'zh-CN': '通过 CFD 短任务建立更稳健的交易习惯。',
     },
-    title: { 'en-US': 'Academy sprint rewards', 'id-ID': 'Reward sprint akademi', 'zh-CN': '学堂冲刺奖励' },
+    title: { 'en-US': 'Academy sprint rewards', 'id-ID': 'Hadiah sprint akademi', 'zh-CN': '学堂冲刺奖励' },
   },
   {
     badge: { 'en-US': 'IB', 'id-ID': 'IB', 'zh-CN': 'IB' },
@@ -220,7 +220,7 @@ export const discoverCampaignDefinitions: DiscoverCampaignDefinition[] = [
       'id-ID': 'Tinjau tugas funnel klien dan progres komisi bulanan.',
       'zh-CN': '查看客户漏斗任务与月度返佣进度。',
     },
-    title: { 'en-US': 'Partner growth booster', 'id-ID': 'Akselerator growth Partner', 'zh-CN': 'Partner 增长加速' },
+    title: { 'en-US': 'Partner growth booster', 'id-ID': 'Akselerator pertumbuhan Partner', 'zh-CN': 'Partner 增长加速' },
   },
 ];
 

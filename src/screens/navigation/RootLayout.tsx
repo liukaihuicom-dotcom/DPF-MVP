@@ -10,6 +10,7 @@ import { SafeAreaProvider, type Metrics } from 'react-native-safe-area-context';
 
 import { AppViewport } from '@/src/design-public-assets/components';
 import { BottomSheetProvider, GlobalBottomSheetHost } from '@/src/design-public-assets/components';
+import { ModalStackProvider, OverlayQueueProvider } from '@/src/design-public-assets/components';
 import { ProductControlPanel } from '@/src/design-public-assets/components';
 import { AppText } from '@/src/design-public-assets/components';
 import { ToastProvider } from '@/src/feedback/Toast';
@@ -144,62 +145,66 @@ function RootLayoutNav() {
       <BrokerProvider>
         <ToastProvider>
           <BottomSheetProvider>
-            <AppViewport>
-              <Stack
-                screenOptions={{
-                  contentStyle: { backgroundColor: colors.surface.canvas },
-                  headerShown: false,
-                }}>
-                <Stack.Screen name="index" />
-                <Stack.Screen
-                  name="brand-splash"
-                  options={{
-                    contentStyle: { backgroundColor: colors.brand.fg },
-                  }}
-                />
-                <Stack.Screen name="launch" />
-                <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="auth/onboarding" />
-                <Stack.Screen name="auth/index" />
-                <Stack.Screen name="auth/register" />
-                <Stack.Screen name="auth/register-email-code" />
-                <Stack.Screen name="auth/register-phone" />
-                <Stack.Screen name="auth/register-phone-code" />
-                <Stack.Screen name="auth/register-password" />
-                <Stack.Screen name="auth/verify" />
-                <Stack.Screen name="auth/forgot-password" />
-                <Stack.Screen name="auth/pin-setup" />
-                <Stack.Screen name="instrument/[id]" />
-                <Stack.Screen
-                  name="order/[id]"
-                  options={{
-                    animation: 'fade',
-                    contentStyle: { backgroundColor: 'transparent' },
-                    presentation: 'transparentModal',
-                  }}
-                />
-                <Stack.Screen name="client/[id]" />
-                <Stack.Screen name="partner/client-orders" />
-                <Stack.Screen name="partner/commission" />
-                <Stack.Screen name="account-basic/[id]" />
-                <Stack.Screen name="account-balance/[id]" />
-                <Stack.Screen name="account-details/[id]" />
-                <Stack.Screen name="account-orders/[id]" />
-                <Stack.Screen name="appearance" />
-                <Stack.Screen name="settings/index" />
-                <Stack.Screen name="settings/security-log" />
-                <Stack.Screen
-                  name="discover-layout"
-                  options={{
-                    animation: 'fade',
-                    contentStyle: { backgroundColor: 'transparent' },
-                    presentation: 'transparentModal',
-                  }}
-                />
-              </Stack>
-            </AppViewport>
-            <GlobalBottomSheetHost />
-            <ProductControlPanel />
+            <OverlayQueueProvider>
+              <ModalStackProvider>
+                <AppViewport>
+                  <Stack
+                    screenOptions={{
+                      contentStyle: { backgroundColor: colors.surface.canvas },
+                      headerShown: false,
+                    }}>
+                    <Stack.Screen name="index" />
+                    <Stack.Screen
+                      name="brand-splash"
+                      options={{
+                        contentStyle: { backgroundColor: colors.brand.fg },
+                      }}
+                    />
+                    <Stack.Screen name="launch" />
+                    <Stack.Screen name="(tabs)" />
+                    <Stack.Screen name="auth/onboarding" />
+                    <Stack.Screen name="auth/index" />
+                    <Stack.Screen name="auth/register" />
+                    <Stack.Screen name="auth/register-email-code" />
+                    <Stack.Screen name="auth/register-phone" />
+                    <Stack.Screen name="auth/register-phone-code" />
+                    <Stack.Screen name="auth/register-password" />
+                    <Stack.Screen name="auth/verify" />
+                    <Stack.Screen name="auth/forgot-password" />
+                    <Stack.Screen name="auth/pin-setup" />
+                    <Stack.Screen name="instrument/[id]" />
+                    <Stack.Screen
+                      name="order/[id]"
+                      options={{
+                        animation: 'fade',
+                        contentStyle: { backgroundColor: 'transparent' },
+                        presentation: 'transparentModal',
+                      }}
+                    />
+                    <Stack.Screen name="client/[id]" />
+                    <Stack.Screen name="partner/client-orders" />
+                    <Stack.Screen name="partner/commission" />
+                    <Stack.Screen name="account-basic/[id]" />
+                    <Stack.Screen name="account-balance/[id]" />
+                    <Stack.Screen name="account-details/[id]" />
+                    <Stack.Screen name="account-orders/[id]" />
+                    <Stack.Screen name="appearance" />
+                    <Stack.Screen name="settings/index" />
+                    <Stack.Screen name="settings/security-log" />
+                    <Stack.Screen
+                      name="discover-layout"
+                      options={{
+                        animation: 'fade',
+                        contentStyle: { backgroundColor: 'transparent' },
+                        presentation: 'transparentModal',
+                      }}
+                    />
+                  </Stack>
+                </AppViewport>
+                <GlobalBottomSheetHost />
+                <ProductControlPanel />
+              </ModalStackProvider>
+            </OverlayQueueProvider>
           </BottomSheetProvider>
         </ToastProvider>
       </BrokerProvider>

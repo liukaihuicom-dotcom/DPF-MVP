@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Modal, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Line, LinearGradient, Path, Polygon, Polyline, Rect, Stop, Text as SvgText } from 'react-native-svg';
 
 import { AppIcon, type AppIconName } from '@/src/components/AppIcon';
+import { useModalStack } from '@/src/components/ModalStack';
 import { NativePressable } from '@/src/components/NativePressable';
 import { SegmentedTabs } from '@/src/components/SegmentedTabs';
 import { AppText } from '@/src/components/Typography';
@@ -102,15 +103,24 @@ type TranslationChartKey =
   | 'chart.type.line';
 
 export function TradingTerminalChart({ initialTimeframe = '1m', instrument, state }: TradingTerminalChartProps) {
-  const [fullscreen, setFullscreen] = useState(false);
+  const modalStack = useModalStack();
+  const openFullscreen = () => {
+    modalStack.presentFullScreen({
+      content: (
+        <TradingTerminalSurface
+          fullscreen
+          initialTimeframe={initialTimeframe}
+          instrument={instrument}
+          onRequestClose={modalStack.dismiss}
+          state={state}
+        />
+      ),
+      title: instrument.symbol,
+    });
+  };
 
   return (
-    <>
-      <TradingTerminalSurface fullscreen={false} initialTimeframe={initialTimeframe} instrument={instrument} onRequestFullscreen={() => setFullscreen(true)} state={state} />
-      <Modal animationType="slide" onRequestClose={() => setFullscreen(false)} presentationStyle="fullScreen" visible={fullscreen}>
-        <TradingTerminalSurface fullscreen initialTimeframe={initialTimeframe} instrument={instrument} onRequestClose={() => setFullscreen(false)} state={state} />
-      </Modal>
-    </>
+    <TradingTerminalSurface fullscreen={false} initialTimeframe={initialTimeframe} instrument={instrument} onRequestFullscreen={openFullscreen} state={state} />
   );
 }
 

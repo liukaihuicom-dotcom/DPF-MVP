@@ -353,6 +353,153 @@ Hard rules:
 - Do not weaken financial risk information for visual simplicity.
 - UX Gate must run before production handoff for high-risk financial flows.
 
+## 6A. Elite UX/UI Remediation Board Add-on
+
+Use:
+
+`.codex/skills/ui-build-production/addons/elite-ux-ui-remediation-board/SKILL.md`
+
+This Skill is mandatory when the task involves:
+
+- 顶尖 UX/UI 审核
+- UI 质量修复
+- 用户心理
+- 真实使用场景
+- 金融 App 信任感
+- 明确 UI 修改依据
+- L5 设计质量判断
+- 交付前设计门禁
+- 页面像 demo
+- 金融产品视觉可信感不足
+- Redline Report
+- Fix Card
+- 100 分 L5 门禁
+
+Required outputs:
+
+- Evidence Chain
+- Real User Psychology Simulation
+- Real Usage Scenario Simulation
+- 100-Point L5 Gate Score
+- Redline Items for every deduction
+- Fix Cards for every Redline Item
+- Fix Order
+- Final decision: `l5_ready` only at 100/100 and 0 Blocker / 0 Critical / 0 Major
+
+Hard rules:
+
+- Do not modify pages before this Skill collects and outputs the evidence chain.
+- Do not start with visual beautification.
+- Simulate real user psychology and real usage scenarios before scoring.
+- Score using the 100-point L5 gate.
+- Every deduction must output a Redline Item.
+- Every Redline Item must be converted into a Fix Card.
+- Every Fix Card must include Target Layer, Target Files, Exact Action, and Acceptance Criteria.
+- Output Fix Order before implementation.
+- Do not output vague suggestions.
+- System-layer issues must be handled before page-layer issues.
+- Do not output `l5_ready` unless the score is 100/100 and there are 0 Blocker / 0 Critical / 0 Major issues.
+
+## 6B. App Modal & Overlay System Governance Add-on
+
+Use:
+
+`.codex/skills/ui-build-production/addons/app-modal-overlay-system-governance/SKILL.md`
+
+This Skill is mandatory when the task involves:
+
+- Toast
+- Snackbar
+- Dialog
+- Action Sheet
+- Picker Sheet
+- Bottom Sheet
+- Modal Page
+- Full-screen Modal
+- Modal Stack
+- Modal Queue
+- 全局弹框
+- 半弹框
+- 弹框路由
+- 资金弹框
+- KYC 弹框
+- 安全弹框
+- 合规弹框
+- App 弹框设计
+- 弹框系统审计
+- Overlay / Modal System
+
+Required outputs:
+
+- Overlay Type Decision
+- Overlay / Modal Component Source Check
+- Redline Items for every issue
+- Fix Cards for every Redline Item
+- Page Overlay Matrix
+- Overlay System L5 Report
+- 100-Point Overlay L5 Gate Score
+- Final decision: `l5_overlay_ready` only at 100/100 and 0 Blocker / 0 Critical / 0 Major
+
+Hard rules:
+
+- Do not let pages write private overlay or modal implementations.
+- All overlays and modals must come from public overlay / modal components.
+- Complex flows must use Modal Page / Full-screen Modal / Modal Stack.
+- Global blocking overlays must enter Modal Queue.
+- All overlay and modal styles must use design tokens.
+- Must verify Android back, dirty state, keyboard, safe area, and accessibility.
+- Funding / KYC / security / compliance scenarios must not use Toast or ordinary Bottom Sheet to carry risk.
+- Every issue must output a Redline Item and Fix Card.
+- Each Fix Card must include Target Layer, Target Files, Exact Action, and Acceptance Criteria.
+- Final output must include Page Overlay Matrix and Overlay System L5 Report.
+- Do not output `l5_overlay_ready` unless the score is 100/100 and there are 0 Blocker / 0 Critical / 0 Major issues.
+
+## 6C. Page Visual Rhythm & Spacing Governance Add-on
+
+Use:
+
+`.codex/skills/ui-build-production/addons/page-visual-rhythm-spacing-governance/SKILL.md`
+
+This Skill is mandatory when the task involves:
+
+- 页面整体风格
+- 间距治理
+- 布局节奏
+- 页面一致性
+- UI 质量
+- 页面像 demo
+- 视觉密度
+- 卡片层级
+- 排版层级
+- Surface 系统
+- 跨页面视觉治理
+- visual rhythm
+- spacing governance
+- layout density
+- surface hierarchy
+
+Required outputs:
+
+- Page Visual Rhythm Matrix
+- Redline Items for every visual rhythm / spacing issue
+- Fix Cards for every Redline Item
+- Fix Order
+- 100-Point Visual Rhythm L5 Gate Score
+- Final decision: `visual_rhythm_l5_ready` only at 100/100 and 0 Blocker / 0 Critical / 0 Major
+
+Hard rules:
+
+- Do not randomly adjust px values.
+- All spacing, radius, shadow, color, and typography must use design tokens.
+- Fix system layers first in this order: token → component → pattern → public resource → page.
+- If the same visual issue appears on 2 or more pages, fix it at the shared resource layer.
+- Output Page Visual Rhythm Matrix.
+- Every issue must output a Redline Item.
+- Every Redline Item must be converted into a Fix Card.
+- Each Fix Card must include Target Layer, Target Files, Exact Action, and Acceptance Criteria.
+- Output Fix Order before implementation.
+- Do not output `visual_rhythm_l5_ready` unless the score is 100/100 and there are 0 Blocker / 0 Critical / 0 Major issues.
+
 ## 7. Financial Copy & Localization Add-on
 
 Use:
@@ -469,6 +616,42 @@ Trigger this mode when the user says:
 - 金融产品不够专业
 - 设计风格不统一
 - 视觉质感差
+- 顶尖 UX/UI 审核
+- UI 质量修复
+- 用户心理
+- 真实使用场景
+- 金融 App 信任感
+- 明确 UI 修改依据
+- L5 设计质量判断
+- 交付前设计门禁
+- Toast
+- Snackbar
+- Dialog
+- Action Sheet
+- Picker Sheet
+- Bottom Sheet
+- Modal Page
+- Full-screen Modal
+- Modal Stack
+- Modal Queue
+- 全局弹框
+- 半弹框
+- 弹框路由
+- 资金弹框
+- KYC 弹框
+- 安全弹框
+- 合规弹框
+- App 弹框设计
+- 弹框系统审计
+- 页面整体风格
+- 间距治理
+- 布局节奏
+- 页面一致性
+- 视觉密度
+- 卡片层级
+- 排版层级
+- Surface 系统
+- 跨页面视觉治理
 
 Codex must not directly beautify the page.
 
@@ -477,18 +660,34 @@ Codex must run UI quality governance in this order:
 1. Use Product Skill to confirm Page Contract and avoid changing business flow.
 2. Use Design System Skill to confirm tokens, components, patterns, and layout rules.
 3. Use Design Public Resource Package Governance Add-on to confirm reusable public assets and prevent page-level copies.
-4. Use Reference Adaptation Add-on if screenshots, Mobbin, or competitor references are provided.
-5. Use Icon Governance Add-on if icons are involved.
-6. Use Financial Copy & Localization Add-on if user-facing copy is involved.
-7. Use UI Build Skill to refactor the page.
-8. Use UX Interaction Quality Gate to audit task flow, feedback, error recovery, accessibility, and financial UX risk.
-9. Capture or generate a preview screenshot / visual snapshot for review.
-10. Score the page using UI Quality Scorecard.
-11. If score < 85 or any Blocker / Critical exists, fix and re-run QA.
+4. Use App Modal & Overlay System Governance Add-on when Toast, Snackbar, Dialog, Sheet, Modal Page, Full-screen Modal, Modal Stack, Modal Queue, global overlays, funding/KYC/security/compliance overlays, app modal design, or overlay system audit is involved.
+5. Use Page Visual Rhythm & Spacing Governance Add-on when page-wide style, spacing, layout rhythm, consistency, visual density, card hierarchy, typography hierarchy, surface system, or cross-page visual governance is involved.
+6. Use Elite UX/UI Remediation Board Add-on when the task involves top-tier UX/UI audit, UI remediation, user psychology, real scenarios, financial trust, explicit UI rationale, L5 design judgment, or pre-delivery design gate.
+7. Use Reference Adaptation Add-on if screenshots, Mobbin, or competitor references are provided.
+8. Use Icon Governance Add-on if icons are involved.
+9. Use Financial Copy & Localization Add-on if user-facing copy is involved.
+10. Use UI Build Skill to refactor the page only after evidence, Redline Items, Fix Cards, Fix Order, any required Overlay Matrix, and any required Page Visual Rhythm Matrix are available.
+11. Use UX Interaction Quality Gate to audit task flow, feedback, error recovery, accessibility, and financial UX risk.
+12. Capture or generate a preview screenshot / visual snapshot for review.
+13. Score the page using UI Quality Scorecard.
+14. If score < 85 or any Blocker / Critical exists, fix and re-run QA.
 
 Required outputs:
 
 - UI Audit Report
+- Evidence Chain
+- Real User Psychology Simulation
+- Real Usage Scenario Simulation
+- Redline Items
+- Fix Cards with Target Layer, Target Files, Exact Action, and Acceptance Criteria
+- Fix Order
+- 100-Point L5 Gate Score
+- Overlay Type Decision
+- Page Overlay Matrix
+- Overlay System L5 Report
+- 100-Point Overlay L5 Gate Score
+- Page Visual Rhythm Matrix
+- 100-Point Visual Rhythm L5 Gate Score
 - Page Refactor Plan
 - Updated Page Implementation
 - Preview Screenshot or Visual Snapshot
@@ -531,6 +730,12 @@ Decision rules:
 Hard rules:
 
 - Do not change business flow unless Product Skill confirms it.
+- Do not modify pages before evidence, Redline Items, Fix Cards, and Fix Order are produced when Elite UX/UI Remediation Board is triggered.
+- Do not let pages write private overlay or modal implementations when App Modal & Overlay System Governance is triggered.
+- Do not use Toast or ordinary Bottom Sheet to carry funding, KYC, security, or compliance risk.
+- Do not randomly adjust px values when Page Visual Rhythm & Spacing Governance is triggered.
+- Fix visual rhythm issues by system layer first: token → component → pattern → public resource → page.
+- If the same visual issue appears on 2 or more pages, fix it at the shared resource layer.
 - Do not bypass Page Contract.
 - Do not create random visual styles.
 - Do not copy public asset implementations into pages.
@@ -541,6 +746,9 @@ Hard rules:
 - Do not directly copy reference UI.
 - Do not mark production-ready if UI Quality Score is below 85.
 - Do not deliver if there are Blocker or Critical issues.
+- Do not output `l5_ready` unless the Elite UX/UI Remediation Board score is 100/100 and there are 0 Blocker / 0 Critical / 0 Major issues.
+- Do not output `l5_overlay_ready` unless the Overlay System L5 score is 100/100 and there are 0 Blocker / 0 Critical / 0 Major issues.
+- Do not output `visual_rhythm_l5_ready` unless the Visual Rhythm L5 score is 100/100 and there are 0 Blocker / 0 Critical / 0 Major issues.
 
 # Execution Order
 
@@ -562,9 +770,12 @@ Hard rules:
 4. Financial Copy Add-on, if user-facing copy is involved
 5. Icon Governance Add-on, if icons are involved
 6. Reference Adaptation Add-on, if reference material is provided
-7. UI Build Skill
-8. UX Interaction Quality Gate
-9. Final QA / Release Decision
+7. App Modal & Overlay System Governance Add-on, if Toast, Snackbar, Dialog, Action Sheet, Picker Sheet, Bottom Sheet, Modal Page, Full-screen Modal, Modal Stack, Modal Queue, global overlays, funding/KYC/security/compliance overlays, app modal design, or overlay system audit is involved
+8. Page Visual Rhythm & Spacing Governance Add-on, if page-wide style, spacing governance, layout rhythm, page consistency, visual density, card hierarchy, typography hierarchy, surface system, or cross-page visual governance is involved
+9. Elite UX/UI Remediation Board Add-on, if top-tier UX/UI audit, UI quality remediation, user psychology, real usage scenarios, financial trust, explicit UI rationale, L5 design quality judgment, or pre-delivery design gate is involved
+10. UI Build Skill
+11. UX Interaction Quality Gate
+12. Final QA / Release Decision
 
 ## Page-only work
 
@@ -574,8 +785,11 @@ Hard rules:
 4. Use Reference Add-on if screenshots or Mobbin references exist
 5. Use Financial Copy Add-on if user-facing copy is involved
 6. Use Icon Governance Add-on if icons are involved
-7. Use UI Build Skill
-8. Use UX Gate before delivery
+7. Use App Modal & Overlay System Governance Add-on before page edits if Toast, Snackbar, Dialog, Action Sheet, Picker Sheet, Bottom Sheet, Modal Page, Full-screen Modal, Modal Stack, Modal Queue, global overlays, funding/KYC/security/compliance overlays, app modal design, or overlay system audit is involved
+8. Use Page Visual Rhythm & Spacing Governance Add-on before page edits if page-wide style, spacing governance, layout rhythm, page consistency, visual density, card hierarchy, typography hierarchy, surface system, or cross-page visual governance is involved
+9. Use Elite UX/UI Remediation Board Add-on before page edits if the task involves top-tier UX/UI audit, UI quality remediation, user psychology, real usage scenarios, financial trust, explicit UI rationale, L5 design quality judgment, or pre-delivery design gate
+10. Use UI Build Skill
+11. Use UX Gate before delivery
 
 ## Design system work
 

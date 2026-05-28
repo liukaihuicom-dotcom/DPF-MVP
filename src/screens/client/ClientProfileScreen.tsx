@@ -9,8 +9,8 @@ import { Screen } from '@/src/design-public-assets/components';
 import { StatusPill } from '@/src/design-public-assets/components';
 import { AppText } from '@/src/design-public-assets/components';
 import { UpgradeChatCard } from '@/src/design-public-assets/components';
+import { useOverlayQueue } from '@/src/design-public-assets/components';
 import { formatMoney, formatVolumeMillions, localizeText, statusLabel } from '@/src/domain/format';
-import { useToast } from '@/src/feedback/Toast';
 import { notifySuccess } from '@/src/feedback/haptics';
 import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
@@ -19,7 +19,7 @@ export default function ClientProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { approveUpgradeRequest, getPartnerClientProfile, upgradeRequest } = useBroker();
   const { locale, t } = useProductSettings();
-  const toast = useToast();
+  const overlayQueue = useOverlayQueue();
   const client = id ? getPartnerClientProfile(id) : undefined;
 
   if (!client) {
@@ -37,7 +37,15 @@ export default function ClientProfileScreen() {
   const approve = () => {
     approveUpgradeRequest(client.id);
     void notifySuccess();
-    toast.show({ message: t('upgrade.approvedMessage', { name: client.name }), title: t('upgrade.approvedTitle'), tone: 'success' });
+    overlayQueue.enqueueAlert({
+      body: t('upgrade.approvedMessage', { name: client.name }),
+      dedupeKey: `partner-upgrade-approved-${client.id}`,
+      icon: 'icon.status.verified',
+      priority: 'critical',
+      riskLevel: 'high',
+      title: t('upgrade.approvedTitle'),
+      tone: 'success',
+    });
     router.replace('/trade');
   };
 

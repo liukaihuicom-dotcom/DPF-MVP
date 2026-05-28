@@ -12,6 +12,7 @@ import { StepperButton, SwitchControl } from '@/src/design-public-assets/compone
 import { InstrumentIcon } from '@/src/design-public-assets/components';
 import { useKeyboardVisible } from '@/src/design-public-assets/components';
 import { NativePressable } from '@/src/design-public-assets/components';
+import { useDirtyStateGuard, useOverlayQueue } from '@/src/design-public-assets/components';
 import { Screen } from '@/src/design-public-assets/components';
 import { SegmentedTabs } from '@/src/design-public-assets/components';
 import { TextField } from '@/src/design-public-assets/components';
@@ -20,14 +21,13 @@ import { directionLabel, formatMoney, formatPrice, orderTypeLabel } from '@/src/
 import { calculateMargin, calculateNotional, getTradePrice } from '@/src/domain/trading';
 import type { Direction, Instrument, OrderType } from '@/src/domain/types';
 import type { Locale } from '@/src/design-public-assets/copy';
-import { useToast } from '@/src/feedback/Toast';
 import { impactLight, notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import { navigateBackOrReplace, safeRouteTargets } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
-import { lineWidth, layout, radius, size, spacing, typography } from '@/src/design-public-assets/tokens';
+import { lineWidth, layout, motion, radius, size, spacing, typography, zIndex } from '@/src/design-public-assets/tokens';
 
-const ORDER_TICKET_MOTION_MS = 220;
+const ORDER_TICKET_MOTION_MS = motion.overlay.standardMs;
 const ORDER_TICKET_SHEET_OFFSET = layout.topReservedSpace * 3;
 const ORDER_TICKET_DRAG_CLOSE_DISTANCE = layout.headerIconButtonSize + spacing.xxl;
 const ORDER_TICKET_DRAG_CLOSE_VELOCITY = 0.7;
@@ -38,7 +38,7 @@ export default function OrderTicketScreen() {
   const { direction = 'buy', id, type = 'market' } = useLocalSearchParams<{ direction?: Direction; id: string; type?: OrderType }>();
   const { account, findInstrument, placeOrder } = useBroker();
   const { locale, colors, t } = useProductSettings();
-  const toast = useToast();
+  const overlayQueue = useOverlayQueue();
   const keyboardVisible = useKeyboardVisible();
   const [side, setSide] = useState<Direction>(direction === 'sell' ? 'sell' : 'buy');
   const [orderType, setOrderType] = useState<OrderType>(type === 'limit' || type === 'stop' ? type : 'market');
@@ -66,6 +66,7 @@ export default function OrderTicketScreen() {
     : t('order.invalid');
 
   const presetLots = useMemo(() => ['0.01', '0.05', '0.10', instrument?.symbol === 'XAU/USD' ? '0.20' : '0.50'], [instrument]);
+  const dirty = side !== (direction === 'sell' ? 'sell' : 'buy') || orderType !== (type === 'limit' || type === 'stop' ? type : 'market') || lotsText !== '0.10' || riskEnabled !== true;
 
   useEffect(() => {
     entranceProgress.value = withTiming(1, { duration: ORDER_TICKET_MOTION_MS });
@@ -80,6 +81,42 @@ export default function OrderTicketScreen() {
       return;
     }
 
+    if (dirty) {
+      overlayQueue.enqueueAlert({
+        actions: [
+          {
+            label: t('overlay.dirty.stay'),
+            onPress: () => undefined,
+            tone: 'brand',
+            variant: 'filled',
+          },
+          {
+            label: t('overlay.dirty.exit'),
+            onPress: () => {
+              setClosing(true);
+              void impactLight();
+              dragY.value = withTiming(0, { duration: ORDER_TICKET_MOTION_MS });
+              entranceProgress.value = withTiming(0, { duration: ORDER_TICKET_MOTION_MS }, (finished) => {
+                if (finished) {
+                  runOnJS(finishClose)();
+                }
+              });
+            },
+            tone: 'danger',
+            variant: 'outline',
+          },
+        ],
+        body: t('overlay.dirty.order.body'),
+        dedupeKey: 'order-dirty-close',
+        icon: 'icon.risk.info',
+        priority: 'blocking',
+        riskLevel: 'high',
+        title: t('overlay.dirty.order.title'),
+        tone: 'warning',
+      });
+      return;
+    }
+
     setClosing(true);
     void impactLight();
     dragY.value = withTiming(0, { duration: ORDER_TICKET_MOTION_MS });
@@ -88,7 +125,7 @@ export default function OrderTicketScreen() {
         runOnJS(finishClose)();
       }
     });
-  }, [closing, dragY, entranceProgress, finishClose]);
+  }, [closing, dirty, dragY, entranceProgress, finishClose, overlayQueue, t]);
 
   const sheetCloseResponder = useMemo(
     () =>
@@ -149,31 +186,71 @@ export default function OrderTicketScreen() {
   const submitOrder = () => {
     if (!canSubmit) {
       void notifyWarning();
-      toast.show({
-        message: errorText || t('order.invalid'),
+      overlayQueue.enqueueAlert({
+        body: errorText || t('order.invalid'),
+        dedupeKey: 'order-submit-blocked',
+        icon: 'icon.status.rejected',
+        priority: 'critical',
+        riskLevel: 'high',
         title: t('order.submitBlocked'),
         tone: 'warning',
       });
       return;
     }
 
-    const order = placeOrder({
-      direction: side,
-      instrumentId: instrument.id,
-      lots,
-      type: orderType,
-    });
+    overlayQueue.enqueueAlert({
+      actions: [
+        {
+          label: t('common.cancel'),
+          onPress: () => undefined,
+          tone: 'neutral',
+          variant: 'outline',
+        },
+        {
+          label: t('common.confirm'),
+          onPress: () => {
+            const order = placeOrder({
+              direction: side,
+              instrumentId: instrument.id,
+              lots,
+              type: orderType,
+            });
 
-    if (order) {
-      void notifySuccess();
-      toast.show({
-        message: t('order.submittedMessage', { symbol: instrument.symbol }),
-        title: t('order.submittedTitle'),
-        tone: 'success',
-      });
-      setTimeout(() => router.replace('/trade'), 450);
-    }
+            if (order) {
+              void notifySuccess();
+              overlayQueue.enqueueAlert({
+                body: t('order.submittedMessage', { symbol: instrument.symbol }),
+                dedupeKey: `order-submitted-${order.id}`,
+                icon: 'icon.trading.order_ticket',
+                priority: 'critical',
+                riskLevel: 'high',
+                title: t('order.submittedTitle'),
+                tone: 'success',
+              });
+              setTimeout(() => router.replace('/trade'), 450);
+            }
+          },
+          tone: side === 'buy' ? 'brand' : 'danger',
+          variant: 'filled',
+        },
+      ],
+      body: t('order.confirmSubmitBody', { lots: formatLots(lots, locale), side: directionLabel(side, locale), symbol: instrument.symbol }),
+      dedupeKey: 'order-submit-confirm',
+      icon: 'icon.security.risk_shield',
+      priority: 'critical',
+      riskLevel: 'high',
+      title: t('order.confirmSubmitTitle'),
+      tone: 'danger',
+    });
   };
+
+  useDirtyStateGuard({
+    body: t('overlay.dirty.order.body'),
+    confirmLabel: t('overlay.dirty.exit'),
+    dirty: dirty && !closing,
+    stayLabel: t('overlay.dirty.stay'),
+    title: t('overlay.dirty.order.title'),
+  });
 
   return (
     <SafeAreaView edges={['top']} style={styles.modalRoot}>
@@ -484,11 +561,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     position: 'relative',
     width: '100%',
-    zIndex: 1,
+    zIndex: zIndex.raised,
   },
   modalBackdrop: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 0,
+    zIndex: zIndex.base,
   },
   modalRoot: {
     flex: 1,
@@ -597,7 +674,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'relative',
     width: '100%',
-    zIndex: 1,
+    zIndex: zIndex.raised,
   },
   valueRows: {
     borderTopWidth: lineWidth.hairline,

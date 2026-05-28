@@ -55,7 +55,7 @@ export function GlobalMenuList({ contained, items, showChevron = true, variant =
           <NativePressable
             accessibilityLabel={item.accessibilityLabel ?? item.label}
             key={item.label}
-            minTouch={58}
+            minTouch={layout.menuRowMinTouch}
             onPress={item.onPress}
             style={StyleSheet.flatten([
               styles.row,
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   },
   descriptiveRow: {
     gap: layout.controlGap,
-    minHeight: 84,
+    minHeight: layout.menuDescriptiveRowMinHeight,
     paddingVertical: layout.listRowPaddingY,
   },
   list: {
@@ -158,18 +158,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    minHeight: 58,
+    minHeight: layout.menuRowMinHeight,
   },
   rowLeft: {
     alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
-    gap: spacing.md,
+    gap: layout.menuRowGap,
     minWidth: 0,
   },
   rowText: {
     flex: 1,
-    gap: spacing.xs,
+    gap: layout.menuRowTextGap,
     minWidth: 0,
   },
   ratingAccessory: {

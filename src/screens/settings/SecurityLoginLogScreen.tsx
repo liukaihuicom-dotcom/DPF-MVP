@@ -8,6 +8,7 @@ import { Card } from '@/src/design-public-assets/components';
 import { ConfirmActionSheet } from '@/src/design-public-assets/components';
 import { IconSurface, type IconSurfaceTone } from '@/src/design-public-assets/components';
 import { NativePressable } from '@/src/design-public-assets/components';
+import { useOverlayQueue } from '@/src/design-public-assets/components';
 import { Screen } from '@/src/design-public-assets/components';
 import { StatusPill, type StatusPillTone } from '@/src/design-public-assets/components';
 import { AppText } from '@/src/design-public-assets/components';
@@ -35,7 +36,7 @@ type SummaryMetric = {
 export default function SecurityLoginLogScreen() {
   const { locale, colors, rememberedLoginSnapshot, t } = useProductSettings();
   const bottomSheet = useBottomSheet();
-  const toast = useToast();
+  const overlayQueue = useOverlayQueue();
   const [devices, setDevices] = useState(() => buildSecurityLoginDevices(rememberedLoginSnapshot));
   const activeDeviceCount = devices.filter((device) => device.sessions.some((session) => session.status === 'active')).length;
   const riskEventCount = devices.flatMap((device) => device.events).filter((event) => event.riskLevel !== 'low' && event.status !== 'resolved').length;
@@ -84,8 +85,12 @@ export default function SecurityLoginLogScreen() {
               const result = revokeSecuritySession(devices, session.sessionId);
               if (result.code !== 'ok') {
                 void notifyWarning();
-                toast.show({
-                  message: t(`securityLog.error.${result.code}`),
+                overlayQueue.enqueueAlert({
+                  body: t(`securityLog.error.${result.code}`),
+                  dedupeKey: `security-revoke-blocked-${result.code}`,
+                  icon: 'icon.status.rejected',
+                  priority: 'critical',
+                  riskLevel: 'high',
                   title: t('securityLog.toast.actionBlocked'),
                   tone: 'warning',
                 });
@@ -95,8 +100,12 @@ export default function SecurityLoginLogScreen() {
 
               updateDevices(result.devices);
               void notifySuccess();
-              toast.show({
-                message: t('securityLog.toast.revokeBody'),
+              overlayQueue.enqueueAlert({
+                body: t('securityLog.toast.revokeBody'),
+                dedupeKey: `security-revoke-success-${session.sessionId}`,
+                icon: 'icon.system.logout',
+                priority: 'critical',
+                riskLevel: 'high',
                 title: t('securityLog.toast.revokeTitle'),
                 tone: 'success',
               });
@@ -141,8 +150,12 @@ export default function SecurityLoginLogScreen() {
               const result = reportSecurityEvent(devices, event.eventId);
               if (result.code !== 'ok') {
                 void notifyWarning();
-                toast.show({
-                  message: t(`securityLog.error.${result.code}`),
+                overlayQueue.enqueueAlert({
+                  body: t(`securityLog.error.${result.code}`),
+                  dedupeKey: `security-report-blocked-${result.code}`,
+                  icon: 'icon.status.rejected',
+                  priority: 'critical',
+                  riskLevel: 'high',
                   title: t('securityLog.toast.actionBlocked'),
                   tone: 'warning',
                 });
@@ -152,8 +165,12 @@ export default function SecurityLoginLogScreen() {
 
               updateDevices(result.devices);
               void notifyWarning();
-              toast.show({
-                message: t('securityLog.toast.reportBody'),
+              overlayQueue.enqueueAlert({
+                body: t('securityLog.toast.reportBody'),
+                dedupeKey: `security-report-success-${event.eventId}`,
+                icon: 'icon.security.risk_shield',
+                priority: 'critical',
+                riskLevel: 'high',
                 title: t('securityLog.toast.reportTitle'),
                 tone: 'warning',
               });

@@ -1,7 +1,7 @@
 import { ActivityIndicator, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { useThemeColors } from '@/src/settings/ProductSettings';
-import { lineWidth, radius, size, spacing } from '@/src/theme/tokens';
+import { layout, lineWidth, radius, size, spacing } from '@/src/theme/tokens';
 
 import { AppIcon, type AppIconName, type IconTone } from './AppIcon';
 import { NativePressable } from './NativePressable';
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     borderWidth: lineWidth.hairline,
     justifyContent: 'center',
     minHeight: size.button.minHeight,
-    paddingHorizontal: 18,
+    paddingHorizontal: layout.actionButtonPaddingX,
     paddingVertical: spacing.md,
   },
   buttonLg: {

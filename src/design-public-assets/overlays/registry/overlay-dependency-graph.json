@@ -1,0 +1,180 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-05-29",
+  "source_of_truth": [
+    "src/design-public-assets/overlays/registry/overlay-registry.json",
+    "src/navigation/modalRegistry.ts",
+    "docs/page-modal-trigger-map.md"
+  ],
+  "nodes": [
+    {
+      "id": "token.zIndex-overlay",
+      "type": "token"
+    },
+    {
+      "id": "token.motion-overlay",
+      "type": "token"
+    },
+    {
+      "id": "component.GlobalDialog",
+      "type": "component"
+    },
+    {
+      "id": "component.OverlayQueueProvider",
+      "type": "component"
+    },
+    {
+      "id": "component.BottomSheetProvider",
+      "type": "component"
+    },
+    {
+      "id": "component.ModalStackProvider",
+      "type": "component"
+    },
+    {
+      "id": "overlay.global.modalQueue",
+      "type": "alert_dialog"
+    },
+    {
+      "id": "overlay.global.bottomSheet",
+      "type": "bottom_sheet"
+    },
+    {
+      "id": "overlay.global.modalStack",
+      "type": "modal_stack"
+    },
+    {
+      "id": "overlay.funding.submitFeedbackAlert",
+      "type": "alert_dialog"
+    },
+    {
+      "id": "overlay.trading.orderSubmitAlert",
+      "type": "alert_dialog"
+    },
+    {
+      "id": "overlay.security.resultAlert",
+      "type": "alert_dialog"
+    },
+    {
+      "id": "overlay.partner.upgradeFeedbackAlert",
+      "type": "alert_dialog"
+    },
+    {
+      "id": "component.ToastProvider",
+      "type": "component"
+    },
+    {
+      "id": "component.TextField",
+      "type": "component"
+    },
+    {
+      "id": "overlay.global.toastFeedback",
+      "type": "toast"
+    },
+    {
+      "id": "overlay.global.webSelectMenu",
+      "type": "popover"
+    },
+    {
+      "id": "overlay.portfolio.orderMutationAlert",
+      "type": "alert_dialog"
+    }
+  ],
+  "edges": [
+    {
+      "from": "overlay.global.modalQueue",
+      "to": "component.OverlayQueueProvider",
+      "relation": "implemented_by"
+    },
+    {
+      "from": "component.OverlayQueueProvider",
+      "to": "component.GlobalDialog",
+      "relation": "renders"
+    },
+    {
+      "from": "component.OverlayQueueProvider",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "component.OverlayQueueProvider",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "overlay.global.bottomSheet",
+      "to": "component.BottomSheetProvider",
+      "relation": "implemented_by"
+    },
+    {
+      "from": "component.BottomSheetProvider",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "overlay.global.modalStack",
+      "to": "component.ModalStackProvider",
+      "relation": "implemented_by"
+    },
+    {
+      "from": "component.ModalStackProvider",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "overlay.funding.submitFeedbackAlert",
+      "to": "overlay.global.modalQueue",
+      "relation": "queued_in"
+    },
+    {
+      "from": "overlay.trading.orderSubmitAlert",
+      "to": "overlay.global.modalQueue",
+      "relation": "queued_in"
+    },
+    {
+      "from": "overlay.security.resultAlert",
+      "to": "overlay.global.modalQueue",
+      "relation": "queued_in"
+    },
+    {
+      "from": "overlay.partner.upgradeFeedbackAlert",
+      "to": "overlay.global.modalQueue",
+      "relation": "queued_in"
+    },
+    {
+      "from": "overlay.global.toastFeedback",
+      "to": "component.ToastProvider",
+      "relation": "implemented_by"
+    },
+    {
+      "from": "component.ToastProvider",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "component.ToastProvider",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "overlay.global.webSelectMenu",
+      "to": "component.TextField",
+      "relation": "implemented_by"
+    },
+    {
+      "from": "component.TextField",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "overlay.portfolio.orderMutationAlert",
+      "to": "overlay.global.modalQueue",
+      "relation": "queued_in"
+    }
+  ],
+  "illegal_nesting_policy": [
+    "Bottom Sheet must not push another Bottom Sheet shell; nested confirmation must use the existing shared stack or Alert Dialog.",
+    "Alert Dialog must not stack another Alert Dialog directly; global alerts are serialized by OverlayQueueProvider.",
+    "High-risk funding, KYC, security, compliance, and trading confirmations must not use Toast."
+  ]
+}

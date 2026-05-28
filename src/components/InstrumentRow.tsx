@@ -1,7 +1,7 @@
 import { Link } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
-import { lineWidth } from '@/src/theme/tokens';
+import { lineWidth, layout, size, spacing } from '@/src/theme/tokens';
 import { formatPercent, formatPrice, localizeText } from '@/src/domain/format';
 import { getDisplayChange } from '@/src/domain/trading';
 import type { Instrument } from '@/src/domain/types';
@@ -26,7 +26,7 @@ export function InstrumentRow({ instrument, showDivider = true }: InstrumentRowP
   return (
     <Link asChild href={`/instrument/${instrument.id}`}>
       <NativePressable style={StyleSheet.flatten([styles.row, showDivider && { borderBottomColor: colors.border.subtle, borderBottomWidth: lineWidth.hairline }])}>
-        <InstrumentIcon instrument={instrument} size={36} />
+        <InstrumentIcon instrument={instrument} size={layout.headerIconButtonSize - spacing.xs} />
         <View style={styles.identity}>
           <AppText variant="subtitle">{instrument.symbol}</AppText>
           <AppText numberOfLines={1} tone="muted" variant="caption">
@@ -50,18 +50,18 @@ export function InstrumentRow({ instrument, showDivider = true }: InstrumentRowP
 const styles = StyleSheet.create({
   identity: {
     flex: 1,
-    gap: 3,
+    gap: layout.inlineGap,
     minWidth: 0,
   },
   quote: {
     alignItems: 'flex-end',
-    minWidth: 88,
+    minWidth: size.viewport.detailSideMinWidth - spacing.lg,
   },
   row: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 10,
-    minHeight: 68,
-    paddingVertical: 11,
+    gap: layout.controlGap + spacing.xxs,
+    minHeight: size.profile.listCardMinHeight - spacing.xxs,
+    paddingVertical: layout.listRowPaddingY - lineWidth.strong,
   },
 });

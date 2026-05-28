@@ -3,16 +3,16 @@ import { StyleSheet, View } from 'react-native';
 
 import { localizeText } from '@/src/domain/format';
 import type { UpgradeRequest } from '@/src/domain/types';
-import { useToast } from '@/src/feedback/Toast';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { useBroker } from '@/src/state/BrokerStore';
-import { lineWidth, radius, typography } from '@/src/theme/tokens';
+import { lineWidth, layout, radius, size, spacing, typography } from '@/src/theme/tokens';
 
 import { ActionButton } from './ActionButton';
 import { Card } from './Card';
 import { NativePressable } from './NativePressable';
 import { AppIcon } from './AppIcon';
+import { useOverlayQueue } from './OverlayQueue';
 import { StatusPill } from './StatusPill';
 import { RichTextField } from './TextField';
 import { AppText } from './Typography';
@@ -25,7 +25,7 @@ type UpgradeChatCardProps = {
 export function UpgradeChatCard({ request, readonly }: UpgradeChatCardProps) {
   const { submitUpgradeRequest, upgradeRequest } = useBroker();
   const { locale, colors, t } = useProductSettings();
-  const toast = useToast();
+  const overlayQueue = useOverlayQueue();
   const activeRequest = request ?? upgradeRequest;
   const [reason, setReason] = useState(t('upgrade.defaultReason'));
   const pending = activeRequest.status === 'pending';
@@ -36,13 +36,29 @@ export function UpgradeChatCard({ request, readonly }: UpgradeChatCardProps) {
     const trimmed = reason.trim();
     if (trimmed.length < 8) {
       void notifyWarning();
-      toast.show({ message: t('upgrade.reasonError'), title: t('upgrade.submitBlocked'), tone: 'warning' });
+      overlayQueue.enqueueAlert({
+        body: t('upgrade.reasonError'),
+        dedupeKey: 'partner-upgrade-reason-blocked',
+        icon: 'icon.risk.info',
+        priority: 'normal',
+        riskLevel: 'medium',
+        title: t('upgrade.submitBlocked'),
+        tone: 'warning',
+      });
       return;
     }
 
     submitUpgradeRequest(trimmed);
     void notifySuccess();
-    toast.show({ message: t('upgrade.pendingHint'), title: t('upgrade.submitted'), tone: 'success' });
+    overlayQueue.enqueueAlert({
+      body: t('upgrade.pendingHint'),
+      dedupeKey: 'partner-upgrade-submitted',
+      icon: 'icon.ib.network',
+      priority: 'critical',
+      riskLevel: 'high',
+      title: t('upgrade.submitted'),
+      tone: 'success',
+    });
   };
 
   return (
@@ -114,7 +130,7 @@ export function UpgradeChatCard({ request, readonly }: UpgradeChatCardProps) {
       ) : null}
 
       {!readonly && pending ? (
-        <View style={StyleSheet.flatten([styles.waitingBox, { backgroundColor: `${colors.status.warning.fg}10` }])}>
+        <View style={StyleSheet.flatten([styles.waitingBox, { backgroundColor: colors.status.warning.bg }])}>
           <AppIcon tone="amber" name="icon.trading.history" sizeVariant="xs" />
           <AppText tone="amber" variant="caption">
             {t('upgrade.pendingHint')}
@@ -127,55 +143,55 @@ export function UpgradeChatCard({ request, readonly }: UpgradeChatCardProps) {
 
 const styles = StyleSheet.create({
   applyForm: {
-    gap: 10,
-    marginTop: 12,
+    gap: layout.controlGap,
+    marginTop: layout.financialPattern.heroGap,
   },
   chipRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: layout.controlGap,
   },
   headerCopy: {
     flex: 1,
-    gap: 4,
+    gap: layout.inlineGap,
     minWidth: 0,
   },
   headerRow: {
     alignItems: 'flex-start',
     flexDirection: 'row',
-    gap: 12,
+    gap: layout.financialPattern.heroGap,
     justifyContent: 'space-between',
   },
   messageBubble: {
     borderRadius: radius.card,
     borderWidth: lineWidth.hairline,
-    gap: 4,
-    maxWidth: '86%',
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    gap: layout.messageBubble.gap,
+    maxWidth: layout.messageBubble.maxWidth,
+    paddingHorizontal: layout.messageBubble.paddingX,
+    paddingVertical: layout.messageBubble.paddingY,
   },
   messages: {
-    gap: 8,
-    marginTop: 12,
+    gap: layout.controlGap,
+    marginTop: layout.financialPattern.heroGap,
   },
   reasonChip: {
     borderRadius: radius.full,
     borderWidth: lineWidth.hairline,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingHorizontal: layout.statusPill.paddingX,
+    paddingVertical: layout.statusPill.paddingY,
   },
   reasonInput: {
     ...typography.captionSm,
-    minHeight: 54,
+    minHeight: size.input.largeContentMinHeight,
   },
   waitingBox: {
     alignItems: 'center',
     borderRadius: radius.card,
     borderWidth: lineWidth.none,
     flexDirection: 'row',
-    gap: 8,
-    marginTop: 12,
-    minHeight: 40,
-    paddingHorizontal: 10,
+    gap: layout.controlGap,
+    marginTop: layout.financialPattern.heroGap,
+    minHeight: size.control.sm,
+    paddingHorizontal: layout.cardPaddingX,
   },
 });

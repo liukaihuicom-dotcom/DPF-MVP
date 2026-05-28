@@ -3,7 +3,7 @@ import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { useThemeColors } from '@/src/settings/ProductSettings';
 import type { ThemeColors } from '@/src/theme/colors';
-import { lineWidth, radius } from '@/src/theme/tokens';
+import { lineWidth, layout, radius, size } from '@/src/theme/tokens';
 
 import { AppIcon, type AppIconName, type IconTone } from './AppIcon';
 import { AppText, type AppTextTone } from './Typography';
@@ -50,8 +50,8 @@ export function StatusPill({ appearance = 'filled', compact, icon, label, size =
   const isOutline = appearance === 'outline';
   const iconNode =
     typeof icon === 'string' ? <AppIcon name={icon as AppIconName} sizeVariant={isSmall ? 'micro' : 'xs'} tone={toneConfig.iconTone} /> : icon ?? null;
-  const semanticBackground = tone === 'neutral' ? colors.surface.subtle : `${toneConfig.color}12`;
-  const semanticBorder = tone === 'neutral' ? colors.border.subtle : `${toneConfig.color}55`;
+  const semanticBackground = resolveStatusBackground(colors, tone);
+  const semanticBorder = resolveStatusBorder(colors, tone);
 
   return (
     <View
@@ -84,19 +84,63 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: radius.full,
     flexDirection: 'row',
-    gap: 5,
-    minHeight: 30,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    gap: layout.statusPill.gap,
+    minHeight: size.statusPill.mdMinHeight,
+    paddingHorizontal: layout.statusPill.paddingX,
+    paddingVertical: layout.statusPill.paddingY,
   },
   small: {
-    gap: 4,
-    minHeight: 22,
-    paddingHorizontal: 7,
-    paddingVertical: 2,
+    gap: layout.statusPill.gapSm,
+    minHeight: size.statusPill.smMinHeight,
+    paddingHorizontal: layout.statusPill.paddingSmX,
+    paddingVertical: layout.statusPill.paddingSmY,
   },
   label: {
     flexShrink: 1,
     minWidth: 0,
   },
 });
+
+function resolveStatusBackground(colors: ThemeColors, tone: StatusPillTone) {
+  switch (tone) {
+    case 'brand':
+      return colors.overlay.brand.subtle;
+    case 'success':
+      return colors.status.success.bg;
+    case 'warning':
+      return colors.status.warning.bg;
+    case 'danger':
+      return colors.status.danger.bg;
+    case 'info':
+      return colors.status.info.bg;
+    case 'up':
+      return colors.overlay.up.subtle;
+    case 'down':
+      return colors.overlay.down.subtle;
+    case 'neutral':
+    default:
+      return colors.surface.subtle;
+  }
+}
+
+function resolveStatusBorder(colors: ThemeColors, tone: StatusPillTone) {
+  switch (tone) {
+    case 'brand':
+      return colors.overlay.brand.strong;
+    case 'success':
+      return colors.status.success.border;
+    case 'warning':
+      return colors.status.warning.border;
+    case 'danger':
+      return colors.status.danger.border;
+    case 'info':
+      return colors.status.info.border;
+    case 'up':
+      return colors.overlay.up.strong;
+    case 'down':
+      return colors.overlay.down.strong;
+    case 'neutral':
+    default:
+      return colors.border.subtle;
+  }
+}

@@ -17,6 +17,7 @@ import { Screen } from '@/src/design-public-assets/components';
 import { Sparkline } from '@/src/design-public-assets/components';
 import { StatusPill } from '@/src/design-public-assets/components';
 import { TextField } from '@/src/design-public-assets/components';
+import { useOverlayQueue } from '@/src/design-public-assets/components';
 import { AppText } from '@/src/design-public-assets/components';
 import { ProfileAvatar, getProfileAvatarUri, profileAvatarOptions, type ProfileAvatarId } from '@/src/design-public-assets/components';
 import { dupoinInsights, dupoinOnboardingSteps } from '@/src/domain/dupoinMvp';
@@ -28,7 +29,7 @@ import { useToast } from '@/src/feedback/Toast';
 import { impactLight, notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
-import { lineWidth, layout, radius, size, spacing, typography } from '@/src/design-public-assets/tokens';
+import { lineWidth, layout, radius, size, spacing, typography, zIndex } from '@/src/design-public-assets/tokens';
 
 export default function DiscoverModuleScreen() {
   const { account, instruments, positions, role, submitUpgradeRequest, upgradeRequest } = useBroker();
@@ -587,7 +588,7 @@ function PartnerModule({
   upgradeStatus: 'none' | 'pending' | 'approved' | 'rejected';
 }) {
   const { t } = useProductSettings();
-  const toast = useToast();
+  const overlayQueue = useOverlayQueue();
   const isPartner = role === 'partner' || upgradeStatus === 'approved';
   const actionLabel = isPartner
     ? t('partner.toolsTitle')
@@ -613,13 +614,29 @@ function PartnerModule({
 
             if (upgradeStatus === 'pending') {
               void notifyWarning();
-              toast.show({ message: t('upgrade.pendingHint'), title: t('upgrade.status.pending'), tone: 'warning' });
+              overlayQueue.enqueueAlert({
+                body: t('upgrade.pendingHint'),
+                dedupeKey: 'partner-upgrade-pending',
+                icon: 'icon.risk.info',
+                priority: 'critical',
+                riskLevel: 'high',
+                title: t('upgrade.status.pending'),
+                tone: 'warning',
+              });
               return;
             }
 
             submitUpgradeRequest(t('upgrade.defaultReason'));
             void notifySuccess();
-            toast.show({ message: t('upgrade.pendingHint'), title: t('upgrade.submitted'), tone: 'success' });
+            overlayQueue.enqueueAlert({
+              body: t('upgrade.pendingHint'),
+              dedupeKey: 'partner-upgrade-submitted',
+              icon: 'icon.ib.network',
+              priority: 'critical',
+              riskLevel: 'high',
+              title: t('upgrade.submitted'),
+              tone: 'success',
+            });
           }}
           style={styles.cardAction}
           tone={isPartner ? 'brand' : upgradeStatus === 'pending' ? 'amber' : 'neutral'}
@@ -836,7 +853,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
     width: size.icon.display,
-    zIndex: 2,
+    zIndex: zIndex.raised,
   },
   cardAction: {
     marginTop: radius.lg,

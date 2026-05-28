@@ -20,6 +20,7 @@ import {
 } from '@/src/design-public-assets/components';
 import { Metric } from '@/src/design-public-assets/components';
 import { NativePressable } from '@/src/design-public-assets/components';
+import { useOverlayQueue } from '@/src/design-public-assets/components';
 import { AppIcon } from '@/src/design-public-assets/components';
 import { Screen } from '@/src/design-public-assets/components';
 import { SegmentedTabs } from '@/src/design-public-assets/components';
@@ -84,6 +85,7 @@ export function TraderPortfolioScreen() {
     tradingAccountStatusPreset,
   } = useProductSettings();
   const toast = useToast();
+  const overlayQueue = useOverlayQueue();
   const bottomSheet = useBottomSheet();
   const [orderView, setOrderView] = useState<
     "history" | "pending" | "positions"
@@ -212,8 +214,12 @@ export function TraderPortfolioScreen() {
     const close = () => {
       closePosition(positionId);
       void notifySuccess();
-      toast.show({
-        message: t("portfolio.closeSuccessMessage", { symbol }),
+      overlayQueue.enqueueAlert({
+        body: t("portfolio.closeSuccessMessage", { symbol }),
+        dedupeKey: `portfolio-close-position-${positionId}`,
+        icon: "icon.trading.close_position",
+        priority: "critical",
+        riskLevel: "high",
         title: t("portfolio.closeSuccessTitle"),
         tone: "success",
       });
@@ -332,10 +338,14 @@ export function TraderPortfolioScreen() {
           icon: "icon.system.settings",
           label: t("portfolio.action.modifyPosition"),
           onPress: () => {
-            toast.show({
-              message: t("portfolio.positionCannotModify"),
+            overlayQueue.enqueueAlert({
+              body: t("portfolio.positionCannotModify"),
+              dedupeKey: `portfolio-position-modify-blocked-${position.id}`,
+              icon: "icon.status.rejected",
+              priority: "critical",
+              riskLevel: "high",
               title: t("portfolio.action.modifyPosition"),
-              tone: "default",
+              tone: "warning",
             });
           },
           tone: "neutral",
@@ -347,8 +357,12 @@ export function TraderPortfolioScreen() {
             if (position.closable) {
               confirmClose(position.id, position.symbol);
             } else {
-              toast.show({
-                message: t("portfolio.positionCannotClose"),
+              overlayQueue.enqueueAlert({
+                body: t("portfolio.positionCannotClose"),
+                dedupeKey: `portfolio-position-close-blocked-${position.id}`,
+                icon: "icon.status.rejected",
+                priority: "critical",
+                riskLevel: "high",
                 title: t("portfolio.positionMutationTitle"),
                 tone: "warning",
               });
@@ -375,8 +389,12 @@ export function TraderPortfolioScreen() {
           label: t("portfolio.action.modifyOrder"),
           onPress: () => {
             if (!order.canEdit) {
-              toast.show({
-                message: t("portfolio.orderCannotModify"),
+              overlayQueue.enqueueAlert({
+                body: t("portfolio.orderCannotModify"),
+                dedupeKey: `portfolio-order-modify-blocked-${order.id}`,
+                icon: "icon.status.rejected",
+                priority: "critical",
+                riskLevel: "high",
                 title: t("portfolio.orderMutationTitle"),
                 tone: "warning",
               });
@@ -384,8 +402,12 @@ export function TraderPortfolioScreen() {
             }
 
             modifyOrder(order.id);
-            toast.show({
-              message: t("portfolio.orderModifiedMessage", { symbol: order.symbol }),
+            overlayQueue.enqueueAlert({
+              body: t("portfolio.orderModifiedMessage", { symbol: order.symbol }),
+              dedupeKey: `portfolio-order-modified-${order.id}`,
+              icon: "icon.trading.order_ticket",
+              priority: "critical",
+              riskLevel: "high",
               title: t("portfolio.orderModifiedTitle"),
               tone: "success",
             });
@@ -397,8 +419,12 @@ export function TraderPortfolioScreen() {
           label: t("portfolio.action.deleteOrder"),
           onPress: () => {
             if (!order.canEdit) {
-              toast.show({
-                message: t("portfolio.orderCannotDelete"),
+              overlayQueue.enqueueAlert({
+                body: t("portfolio.orderCannotDelete"),
+                dedupeKey: `portfolio-order-delete-blocked-${order.id}`,
+                icon: "icon.status.rejected",
+                priority: "critical",
+                riskLevel: "high",
                 title: t("portfolio.orderMutationTitle"),
                 tone: "warning",
               });
@@ -406,8 +432,12 @@ export function TraderPortfolioScreen() {
             }
 
             deleteOrder(order.id);
-            toast.show({
-              message: t("portfolio.orderDeletedMessage", { symbol: order.symbol }),
+            overlayQueue.enqueueAlert({
+              body: t("portfolio.orderDeletedMessage", { symbol: order.symbol }),
+              dedupeKey: `portfolio-order-deleted-${order.id}`,
+              icon: "icon.trading.close_position",
+              priority: "critical",
+              riskLevel: "high",
               title: t("portfolio.orderDeletedTitle"),
               tone: "success",
             });

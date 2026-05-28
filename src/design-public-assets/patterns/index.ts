@@ -3,6 +3,7 @@ export * from '@/src/components/BottomSheet';
 export * from '@/src/components/ConfirmActionSheet';
 export * from '@/src/components/GlobalMenuList';
 export * from '@/src/components/KeyValueList';
+export * from '@/src/components/business/FinancialPagePatterns';
 export * from '@/src/components/Screen';
 export * from '@/src/components/SegmentedTabs';
 export * from '@/src/components/feedback';

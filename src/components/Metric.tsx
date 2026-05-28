@@ -1,5 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
+import { layout, size } from '@/src/theme/tokens';
+
 import { AppText } from './Typography';
 
 type MetricProps = {
@@ -30,7 +32,7 @@ export function Metric({ label, value, tone = 'default', caption }: MetricProps)
 const styles = StyleSheet.create({
   metric: {
     flex: 1,
-    gap: 4,
-    minWidth: 86,
+    gap: layout.metricGap,
+    minWidth: size.metric.minWidth,
   },
 });

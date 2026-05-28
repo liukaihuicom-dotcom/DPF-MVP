@@ -426,6 +426,236 @@
       "forbidden": [
         "Do not hardcode theme preview colors outside token preview mapping."
       ]
+    },
+    "walletHome": {
+      "documentation": "src/components/business/FinancialPagePatterns.tsx#FinancialHeroCard",
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "patternType": "page_pattern",
+      "densityMode": "density.app.comfortable",
+      "requiredStructure": [
+        "primaryBalanceHero",
+        "accountStatus",
+        "fundingActions",
+        "riskOrKycBanner",
+        "recentTransactions"
+      ],
+      "recommendedComponents": [
+        "Screen",
+        "FinancialHeroCard",
+        "FinancialRiskBanner",
+        "FundActionGrid",
+        "FinancialTransactionRow",
+        "StatusPill"
+      ],
+      "requiredStates": [
+        "default",
+        "empty",
+        "restricted",
+        "reviewing"
+      ],
+      "forbidden": [
+        "Do not build wallet home with page-local hero stacks or private transaction rows.",
+        "Do not hide account status or KYC/risk context."
+      ]
+    },
+    "depositPage": {
+      "documentation": "src/components/business/FinancialPagePatterns.tsx#FinancialFormFlow",
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "patternType": "flow_pattern",
+      "densityMode": "density.app.comfortable",
+      "requiredStructure": [
+        "formHint",
+        "riskBanner",
+        "sourceAccountField",
+        "amountStage",
+        "paymentMethodField",
+        "stickyCtaWithFeeSummary"
+      ],
+      "recommendedComponents": [
+        "Screen",
+        "FinancialFormFlow",
+        "FinancialSelectField",
+        "FinancialAmountStage",
+        "FinancialMethodRow",
+        "ActionButton",
+        "OverlayQueueProvider"
+      ],
+      "requiredStates": [
+        "default",
+        "inputting",
+        "validating",
+        "submitting",
+        "success",
+        "failed",
+        "restricted"
+      ],
+      "forbidden": [
+        "Do not randomize amount, method, and CTA spacing per page.",
+        "Do not use Toast for funding submit result or high-risk confirmation."
+      ]
+    },
+    "withdrawalPage": {
+      "documentation": "src/components/business/FinancialPagePatterns.tsx#FinancialFormFlow",
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "patternType": "flow_pattern",
+      "densityMode": "density.app.comfortable",
+      "requiredStructure": [
+        "formHint",
+        "riskBanner",
+        "payoutMethodField",
+        "amountStage",
+        "sourceAccountField",
+        "stickyCtaWithBalanceAndFeeSummary"
+      ],
+      "recommendedComponents": [
+        "Screen",
+        "FinancialFormFlow",
+        "FinancialSelectField",
+        "FinancialAmountStage",
+        "FinancialMethodRow",
+        "ActionButton",
+        "OverlayQueueProvider"
+      ],
+      "requiredStates": [
+        "default",
+        "inputting",
+        "validating",
+        "submitting",
+        "reviewing",
+        "success",
+        "failed",
+        "restricted"
+      ],
+      "forbidden": [
+        "Do not weaken KYC, balance, payout, fee, or FX hierarchy for visual simplicity.",
+        "Do not carry withdrawal risk in ordinary Toast."
+      ]
+    },
+    "kycGate": {
+      "documentation": "src/components/business/FinancialPagePatterns.tsx#FinancialRiskBanner",
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "patternType": "state_pattern",
+      "densityMode": "density.app.comfortable",
+      "requiredStructure": [
+        "blockingReason",
+        "riskOrEligibilityCopy",
+        "primaryRecoveryAction",
+        "secondarySupportPath"
+      ],
+      "recommendedComponents": [
+        "Screen",
+        "EmptyState",
+        "FinancialRiskBanner",
+        "StatusPill",
+        "ActionButton"
+      ],
+      "requiredStates": [
+        "not_submitted",
+        "reviewing",
+        "approved",
+        "rejected",
+        "expired",
+        "restricted"
+      ],
+      "forbidden": [
+        "Do not make KYC gating look like a low-risk empty state.",
+        "Do not omit recovery action or compliance-sensitive reason copy."
+      ]
+    },
+    "partnerFinanceSurface": {
+      "documentation": "design-system-engineering/05_patterns/pattern-registry.json#partnerFinanceSurface",
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "patternType": "page_pattern",
+      "densityMode": "density.app.comfortable",
+      "requiredStructure": [
+        "partnerStatus",
+        "commissionSummary",
+        "clientRiskContext",
+        "roleAwareActions",
+        "financeMetricList"
+      ],
+      "recommendedComponents": [
+        "Screen",
+        "Card",
+        "MetricCluster",
+        "PartnerPortalSummary",
+        "RewardSummaryCard",
+        "VerificationStatusCard",
+        "FinancialRiskBanner"
+      ],
+      "requiredStates": [
+        "trader",
+        "partner",
+        "pending",
+        "restricted",
+        "empty"
+      ],
+      "forbidden": [
+        "Do not build partner finance surfaces with page-local metric cards when registered partner components exist.",
+        "Do not mix reward, commission, and risk hierarchy without status context."
+      ]
+    },
+    "fundingOperation": {
+      "documentation": "src/components/business/FinancialPagePatterns.tsx",
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "patternType": "flow_pattern",
+      "densityMode": "density.app.comfortable",
+      "requiredStructure": [
+        "financialHeroOrFormHint",
+        "riskBanner",
+        "financialFormFlow",
+        "amountStage",
+        "methodOrAccountSelector",
+        "transactionRows",
+        "stickyFinancialCta"
+      ],
+      "recommendedComponents": [
+        "FinancialHeroCard",
+        "FinancialRiskBanner",
+        "FinancialFormFlow",
+        "FinancialSelectField",
+        "FinancialAmountStage",
+        "FinancialMethodRow",
+        "FinancialTransactionRow"
+      ],
+      "requiredStates": [
+        "default",
+        "inputting",
+        "validating",
+        "submitting",
+        "reviewing",
+        "success",
+        "failed",
+        "restricted"
+      ],
+      "forbidden": [
+        "Do not duplicate hero, risk banner, selector, amount stage, method row, or transaction row styles in pages.",
+        "Do not bypass layout.financialPattern tokens."
+      ]
     }
   }
 }

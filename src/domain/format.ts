@@ -48,6 +48,10 @@ export function localizeText(text: (Partial<Record<Locale, string>> & Pick<Local
 }
 
 export function directionLabel(direction: Direction, locale: Locale = 'zh-CN') {
+  if (locale === 'id-ID') {
+    return direction === 'buy' ? 'Beli' : 'Jual';
+  }
+
   if (locale !== 'zh-CN') {
     return direction === 'buy' ? 'Buy' : 'Sell';
   }
@@ -56,6 +60,14 @@ export function directionLabel(direction: Direction, locale: Locale = 'zh-CN') {
 }
 
 export function orderTypeLabel(type: 'market' | 'limit' | 'stop', locale: Locale = 'zh-CN') {
+  if (locale === 'id-ID') {
+    if (type === 'market') {
+      return 'Market';
+    }
+
+    return type === 'limit' ? 'Limit' : 'Stop';
+  }
+
   if (locale !== 'zh-CN') {
     if (type === 'market') {
       return 'Market';

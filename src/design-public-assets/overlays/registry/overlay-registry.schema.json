@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DPF Overlay Registry",
+  "type": "object",
+  "required": ["version", "generated_at", "overlays"],
+  "properties": {
+    "version": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "overlays": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "overlay_id",
+          "type",
+          "risk_level",
+          "source_path",
+          "usage_scope",
+          "owner",
+          "tokens",
+          "states",
+          "events",
+          "a11y",
+          "platform",
+          "queue_policy",
+          "status"
+        ],
+        "properties": {
+          "overlay_id": { "type": "string" },
+          "type": {
+            "enum": [
+              "toast",
+              "snackbar",
+              "alert_dialog",
+              "action_sheet",
+              "picker_sheet",
+              "filter_sheet",
+              "form_sheet",
+              "detail_sheet",
+              "bottom_sheet",
+              "modal_page",
+              "full_screen_modal",
+              "modal_stack",
+              "popover",
+              "system_permission"
+            ]
+          },
+          "risk_level": { "enum": ["low", "medium", "high", "critical"] },
+          "source_path": { "type": "string" },
+          "usage_scope": { "type": "array", "items": { "type": "string" } },
+          "owner": { "type": "string" },
+          "tokens": { "type": "array", "items": { "type": "string" } },
+          "states": { "type": "array", "items": { "type": "string" } },
+          "events": { "type": "array", "items": { "type": "string" } },
+          "a11y": { "type": "object" },
+          "platform": { "type": "array", "items": { "enum": ["ios", "android", "h5", "webview", "miniapp"] } },
+          "queue_policy": { "enum": ["none", "queued", "priority_queued", "blocking"] },
+          "status": { "enum": ["draft", "approved", "deprecated", "blocked"] }
+        }
+      }
+    }
+  }
+}

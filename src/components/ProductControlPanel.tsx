@@ -33,7 +33,7 @@ import { localeOptions, type Locale, type TranslationKey } from '@/src/i18n/tran
 import { tradeWorkspaceDataPresets, useProductSettings } from '@/src/settings/ProductSettings';
 import { useBroker } from '@/src/state/BrokerStore';
 import { shadows, themeColors, type ThemeMode } from '@/src/theme/colors';
-import { layout, lineWidth, radius, spacing, size, typography } from '@/src/theme/tokens';
+import { layout, lineWidth, radius, spacing, size, typography, zIndex } from '@/src/theme/tokens';
 
 import { AppIcon, type AppIconName, type IconTone } from './AppIcon';
 import { HeaderIconButton } from './HeaderIconButton';
@@ -1217,7 +1217,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     pointerEvents: 'box-none',
     position: 'absolute',
-    zIndex: 50,
+    zIndex: zIndex.devOverlay,
   },
   list: {
     gap: spacing.sm - spacing.xxs,
@@ -1248,7 +1248,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.card,
     borderWidth: lineWidth.none,
     overflow: 'hidden',
-    width: 360,
+    width: size.viewport.devConsolePanelWidth,
   },
   panelContent: {
     gap: spacing.sm,

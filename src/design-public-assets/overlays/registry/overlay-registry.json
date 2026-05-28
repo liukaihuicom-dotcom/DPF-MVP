@@ -1,0 +1,433 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-05-29",
+  "governance_skill": "app-modal-overlay-system-governance v2.0.0-L5",
+  "source_of_truth": [
+    "src/navigation/modalRegistry.ts",
+    "src/navigation/routeRegistry.ts",
+    "src/screens/navigation/RootLayout.tsx"
+  ],
+  "overlays": [
+    {
+      "overlay_id": "global.toastFeedback",
+      "type": "toast",
+      "risk_level": "low",
+      "source_path": "src/feedback/Toast.tsx",
+      "usage_scope": [
+        "low-risk feedback",
+        "demo placeholder feedback"
+      ],
+      "owner": "design-system-engineering",
+      "tokens": [
+        "token.design-tokens",
+        "token.zIndex-overlay",
+        "color.overlay",
+        "radius.xl",
+        "shadow.toast"
+      ],
+      "states": [
+        "idle",
+        "visible",
+        "auto_dismiss"
+      ],
+      "events": [
+        "show",
+        "hide",
+        "replace"
+      ],
+      "a11y": {
+        "role": "alert",
+        "live_region": "polite",
+        "not_allowed_for": [
+          "funding confirmation",
+          "trading confirmation",
+          "security result",
+          "KYC result",
+          "compliance confirmation"
+        ]
+      },
+      "platform": [
+        "ios",
+        "android",
+        "h5",
+        "webview"
+      ],
+      "queue_policy": "queued",
+      "status": "approved"
+    },
+    {
+      "overlay_id": "global.modalQueue",
+      "type": "alert_dialog",
+      "risk_level": "high",
+      "source_path": "src/components/OverlayQueue.tsx",
+      "usage_scope": [
+        "high-risk feedback",
+        "dirty-state confirmation",
+        "blocking global alert"
+      ],
+      "owner": "design-system-engineering",
+      "tokens": [
+        "token.design-tokens",
+        "token.zIndex-overlay",
+        "token.motion-overlay",
+        "color.overlay.backdrop",
+        "radius.sheet",
+        "shadow.dialog"
+      ],
+      "states": [
+        "idle",
+        "queued",
+        "visible",
+        "confirming",
+        "dismissed"
+      ],
+      "events": [
+        "enqueueAlert",
+        "showAlert",
+        "clear",
+        "confirm",
+        "dismiss"
+      ],
+      "a11y": {
+        "role": "alert",
+        "modal": true,
+        "title_required": true,
+        "description_required": true,
+        "android_back": "dismisses current queued alert",
+        "focus_policy": "native modal isolates accessibility tree"
+      },
+      "platform": [
+        "ios",
+        "android",
+        "h5",
+        "webview"
+      ],
+      "queue_policy": "priority_queued",
+      "status": "approved"
+    },
+    {
+      "overlay_id": "global.bottomSheet",
+      "type": "bottom_sheet",
+      "risk_level": "medium",
+      "source_path": "src/components/BottomSheet.tsx",
+      "usage_scope": [
+        "picker sheet",
+        "action sheet",
+        "detail sheet",
+        "short local task"
+      ],
+      "owner": "design-system-engineering",
+      "tokens": [
+        "token.design-tokens",
+        "token.zIndex-overlay",
+        "token.motion-overlay",
+        "color.overlay.backdrop",
+        "radius.sheet"
+      ],
+      "states": [
+        "idle",
+        "visible",
+        "nested",
+        "closing"
+      ],
+      "events": [
+        "show",
+        "push",
+        "back",
+        "hide",
+        "onDismiss"
+      ],
+      "a11y": {
+        "modal": true,
+        "background_hidden": true,
+        "android_back": "closes top sheet stack entry",
+        "keyboard_safe": true,
+        "safe_area": true
+      },
+      "platform": [
+        "ios",
+        "android",
+        "h5",
+        "webview"
+      ],
+      "queue_policy": "none",
+      "status": "approved"
+    },
+    {
+      "overlay_id": "global.modalStack",
+      "type": "modal_stack",
+      "risk_level": "medium",
+      "source_path": "src/components/ModalStack.tsx",
+      "usage_scope": [
+        "full-screen modal content",
+        "complex route-adjacent modal flow"
+      ],
+      "owner": "design-system-engineering",
+      "tokens": [
+        "token.design-tokens",
+        "token.zIndex-overlay"
+      ],
+      "states": [
+        "idle",
+        "presented",
+        "pushed",
+        "dismissed"
+      ],
+      "events": [
+        "presentFullScreen",
+        "pushFullScreen",
+        "back",
+        "dismiss"
+      ],
+      "a11y": {
+        "modal": true,
+        "android_back": "dismisses top stack entry",
+        "safe_area": true
+      },
+      "platform": [
+        "ios",
+        "android",
+        "h5",
+        "webview"
+      ],
+      "queue_policy": "none",
+      "status": "approved"
+    },
+    {
+      "overlay_id": "global.webSelectMenu",
+      "type": "popover",
+      "risk_level": "low",
+      "source_path": "src/components/TextField.tsx",
+      "usage_scope": [
+        "web select field menu"
+      ],
+      "owner": "design-system-engineering",
+      "tokens": [
+        "token.design-tokens",
+        "token.zIndex-overlay",
+        "radius.sm"
+      ],
+      "states": [
+        "idle",
+        "open",
+        "selected",
+        "closed"
+      ],
+      "events": [
+        "openWebMenu",
+        "closeWebMenu",
+        "select"
+      ],
+      "a11y": {
+        "expanded_state": true,
+        "selected_state": true,
+        "not_allowed_for": [
+          "mobile picker sheet",
+          "financial confirmation"
+        ]
+      },
+      "platform": [
+        "h5"
+      ],
+      "queue_policy": "none",
+      "status": "approved"
+    },
+    {
+      "overlay_id": "funding.submitFeedbackAlert",
+      "type": "alert_dialog",
+      "risk_level": "high",
+      "source_path": "src/screens/funding/FundingScreens.tsx",
+      "usage_scope": [
+        "funding submit result"
+      ],
+      "owner": "funding",
+      "tokens": [
+        "global.modalQueue"
+      ],
+      "states": [
+        "submitting",
+        "success",
+        "failed"
+      ],
+      "events": [
+        "submit",
+        "enqueueAlert",
+        "navigate_detail"
+      ],
+      "a11y": {
+        "title_required": true,
+        "description_required": true,
+        "risk_context_visible": true
+      },
+      "platform": [
+        "ios",
+        "android",
+        "h5",
+        "webview"
+      ],
+      "queue_policy": "priority_queued",
+      "status": "approved"
+    },
+    {
+      "overlay_id": "portfolio.orderMutationAlert",
+      "type": "alert_dialog",
+      "risk_level": "high",
+      "source_path": "src/screens/portfolio/PortfolioScreen.tsx",
+      "usage_scope": [
+        "position close result",
+        "blocked position mutation",
+        "pending order modify result",
+        "pending order delete result",
+        "blocked pending order mutation"
+      ],
+      "owner": "trading",
+      "tokens": [
+        "global.modalQueue"
+      ],
+      "states": [
+        "blocked",
+        "modified",
+        "deleted",
+        "closed"
+      ],
+      "events": [
+        "close_position",
+        "block_position_mutation",
+        "modify_pending_order",
+        "delete_pending_order",
+        "enqueueAlert"
+      ],
+      "a11y": {
+        "title_required": true,
+        "description_required": true,
+        "risk_context_visible": true,
+        "not_allowed_as_toast": true
+      },
+      "platform": [
+        "ios",
+        "android",
+        "h5",
+        "webview"
+      ],
+      "queue_policy": "priority_queued",
+      "status": "approved"
+    },
+    {
+      "overlay_id": "partner.upgradeFeedbackAlert",
+      "type": "alert_dialog",
+      "risk_level": "high",
+      "source_path": "src/components/UpgradeChatCard.tsx; src/components/QuickActionSheet.tsx; src/screens/discover/DiscoverModuleScreen.tsx; src/screens/client/ClientProfileScreen.tsx",
+      "usage_scope": [
+        "partner application submit result",
+        "partner application pending status",
+        "partner role approval result"
+      ],
+      "owner": "partner",
+      "tokens": [
+        "global.modalQueue"
+      ],
+      "states": [
+        "blocked",
+        "pending",
+        "submitted",
+        "approved"
+      ],
+      "events": [
+        "submitUpgradeRequest",
+        "approveUpgradeRequest",
+        "enqueueAlert"
+      ],
+      "a11y": {
+        "title_required": true,
+        "description_required": true,
+        "risk_context_visible": true,
+        "not_allowed_as_toast": true
+      },
+      "platform": [
+        "ios",
+        "android",
+        "h5",
+        "webview"
+      ],
+      "queue_policy": "priority_queued",
+      "status": "approved"
+    },
+    {
+      "overlay_id": "security.resultAlert",
+      "type": "alert_dialog",
+      "risk_level": "high",
+      "source_path": "src/screens/settings/SecurityLoginLogScreen.tsx",
+      "usage_scope": [
+        "security revoke result",
+        "security report result",
+        "blocked security action"
+      ],
+      "owner": "security",
+      "tokens": [
+        "global.modalQueue"
+      ],
+      "states": [
+        "blocked",
+        "success",
+        "reported"
+      ],
+      "events": [
+        "revoke",
+        "report",
+        "enqueueAlert"
+      ],
+      "a11y": {
+        "title_required": true,
+        "description_required": true,
+        "risk_context_visible": true
+      },
+      "platform": [
+        "ios",
+        "android",
+        "h5",
+        "webview"
+      ],
+      "queue_policy": "priority_queued",
+      "status": "approved"
+    },
+    {
+      "overlay_id": "trading.orderSubmitAlert",
+      "type": "alert_dialog",
+      "risk_level": "high",
+      "source_path": "src/screens/trading/OrderTicketScreen.tsx",
+      "usage_scope": [
+        "order submit confirmation",
+        "order submit blocked",
+        "order submit result"
+      ],
+      "owner": "trading",
+      "tokens": [
+        "global.modalQueue"
+      ],
+      "states": [
+        "blocked",
+        "confirming",
+        "submitted"
+      ],
+      "events": [
+        "submit",
+        "confirm",
+        "enqueueAlert",
+        "replace_trade"
+      ],
+      "a11y": {
+        "title_required": true,
+        "description_required": true,
+        "risk_context_visible": true
+      },
+      "platform": [
+        "ios",
+        "android",
+        "h5",
+        "webview"
+      ],
+      "queue_policy": "priority_queued",
+      "status": "approved"
+    }
+  ]
+}

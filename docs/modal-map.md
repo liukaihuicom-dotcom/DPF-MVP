@@ -6,7 +6,7 @@ Source of truth: `src/navigation/modalRegistry.ts`.
 
 | Modal id | Modal component | Trigger page | Trigger action | Routeable | Close behavior | Confirm behavior | Risk level |
 |---|---|---|---|---|---|---|---|
-| `order.ticket.route` | `OrderTicketScreen` | `/instrument/[id]`, `/markets`, `/quick`, `/discover`, `/trade` | Tap buy/sell quote, challenge ticket, or quick trade | Yes: `/order/[id]` | Back to previous route or `/trade` fallback | Validate order and submit local trade; show toast; replace to `/trade` | high |
+| `order.ticket.route` | `OrderTicketScreen` | `/instrument/[id]`, `/markets`, `/quick`, `/discover`, `/trade` | Tap buy/sell quote, challenge ticket, or quick trade | Yes: `/order/[id]` | Back to previous route or `/trade` fallback; dirty state uses queued Alert Dialog | Validate order, confirm through `global.modalQueue`, submit local trade, show queued result alert, replace to `/trade` | high |
 | `discover.layout.route` | `DiscoverLayoutScreen` | `/discover` | Open layout settings | Yes: `/discover-layout` | Back to previous route or `/discover` fallback | Save local layout draft and close | low |
 | `auth.countryPicker` | `CountryPickerModal` | `/auth/register-phone`, `/auth/forgot-password` | Tap country code selector | No | Shared backdrop tap, pan-down, or dismiss without changing country | Select country and close | low |
 | `auth.contactConfirm` | `AuthContactConfirmDialog` | `/auth/register`, `/auth/register-phone` | Continue after valid contact entry | No | Non-sheet exception: cancel and keep current form | Confirm contact and navigate to code route | medium |
@@ -15,18 +15,22 @@ Source of truth: `src/navigation/modalRegistry.ts`.
 | `auth.errorDialog` | `AuthErrorDialog` | `/auth/pin-setup` | Wrong PIN or PIN mismatch | No | Non-sheet exception: dismiss dialog | Reset current PIN input | high |
 | `global.bottomSheet` | `GlobalBottomSheetHost` | Multiple protected pages | Open registered sheet preset | No | Shared backdrop tap, pan-down, or nested back | Run page-supplied sheet action | medium |
 | `global.toastFeedback` | `ToastProvider` | Multiple pages | Show success, warning, blocked, or demo feedback | No | Auto-dismiss | Feedback only | low |
+| `global.modalQueue` | `OverlayQueueProvider + GlobalDialog` | High-risk and dirty-state pages | Queue blocking alerts, high-risk results, dirty-state exits | No | Dismiss current queued alert before next alert | Run queued action and advance by priority | high |
+| `global.modalStack` | `ModalStackProvider` | `/instrument/[id]` | Open full-screen chart or future full-screen modal content | No | Android back or close button dismisses top stack entry | Content-specific action stays in the stack entry | medium |
 | `global.webSelectMenu` | `TextField web select Modal` | `/markets`, `/quick` | Open web select menu | No | Non-sheet exception: click outside or request close | Select option and close | low |
 | `quick.actionSheet` | `GlobalBottomSheetHost + actionMenu preset + QuickActionSheetContent` | `/quick` | Open quick action menu | No | Shared backdrop tap, pan-down, or action completion | Run selected action and maybe navigate | medium |
 | `tradingAccount.switchSheet` | `TradingAccountSwitchSheet` | `/markets`, `/trade`, `/portfolio`, funding forms | Tap account selector | No | Dismiss without changing selection | Select eligible account and close | medium |
 | `funding.paymentMethodSheet` | `PaymentMethodSheet` | `/funding/deposit`, `/funding/withdrawal` | Tap payment or payout method field | No | Dismiss without changing method | Select available method and close | high |
-| `funding.submitFeedbackToast` | `ToastProvider` | funding forms | Submit funding form | No | Auto-dismiss | Feedback only; submit handler opens transaction detail | high |
+| `funding.submitFeedbackAlert` | `OverlayQueueProvider + GlobalDialog` | funding forms | Submit funding form | No | Acknowledge queued alert after navigation to transaction detail | Show submitted reference, status context, and route to transaction detail | high |
+| `partner.upgradeFeedbackAlert` | `OverlayQueueProvider + GlobalDialog` | `/quick`, `/client/[id]` | Submit partner application, view pending status, or approve upgrade | No | Acknowledge queued partner role-change alert | Show submitted, pending, or approved status through Modal Queue | high |
 | `security.deviceDetailSheet` | `DeviceDetailSheet` | `/settings/security-log` | Tap device card | No | Dismiss or nested back | No direct confirm; exposes security actions | medium |
-| `security.revokeConfirmSheet` | `ConfirmActionSheet` | `/settings/security-log` | Tap revoke session | No | Cancel to device detail | Revoke local session or show blocked toast | high |
-| `security.reportConfirmSheet` | `ConfirmActionSheet` | `/settings/security-log` | Tap report suspicious event | No | Cancel to device detail | Report local event or show blocked toast | high |
+| `security.revokeConfirmSheet` | `ConfirmActionSheet` | `/settings/security-log` | Tap revoke session | No | Cancel to device detail | Revoke local session or show queued blocked/success alert | high |
+| `security.reportConfirmSheet` | `ConfirmActionSheet` | `/settings/security-log` | Tap report suspicious event | No | Cancel to device detail | Report local event or show queued blocked/warning alert | high |
 | `portfolio.accountMenuSheet` | `AccountMenuSheet` | `/trade`, `/portfolio` | Tap account menu | No | Dismiss account menu | Navigate to account child page | medium |
 | `portfolio.positionDetailSheet` | `PositionDetailSheet` | `/trade`, `/portfolio` | Tap open position row | No | Dismiss detail | Open close confirmation or demo modify feedback | high |
 | `portfolio.pendingOrderDetailSheet` | `PendingOrderDetailSheet` | `/trade`, `/portfolio` | Tap pending order row | No | Dismiss detail | Modify or delete local pending order | high |
-| `portfolio.closePositionConfirm` | `Alert.alert / window.confirm` | `/trade`, `/portfolio` | Tap close position | No | Cancel leaves position open | Close local position and show toast | high |
+| `portfolio.closePositionConfirm` | `ConfirmActionSheet` | `/trade`, `/portfolio` | Tap close position | No | Cancel leaves position open | Close local position and show queued trading mutation alert | high |
+| `portfolio.orderMutationAlert` | `OverlayQueueProvider + GlobalDialog` | `/trade`, `/portfolio` | Close position, modify pending order, delete pending order, or blocked mutation | No | Acknowledge queued trading mutation alert | Show trading mutation result through Modal Queue | high |
 | `portfolio.pendingOrderFeedbackToast` | `ToastProvider` | `/trade`, `/portfolio` | Modify or delete pending order | No | Auto-dismiss | Feedback after local mutation | medium |
 | `account.moreActionSheet` | `AccountMoreSheet` | `/account-details/[id]` | Tap more action | No | Dismiss action menu | Run demo action and show toast | medium |
 | `account.metricDescriptionSheet` | `MetricDescriptionSheet` | `/accounts`, `/account`, `/account-basic/[id]` | Tap explainable metric label | No | Dismiss sheet | Informational only | low |

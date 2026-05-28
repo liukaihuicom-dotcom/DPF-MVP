@@ -8,6 +8,7 @@ export * from '../UpgradeChatCard';
 export * from './DiscoverProfileCards';
 export * from './FinancialTrendChart';
 export * from './FilterPillGroup';
+export * from './FinancialPagePatterns';
 export * from './MetricCluster';
 export * from './MetricDescriptionSheet';
 export * from './OrderPositionDetailSheet';

@@ -36,6 +36,27 @@ export const lineWidth = {
   selected: 2,
 } as const;
 
+export const zIndex = {
+  base: 0,
+  raised: 1,
+  sticky: 20,
+  devOverlay: 50,
+  toast: 90,
+  bottomSheetBackdrop: 1000,
+  bottomSheet: 1001,
+  webSelect: 1050,
+  modalStack: 1100,
+  modalQueue: 1200,
+} as const;
+
+export const motion = {
+  overlay: {
+    fastMs: 160,
+    standardMs: 220,
+    cleanupDelayMs: 260,
+  },
+} as const;
+
 export const size = {
   button: {
     icon: 40,
@@ -95,8 +116,20 @@ export const size = {
     headerHeight: 56,
     tradeHeaderMinHeight: 76,
   },
+  menu: {
+    descriptiveRowMinHeight: 84,
+    rowMinHeight: 58,
+  },
+  metric: {
+    minWidth: 86,
+  },
   surface: {
+    toastIconBox: 28,
     toastMinHeight: 52,
+  },
+  statusPill: {
+    mdMinHeight: 30,
+    smMinHeight: 22,
   },
   chart: {
     accountClosedPnlHeight: 142,
@@ -184,6 +217,7 @@ export const size = {
     detailFooterInset: 132,
     detailPageMinHeight: 780,
     detailSideMinWidth: 104,
+    devConsolePanelWidth: 360,
     discoverLayoutDragRowHeight: 118,
     discoverLayoutGestureDelayMs: 120,
     discoverLayoutRaisedZIndex: 20,
@@ -228,6 +262,7 @@ export const layout = {
   cardPaddingY: spacing.lg,
   cardPaddingCompactX: spacing.md,
   cardPaddingCompactY: spacing.md,
+  cardListPaddingY: spacing.none,
   /** @legacy Use cardPaddingX and cardPaddingY for new card implementations. */
   cardPadding: spacing.lg,
   /** @legacy Use cardPaddingCompactX and cardPaddingCompactY for compact card implementations. */
@@ -244,14 +279,68 @@ export const layout = {
   listRowPaddingX: spacing.md,
   listRowPaddingY: spacing.md,
   formFieldTextInset: spacing.md,
+  formFieldFloatingInputPaddingTop: spacing.lg,
+  formFieldMultilineInputPaddingTop: spacing.lg + spacing.xs,
   formGroupGap: spacing.md,
   fieldGap: spacing.sm,
   inlineGap: spacing.xs,
   controlGap: spacing.sm,
+  metricGap: spacing.xs,
+  menuRowGap: spacing.md,
+  menuRowTextGap: spacing.xs,
+  menuRowMinTouch: size.menu.rowMinHeight,
+  menuRowMinHeight: size.menu.rowMinHeight,
+  menuDescriptiveRowMinHeight: size.menu.descriptiveRowMinHeight,
   sheetContentGap: spacing.md,
   sheetFooterGap: spacing.md,
+  sheetHandlePaddingBottom: spacing.xs + lineWidth.strong,
+  sheetHandlePaddingTop: spacing.sm,
   quoteGroupGap: spacing.sm,
   dataRowGap: spacing.xs,
+  density: {
+    appComfortable: {
+      pageGap: spacing.xl,
+      sectionGap: spacing.xl,
+      cardGap: spacing.md,
+    },
+    appCompact: {
+      pageGap: spacing.md,
+      sectionGap: spacing.lg,
+      cardGap: spacing.sm,
+    },
+  },
+  statusPill: {
+    gap: spacing.xs + lineWidth.strong,
+    gapSm: spacing.xs,
+    paddingX: spacing.sm + spacing.xxs,
+    paddingY: spacing.xs + lineWidth.strong,
+    paddingSmX: spacing.sm - lineWidth.strong,
+    paddingSmY: spacing.xxs,
+  },
+  actionButtonPaddingX: spacing.lg + spacing.xxs,
+  messageBubble: {
+    gap: spacing.xs,
+    maxWidth: '86%',
+    paddingX: spacing.sm + spacing.xxs,
+    paddingY: spacing.sm,
+  },
+  financialPattern: {
+    disabledOpacity: 0.5,
+    fieldGap: spacing.md,
+    heroGap: spacing.md,
+    heroDataGap: spacing.xs,
+    riskGap: spacing.md,
+    riskPadding: spacing.md,
+    formFlowGap: spacing.md,
+    amountStageGap: spacing.md,
+    fieldPaddingY: spacing.sm,
+    fieldMinTouch: size.input.floatingMinHeight,
+    methodRowGap: spacing.md,
+    methodRowMinTouch: size.input.multilineContentMinHeight - spacing.xl + spacing.xs,
+    methodRowPadding: spacing.md,
+    transactionRowGap: spacing.md,
+    transactionRowMinTouch: size.input.floatingMinHeight,
+  },
   headerIconButtonSize: size.button.icon,
   headerIconSize: size.icon.header,
   sheetHeaderHeight: size.sheet.headerHeight,

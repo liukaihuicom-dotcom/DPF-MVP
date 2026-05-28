@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Keyboard, Platform, Pressable, StyleSheet, useWindowDimensions, View, type LayoutChangeEvent } from 'react-native';
-import Animated, { Easing, Extrapolation, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withTiming, type SharedValue } from 'react-native-reanimated';
+import { Keyboard, Platform, BackHandler, Pressable, StyleSheet, useWindowDimensions, View, type LayoutChangeEvent } from 'react-native';
+import Animated, { Easing, Extrapolation, interpolate, useAnimatedStyle, useSharedValue, withTiming, type SharedValue } from 'react-native-reanimated';
 import {
   BottomSheetFooter as GorhomBottomSheetFooter,
   BottomSheetModal,
@@ -13,7 +13,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useProductSettings } from '@/src/settings/ProductSettings';
-import { lineWidth, layout, radius, spacing } from '@/src/theme/tokens';
+import { lineWidth, layout, motion, radius, size, spacing, zIndex } from '@/src/theme/tokens';
 
 import { ActionButton, type ActionButtonTone, type ActionButtonVariant } from './ActionButton';
 import { AppIcon, type AppIconName } from './AppIcon';
@@ -115,8 +115,8 @@ type BottomSheetContextValue = {
 const TOP_RESERVED_SPACE = layout.topReservedSpace;
 const MAX_PAGE_SHEET_WIDTH = layout.appMaxWidth;
 const SHEET_HEADER_HEIGHT = layout.sheetHeaderHeight;
-const SHEET_ANIMATION_DURATION = 220;
-const SHEET_CLOSE_CLEANUP_DELAY = SHEET_ANIMATION_DURATION + 40;
+const SHEET_ANIMATION_DURATION = motion.overlay.standardMs;
+const SHEET_CLOSE_CLEANUP_DELAY = motion.overlay.cleanupDelayMs;
 const SHEET_ANIMATION_CONFIG = {
   duration: SHEET_ANIMATION_DURATION,
   easing: Easing.out(Easing.cubic),
@@ -127,11 +127,17 @@ const BottomSheetContext = createContext<BottomSheetContextValue | null>(null);
 const BottomSheetOptionsContext = createContext<BottomSheetOptions | null>(null);
 const BottomSheetStackDepthContext = createContext(0);
 const BottomSheetClosingContext = createContext(false);
+const BottomSheetNativeDismissContext = createContext<(() => void) | null>(null);
 
 export function BottomSheetProvider({ children }: PropsWithChildren) {
   const [stack, setStack] = useState<BottomSheetOptions[]>([]);
   const [closingStack, setClosingStack] = useState<BottomSheetOptions[] | null>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stackRef = useRef<BottomSheetOptions[]>([]);
+  const closingStackRef = useRef<BottomSheetOptions[] | null>(null);
+  const pendingCloseStackRef = useRef<BottomSheetOptions[]>([]);
+  stackRef.current = stack;
+  closingStackRef.current = closingStack;
 
   const finishClose = useCallback((nextStack: BottomSheetOptions[] = []) => {
     if (closeTimerRef.current) {
@@ -139,6 +145,9 @@ export function BottomSheetProvider({ children }: PropsWithChildren) {
       closeTimerRef.current = null;
     }
 
+    stackRef.current = nextStack;
+    closingStackRef.current = null;
+    pendingCloseStackRef.current = [];
     setStack(nextStack);
     setClosingStack(null);
   }, []);
@@ -149,8 +158,23 @@ export function BottomSheetProvider({ children }: PropsWithChildren) {
     }
 
     currentStack.at(-1)?.onDismiss?.();
+    stackRef.current = nextStack;
+    closingStackRef.current = currentStack;
+    pendingCloseStackRef.current = nextStack;
     setClosingStack(currentStack);
     closeTimerRef.current = setTimeout(() => finishClose(nextStack), SHEET_CLOSE_CLEANUP_DELAY);
+  }, [finishClose]);
+
+  const handleNativeDismiss = useCallback(() => {
+    const currentClosingStack = closingStackRef.current;
+
+    if (currentClosingStack) {
+      finishClose(pendingCloseStackRef.current);
+      return;
+    }
+
+    stackRef.current.at(-1)?.onDismiss?.();
+    finishClose();
   }, [finishClose]);
 
   useEffect(() => () => {
@@ -172,13 +196,14 @@ export function BottomSheetProvider({ children }: PropsWithChildren) {
   const show = useCallback((nextOptions: BottomSheetOptions) => {
     dismissActiveKeyboard();
     finishClose();
+    stackRef.current = [nextOptions];
     setStack([nextOptions]);
-  }, [finishClose]);
+  }, []);
   const push = useCallback((nextOptions: BottomSheetOptions) => {
     dismissActiveKeyboard();
-    finishClose(stack);
+    stackRef.current = [...stackRef.current, nextOptions];
     setStack((current) => [...current, nextOptions]);
-  }, [finishClose, stack]);
+  }, []);
   const back = useCallback(() => {
     setStack((current) => {
       if (!current.length) {
@@ -194,15 +219,30 @@ export function BottomSheetProvider({ children }: PropsWithChildren) {
   const visibleStack = closingStack ?? stack;
   const options = visibleStack.at(-1) ?? null;
 
+  useEffect(() => {
+    if (Platform.OS === 'web' || stack.length === 0) {
+      return undefined;
+    }
+
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      back();
+      return true;
+    });
+
+    return () => subscription.remove();
+  }, [back, stack.length]);
+
   return (
     <BottomSheetContext.Provider value={value}>
-      <BottomSheetStackDepthContext.Provider value={visibleStack.length}>
-        <BottomSheetOptionsContext.Provider value={options}>
-          <BottomSheetClosingContext.Provider value={Boolean(closingStack)}>
-            <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
-          </BottomSheetClosingContext.Provider>
-        </BottomSheetOptionsContext.Provider>
-      </BottomSheetStackDepthContext.Provider>
+      <BottomSheetNativeDismissContext.Provider value={handleNativeDismiss}>
+        <BottomSheetStackDepthContext.Provider value={visibleStack.length}>
+          <BottomSheetOptionsContext.Provider value={options}>
+            <BottomSheetClosingContext.Provider value={Boolean(closingStack)}>
+              <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+            </BottomSheetClosingContext.Provider>
+          </BottomSheetOptionsContext.Provider>
+        </BottomSheetStackDepthContext.Provider>
+      </BottomSheetNativeDismissContext.Provider>
     </BottomSheetContext.Provider>
   );
 }
@@ -234,6 +274,7 @@ export function GlobalBottomSheetHost() {
   const options = useContext(BottomSheetOptionsContext);
   const stackDepth = useContext(BottomSheetStackDepthContext);
   const isClosing = useContext(BottomSheetClosingContext);
+  const handleNativeDismiss = useContext(BottomSheetNativeDismissContext);
   const { back, hide } = useBottomSheet();
   const { height, width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -298,11 +339,8 @@ export function GlobalBottomSheetHost() {
       return () => clearTimeout(timer);
     } else if ((options && isClosing) || wasOpen) {
       setBackdropInteractive(false);
-      sheetEntranceProgress.value = withTiming(0, SHEET_ANIMATION_CONFIG, (finished) => {
-        if (finished) {
-          runOnJS(dismissModal)();
-        }
-      });
+      sheetEntranceProgress.value = withTiming(0, SHEET_ANIMATION_CONFIG);
+      dismissModal();
     }
   }, [dismissModal, isClosing, options, sheetEntranceProgress]);
 
@@ -332,12 +370,12 @@ export function GlobalBottomSheetHost() {
         enableDynamicSizing={!hasExplicitSnapPoints}
         enablePanDownToClose
         footerComponent={options.footer ? footerComponent : undefined}
-        handleIndicatorStyle={{ backgroundColor: colors.border.default, width: 40 }}
+        handleIndicatorStyle={{ backgroundColor: colors.border.default, width: size.sheet.handleWidth }}
         handleStyle={styles.handle}
         index={0}
         keyboardBlurBehavior="restore"
         maxDynamicContentSize={maxHeight}
-        onDismiss={hide}
+        onDismiss={handleNativeDismiss ?? hide}
         ref={modalRef}
         snapPoints={snapPoints}
         style={StyleSheet.flatten([styles.modal, { borderColor: colors.border.subtle, marginLeft: horizontalInset, width: sheetWidth }])}
@@ -775,14 +813,14 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   handle: {
-    paddingBottom: 5,
-    paddingTop: 8,
+    paddingBottom: layout.sheetHandlePaddingBottom,
+    paddingTop: layout.sheetHandlePaddingTop,
   },
   hostBackdrop: {
     left: 0,
     position: 'absolute',
     top: 0,
-    zIndex: 1000,
+    zIndex: zIndex.bottomSheetBackdrop,
   },
   header: {
     backgroundColor: 'transparent',
@@ -791,7 +829,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: 0,
-    zIndex: 2,
+    zIndex: zIndex.raised,
   },
   headerEntrance: {
     alignItems: 'center',
@@ -825,6 +863,6 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 1001,
+    zIndex: zIndex.bottomSheet,
   },
 });

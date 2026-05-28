@@ -3255,6 +3255,469 @@
         "Do not bypass i18n-provided labels or registered icon names for user-facing dialog content."
       ],
       "status": "active"
+    },
+    "OverlayQueueProvider": {
+      "category": "feedback",
+      "path": "src/components/OverlayQueue.tsx",
+      "exports": [
+        "OverlayQueueProvider",
+        "useOverlayQueue",
+        "useDirtyStateGuard",
+        "QueuedAlertPayload",
+        "OverlayRiskLevel",
+        "OverlayQueuePriority",
+        "OverlayAlertTone"
+      ],
+      "props": [
+        "children",
+        "enqueueAlert",
+        "showAlert",
+        "clear",
+        "dirty",
+        "title",
+        "body",
+        "actions",
+        "riskLevel",
+        "priority"
+      ],
+      "variants": [
+        "priority-queued-alert",
+        "dirty-state-confirmation",
+        "blocking-alert"
+      ],
+      "states": [
+        "idle",
+        "queued",
+        "visible",
+        "confirming",
+        "dismissed",
+        "cleared"
+      ],
+      "a11y": [
+        "Serializes alert dialogs through GlobalDialog so background content is modal-isolated.",
+        "High-risk alerts require title and body copy from i18n callers.",
+        "Dirty-state guard intercepts navigation beforeRemove and provides explicit stay/exit actions."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.appMaxWidth",
+        "radius.sheet",
+        "spacing.*",
+        "typography.*",
+        "color.overlay.*",
+        "size.iconSurface.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Global priority alert queue for high-risk funding, trading, security, and dirty-state feedback. Pages enqueue semantic payloads instead of rendering private Modal, Alert Dialog, or confirmation surfaces.",
+      "forbidden": [
+        "Do not render page-local React Native Modal for financial, trading, KYC, security, or compliance feedback.",
+        "Do not use Toast for high-risk funding, security, or trading confirmations.",
+        "Do not bypass GlobalDialog, registered icons, or i18n copy for queued alert content."
+      ],
+      "status": "active"
+    },
+    "ModalStackProvider": {
+      "category": "layout",
+      "path": "src/components/ModalStack.tsx",
+      "exports": [
+        "ModalStackProvider",
+        "useModalStack"
+      ],
+      "props": [
+        "children",
+        "presentFullScreen",
+        "pushFullScreen",
+        "back",
+        "dismiss",
+        "content",
+        "title",
+        "onDismiss"
+      ],
+      "variants": [
+        "full-screen-modal",
+        "modal-stack"
+      ],
+      "states": [
+        "idle",
+        "presented",
+        "pushed",
+        "dismissed"
+      ],
+      "a11y": [
+        "Full-screen modal host uses native modal isolation.",
+        "Back dismisses the top stack entry and calls onDismiss for recovery paths.",
+        "Content is constrained to the governed app max width and safe area."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.appMaxWidth",
+        "spacing.none",
+        "color.surface.canvas"
+      ],
+      "usage": "Global full-screen modal stack host for complex route-adjacent modal content and registered fullscreen technical surfaces such as chart expansion. Feature code calls useModalStack instead of owning private full-screen Modal shells.",
+      "forbidden": [
+        "Do not render route or page-local full-screen Modal shells outside ModalStackProvider.",
+        "Do not use ModalStack for ordinary alerts, action sheets, pickers, or funding risk confirmation; use OverlayQueue or BottomSheet presets.",
+        "Do not bypass route-level business permission checks by moving page flow into ModalStack."
+      ],
+      "status": "active"
+    },
+    "FinancialHeroCard": {
+      "category": "business",
+      "path": "src/components/business/FinancialPagePatterns.tsx",
+      "props": [
+        "eyebrow",
+        "title",
+        "body",
+        "icon",
+        "metrics",
+        "insights",
+        "statusLabel",
+        "statusTone"
+      ],
+      "variants": [
+        "funding-hero",
+        "risk-banner",
+        "form-flow",
+        "select-field",
+        "method-row",
+        "amount-stage",
+        "transaction-row"
+      ],
+      "states": [
+        "default",
+        "selected",
+        "disabled",
+        "error",
+        "empty",
+        "risk-visible"
+      ],
+      "a11y": [
+        "Interactive rows expose accessibilityRole=button and selected/disabled state where applicable.",
+        "Financial value text is constrained to one line and auto-fit is allowed only for registered numeric data surfaces.",
+        "Risk banner keeps title and body visible for funding and compliance context."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.financialPattern.*",
+        "radius.card",
+        "spacing.*",
+        "color.surface.*",
+        "color.status.*",
+        "size.icon.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed financial hero summary card for funding and account pages with constrained metric and insight values.",
+      "forbidden": [
+        "Do not duplicate these financial pattern surfaces inside pages.",
+        "Do not use these patterns for modal confirmation or high-risk result feedback; use OverlayQueue or registered modal components.",
+        "Do not hardcode financial copy, icons, color, spacing, radius, or border semantics in page-local call sites."
+      ],
+      "status": "active",
+      "exports": [
+        "FinancialHeroCard"
+      ]
+    },
+    "FinancialRiskBanner": {
+      "category": "business",
+      "path": "src/components/business/FinancialPagePatterns.tsx",
+      "props": [
+        "title",
+        "body",
+        "icon",
+        "visible"
+      ],
+      "variants": [
+        "risk-banner"
+      ],
+      "states": [
+        "visible",
+        "hidden"
+      ],
+      "a11y": [
+        "Interactive rows expose accessibilityRole=button and selected/disabled state where applicable.",
+        "Financial value text is constrained to one line and auto-fit is allowed only for registered numeric data surfaces.",
+        "Risk banner keeps title and body visible for funding and compliance context."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.financialPattern.*",
+        "radius.card",
+        "spacing.*",
+        "color.surface.*",
+        "color.status.*",
+        "size.icon.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed inline financial risk banner for funding, KYC, and compliance context. Not a modal or confirmation surface.",
+      "forbidden": [
+        "Do not duplicate these financial pattern surfaces inside pages.",
+        "Do not use these patterns for modal confirmation or high-risk result feedback; use OverlayQueue or registered modal components.",
+        "Do not hardcode financial copy, icons, color, spacing, radius, or border semantics in page-local call sites."
+      ],
+      "status": "active",
+      "exports": [
+        "FinancialRiskBanner"
+      ]
+    },
+    "FinancialFormFlow": {
+      "category": "business",
+      "path": "src/components/business/FinancialPagePatterns.tsx",
+      "props": [
+        "children",
+        "style"
+      ],
+      "variants": [
+        "form-flow"
+      ],
+      "states": [
+        "default"
+      ],
+      "a11y": [
+        "Interactive rows expose accessibilityRole=button and selected/disabled state where applicable.",
+        "Financial value text is constrained to one line and auto-fit is allowed only for registered numeric data surfaces.",
+        "Risk banner keeps title and body visible for funding and compliance context."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.financialPattern.*",
+        "radius.card",
+        "spacing.*",
+        "color.surface.*",
+        "color.status.*",
+        "size.icon.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed vertical form-flow wrapper for financial operation pages.",
+      "forbidden": [
+        "Do not duplicate these financial pattern surfaces inside pages.",
+        "Do not use these patterns for modal confirmation or high-risk result feedback; use OverlayQueue or registered modal components.",
+        "Do not hardcode financial copy, icons, color, spacing, radius, or border semantics in page-local call sites."
+      ],
+      "status": "active",
+      "exports": [
+        "FinancialFormFlow"
+      ]
+    },
+    "FinancialSelectField": {
+      "category": "business",
+      "path": "src/components/business/FinancialPagePatterns.tsx",
+      "props": [
+        "label",
+        "value",
+        "icon",
+        "helperText",
+        "error",
+        "rightSlot",
+        "onPress"
+      ],
+      "variants": [
+        "select-field"
+      ],
+      "states": [
+        "default",
+        "error"
+      ],
+      "a11y": [
+        "Interactive rows expose accessibilityRole=button and selected/disabled state where applicable.",
+        "Financial value text is constrained to one line and auto-fit is allowed only for registered numeric data surfaces.",
+        "Risk banner keeps title and body visible for funding and compliance context."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.financialPattern.*",
+        "radius.card",
+        "spacing.*",
+        "color.surface.*",
+        "color.status.*",
+        "size.icon.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed financial select field trigger that opens registered sheet or picker flows through page actions.",
+      "forbidden": [
+        "Do not duplicate these financial pattern surfaces inside pages.",
+        "Do not use these patterns for modal confirmation or high-risk result feedback; use OverlayQueue or registered modal components.",
+        "Do not hardcode financial copy, icons, color, spacing, radius, or border semantics in page-local call sites."
+      ],
+      "status": "active",
+      "exports": [
+        "FinancialSelectField"
+      ]
+    },
+    "FinancialMethodRow": {
+      "category": "business",
+      "path": "src/components/business/FinancialPagePatterns.tsx",
+      "props": [
+        "label",
+        "helper",
+        "icon",
+        "statusLabel",
+        "statusTone",
+        "selected",
+        "disabled",
+        "onPress"
+      ],
+      "variants": [
+        "method-row"
+      ],
+      "states": [
+        "default",
+        "selected",
+        "disabled"
+      ],
+      "a11y": [
+        "Interactive rows expose accessibilityRole=button and selected/disabled state where applicable.",
+        "Financial value text is constrained to one line and auto-fit is allowed only for registered numeric data surfaces.",
+        "Risk banner keeps title and body visible for funding and compliance context."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.financialPattern.*",
+        "radius.card",
+        "spacing.*",
+        "color.surface.*",
+        "color.status.*",
+        "size.icon.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed payment or payout method row for funding picker sheets.",
+      "forbidden": [
+        "Do not duplicate these financial pattern surfaces inside pages.",
+        "Do not use these patterns for modal confirmation or high-risk result feedback; use OverlayQueue or registered modal components.",
+        "Do not hardcode financial copy, icons, color, spacing, radius, or border semantics in page-local call sites."
+      ],
+      "status": "active",
+      "exports": [
+        "FinancialMethodRow"
+      ]
+    },
+    "FinancialAmountStage": {
+      "category": "business",
+      "path": "src/components/business/FinancialPagePatterns.tsx",
+      "props": [
+        "children",
+        "label",
+        "icon",
+        "statusLabel",
+        "error"
+      ],
+      "variants": [
+        "amount-stage"
+      ],
+      "states": [
+        "default",
+        "error"
+      ],
+      "a11y": [
+        "Interactive rows expose accessibilityRole=button and selected/disabled state where applicable.",
+        "Financial value text is constrained to one line and auto-fit is allowed only for registered numeric data surfaces.",
+        "Risk banner keeps title and body visible for funding and compliance context."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.financialPattern.*",
+        "radius.card",
+        "spacing.*",
+        "color.surface.*",
+        "color.status.*",
+        "size.icon.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed amount entry stage container for deposit, withdrawal, and transfer forms.",
+      "forbidden": [
+        "Do not duplicate these financial pattern surfaces inside pages.",
+        "Do not use these patterns for modal confirmation or high-risk result feedback; use OverlayQueue or registered modal components.",
+        "Do not hardcode financial copy, icons, color, spacing, radius, or border semantics in page-local call sites."
+      ],
+      "status": "active",
+      "exports": [
+        "FinancialAmountStage"
+      ]
+    },
+    "FinancialTransactionRow": {
+      "category": "business",
+      "path": "src/components/business/FinancialPagePatterns.tsx",
+      "props": [
+        "accessibilityLabel",
+        "title",
+        "meta",
+        "amount",
+        "amountTone",
+        "icon",
+        "surfaceTone",
+        "statusLabel",
+        "statusTone",
+        "showDivider",
+        "onPress"
+      ],
+      "variants": [
+        "transaction-row"
+      ],
+      "states": [
+        "default",
+        "pressed"
+      ],
+      "a11y": [
+        "Interactive rows expose accessibilityRole=button and selected/disabled state where applicable.",
+        "Financial value text is constrained to one line and auto-fit is allowed only for registered numeric data surfaces.",
+        "Risk banner keeps title and body visible for funding and compliance context."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.financialPattern.*",
+        "radius.card",
+        "spacing.*",
+        "color.surface.*",
+        "color.status.*",
+        "size.icon.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed financial transaction row with status pill, semantic icon surface, and constrained amount value.",
+      "forbidden": [
+        "Do not duplicate these financial pattern surfaces inside pages.",
+        "Do not use these patterns for modal confirmation or high-risk result feedback; use OverlayQueue or registered modal components.",
+        "Do not hardcode financial copy, icons, color, spacing, radius, or border semantics in page-local call sites."
+      ],
+      "status": "active",
+      "exports": [
+        "FinancialTransactionRow"
+      ]
     }
   },
   "package": "@dpf/component-library"

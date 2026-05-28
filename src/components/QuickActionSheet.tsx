@@ -12,6 +12,7 @@ import { useBroker } from '@/src/state/BrokerStore';
 import { NativePressable } from './NativePressable';
 import { AppIcon, type AppIconName, type IconTone } from './AppIcon';
 import { bottomSheetPresets, useBottomSheet } from './BottomSheet';
+import { useOverlayQueue } from './OverlayQueue';
 import { AppText } from './Typography';
 
 type QuickActionSheetProps = {
@@ -52,6 +53,7 @@ export function QuickActionSheetContent({ onClose }: { onClose: () => void }) {
   const { instruments, role, submitUpgradeRequest, upgradeRequest } = useBroker();
   const { authStatus, colors, t } = useProductSettings();
   const toast = useToast();
+  const overlayQueue = useOverlayQueue();
   const anchor = instruments.find((instrument) => instrument.symbol === 'EUR/USD') ?? instruments[0];
   const requireSignedIn = () => {
     if (authStatus === 'signedIn') {
@@ -78,7 +80,15 @@ export function QuickActionSheetContent({ onClose }: { onClose: () => void }) {
 
     if (upgradeRequest.status === 'pending') {
       void notifyWarning();
-      toast.show({ message: t('upgrade.pendingHint'), title: t('upgrade.status.pending'), tone: 'warning' });
+      overlayQueue.enqueueAlert({
+        body: t('upgrade.pendingHint'),
+        dedupeKey: 'partner-upgrade-pending',
+        icon: 'icon.risk.info',
+        priority: 'critical',
+        riskLevel: 'high',
+        title: t('upgrade.status.pending'),
+        tone: 'warning',
+      });
       router.push('/accounts');
       onClose();
       return;
@@ -86,7 +96,15 @@ export function QuickActionSheetContent({ onClose }: { onClose: () => void }) {
 
     submitUpgradeRequest(t('upgrade.defaultReason'));
     void notifySuccess();
-    toast.show({ message: t('upgrade.pendingHint'), title: t('upgrade.submitted'), tone: 'success' });
+    overlayQueue.enqueueAlert({
+      body: t('upgrade.pendingHint'),
+      dedupeKey: 'partner-upgrade-submitted',
+      icon: 'icon.ib.network',
+      priority: 'critical',
+      riskLevel: 'high',
+      title: t('upgrade.submitted'),
+      tone: 'success',
+    });
     router.push('/accounts');
     onClose();
   };
@@ -151,11 +169,35 @@ export function QuickActionSheetContent({ onClose }: { onClose: () => void }) {
 
         if (upgradeRequest.status === 'none' || upgradeRequest.status === 'rejected') {
           submitUpgradeRequest(t('upgrade.defaultReason'));
-          toast.show({ message: t('upgrade.pendingHint'), title: t('upgrade.submitted'), tone: 'success' });
+          overlayQueue.enqueueAlert({
+            body: t('upgrade.pendingHint'),
+            dedupeKey: 'partner-upgrade-submitted',
+            icon: 'icon.ib.network',
+            priority: 'critical',
+            riskLevel: 'high',
+            title: t('upgrade.submitted'),
+            tone: 'success',
+          });
         } else if (upgradeRequest.status === 'pending') {
-          toast.show({ message: t('upgrade.pendingHint'), title: t('upgrade.status.pending'), tone: 'warning' });
+          overlayQueue.enqueueAlert({
+            body: t('upgrade.pendingHint'),
+            dedupeKey: 'partner-upgrade-pending',
+            icon: 'icon.risk.info',
+            priority: 'critical',
+            riskLevel: 'high',
+            title: t('upgrade.status.pending'),
+            tone: 'warning',
+          });
         } else {
-          toast.show({ message: t('upgrade.approvedMessage', { name: upgradeRequest.applicantName }), title: t('upgrade.status.approved'), tone: 'success' });
+          overlayQueue.enqueueAlert({
+            body: t('upgrade.approvedMessage', { name: upgradeRequest.applicantName }),
+            dedupeKey: 'partner-upgrade-approved',
+            icon: 'icon.status.verified',
+            priority: 'critical',
+            riskLevel: 'high',
+            title: t('upgrade.status.approved'),
+            tone: 'success',
+          });
         }
         router.push('/accounts');
         onClose();

@@ -6,9 +6,11 @@
       "runtimeColors": "src/theme/colors.ts",
       "semanticRadius": "radius.card, radius.sheet, radius.full, radius.* roles",
       "semanticSpacing": "layout.* spacing roles",
+      "overlayMotion": "motion.overlay.* transition roles",
+      "overlayZIndex": "zIndex.* overlay and raised-layer roles",
       "tabSize": "size.tab.* component sizing roles",
       "viewport": "size.viewport.appDeviceWidth, size.viewport.appDeviceHeight, layout.appPreviewSafeAreaInsets",
-      "semanticSizes": "size.sheet.*, size.profile.*, size.indicator.*, size.discover.*, size.chart.*, size.tab.*"
+      "semanticSizes": "size.sheet.*, size.surface.*, size.profile.*, size.indicator.*, size.discover.*, size.chart.*, size.tab.*"
     },
     "cssVariables": {
       "file": "design-system-engineering/08_code_mapping/css-variable.mapping.css",
@@ -40,6 +42,8 @@
     "semanticSpacing": "layout.contentCardPaddingX, layout.contentPlainPaddingX, layout.topBarPaddingX, layout.moduleGap, layout.sectionGap, layout.cardPaddingX, layout.cardPaddingY, layout.cardPaddingCompactX, layout.cardPaddingCompactY, layout.cardPadding, layout.cardPaddingCompact, layout.listRowPaddingX, layout.formFieldTextInset, layout.formGroupGap",
     "tabSize": "size.tab.indicatorHeight, size.tab.indicatorWidth, size.tab.pillMinHeight, size.tab.underlineMinHeight",
     "viewport": "layout.appDeviceWidth, layout.appDeviceHeight, layout.appMaxWidth, layout.appPreviewSafeAreaInsets",
-    "semanticSizes": "size.sheet.handleHeight, size.sheet.handleWidth, size.profile.clientAvatar, size.indicator.dotSm, size.discover.campaignCardWidth, size.chart.funding*, size.tab.paddingTop, size.tab.paddingBottom"
+    "overlayMotion": "motion.overlay.fastMs, motion.overlay.standardMs, motion.overlay.cleanupDelayMs",
+    "overlayZIndex": "zIndex.toast, zIndex.bottomSheetBackdrop, zIndex.bottomSheet, zIndex.webSelect, zIndex.modalStack, zIndex.modalQueue",
+    "semanticSizes": "size.sheet.handleHeight, size.sheet.handleWidth, size.surface.toastIconBox, size.surface.toastMinHeight, size.profile.clientAvatar, size.indicator.dotSm, size.discover.campaignCardWidth, size.chart.funding*, size.tab.paddingTop, size.tab.paddingBottom"
   }
 }

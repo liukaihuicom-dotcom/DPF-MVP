@@ -40,6 +40,7 @@ const autoFitAllowedFiles = new Set([
   'src/components/KeyValueList.tsx',
   'src/components/Metric.tsx',
   'src/components/business/OrderPositionDetailSheet.tsx',
+  'src/components/business/FinancialPagePatterns.tsx',
   'src/components/TradeOrderList.tsx',
   'src/components/Typography.tsx',
   'src/components/business/TransactionRow.tsx',
@@ -720,8 +721,8 @@ if (pageOwnedBottomSheetShellIssues.length > 0) {
 }
 const governedModalAllowlist = new Set([
   'src/components/GlobalDialog.tsx',
+  'src/components/ModalStack.tsx',
   'src/components/TextField.tsx',
-  'src/components/business/TradingTerminalChart.tsx',
 ]);
 const pageOwnedModalIssues = allSourceFiles
   .filter((file) => !governedModalAllowlist.has(file))
@@ -729,7 +730,7 @@ const pageOwnedModalIssues = allSourceFiles
     const text = read(file);
     const issues = [];
     if (/\bModal\b/.test(text) && /from ['"]react-native['"]/.test(text)) {
-      issues.push(fail('QA_STYLE_GLOBAL_DIALOG_GOVERNANCE', 'Business dialogs must call GlobalDialog; only GlobalDialog may own centered feedback Modal, with TextField web select and TradingTerminalChart fullscreen as registered technical exceptions', file));
+      issues.push(fail('QA_STYLE_GLOBAL_DIALOG_GOVERNANCE', 'Business dialogs must call GlobalDialog or the registered public ModalStack; only governed public overlay hosts may own React Native Modal shells', file));
     }
     if (/<Modal\b/.test(text)) {
       issues.push(fail('QA_STYLE_GLOBAL_DIALOG_GOVERNANCE', 'Business dialogs must not render page-local React Native Modal; use GlobalDialog or registered BottomSheet presets', file));
@@ -839,7 +840,7 @@ if (!/function BottomSheetHeaderSpacer\(\)/.test(bottomSheetRuntimeText) || !/ha
 if (!/headerSpacer:\s*\{\s*height: SHEET_HEADER_HEIGHT,\s*\}/m.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_HEADER', 'Global BottomSheet header spacer must use the same sheetHeaderHeight token as the visual header', 'src/components/BottomSheet.tsx'));
 }
-if (!/position: 'absolute'/.test(bottomSheetRuntimeText) || !/zIndex: 2/.test(bottomSheetRuntimeText)) {
+if (!/position: 'absolute'/.test(bottomSheetRuntimeText) || !/zIndex: zIndex\.raised/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_HEADER', 'Global BottomSheet visual header must be a fixed component-owned layer above scroll content', 'src/components/BottomSheet.tsx'));
 }
 if (!/contentWithHeader:\s*\{\s*paddingTop: 0,\s*\}/m.test(bottomSheetRuntimeText)) {

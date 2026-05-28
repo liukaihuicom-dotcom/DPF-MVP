@@ -48,6 +48,7 @@ export function InstrumentIcon({ instrument, size = 36, style, symbol }: Instrum
 }
 
 function CurrencyMedallion({ currency, size, style }: { currency: string; size: number; style?: StyleProp<ViewStyle> }) {
+  const { colors } = useProductSettings();
   const id = useId().replace(/:/g, '');
   const clipId = `flag-${currency}-${id}`;
 
@@ -60,7 +61,7 @@ function CurrencyMedallion({ currency, size, style }: { currency: string; size: 
           </ClipPath>
         </Defs>
         <G clipPath={`url(#${clipId})`}>{renderFlag(currency)}</G>
-        <Circle cx={20} cy={20} fill="none" r={19} stroke="rgba(255,255,255,0.72)" strokeWidth={1.2} />
+        <Circle cx={20} cy={20} fill="none" r={19} stroke={colors.overlay.white.strong} strokeWidth={1.2} />
       </Svg>
     </View>
   );
@@ -185,7 +186,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   medallion: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'transparent',
     borderWidth: 2,
     overflow: 'hidden',
     position: 'absolute',

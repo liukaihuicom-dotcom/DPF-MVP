@@ -22,12 +22,14 @@
     "auth.errorSheet": "Validation error bottom sheet.",
     "auth.errorDialog": "PIN error dialog.",
     "global.bottomSheet": "Shared BottomSheet host and presets for all mobile bottom-sheet interactions.",
-    "global.toastFeedback": "Global toast feedback.",
+    "global.toastFeedback": "Global low-risk toast feedback.",
+    "global.modalQueue": "Global queued Alert Dialog for blocking risk, dirty-state, funding, trading, security, partner role-change, and portfolio order-mutation feedback.",
+    "global.modalStack": "Full-screen modal stack host for complex modal content such as trading terminal chart.",
     "global.webSelectMenu": "Web-only select menu modal.",
     "quick.actionSheet": "Quick actions content rendered through shared BottomSheet actionMenu preset.",
     "tradingAccount.switchSheet": "Trading account selection sheet.",
     "funding.paymentMethodSheet": "Funding payment or payout method selection sheet.",
-    "funding.submitFeedbackToast": "Funding submit reference feedback.",
+    "funding.submitFeedbackAlert": "Funding submit reference feedback through queued Alert Dialog.",
     "security.deviceDetailSheet": "Security device detail sheet.",
     "security.revokeConfirmSheet": "Session revoke confirmation.",
     "security.reportConfirmSheet": "Suspicious event report confirmation.",
@@ -38,7 +40,9 @@
     "portfolio.pendingOrderFeedbackToast": "Pending order action feedback.",
     "account.moreActionSheet": "Account detail more action sheet.",
     "account.metricDescriptionSheet": "Metric description sheet.",
-    "account.balanceTransactionDetailSheet": "Balance transaction detail sheet."
+    "account.balanceTransactionDetailSheet": "Balance transaction detail sheet.",
+    "partner.upgradeFeedbackAlert": "Partner role-change submit, pending, and approval feedback through queued Alert Dialog.",
+    "portfolio.orderMutationAlert": "Position close and pending-order mutation feedback through queued Alert Dialog."
   },
   "hard_rules": [
     "Non-routeable modal entries must not define routePath.",

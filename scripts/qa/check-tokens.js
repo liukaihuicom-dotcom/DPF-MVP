@@ -209,6 +209,24 @@ if (exists(runtimeTokenPath) && exists(compatibilityRuntimeTokenPath) && exists(
       : fail('QA_TOKENS_APP_PREVIEW_DEVICE_REGISTRY', 'Token registry must document appDeviceWidth, appDeviceHeight, and appPreviewSafeAreaInsets', tokenIndexPath),
   );
   checks.push(
+    /export const zIndex\s*=\s*\{[\s\S]*?toast:\s*90[\s\S]*?bottomSheetBackdrop:\s*1000[\s\S]*?bottomSheet:\s*1001[\s\S]*?webSelect:\s*1050[\s\S]*?modalStack:\s*1100[\s\S]*?modalQueue:\s*1200/m.test(runtimeText)
+      && /export const motion\s*=\s*\{[\s\S]*?overlay:\s*\{[\s\S]*?fastMs:\s*160[\s\S]*?standardMs:\s*220[\s\S]*?cleanupDelayMs:\s*260/m.test(runtimeText)
+      && /zIndexRoleMap/.test(tokenIndexText)
+      && /motionRoleMap/.test(tokenIndexText)
+      && /overlayZIndex/.test(exportMapText)
+      && /overlayMotion/.test(exportMapText)
+      ? pass('QA_TOKENS_OVERLAY_RUNTIME', 'Overlay z-index and motion tokens are exported and registered', runtimeTokenPath)
+      : fail('QA_TOKENS_OVERLAY_RUNTIME', 'Overlay z-index and motion tokens must exist in runtime, registry, and export map', runtimeTokenPath),
+  );
+  checks.push(
+    /toastIconBox:\s*28/.test(runtimeText)
+      && /devConsolePanelWidth:\s*360/.test(runtimeText)
+      && /surfaceSizeRoleMap/.test(tokenIndexText)
+      && /devConsolePanelWidth/.test(tokenIndexText)
+      ? pass('QA_TOKENS_OVERLAY_SIZE_RUNTIME', 'Overlay-related surface and dev console size tokens are exported and registered', runtimeTokenPath)
+      : fail('QA_TOKENS_OVERLAY_SIZE_RUNTIME', 'Toast surface and dev console size tokens must exist in runtime and registry', runtimeTokenPath),
+  );
+  checks.push(
     /cardPaddingX:\s*spacing\.md/.test(runtimeText)
       && /cardPaddingY:\s*spacing\.lg/.test(runtimeText)
       && /cardPaddingCompactX:\s*spacing\.md/.test(runtimeText)

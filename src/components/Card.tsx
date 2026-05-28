@@ -8,21 +8,29 @@ import { layout, radius } from '@/src/theme/tokens';
 type CardProps = PropsWithChildren<{
   compact?: boolean;
   highlight?: boolean;
+  surface?: 'default' | 'emphasis' | 'list' | 'plain' | 'risk';
   style?: ViewStyle;
 }>;
 
-export function Card({ children, compact, highlight, style }: CardProps) {
+export function Card({ children, compact, highlight, surface = highlight ? 'emphasis' : 'default', style }: CardProps) {
   const colors = useThemeColors();
+  const surfaceStyle = {
+    default: { backgroundColor: colors.surface.panel },
+    emphasis: { backgroundColor: colors.surface.raised },
+    list: { backgroundColor: colors.surface.panel },
+    plain: { backgroundColor: colors.surface.canvas },
+    risk: { backgroundColor: colors.surface.subtle },
+  }[surface];
 
   return (
     <View
       style={StyleSheet.flatten([
         styles.card,
-        {
-          backgroundColor: highlight ? colors.surface.raised : colors.surface.panel,
-        },
-        highlight && shadows.panel,
+        surfaceStyle,
+        surface === 'emphasis' && shadows.panel,
         compact && styles.compact,
+        surface === 'list' && styles.list,
+        surface === 'plain' && styles.plain,
         style,
       ])}>
       {children}
@@ -39,5 +47,12 @@ const styles = StyleSheet.create({
   compact: {
     paddingHorizontal: layout.cardPaddingCompactX,
     paddingVertical: layout.cardPaddingCompactY,
+  },
+  list: {
+    overflow: 'hidden',
+    paddingVertical: layout.cardListPaddingY,
+  },
+  plain: {
+    borderRadius: radius.none,
   },
 });

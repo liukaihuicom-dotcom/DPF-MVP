@@ -3,15 +3,25 @@ import { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { ActionButton } from '@/src/design-public-assets/components';
-import { AppIcon, type AppIconName, type IconTone } from '@/src/design-public-assets/components';
+import { AppIcon, type AppIconName } from '@/src/design-public-assets/components';
 import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
 import { createTradingAccountContextSwitcherHeader, TradingAccountContextSwitcher } from '@/src/design-public-assets/business-components';
+import {
+  FinancialAmountStage,
+  FinancialFormFlow,
+  FinancialHeroCard,
+  FinancialMethodRow,
+  FinancialRiskBanner as FinancialPatternRiskBanner,
+  FinancialSelectField,
+  FinancialTransactionRow as FinancialPatternTransactionRow,
+} from '@/src/design-public-assets/patterns';
 import { Card } from '@/src/design-public-assets/components';
 import { DetailRow } from '@/src/design-public-assets/components';
 import { EmptyState } from '@/src/design-public-assets/components';
 import { FundActionGrid } from '@/src/design-public-assets/components';
 import { IconSurface, type IconSurfaceTone } from '@/src/design-public-assets/components';
 import { NativePressable } from '@/src/design-public-assets/components';
+import { useDirtyStateGuard, useOverlayQueue } from '@/src/design-public-assets/components';
 import { Screen } from '@/src/design-public-assets/components';
 import { SegmentedTabs } from '@/src/design-public-assets/components';
 import { StatusPill, type StatusPillTone } from '@/src/design-public-assets/components';
@@ -41,12 +51,10 @@ import { mockFundingApi } from '@/src/services/fundingApi';
 import { useToast } from '@/src/feedback/Toast';
 import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
-import { lineWidth, layout, radius, size, spacing } from '@/src/design-public-assets/tokens';
-import type { KycStatus, TradingAccountUsageStatus } from '@/src/domain/types';
+import { lineWidth, radius, size, spacing } from '@/src/design-public-assets/tokens';
+import type { TradingAccountUsageStatus } from '@/src/domain/types';
 
 type OperationFilter = FundingOperation | 'all';
-type StatusFilter = FundingStatus | 'all';
-
 const operationTabs: { labelKey: TranslationKey; value: OperationFilter }[] = [
   { labelKey: 'funding.operation.all', value: 'all' },
   { labelKey: 'funding.operation.deposit', value: 'deposit' },
@@ -56,7 +64,7 @@ const operationTabs: { labelKey: TranslationKey; value: OperationFilter }[] = [
 const depositQuickAmounts = [500000, 1000000, 2000000, 5000000, 20000000];
 
 export function FundingHomeScreen() {
-  const { accounts, gate, locale, colors, t, transactions } = useFundingData();
+  const { accounts, gate, locale, t, transactions } = useFundingData();
   const primary = accounts[0];
   const recent = transactions.slice(0, 3);
 
@@ -77,37 +85,22 @@ export function FundingHomeScreen() {
       backHref="/trade"
       rightActions={[{ icon: 'icon.trading.history', label: t('funding.action.openTransactions'), onPress: () => router.push('/funding/transactions' as never) }]}
       title={t('funding.home.title')}>
-      <Card highlight>
-        <View style={styles.heroStack}>
-          <View style={styles.heroHeader}>
-            <IconSurface icon="icon.wallet.balance" sizeVariant="lg" tone="info" />
-            <View style={styles.flex}>
-              <AppText tone="muted" variant="eyebrow">{t('funding.home.eyebrow')}</AppText>
-              <AppText variant="title">{t('funding.home.title')}</AppText>
-            </View>
-            <StatusPill compact label={primary ? statusLabel(primary.group, t) : t('funding.account.selectFirst')} tone={primary?.group === 'active' ? 'success' : 'warning'} />
-          </View>
-          <AppText tone="muted" variant="caption">{t('funding.home.subtitle')}</AppText>
-          <View style={StyleSheet.flatten([styles.summaryGrid, { borderTopColor: colors.border.subtle }])}>
-            <MiniSummary label={t('accountDetails.accountNo')} value={primary?.accountNo ?? '--'} />
-            <MiniSummary label={t('funding.account.available')} value={primary ? formatMoney(primary.freeMargin, primary.currency, 0, locale) : '--'} />
-          </View>
-          <View style={styles.insightGrid}>
-            <FundingInsight
-              icon="icon.trading.history"
-              label={t('funding.home.pending')}
-              tone={pendingCount > 0 ? 'warning' : 'success'}
-              value={String(pendingCount)}
-            />
-            <FundingInsight
-              icon="icon.wallet.deposit"
-              label={t('funding.home.monthlyInflow')}
-              tone="info"
-              value={formatMoney(monthlyInflow, 'USD', 2, locale)}
-            />
-          </View>
-        </View>
-      </Card>
+      <FinancialHeroCard
+        body={t('funding.home.subtitle')}
+        eyebrow={t('funding.home.eyebrow')}
+        icon="icon.wallet.balance"
+        insights={[
+          { icon: 'icon.trading.history', label: t('funding.home.pending'), tone: pendingCount > 0 ? 'warning' : 'success', value: String(pendingCount) },
+          { icon: 'icon.wallet.deposit', label: t('funding.home.monthlyInflow'), tone: 'info', value: formatMoney(monthlyInflow, 'USD', 2, locale) },
+        ]}
+        metrics={[
+          { label: t('accountDetails.accountNo'), value: primary?.accountNo ?? '--' },
+          { label: t('funding.account.available'), value: primary ? formatMoney(primary.freeMargin, primary.currency, 0, locale) : '--' },
+        ]}
+        statusLabel={primary ? statusLabel(primary.group, t) : t('funding.account.selectFirst')}
+        statusTone={primary?.group === 'active' ? 'success' : 'warning'}
+        title={t('funding.home.title')}
+      />
       <FundingRiskBanner />
       <FundActionGrid items={actionItems} />
       <Card>
@@ -157,8 +150,9 @@ export function TransferScreen() {
 
 function FundingFormScreen({ operation }: { operation: FundingOperation }) {
   const params = useLocalSearchParams<{ accountId?: string }>();
-  const { accounts, gate, kycStatus, locale, colors, profiles, t, tradingUsageStatus } = useFundingData();
+  const { accounts, gate, kycStatus, locale, profiles, t, tradingUsageStatus } = useFundingData();
   const bottomSheet = useBottomSheet();
+  const overlayQueue = useOverlayQueue();
   const toast = useToast();
   const eligibleAccounts = useMemo(() => accounts.filter((account) => isFundingSelectableAccount(account, tradingUsageStatus)), [accounts, tradingUsageStatus]);
   const [sourceAccountId, setSourceAccountId] = useState('');
@@ -273,6 +267,7 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
                     ? t('funding.error.FUNDING_LIMIT_EXCEEDED')
                     : '';
   const canSubmit = !disabledReason && amountEntered && Boolean(sourceAccountId) && Boolean(rules) && !submitting;
+  const dirty = amount.length > 0 || Boolean(targetAccountId);
   const expectedUsd = operation === 'internal_transfer' ? numericAmount : rules ? Math.max(0, (numericAmount - (operation === 'deposit' ? rules.fee.feeAmount : 0)) / rules.fxQuote.rate) : 0;
   const title = titleForOperation(operation, t);
   const amountError = limitError ? t('funding.error.FUNDING_LIMIT_EXCEEDED') : insufficientBalance ? t('funding.error.WITHDRAWAL_INSUFFICIENT_BALANCE') : undefined;
@@ -286,6 +281,14 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
       title: t('account.addAccount'),
     });
   };
+
+  useDirtyStateGuard({
+    body: t('overlay.dirty.funding.body'),
+    confirmLabel: t('overlay.dirty.exit'),
+    dirty: dirty && !submitting,
+    stayLabel: t('overlay.dirty.stay'),
+    title: t('overlay.dirty.funding.title'),
+  });
 
   const openAccountSheet = (mode: 'source' | 'target') => {
     bottomSheet.show(bottomSheetPresets.selection({
@@ -427,7 +430,15 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
               targetTradingAccountId: targetAccountId,
             });
     setSubmitting(false);
-    toast.show({ message: transaction.reference, title: t('funding.toast.submitted'), tone: 'success' });
+    overlayQueue.enqueueAlert({
+      body: t('funding.overlay.submittedBody', { reference: transaction.reference }),
+      dedupeKey: `funding-submit-${transaction.id}`,
+      icon: operation === 'internal_transfer' ? 'icon.wallet.transfer' : operation === 'deposit' ? 'icon.wallet.deposit' : 'icon.wallet.balance',
+      priority: 'critical',
+      riskLevel: 'high',
+      title: t('funding.toast.submitted'),
+      tone: 'success',
+    });
     router.push(`/funding/transactions/${transaction.id}` as never);
   };
 
@@ -453,7 +464,7 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
       title={title}>
       <FundingFormHint />
       <FundingRiskBanner />
-      <View style={styles.formFlow}>
+      <FinancialFormFlow>
         {operation === 'withdrawal' ? (
           <>
             {methodField}
@@ -473,14 +484,14 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
             {methodField}
           </>
         )}
-      </View>
+      </FinancialFormFlow>
     </Screen>
   );
 }
 
 export function FundingTransactionsScreen() {
   const params = useLocalSearchParams<{ accountId?: string; operation?: FundingOperation }>();
-  const { gate, colors, t, transactions } = useFundingData({
+  const { gate, t, transactions } = useFundingData({
     operation: params.operation ?? 'all',
     tradingAccountId: params.accountId,
   });
@@ -678,29 +689,17 @@ function AccountSheetField({
   label: string;
   onPress: () => void;
 }) {
-  const { colors, t } = useProductSettings();
+  const { t } = useProductSettings();
 
   return (
-    <View style={styles.sheetFieldWrap}>
-      <NativePressable
-        accessibilityLabel={label}
-        accessibilityRole="button"
-        minTouch={58}
-        onPress={onPress}
-        style={StyleSheet.flatten([styles.sheetField, { backgroundColor: colors.surface.panel, borderColor: error ? colors.status.danger.fg : colors.border.default }])}>
-        <SheetFieldIcon icon="icon.account.trading" />
-        <View style={styles.flex}>
-          <AppText numberOfLines={1} tone="muted" variant="eyebrow">{label}</AppText>
-          <AppText numberOfLines={1} variant="body">{account ? `${account.accountNo} · ${statusLabel(account.group, t)}` : label}</AppText>
-        </View>
-        <AppIcon name="icon.system.chevron_down" sizeVariant="xs" />
-      </NativePressable>
-      {error ? (
-        <AppText style={styles.sheetFieldHelper} tone="danger" variant="caption">{error}</AppText>
-      ) : helperText ? (
-        <AppText style={styles.sheetFieldHelper} tone="muted" variant="caption">{helperText}</AppText>
-      ) : null}
-    </View>
+    <FinancialSelectField
+      error={error}
+      helperText={helperText}
+      icon="icon.account.trading"
+      label={label}
+      onPress={onPress}
+      value={account ? `${account.accountNo} · ${statusLabel(account.group, t)}` : label}
+    />
   );
 }
 
@@ -717,35 +716,19 @@ function PaymentMethodField({
   method?: FundingPaymentMethod;
   onPress: () => void;
 }) {
-  const { locale, colors, t } = useProductSettings();
+  const { locale, t } = useProductSettings();
 
   return (
-    <View style={styles.sheetFieldWrap}>
-      <NativePressable
-        accessibilityLabel={label}
-        accessibilityRole="button"
-        minTouch={58}
-        onPress={onPress}
-        style={StyleSheet.flatten([styles.sheetField, { backgroundColor: colors.surface.panel, borderColor: error ? colors.status.danger.fg : colors.border.default }])}>
-        <SheetFieldIcon icon={method?.icon ?? 'icon.wallet.balance'} />
-        <View style={styles.flex}>
-          <AppText numberOfLines={1} tone="muted" variant="eyebrow">{label}</AppText>
-          <AppText numberOfLines={1} variant="body">{method ? localizeText(method.label, locale) : label}</AppText>
-        </View>
-        {method ? <StatusPill compact label={methodTypeText(method.type, t)} tone="neutral" /> : null}
-        <AppIcon name="icon.system.chevron_down" sizeVariant="xs" />
-      </NativePressable>
-      {error ? (
-        <AppText style={styles.sheetFieldHelper} tone="danger" variant="caption">{error}</AppText>
-      ) : helperText ? (
-        <AppText style={styles.sheetFieldHelper} tone="muted" variant="caption">{helperText}</AppText>
-      ) : null}
-    </View>
+    <FinancialSelectField
+      error={error}
+      helperText={helperText}
+      icon={method?.icon ?? 'icon.wallet.balance'}
+      label={label}
+      onPress={onPress}
+      rightSlot={method ? <StatusPill compact label={methodTypeText(method.type, t)} tone="neutral" /> : null}
+      value={method ? localizeText(method.label, locale) : label}
+    />
   );
-}
-
-function SheetFieldIcon({ icon }: { icon: AppIconName }) {
-  return <IconSurface icon={icon} sizeVariant="sm" />;
 }
 
 function PaymentMethodSheet({
@@ -796,41 +779,20 @@ function PaymentMethodRow({
   onPress: () => void;
   selected: boolean;
 }) {
-  const { locale, colors, t } = useProductSettings();
+  const { locale, t } = useProductSettings();
   const disabled = !method.available;
   const helper = disabled && method.maintenanceNote ? localizeText(method.maintenanceNote, locale) : t('funding.method.estimated', { minutes: method.estimatedMinutes });
-  const borderWidth = selected ? lineWidth.selected : lineWidth.hairline;
-  const paddingOffset = borderWidth - lineWidth.hairline;
-  const selectedBorderColor = colors.text.primary;
-
   return (
-    <NativePressable
-      accessibilityLabel={localizeText(method.label, locale)}
-      accessibilityRole="button"
-      accessibilityState={{ disabled, selected }}
+    <FinancialMethodRow
       disabled={disabled}
-      minTouch={72}
+      helper={helper}
+      icon={method.icon}
+      label={localizeText(method.label, locale)}
       onPress={onPress}
-      style={StyleSheet.flatten([
-        styles.methodRow,
-        {
-          backgroundColor: colors.surface.panel,
-          borderColor: selected ? selectedBorderColor : colors.border.subtle,
-          borderWidth,
-          padding: spacing.md - paddingOffset,
-        },
-        disabled && { opacity: 0.5 },
-      ])}>
-      <IconSurface background={disabled ? 'hidden' : 'visible'} icon={method.icon} sizeVariant="sm" tone="neutral" />
-      <View style={styles.flex}>
-        <View style={styles.methodRowTop}>
-          <AppText numberOfLines={1} tone={disabled ? 'dim' : 'default'} variant="subtitle">{localizeText(method.label, locale)}</AppText>
-          <StatusPill compact label={disabled ? t('funding.method.unavailable') : t('status.active')} tone={disabled ? 'warning' : 'success'} />
-        </View>
-        <AppText numberOfLines={2} tone="muted" variant="caption">{helper}</AppText>
-      </View>
-      <AppIcon name={selected ? 'icon.status.verified' : 'icon.system.chevron_right'} sizeVariant="xs" tone={selected ? 'success' : 'tertiary'} />
-    </NativePressable>
+      selected={selected}
+      statusLabel={disabled ? t('funding.method.unavailable') : t('status.active')}
+      statusTone={disabled ? 'warning' : 'success'}
+    />
   );
 }
 
@@ -864,14 +826,7 @@ function AmountStageField({
   const { locale, colors, t } = useProductSettings();
 
   return (
-    <View style={StyleSheet.flatten([styles.amountStageWrap, { backgroundColor: colors.surface.raised, borderColor: error ? colors.status.danger.fg : colors.border.subtle }])}>
-      <View style={styles.amountStageHeader}>
-        <IconSurface icon={icon} sizeVariant="xs" />
-        <View style={styles.flex}>
-          <AppText numberOfLines={1} tone="muted" variant="eyebrow">{label}</AppText>
-        </View>
-        <StatusPill compact label={currency} tone="neutral" />
-      </View>
+    <FinancialAmountStage error={error} icon={icon} label={label} statusLabel={currency}>
       <TextField
         accessibilityLabel={label}
         error={error}
@@ -927,7 +882,7 @@ function AmountStageField({
           ))}
         </ScrollView>
       ) : null}
-    </View>
+    </FinancialAmountStage>
   );
 }
 
@@ -940,7 +895,7 @@ function FundingFormHint() {
 }
 
 function FundingRiskBanner() {
-  const { kycStatus, colors, t } = useProductSettings();
+  const { kycStatus, t } = useProductSettings();
   const kycApproved = kycStatus === 'approved';
 
   if (kycApproved) {
@@ -948,62 +903,27 @@ function FundingRiskBanner() {
   }
 
   return (
-    <View style={StyleSheet.flatten([styles.riskBanner, { backgroundColor: colors.surface.subtle }])}>
-      <AppIcon tone="amber" name="icon.security.risk_shield" sizeVariant="sm" />
-      <View style={styles.flex}>
-        <AppText variant="caption">{t('funding.kyc.required')}</AppText>
-        <AppText tone="muted" variant="caption">{t('funding.banner.synthetic')}</AppText>
-      </View>
-    </View>
-  );
-}
-
-function FundingInsight({
-  icon,
-  label,
-  tone,
-  value,
-}: {
-  icon: AppIconName;
-  label: string;
-  tone: StatusPillTone;
-  value: string;
-}) {
-  return (
-    <View style={styles.insightCell}>
-      <StatusPill compact icon={icon} label={label} tone={tone} />
-      <AppText adjustsFontSizeToFit numberOfLines={1} variant="subtitle">{value}</AppText>
-    </View>
+    <FinancialPatternRiskBanner body={t('funding.banner.synthetic')} title={t('funding.kyc.required')} />
   );
 }
 
 function FundingTransactionRow({ onPress, showDivider, transaction }: { onPress: () => void; showDivider?: boolean; transaction: FundingTransaction }) {
-  const { locale, colors, t } = useProductSettings();
+  const { locale, t } = useProductSettings();
 
   return (
-    <NativePressable accessibilityLabel={localizeText(transaction.note, locale)} accessibilityRole="button" minTouch={58} onPress={onPress} style={StyleSheet.flatten([styles.transactionRow, showDivider && { borderBottomColor: colors.border.subtle, borderBottomWidth: lineWidth.hairline }])}>
-      <IconSurface icon={getFundingOperationIcon(transaction.operation)} sizeVariant="sm" tone={resolveOperationSurfaceTone(transaction.operation)} />
-      <View style={styles.flex}>
-        <AppText numberOfLines={1} variant="subtitle">{localizeText(transaction.note, locale)}</AppText>
-        <AppText numberOfLines={1} tone="muted" variant="caption">{formatDateTime(transaction.createdAt, locale)} · {transaction.reference}</AppText>
-      </View>
-      <View style={styles.rowSide}>
-        <AppText adjustsFontSizeToFit numberOfLines={1} tone={getFundingSignedAmount(transaction) >= 0 ? 'up' : 'down'} variant="subtitle">
-          {formatSignedMoney(getFundingSignedAmount(transaction), 'USD', locale)}
-        </AppText>
-        <StatusPill compact label={statusText(transaction.status, t)} tone={getStatusTone(transaction.status)} />
-      </View>
-      <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
-    </NativePressable>
-  );
-}
-
-function MiniSummary({ label, value }: { label: string; value: string }) {
-  return (
-    <View style={styles.summaryCell}>
-      <AppText tone="muted" variant="caption">{label}</AppText>
-      <AppText adjustsFontSizeToFit numberOfLines={1} variant="subtitle">{value}</AppText>
-    </View>
+    <FinancialPatternTransactionRow
+      accessibilityLabel={localizeText(transaction.note, locale)}
+      amount={formatSignedMoney(getFundingSignedAmount(transaction), 'USD', locale)}
+      amountTone={getFundingSignedAmount(transaction) >= 0 ? 'up' : 'down'}
+      icon={getFundingOperationIcon(transaction.operation)}
+      meta={`${formatDateTime(transaction.createdAt, locale)} · ${transaction.reference}`}
+      onPress={onPress}
+      showDivider={showDivider}
+      statusLabel={statusText(transaction.status, t)}
+      statusTone={getStatusTone(transaction.status)}
+      surfaceTone={resolveOperationSurfaceTone(transaction.operation)}
+      title={localizeText(transaction.note, locale)}
+    />
   );
 }
 
@@ -1124,24 +1044,11 @@ function resolveStatusColor(status: FundingStatus, colors: ReturnType<typeof use
   return colors.status.info.fg;
 }
 
-function resolveStatusIconTone(status: FundingStatus): IconTone {
-  if (status === 'completed' || status === 'paid') return 'success';
-  if (status === 'failed' || status === 'rejected' || status === 'expired') return 'danger';
-  if (status === 'reviewing' || status === 'awaiting_payment' || status === 'processing') return 'amber';
-  return 'blue';
-}
-
 function resolveStatusSurfaceTone(status: FundingStatus): IconSurfaceTone {
   if (status === 'completed' || status === 'paid') return 'success';
   if (status === 'failed' || status === 'rejected' || status === 'expired') return 'danger';
   if (status === 'reviewing' || status === 'awaiting_payment' || status === 'processing') return 'warning';
   return 'info';
-}
-
-function resolveOperationIconTone(operation: FundingOperation): IconTone {
-  if (operation === 'deposit') return 'success';
-  if (operation === 'withdrawal') return 'amber';
-  return 'blue';
 }
 
 function resolveOperationSurfaceTone(operation: FundingOperation): IconSurfaceTone {
@@ -1355,11 +1262,6 @@ const styles = StyleSheet.create({
   groupedList: {
     gap: spacing.md,
   },
-  amountStageHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing.sm,
-  },
   amountStageInput: {
     minHeight: size.control.lg,
     textAlign: 'center',
@@ -1387,30 +1289,6 @@ const styles = StyleSheet.create({
     minHeight: size.control.lg,
     paddingHorizontal: spacing.none,
   },
-  amountStageWrap: {
-    borderRadius: radius.card,
-    borderWidth: lineWidth.none,
-    gap: spacing.md,
-    paddingHorizontal: layout.cardPaddingX,
-    paddingVertical: layout.cardPaddingY,
-  },
-  heroHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-  heroStack: {
-    gap: spacing.md,
-  },
-  insightCell: {
-    flex: 1,
-    gap: spacing.xs,
-    minWidth: 0,
-  },
-  insightGrid: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
   listFrame: {
     borderRadius: radius.card,
     borderWidth: lineWidth.none,
@@ -1418,20 +1296,6 @@ const styles = StyleSheet.create({
   },
   methodGroup: {
     gap: spacing.sm,
-  },
-  methodRow: {
-    alignItems: 'center',
-    borderRadius: radius.card,
-    borderWidth: lineWidth.hairline,
-    flexDirection: 'row',
-    gap: spacing.md,
-    padding: spacing.md,
-  },
-  methodRowTop: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.xs,
   },
   methodSheet: {
     gap: spacing.lg,
@@ -1450,52 +1314,11 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     paddingRight: spacing.lg,
   },
-  riskBanner: {
-    alignItems: 'flex-start',
-    borderRadius: radius.card,
-    borderWidth: lineWidth.none,
-    flexDirection: 'row',
-    gap: spacing.md,
-    padding: spacing.md,
-  },
-  sheetField: {
-    alignItems: 'center',
-    borderRadius: radius.md,
-    borderWidth: lineWidth.strong,
-    flexDirection: 'row',
-    gap: spacing.md,
-    minHeight: size.input.floatingMinHeight,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  sheetFieldWrap: {
-    gap: spacing.xs,
-  },
-  sheetFieldHelper: {
-    paddingLeft: spacing.md,
-  },
-  rowSide: {
-    alignItems: 'flex-end',
-    gap: spacing.xs,
-    minWidth: size.viewport.detailSideMinWidth,
-  },
   sectionHeader: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing.md,
     justifyContent: 'space-between',
-  },
-  summaryCell: {
-    flex: 1,
-    gap: spacing.xs,
-    minWidth: 0,
-  },
-  summaryGrid: {
-    borderTopWidth: lineWidth.hairline,
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginTop: spacing.md,
-    paddingTop: spacing.md,
   },
   timeline: {
     gap: spacing.md,
@@ -1526,13 +1349,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.md,
     minHeight: size.control.md,
-  },
-  transactionRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing.md,
-    paddingHorizontal: spacing.none,
-    paddingVertical: spacing.md,
   },
   transactionDateGroup: {
     gap: spacing.sm,

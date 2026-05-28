@@ -598,7 +598,8 @@
       "platform": "app",
       "riskLevel": "medium",
       "patterns": [
-        "discoverProfileCommerce"
+        "discoverProfileCommerce",
+        "partnerFinanceSurface"
       ],
       "businessComponents": [
         "PartnerPortalSummary",
@@ -676,13 +677,16 @@
         "TextField",
         "SegmentedTabs",
         "AppIcon",
-        "Sparkline"
+        "Sparkline",
+        "ModalStack"
       ],
       "tokens": [
         "token.design-tokens",
         "token.color",
         "token.semantic-layout",
-        "runtime.design-public-assets.facade"
+        "runtime.design-public-assets.facade",
+        "token.zIndex-overlay",
+        "token.motion-overlay"
       ],
       "icons": [
         "icon.icon-library"
@@ -739,13 +743,16 @@
         "KeyValueList",
         "Metric",
         "AppIcon",
-        "IconSurface"
+        "IconSurface",
+        "OverlayQueue"
       ],
       "tokens": [
         "token.design-tokens",
         "token.color",
         "token.semantic-layout",
-        "runtime.design-public-assets.facade"
+        "runtime.design-public-assets.facade",
+        "token.zIndex-overlay",
+        "token.motion-overlay"
       ],
       "icons": [
         "icon.icon-library"
@@ -1319,7 +1326,14 @@
         "TransactionRow",
         "TradingAccountSwitchSheet",
         "IconSurface",
-        "StatusPill"
+        "StatusPill",
+        "FinancialHeroCard",
+        "FinancialRiskBanner",
+        "FinancialFormFlow",
+        "FinancialSelectField",
+        "FinancialAmountStage",
+        "FinancialMethodRow",
+        "FinancialTransactionRow"
       ],
       "tokens": [
         "token.design-tokens",
@@ -1375,13 +1389,23 @@
         "TransactionRow",
         "TradingAccountSwitchSheet",
         "IconSurface",
-        "StatusPill"
+        "StatusPill",
+        "OverlayQueue",
+        "FinancialHeroCard",
+        "FinancialRiskBanner",
+        "FinancialFormFlow",
+        "FinancialSelectField",
+        "FinancialAmountStage",
+        "FinancialMethodRow",
+        "FinancialTransactionRow"
       ],
       "tokens": [
         "token.design-tokens",
         "token.color",
         "token.semantic-layout",
-        "runtime.design-public-assets.facade"
+        "runtime.design-public-assets.facade",
+        "token.zIndex-overlay",
+        "token.motion-overlay"
       ],
       "icons": [
         "icon.icon-library"
@@ -1431,13 +1455,23 @@
         "TransactionRow",
         "TradingAccountSwitchSheet",
         "IconSurface",
-        "StatusPill"
+        "StatusPill",
+        "OverlayQueue",
+        "FinancialHeroCard",
+        "FinancialRiskBanner",
+        "FinancialFormFlow",
+        "FinancialSelectField",
+        "FinancialAmountStage",
+        "FinancialMethodRow",
+        "FinancialTransactionRow"
       ],
       "tokens": [
         "token.design-tokens",
         "token.color",
         "token.semantic-layout",
-        "runtime.design-public-assets.facade"
+        "runtime.design-public-assets.facade",
+        "token.zIndex-overlay",
+        "token.motion-overlay"
       ],
       "icons": [
         "icon.icon-library"
@@ -1487,13 +1521,23 @@
         "TransactionRow",
         "TradingAccountSwitchSheet",
         "IconSurface",
-        "StatusPill"
+        "StatusPill",
+        "OverlayQueue",
+        "FinancialHeroCard",
+        "FinancialRiskBanner",
+        "FinancialFormFlow",
+        "FinancialSelectField",
+        "FinancialAmountStage",
+        "FinancialMethodRow",
+        "FinancialTransactionRow"
       ],
       "tokens": [
         "token.design-tokens",
         "token.color",
         "token.semantic-layout",
-        "runtime.design-public-assets.facade"
+        "runtime.design-public-assets.facade",
+        "token.zIndex-overlay",
+        "token.motion-overlay"
       ],
       "icons": [
         "icon.icon-library"
@@ -1542,7 +1586,14 @@
         "TransactionRow",
         "TradingAccountSwitchSheet",
         "IconSurface",
-        "StatusPill"
+        "StatusPill",
+        "FinancialHeroCard",
+        "FinancialRiskBanner",
+        "FinancialFormFlow",
+        "FinancialSelectField",
+        "FinancialAmountStage",
+        "FinancialMethodRow",
+        "FinancialTransactionRow"
       ],
       "tokens": [
         "token.design-tokens",
@@ -1597,7 +1648,14 @@
         "TransactionRow",
         "TradingAccountSwitchSheet",
         "IconSurface",
-        "StatusPill"
+        "StatusPill",
+        "FinancialHeroCard",
+        "FinancialRiskBanner",
+        "FinancialFormFlow",
+        "FinancialSelectField",
+        "FinancialAmountStage",
+        "FinancialMethodRow",
+        "FinancialTransactionRow"
       ],
       "tokens": [
         "token.design-tokens",
@@ -1699,13 +1757,16 @@
         "BottomSheet",
         "StatusPill",
         "IconSurface",
-        "AppIcon"
+        "AppIcon",
+        "OverlayQueue"
       ],
       "tokens": [
         "token.design-tokens",
         "token.color",
         "token.semantic-layout",
-        "runtime.design-public-assets.facade"
+        "runtime.design-public-assets.facade",
+        "token.zIndex-overlay",
+        "token.motion-overlay"
       ],
       "icons": [
         "icon.icon-library"
@@ -1987,13 +2048,16 @@
         "AuthShell",
         "AuthFlowControls",
         "TextField",
-        "AppIcon"
+        "AppIcon",
+        "OverlayQueue"
       ],
       "tokens": [
         "token.design-tokens",
         "token.color",
         "token.semantic-layout",
-        "runtime.design-public-assets.facade"
+        "runtime.design-public-assets.facade",
+        "token.zIndex-overlay",
+        "token.motion-overlay"
       ],
       "icons": [
         "icon.icon-library"
@@ -2081,13 +2145,16 @@
         "AuthShell",
         "AuthFlowControls",
         "TextField",
-        "AppIcon"
+        "AppIcon",
+        "OverlayQueue"
       ],
       "tokens": [
         "token.design-tokens",
         "token.color",
         "token.semantic-layout",
-        "runtime.design-public-assets.facade"
+        "runtime.design-public-assets.facade",
+        "token.zIndex-overlay",
+        "token.motion-overlay"
       ],
       "icons": [
         "icon.icon-library"
@@ -2482,8 +2549,8 @@
     {
       "asset_id": "business.FundingOperationWorkspace",
       "asset_type": "business_component",
-      "name": "FundingOperationWorkspace",
-      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "name": "Funding Operation Workspace",
+      "source_path": "src/components/business/FinancialPagePatterns.tsx",
       "status": "approved",
       "qa_status": "passed"
     },
@@ -2708,7 +2775,7 @@
       "asset_id": "pattern.flow.fundingOperation",
       "asset_type": "flow_pattern",
       "name": "Funding Operation Flow",
-      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "source_path": "src/components/business/FinancialPagePatterns.tsx",
       "status": "approved",
       "qa_status": "passed"
     },
@@ -2853,6 +2920,46 @@
       "asset_type": "base_component",
       "name": "GlobalDialog",
       "source_path": "src/components/GlobalDialog.tsx",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "component.base.OverlayQueue",
+      "asset_type": "base_component",
+      "name": "OverlayQueueProvider",
+      "source_path": "src/components/OverlayQueue.tsx",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "component.base.ModalStack",
+      "asset_type": "base_component",
+      "name": "ModalStackProvider",
+      "source_path": "src/components/ModalStack.tsx",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "token.zIndex-overlay",
+      "asset_type": "token",
+      "name": "Overlay z-index tokens",
+      "source_path": "packages/design-tokens/src/tokens.ts",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "token.motion-overlay",
+      "asset_type": "token",
+      "name": "Overlay motion tokens",
+      "source_path": "packages/design-tokens/src/tokens.ts",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "registry.overlay-system",
+      "asset_type": "governance_registry",
+      "name": "Overlay Registry",
+      "source_path": "src/design-public-assets/overlays/registry/overlay-registry.json",
       "status": "approved",
       "qa_status": "passed"
     }
@@ -7611,6 +7718,286 @@
       "from": "page.pin_setup",
       "to": "component.base.GlobalDialog",
       "relation": "uses_base_component"
+    },
+    {
+      "from": "component.base.OverlayQueue",
+      "to": "component.base.GlobalDialog",
+      "relation": "composes"
+    },
+    {
+      "from": "component.base.OverlayQueue",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "component.base.OverlayQueue",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "component.base.ModalStack",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "registry.overlay-system",
+      "to": "component.base.OverlayQueue",
+      "relation": "registers"
+    },
+    {
+      "from": "registry.overlay-system",
+      "to": "component.base.ModalStack",
+      "relation": "registers"
+    },
+    {
+      "from": "registry.overlay-system",
+      "to": "component.base.BottomSheet",
+      "relation": "registers"
+    },
+    {
+      "from": "registry.overlay-system",
+      "to": "component.base.GlobalDialog",
+      "relation": "registers"
+    },
+    {
+      "from": "page.instrument_detail",
+      "to": "component.base.ModalStack",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.instrument_detail",
+      "to": "registry.overlay-system",
+      "relation": "governed_by"
+    },
+    {
+      "from": "page.instrument_detail",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.instrument_detail",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.order_ticket",
+      "to": "component.base.OverlayQueue",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.order_ticket",
+      "to": "registry.overlay-system",
+      "relation": "governed_by"
+    },
+    {
+      "from": "page.order_ticket",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.order_ticket",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.deposit_form",
+      "to": "component.base.OverlayQueue",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.deposit_form",
+      "to": "registry.overlay-system",
+      "relation": "governed_by"
+    },
+    {
+      "from": "page.deposit_form",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.deposit_form",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.withdrawal_form",
+      "to": "component.base.OverlayQueue",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.withdrawal_form",
+      "to": "registry.overlay-system",
+      "relation": "governed_by"
+    },
+    {
+      "from": "page.withdrawal_form",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.withdrawal_form",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.transfer_form",
+      "to": "component.base.OverlayQueue",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.transfer_form",
+      "to": "registry.overlay-system",
+      "relation": "governed_by"
+    },
+    {
+      "from": "page.transfer_form",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.transfer_form",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.security_login_log",
+      "to": "component.base.OverlayQueue",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.security_login_log",
+      "to": "registry.overlay-system",
+      "relation": "governed_by"
+    },
+    {
+      "from": "page.security_login_log",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.security_login_log",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.register_email",
+      "to": "component.base.OverlayQueue",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.register_email",
+      "to": "registry.overlay-system",
+      "relation": "governed_by"
+    },
+    {
+      "from": "page.register_email",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.register_email",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.register_password",
+      "to": "component.base.OverlayQueue",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.register_password",
+      "to": "registry.overlay-system",
+      "relation": "governed_by"
+    },
+    {
+      "from": "page.register_password",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.register_password",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.quick",
+      "to": "component.base.OverlayQueue",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.quick",
+      "to": "registry.overlay-system",
+      "relation": "governed_by"
+    },
+    {
+      "from": "page.quick",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.quick",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.client_profile",
+      "to": "component.base.OverlayQueue",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.client_profile",
+      "to": "registry.overlay-system",
+      "relation": "governed_by"
+    },
+    {
+      "from": "page.client_profile",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.client_profile",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.trade",
+      "to": "component.base.OverlayQueue",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.trade",
+      "to": "registry.overlay-system",
+      "relation": "governed_by"
+    },
+    {
+      "from": "page.trade",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.trade",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.portfolio_alias",
+      "to": "component.base.OverlayQueue",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.portfolio_alias",
+      "to": "registry.overlay-system",
+      "relation": "governed_by"
+    },
+    {
+      "from": "page.portfolio_alias",
+      "to": "token.zIndex-overlay",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.portfolio_alias",
+      "to": "token.motion-overlay",
+      "relation": "uses_token"
     }
   ],
   "pageReadinessMatrix": [
@@ -8215,5 +8602,23 @@
     "reason": "All route registry pages have readiness rows and are marked reference_migration_complete; route screens consume the page-facing design-public-assets facade, strict scans report no page-level hardcoded visual styles, inline SVG, unregistered icon imports, legacy public-resource imports, or naked visible copy.",
     "canEnterNextStage": true,
     "nextStage": "full QA and targeted UX regression evidence for trading, funding, markets, Partner, Auth/PIN, security-login-log, and planned Security Center contract implementation"
-  }
+  },
+  "assets": [
+    {
+      "asset_id": "page.quick",
+      "asset_type": "page",
+      "name": "Quick Discover Module Screen",
+      "source_path": "src/screens/discover/DiscoverModuleScreen.tsx",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "page.client_profile",
+      "asset_type": "page",
+      "name": "Client Profile Screen",
+      "source_path": "src/screens/client/ClientProfileScreen.tsx",
+      "status": "approved",
+      "qa_status": "passed"
+    }
+  ]
 }

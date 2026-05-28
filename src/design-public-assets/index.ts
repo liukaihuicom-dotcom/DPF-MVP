@@ -2,6 +2,7 @@ export * from './business-components';
 export * from './components';
 export * from './copy';
 export * from './icons';
+export * from './overlays';
 export * from './patterns';
 export * from './registry';
 export * from './tokens';

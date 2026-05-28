@@ -35,19 +35,31 @@ The base scale is intentionally small and stable. It should not grow during page
 | `layout.cardPaddingY` | `spacing.lg` / 16 | Full-site default card and panel vertical content inset |
 | `layout.cardPaddingCompactX` | `spacing.md` / 12 | Compact card and dense panel horizontal content inset |
 | `layout.cardPaddingCompactY` | `spacing.md` / 12 | Compact card and dense panel vertical content inset |
+| `layout.cardListPaddingY` | `spacing.none` / 0 | List-card vertical inset; row components own list rhythm |
 | `layout.cardPadding` | `spacing.lg` / 16 | Legacy scalar alias for older card padding code; new implementations must use `layout.cardPaddingX` + `layout.cardPaddingY` |
 | `layout.cardPaddingCompact` | `spacing.md` / 12 | Legacy scalar alias for older compact card padding code; new implementations must use `layout.cardPaddingCompactX` + `layout.cardPaddingCompactY` |
 | `layout.listRowPaddingX` | `spacing.md` / 12 | Menu, option, account, transaction, and settings row horizontal padding |
 | `layout.listRowPaddingY` | `spacing.md` / 12 | Menu, option, account, transaction, and settings row vertical padding |
 | `layout.formFieldTextInset` | `spacing.md` / 12 | Shared form field shell horizontal text inset |
+| `layout.formFieldFloatingInputPaddingTop` | `spacing.lg` / 16 | Floating-label field input top inset |
+| `layout.formFieldMultilineInputPaddingTop` | `spacing.lg + spacing.xs` / 20 | Multiline floating-label field input top inset |
 | `layout.formGroupGap` | `spacing.md` / 12 | Gap between fields in one form group |
 | `layout.fieldGap` | `spacing.sm` / 8 | Gap between a field and helper, error, or secondary hint |
 | `layout.inlineGap` | `spacing.xs` / 4 | Inline icon/text, label/value, and dense metadata spacing |
 | `layout.controlGap` | `spacing.sm` / 8 | Gap between compact controls, button icon/text, and segmented options |
+| `layout.metricGap` | `spacing.xs` / 4 | Metric label/value/caption stack gap |
+| `layout.menuRowGap` | `spacing.md` / 12 | Menu row icon-to-copy gap |
+| `layout.menuRowTextGap` | `spacing.xs` / 4 | Menu row title-to-description gap |
+| `layout.menuRowMinTouch` | 58 | Shared menu row touch target; component-owned size token |
+| `layout.menuRowMinHeight` | 58 | Shared menu row visual min height; component-owned size token |
+| `layout.menuDescriptiveRowMinHeight` | 84 | Shared descriptive menu row min height; component-owned size token |
 | `layout.sheetContentGap` | `spacing.md` / 12 | BottomSheet content stack gap |
 | `layout.sheetFooterGap` | `spacing.md` / 12 | BottomSheet footer action gap |
+| `layout.sheetHandlePaddingBottom` | `spacing.xs + lineWidth.strong` / 5 | BottomSheet handle bottom inset |
+| `layout.sheetHandlePaddingTop` | `spacing.sm` / 8 | BottomSheet handle top inset |
 | `layout.quoteGroupGap` | `spacing.sm` / 8 | Quote detail price/change/stat groups |
 | `layout.dataRowGap` | `spacing.xs` / 4 | Dense metric rows, quote stats, and chart labels |
+| `layout.financialPattern.*` | semantic values | Wallet, Deposit, Withdrawal, Transfer, KYC risk, and Partner finance pattern rhythm |
 | `layout.touchTargetMin` | 44 | Minimum interactive hit area; not a generic spacing token |
 | `layout.sheetHeaderHeight` | 56 | Fixed bottom-sheet title bar height; not a generic gap or padding token |
 | Icon box sizes | component-owned layout values | Icon visual reservation; not generic spacing |
@@ -61,10 +73,11 @@ The base scale is intentionally small and stable. It should not grow during page
 | Business module stack | `layout.moduleGap`, `layout.sectionGap`, `layout.sectionGapLarge` | Child `marginTop` chains |
 | Cards and panels | `layout.cardPaddingX`, `layout.cardPaddingY`, `layout.cardPaddingCompactX`, `layout.cardPaddingCompactY`; legacy scalar aliases only for compatibility | Page-owned card padding overrides or new `padding: layout.cardPadding` usage |
 | Menu/list rows | `layout.listRowPaddingX`, `layout.listRowPaddingY` inside the row component | Page-local row padding or hidden spacer hacks |
-| Forms | `layout.formFieldTextInset`, `layout.formGroupGap`, `layout.fieldGap` | One-off `10`, `14`, `18`, or field-specific margins |
+| Forms | `layout.formFieldTextInset`, `layout.formFieldFloatingInputPaddingTop`, `layout.formFieldMultilineInputPaddingTop`, `layout.formGroupGap`, `layout.fieldGap` | One-off `10`, `14`, `18`, or field-specific margins |
 | Controls | `layout.controlGap`, `layout.inlineGap` | Per-button icon/text gap guesses |
 | BottomSheet | `layout.topBarPaddingX` for header, `layout.contentCardPaddingX` or `layout.contentPlainPaddingX` for content, `layout.bottomActionArea.paddingX`, `layout.sheetContentGap`, `layout.sheetFooterGap` | Header/content/footer alignment drift |
 | Quote/data/chart areas | `layout.quoteGroupGap`, `layout.dataRowGap`, component-owned chart offsets | Absolute offsets to repair normal flow |
+| Financial task pages | `layout.financialPattern.*` through registered financial pattern components | Page-local amount, status, risk, CTA, or transaction-row spacing guesses |
 | Empty states and major breaks | `spacing.section` only through documented pattern tokens | Expanding the base scale for one page |
 
 ## Global Spacing Policy
@@ -96,7 +109,8 @@ The base scale is intentionally small and stable. It should not grow during page
 - List row padding must be owned by the row/list component through `layout.listRowPaddingX` and `layout.listRowPaddingY`.
 - BottomSheet header and footer must use 16 px horizontal inset, while card-mode sheet content uses 12 px and plain/form sheet content uses 16 px.
 - Form groups, list rows, status panels, and operation areas must declare their spacing in the component or pattern documentation.
-- Shared form field horizontal content inset must use `layout.formFieldTextInset`.
+- Shared form field horizontal content inset must use `layout.formFieldTextInset`; floating input top insets must use `layout.formFieldFloatingInputPaddingTop` and `layout.formFieldMultilineInputPaddingTop`.
+- Financial pages must consume `layout.financialPattern.*` through registered pattern components for amount stages, risk banners, method rows, and transaction rows.
 
 ### Margin
 
@@ -125,8 +139,10 @@ The base scale is intentionally small and stable. It should not grow during page
 - Global BottomSheet header and footer use 16 px horizontal padding; card-mode content defaults to 12 px and plain/form content uses 16 px.
 - `Card` uses 12 px horizontal padding through `layout.cardPaddingX` and 16 px vertical padding through `layout.cardPaddingY`.
 - `Card compact` uses 12 px horizontal padding through `layout.cardPaddingCompactX` and 12 px vertical padding through `layout.cardPaddingCompactY`.
+- `Card surface="list"` uses `layout.cardListPaddingY` and delegates list rhythm to row components.
 - `ActionButton` uses 18 px horizontal and 12 px vertical padding.
-- `TextField`, `SelectField`, and `RichTextField` use `layout.formFieldTextInset` / 12 px for shell horizontal content inset.
+- `TextField`, `SelectField`, and `RichTextField` use `layout.formFieldTextInset` / 12 px for shell horizontal content inset and semantic floating input top inset tokens for label rhythm.
+- Funding and wallet patterns use `layout.financialPattern.*` so amount, status, risk, method, and transaction hierarchy stay consistent across Deposit, Withdrawal, Transfer, Wallet Home, KYC gate, and Partner finance surfaces.
 
 ## Full-Site Application
 

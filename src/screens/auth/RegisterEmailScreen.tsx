@@ -5,6 +5,7 @@ import { isValidEmail, safeRedirect } from '@/src/auth/authFlow';
 import { ActionButton } from '@/src/design-public-assets/components';
 import { AuthShell, AuthTextField } from '@/src/design-public-assets/components';
 import { AuthContactConfirmDialog, AuthErrorSheet, AuthLeaveVerifiedStepDialog } from '@/src/design-public-assets/components';
+import { useDirtyStateGuard } from '@/src/design-public-assets/components';
 import { notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import type { NavigationTarget } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/design-public-assets/copy';
@@ -23,6 +24,14 @@ export default function RegisterEmailScreen() {
   const emailError = submitted && !isValidEmail(email) ? t('auth.error.email') : '';
   const canSubmit = isValidEmail(email);
   const phoneStepTarget = `/auth/register?redirect=${encodeURIComponent(String(redirect))}` as NavigationTarget;
+
+  useDirtyStateGuard({
+    body: t('auth.register.leaveAfterPhoneBody'),
+    confirmLabel: t('auth.register.leaveConfirm'),
+    dirty: Boolean(phone),
+    stayLabel: t('auth.register.leaveStay'),
+    title: t('auth.register.leaveAfterPhoneTitle'),
+  });
 
   useEffect(() => {
     if (!phone) {

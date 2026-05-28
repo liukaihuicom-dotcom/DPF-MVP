@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { lineWidth } from '@/src/theme/tokens';
+import { layout, lineWidth, radius, size, spacing, zIndex } from '@/src/theme/tokens';
 import { useThemeColors } from '@/src/settings/ProductSettings';
 import { shadows } from '@/src/theme/colors';
 
@@ -55,44 +55,29 @@ export function ToastProvider({ children }: PropsWithChildren) {
       {children}
       {toast ? (
         <View
-          style={{
-            alignItems: 'center',
-            left: 0,
-            paddingHorizontal: 14,
-            paddingTop: 18,
-            pointerEvents: 'box-none',
-            position: 'absolute',
-            right: 0,
-            top: 0,
-            zIndex: 90,
-          }}>
+          accessibilityLiveRegion="polite"
+          accessibilityRole="alert"
+          pointerEvents="box-none"
+          style={styles.host}>
           <View
-            style={{
-              alignItems: 'center',
-              backgroundColor: colors.surface.raised,
-              borderColor: colors.border.default,
-              borderRadius: 16,
-              borderWidth: lineWidth.hairline,
-              flexDirection: 'row',
-              gap: 10,
-              maxWidth: 420,
-              minHeight: 52,
-              paddingHorizontal: 12,
-              paddingVertical: 10,
-              width: '100%',
-              ...shadows.toast,
-            }}>
+            style={StyleSheet.flatten([
+              styles.toast,
+              {
+                backgroundColor: colors.surface.raised,
+                borderColor: colors.border.default,
+              },
+              shadows.toast,
+            ])}>
             <View
-              style={{
-                alignItems: 'center',
-                backgroundColor: `${toneColor}18`,
-                borderColor: `${toneColor}66`,
-                borderRadius: 999,
-                borderWidth: lineWidth.hairline,
-                height: 26,
-                justifyContent: 'center',
-                width: 26,
-              }}>
+              accessibilityElementsHidden
+              importantForAccessibility="no-hide-descendants"
+              style={StyleSheet.flatten([
+                styles.icon,
+                {
+                  backgroundColor: `${toneColor}18`,
+                  borderColor: `${toneColor}66`,
+                },
+              ])}>
               <AppText tone={toneText} variant="label.status">
                 {tone === 'success' ? '✓' : tone === 'danger' ? '!' : tone === 'warning' ? '!' : 'i'}
               </AppText>
@@ -113,6 +98,39 @@ export function ToastProvider({ children }: PropsWithChildren) {
     </ToastContext.Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  host: {
+    alignItems: 'center',
+    left: spacing.none,
+    paddingHorizontal: layout.contentCardPaddingX,
+    paddingTop: spacing.lg + spacing.xxs,
+    position: 'absolute',
+    right: spacing.none,
+    top: spacing.none,
+    zIndex: zIndex.toast,
+  },
+  icon: {
+    alignItems: 'center',
+    borderRadius: radius.full,
+    borderWidth: lineWidth.hairline,
+    height: size.surface.toastIconBox,
+    justifyContent: 'center',
+    width: size.surface.toastIconBox,
+  },
+  toast: {
+    alignItems: 'center',
+    borderRadius: radius.xl,
+    borderWidth: lineWidth.hairline,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    maxWidth: size.viewport.toastMaxWidth,
+    minHeight: size.surface.toastMinHeight,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm + spacing.xxs,
+    width: '100%',
+  },
+});
 
 export function useToast() {
   const context = useContext(ToastContext);

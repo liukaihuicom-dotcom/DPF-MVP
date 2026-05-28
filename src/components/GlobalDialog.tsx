@@ -3,6 +3,7 @@ import { Modal, StyleSheet, View } from 'react-native';
 
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { layout, radius, spacing } from '@/src/theme/tokens';
+import { shadows } from '@/src/theme/colors';
 
 import { ActionButton, type ActionButtonTone, type ActionButtonVariant } from './ActionButton';
 import type { AppIconName } from './AppIcon';
@@ -52,10 +53,11 @@ export function GlobalDialog({
   }
 
   return (
-    <Modal animationType="fade" onRequestClose={onRequestClose} transparent visible>
+    <Modal accessibilityViewIsModal animationType="fade" onRequestClose={onRequestClose} transparent visible>
       <View style={StyleSheet.flatten([styles.backdrop, { backgroundColor: scrimColor }])}>
         <View style={styles.stage}>
           <View
+            accessibilityHint={body}
             accessibilityLabel={resolvedAccessibilityLabel || undefined}
             accessibilityRole="alert"
             style={StyleSheet.flatten([styles.dialog, { backgroundColor: colors.surface.raised }])}>
@@ -119,6 +121,7 @@ const styles = StyleSheet.create({
     gap: spacing.xl,
     padding: spacing.xl,
     width: '100%',
+    ...shadows.dialog,
   },
   stage: {
     maxWidth: layout.appMaxWidth,

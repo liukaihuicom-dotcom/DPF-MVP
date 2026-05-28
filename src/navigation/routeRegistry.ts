@@ -49,13 +49,17 @@ export type RelatedModalId =
   | 'auth.leaveVerifiedStep'
   | 'discover.layout.route'
   | 'funding.paymentMethodSheet'
-  | 'funding.submitFeedbackToast'
+  | 'funding.submitFeedbackAlert'
   | 'global.bottomSheet'
+  | 'global.modalQueue'
+  | 'global.modalStack'
   | 'global.toastFeedback'
   | 'global.webSelectMenu'
   | 'order.ticket.route'
+  | 'partner.upgradeFeedbackAlert'
   | 'portfolio.accountMenuSheet'
   | 'portfolio.closePositionConfirm'
+  | 'portfolio.orderMutationAlert'
   | 'portfolio.pendingOrderDetailSheet'
   | 'portfolio.pendingOrderFeedbackToast'
   | 'portfolio.positionDetailSheet'
@@ -179,7 +183,9 @@ export const routeRegistry = [
       'portfolio.pendingOrderDetailSheet',
       'portfolio.pendingOrderFeedbackToast',
       'portfolio.positionDetailSheet',
+      'portfolio.orderMutationAlert',
       'tradingAccount.switchSheet',
+      'global.modalQueue',
       'global.toastFeedback',
     ],
     states: protectedStates,
@@ -222,7 +228,7 @@ export const routeRegistry = [
     navigationLevel: 'primaryTab',
     ...noTopNav,
     primaryActions: ['Show selected function module', 'Open order ticket', 'Open partner tools', 'Submit partner application demo'],
-    relatedModals: ['order.ticket.route', 'global.toastFeedback'],
+    relatedModals: ['order.ticket.route', 'partner.upgradeFeedbackAlert', 'global.modalQueue', 'global.toastFeedback'],
     states: protectedStates,
     routePresentation: 'tab',
     riskLevel: 'medium',
@@ -242,7 +248,9 @@ export const routeRegistry = [
       'portfolio.pendingOrderDetailSheet',
       'portfolio.pendingOrderFeedbackToast',
       'portfolio.positionDetailSheet',
+      'portfolio.orderMutationAlert',
       'tradingAccount.switchSheet',
+      'global.modalQueue',
       'global.toastFeedback',
     ],
     states: protectedStates,
@@ -298,7 +306,7 @@ export const routeRegistry = [
     ...backToTrade,
     leaveGuard: 'confirm-leave',
     primaryActions: ['Select side', 'Select order type', 'Edit lots', 'Toggle risk controls', 'Submit order'],
-    relatedModals: ['order.ticket.route', 'global.toastFeedback'],
+    relatedModals: ['order.ticket.route', 'global.modalQueue'],
     states: ['default', 'inputting', 'validating', 'submitting', 'success', 'failed', 'error', 'not_found', 'restricted'],
     routePresentation: 'transparentModal',
     riskLevel: 'high',
@@ -312,7 +320,7 @@ export const routeRegistry = [
     navigationLevel: 'detail',
     ...backToTrade,
     primaryActions: ['Review client profile', 'Approve upgrade request demo', 'Open client action feedback'],
-    relatedModals: ['global.toastFeedback'],
+    relatedModals: ['partner.upgradeFeedbackAlert', 'global.modalQueue', 'global.toastFeedback'],
     states: ['default', 'loading', 'error', 'not_found', 'permission_denied', 'restricted', 'reviewing'],
     routePresentation: 'screen',
     riskLevel: 'high',
@@ -452,7 +460,7 @@ export const routeRegistry = [
     ...backToFunding,
     leaveGuard: 'confirm-leave',
     primaryActions: ['Select account', 'Enter amount', 'Select payment method', 'Submit deposit'],
-    relatedModals: ['tradingAccount.switchSheet', 'funding.paymentMethodSheet', 'funding.submitFeedbackToast', 'global.toastFeedback'],
+    relatedModals: ['tradingAccount.switchSheet', 'funding.paymentMethodSheet', 'funding.submitFeedbackAlert', 'global.modalQueue', 'global.toastFeedback'],
     states: formStates,
     routePresentation: 'screen',
     riskLevel: 'high',
@@ -466,7 +474,7 @@ export const routeRegistry = [
     ...backToFunding,
     leaveGuard: 'confirm-leave',
     primaryActions: ['Select payout method', 'Enter amount', 'Select trading account', 'Submit withdrawal'],
-    relatedModals: ['tradingAccount.switchSheet', 'funding.paymentMethodSheet', 'funding.submitFeedbackToast', 'global.toastFeedback'],
+    relatedModals: ['tradingAccount.switchSheet', 'funding.paymentMethodSheet', 'funding.submitFeedbackAlert', 'global.modalQueue', 'global.toastFeedback'],
     states: ['default', 'inputting', 'validating', 'submitting', 'reviewing', 'success', 'failed', 'error', 'restricted'],
     routePresentation: 'screen',
     riskLevel: 'high',
@@ -480,7 +488,7 @@ export const routeRegistry = [
     ...backToFunding,
     leaveGuard: 'confirm-leave',
     primaryActions: ['Select source account', 'Enter amount', 'Select target account', 'Submit internal transfer'],
-    relatedModals: ['tradingAccount.switchSheet', 'funding.submitFeedbackToast', 'global.toastFeedback'],
+    relatedModals: ['tradingAccount.switchSheet', 'funding.submitFeedbackAlert', 'global.modalQueue', 'global.toastFeedback'],
     states: ['default', 'inputting', 'validating', 'submitting', 'success', 'failed', 'error', 'restricted'],
     routePresentation: 'screen',
     riskLevel: 'high',
@@ -534,7 +542,7 @@ export const routeRegistry = [
     navigationLevel: 'detail',
     ...backToSettings,
     primaryActions: ['Open device detail', 'Revoke session', 'Report suspicious event'],
-    relatedModals: ['security.deviceDetailSheet', 'security.revokeConfirmSheet', 'security.reportConfirmSheet', 'global.toastFeedback'],
+    relatedModals: ['security.deviceDetailSheet', 'security.revokeConfirmSheet', 'security.reportConfirmSheet', 'global.modalQueue', 'global.toastFeedback'],
     states: ['default', 'loading', 'empty', 'error', 'submitting', 'success', 'failed', 'restricted'],
     routePresentation: 'screen',
     riskLevel: 'high',

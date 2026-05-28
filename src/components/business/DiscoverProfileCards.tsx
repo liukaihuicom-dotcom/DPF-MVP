@@ -4,7 +4,7 @@ import { formatMoney } from '@/src/domain/format';
 import type { Locale } from '@/src/i18n/translations';
 import { useThemeColors } from '@/src/settings/ProductSettings';
 import type { ThemeColors } from '@/src/theme/colors';
-import { lineWidth, layout, radius, size, spacing, typography } from '@/src/theme/tokens';
+import { lineWidth, layout, radius, size, spacing, typography, zIndex } from '@/src/theme/tokens';
 
 import { AppIcon, type AppIconName, type IconTone } from '../AppIcon';
 import { Card } from '../Card';
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     width: spacing.xl - spacing.xxs,
-    zIndex: 2,
+    zIndex: zIndex.raised,
   },
   coinOne: {
     left: spacing.xs,

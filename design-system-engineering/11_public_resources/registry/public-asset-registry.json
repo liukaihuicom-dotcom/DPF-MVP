@@ -26,7 +26,8 @@
         "component.base.component-library",
         "icon.icon-library",
         "pattern.all",
-        "component.base.GlobalDialog"
+        "component.base.GlobalDialog",
+        "registry.overlay-system"
       ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
@@ -106,7 +107,8 @@
       "dependents": [
         "business.all",
         "pattern.all",
-        "component.base.GlobalDialog"
+        "component.base.GlobalDialog",
+        "registry.overlay-system"
       ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
@@ -215,7 +217,9 @@
         "component.base.component-library",
         "token.design-tokens"
       ],
-      "dependents": [],
+      "dependents": [
+        "registry.overlay-system"
+      ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
       "last_updated": "2026-05-28"
@@ -241,7 +245,9 @@
         "component.base.component-library",
         "token.design-tokens"
       ],
-      "dependents": [],
+      "dependents": [
+        "registry.overlay-system"
+      ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
       "last_updated": "2026-05-28"
@@ -590,10 +596,10 @@
     {
       "asset_id": "business.FundingOperationWorkspace",
       "asset_type": "business_component",
-      "name": "FundingOperationWorkspace",
-      "version": "1.1.0",
-      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
-      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "name": "Funding Operation Workspace",
+      "version": "1.2.0",
+      "source_path": "src/components/business/FinancialPagePatterns.tsx",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
       "usage_scope": [
         "financial_pages"
       ],
@@ -605,15 +611,22 @@
       "status": "approved",
       "owner": "design-system-engineering",
       "dependencies": [
-        "business.registry"
+        "business.registry",
+        "token.design-tokens",
+        "pattern.flow.fundingOperation",
+        "component.base.component-library"
       ],
       "dependents": [
-        "page.trade",
-        "page.portfolio_alias"
+        "page.funding_home",
+        "page.deposit_form",
+        "page.withdrawal_form",
+        "page.transfer_form",
+        "page.funding_transaction_list",
+        "page.funding_transaction_detail"
       ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-28"
+      "last_updated": "2026-05-29"
     },
     {
       "asset_id": "business.PortfolioOrderWorkspace",
@@ -1330,8 +1343,8 @@
       "asset_id": "pattern.flow.fundingOperation",
       "asset_type": "flow_pattern",
       "name": "Funding Operation Flow",
-      "version": "1.1.0",
-      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "version": "1.2.0",
+      "source_path": "src/components/business/FinancialPagePatterns.tsx",
       "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
       "usage_scope": [
         "funding_pages"
@@ -1345,12 +1358,20 @@
       "owner": "design-system-engineering",
       "dependencies": [
         "pattern.registry",
-        "business.FundingOperationWorkspace"
+        "business.FundingOperationWorkspace",
+        "token.design-tokens"
       ],
-      "dependents": [],
+      "dependents": [
+        "page.funding_home",
+        "page.deposit_form",
+        "page.withdrawal_form",
+        "page.transfer_form",
+        "page.funding_transaction_list",
+        "page.funding_transaction_detail"
+      ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-28"
+      "last_updated": "2026-05-29"
     },
     {
       "asset_id": "pattern.state.appearanceThemePreview",
@@ -1734,7 +1755,9 @@
         "token.design-tokens",
         "icon.icon-library"
       ],
-      "dependents": [],
+      "dependents": [
+        "registry.overlay-system"
+      ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
       "last_updated": "2026-05-28",
@@ -1863,11 +1886,178 @@
         "icon.icon-library"
       ],
       "dependents": [
-        "component.forms.AuthFlowControls"
+        "component.forms.AuthFlowControls",
+        "registry.overlay-system"
       ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
       "last_updated": "2026-05-28"
+    },
+    {
+      "asset_id": "component.base.OverlayQueue",
+      "asset_type": "base_component",
+      "name": "OverlayQueueProvider",
+      "version": "1.0.0",
+      "source_path": "src/components/OverlayQueue.tsx",
+      "doc_path": "src/design-public-assets/overlays/registry/overlay-registry.json",
+      "usage_scope": [
+        "app_pages",
+        "global_overlays",
+        "risk_dialogs",
+        "dirty_state"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.GlobalDialog",
+        "token.design-tokens",
+        "token.zIndex-overlay",
+        "token.motion-overlay"
+      ],
+      "dependents": [
+        "page.order_ticket",
+        "page.deposit_form",
+        "page.withdrawal_form",
+        "page.transfer_form",
+        "page.security_login_log",
+        "page.register_email",
+        "page.register_password",
+        "page.quick",
+        "page.client_profile",
+        "page.trade",
+        "page.portfolio_alias"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-29"
+    },
+    {
+      "asset_id": "component.base.ModalStack",
+      "asset_type": "base_component",
+      "name": "ModalStackProvider",
+      "version": "1.0.0",
+      "source_path": "src/components/ModalStack.tsx",
+      "doc_path": "src/design-public-assets/overlays/registry/overlay-registry.json",
+      "usage_scope": [
+        "app_pages",
+        "full_screen_modal",
+        "modal_stack"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "token.design-tokens",
+        "token.zIndex-overlay"
+      ],
+      "dependents": [
+        "page.instrument_detail"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-29"
+    },
+    {
+      "asset_id": "token.zIndex-overlay",
+      "asset_type": "token",
+      "name": "Overlay z-index tokens",
+      "version": "1.0.0",
+      "source_path": "packages/design-tokens/src/tokens.ts",
+      "doc_path": "packages/design-tokens/registry/tokens.json",
+      "usage_scope": [
+        "all_overlays"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "token.design-tokens"
+      ],
+      "dependents": [
+        "component.base.OverlayQueue",
+        "component.base.ModalStack",
+        "component.base.BottomSheet",
+        "component.base.TextField",
+        "component.base.ToastProvider",
+        "tool.dev.ProductControlPanel"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-29"
+    },
+    {
+      "asset_id": "token.motion-overlay",
+      "asset_type": "token",
+      "name": "Overlay motion tokens",
+      "version": "1.0.0",
+      "source_path": "packages/design-tokens/src/tokens.ts",
+      "doc_path": "packages/design-tokens/registry/tokens.json",
+      "usage_scope": [
+        "all_overlays"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "token.design-tokens"
+      ],
+      "dependents": [
+        "component.base.OverlayQueue",
+        "component.base.BottomSheet"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-29"
+    },
+    {
+      "asset_id": "registry.overlay-system",
+      "asset_type": "governance_registry",
+      "name": "Overlay Registry",
+      "version": "1.0.0",
+      "source_path": "src/design-public-assets/overlays/registry/overlay-registry.json",
+      "doc_path": "src/design-public-assets/overlays/registry/page-overlay-matrix.md",
+      "usage_scope": [
+        "all_pages",
+        "all_overlays"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.OverlayQueue",
+        "component.base.ModalStack",
+        "component.base.BottomSheet",
+        "component.base.GlobalDialog",
+        "token.design-tokens"
+      ],
+      "dependents": [
+        "qa.public-resource-check",
+        "qa.navigation-registry"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-29"
     }
   ]
 }
