@@ -128,6 +128,7 @@ const BottomSheetOptionsContext = createContext<BottomSheetOptions | null>(null)
 const BottomSheetStackDepthContext = createContext(0);
 const BottomSheetClosingContext = createContext(false);
 const BottomSheetNativeDismissContext = createContext<(() => void) | null>(null);
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function BottomSheetProvider({ children }: PropsWithChildren) {
   const [stack, setStack] = useState<BottomSheetOptions[]>([]);
@@ -305,6 +306,12 @@ export function GlobalBottomSheetHost() {
   const dismissModal = useCallback(() => {
     modalRef.current?.dismiss();
   }, []);
+  const hostBackdropStyle = useAnimatedStyle(
+    () => ({
+      opacity: interpolate(sheetEntranceProgress.value, [0, 1], [0, 1], Extrapolation.CLAMP),
+    }),
+    [sheetEntranceProgress],
+  );
   const footerComponent = useCallback(
     (props: BottomSheetFooterProps) => (
       options?.footer ? (
@@ -353,13 +360,13 @@ export function GlobalBottomSheetHost() {
 
   return (
     <>
-      <Pressable
+      <AnimatedPressable
         accessibilityElementsHidden
         accessible={false}
         disabled={!backdropInteractive}
         importantForAccessibility="no-hide-descendants"
         onPress={hide}
-        style={StyleSheet.flatten([styles.hostBackdrop, { backgroundColor: backdropColor, height, width }])}
+        style={[styles.hostBackdrop, { backgroundColor: backdropColor, height, width }, hostBackdropStyle]}
       />
       <BottomSheetModal
         backdropComponent={renderBackdrop}
