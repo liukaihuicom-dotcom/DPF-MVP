@@ -34,6 +34,7 @@ logs/*.log
 
 # local env files
 .env*.local
+.codebuddy/settings.local.json
 
 # typescript
 *.tsbuildinfo
