@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -22,7 +22,6 @@ import { impactLight } from '@/src/feedback/haptics';
 import { navigateBackOrReplace, safeRouteTargets } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
-import type { ThemeColors } from '@/src/design-public-assets/tokens';
 import { layout, lineWidth, radius, size, spacing, typography } from '@/src/design-public-assets/tokens';
 
 type QuoteVisual = {
@@ -31,6 +30,15 @@ type QuoteVisual = {
 };
 
 type DetailTabKey = 'chart' | 'news' | 'signals' | 'specs';
+type InstrumentMetric = {
+  label: string;
+  tone?: 'default' | 'down' | 'up';
+  value: string;
+};
+type InstrumentMetricGroup = {
+  items: InstrumentMetric[];
+  title: string;
+};
 
 const detailTabs: { id: DetailTabKey; labelKey: 'instrument.tab.chart' | 'instrument.tab.news' | 'instrument.tab.signals' | 'instrument.tab.specs' }[] = [
   { id: 'chart', labelKey: 'instrument.tab.chart' },
@@ -86,6 +94,7 @@ export default function InstrumentDetailScreen() {
                   void impactLight();
                   navigateBackOrReplace(safeRouteTargets.markets);
                 }}
+                surface="neutral"
                 tone="default"
               />
 
@@ -118,7 +127,9 @@ export default function InstrumentDetailScreen() {
               t={t}
             />
 
-            <View style={StyleSheet.flatten([styles.divider, { backgroundColor: colors.border.subtle }])} />
+            <View style={StyleSheet.flatten([styles.riskPanel, { backgroundColor: colors.status.warning.bg }])}>
+              <AppText style={styles.riskText} tone="amber">{t('risk.general')}</AppText>
+            </View>
 
             <SegmentedTabs
               equalWidth={false}
@@ -140,7 +151,7 @@ export default function InstrumentDetailScreen() {
               variant="underline"
             />
 
-            {selectedTab === 'chart' ? <TradingTerminalChart instrument={instrument} state={resolveTerminalState(instrument)} /> : null}
+            {selectedTab === 'chart' ? <TradingTerminalChart density="embedded" instrument={instrument} state={resolveTerminalState(instrument)} /> : null}
 
             <InstrumentTabPanel
               instrument={instrument}
@@ -150,10 +161,6 @@ export default function InstrumentDetailScreen() {
               selectedTab={selectedTab}
               t={t}
             />
-
-            <View style={styles.riskPanel}>
-              <AppText style={styles.riskText} tone="amber">{t('risk.general')}</AppText>
-            </View>
           </View>
         </ScrollView>
 
@@ -200,90 +207,113 @@ function MainQuoteArea({
   t: (key: TranslationKey, params?: Record<string, string | number>) => string;
 }) {
   const statusTone = instrument.quoteStatus === 'live' && instrument.marketStatus === 'open' ? 'up' : instrument.quoteStatus === 'restricted' ? 'danger' : 'amber';
-  const summaryStats: { label: string; tone?: 'default' | 'down' | 'up'; value: string }[] = [
-    { label: t('common.bid'), tone: 'down', value: formatPrice(instrument, instrument.bid) },
-    { label: t('common.ask'), tone: 'up', value: formatPrice(instrument, instrument.ask) },
-    { label: t('common.spread'), value: formatNumber(instrument.spread, 1, locale) },
-    { label: t('instrument.quoteUpdatedAt'), value: formatQuoteTime(instrument.quoteUpdatedAt, locale) },
-  ];
-  const denseStats: { label: string; tone?: 'default' | 'down' | 'up'; value: string }[] = [
-    { label: t('instrument.open'), value: formatPrice(instrument, instrument.openPrice) },
-    { label: t('instrument.prevClose'), value: formatPrice(instrument, instrument.previousClose) },
-    { label: t('instrument.dayHigh'), tone: 'up', value: formatPrice(instrument, instrument.dayHigh) },
-    { label: t('instrument.dayLow'), tone: 'down', value: formatPrice(instrument, instrument.dayLow) },
-    { label: t('instrument.weekHigh'), value: formatPrice(instrument, instrument.weekHigh) },
-    { label: t('instrument.weekLow'), value: formatPrice(instrument, instrument.weekLow) },
-    { label: t('instrument.yearHigh'), value: formatPrice(instrument, instrument.yearHigh) },
-    { label: t('instrument.yearLow'), value: formatPrice(instrument, instrument.yearLow) },
-    { label: t('common.leverage'), value: `${instrument.leverage}x` },
-    { label: t('common.contractSize'), value: formatNumber(instrument.contractSize, 0, locale) },
-    { label: t('instrument.pipSize'), value: formatNumber(instrument.pipSize, instrument.pipSize >= 0.01 ? 2 : 5, locale) },
-    { label: t('instrument.tickSize'), value: formatNumber(instrument.tickSize, instrument.tickSize >= 0.01 ? 2 : 5, locale) },
-    { label: t('instrument.tickValue'), value: formatMoney(instrument.tickValue, instrument.quoteCurrency, 2, locale) },
-    { label: t('instrument.minLot'), value: formatNumber(instrument.minLot, 2, locale) },
-    { label: t('instrument.maxLot'), value: formatNumber(instrument.maxLot, instrument.maxLot >= 100 ? 0 : 2, locale) },
-    { label: t('instrument.lotStep'), value: formatNumber(instrument.lotStep, 2, locale) },
-    { label: t('instrument.tradeHours'), value: localizeText(instrument.tradingHours, locale) },
-    { label: t('instrument.marginSample', { lots: sampleLots }), value: formatMoney(calculateMargin(instrument, sampleLots, instrument.ask), instrument.marginCurrency, 0, locale) },
-    { label: t('instrument.swapLong'), value: formatMoney(instrument.swapLong, instrument.marginCurrency, 2, locale) },
-    { label: t('instrument.swapShort'), value: formatMoney(instrument.swapShort, instrument.marginCurrency, 2, locale) },
-    { label: t('instrument.quoteStatus'), value: t(quoteStatusKey(instrument.quoteStatus)) },
-  ];
+  const snapshotItems = buildTradeSnapshot(instrument, locale, sampleLots, t);
 
   return (
-    <View style={StyleSheet.flatten([styles.quoteArea])}>
-      <View style={styles.identityBlock}>
-        <InstrumentIcon instrument={instrument} size={layout.touchTargetMin} />
-        <View style={styles.identityCopy}>
-          <View style={styles.identityTitleRow}>
-            <AppText numberOfLines={1} style={styles.instrumentTitle}>
-              {instrument.symbol}
-            </AppText>
-            <View style={styles.statusCluster}>
-              <AppText numberOfLines={1} style={styles.statusText} tone={statusTone}>
-                {t(marketStatusKey(instrument.marketStatus))}
+    <View style={styles.quoteArea}>
+      <View style={styles.quoteHero}>
+        <View style={styles.identityBlock}>
+          <InstrumentIcon instrument={instrument} size={layout.touchTargetMin} />
+          <View style={styles.identityCopy}>
+            <View style={styles.identityTitleRow}>
+              <AppText numberOfLines={1} style={styles.instrumentTitle}>
+                {instrument.symbol}
               </AppText>
-              <AppText numberOfLines={1} style={styles.statusText} tone={statusTone}>
-                {t(quoteStatusKey(instrument.quoteStatus))}
+              <View style={styles.statusCluster}>
+                <AppText numberOfLines={1} style={styles.statusText} tone={statusTone}>
+                  {t(marketStatusKey(instrument.marketStatus))}
+                </AppText>
+                <AppText numberOfLines={1} style={styles.statusText} tone={statusTone}>
+                  {t(quoteStatusKey(instrument.quoteStatus))}
+                </AppText>
+              </View>
+            </View>
+            <AppText numberOfLines={1} style={styles.instrumentSubtitle} tone="dim">
+              {localizeText(instrument.name, locale)}
+            </AppText>
+          </View>
+        </View>
+
+        <View style={styles.priceBlock}>
+          <View style={styles.priceTopRow}>
+            <AppText adjustsFontSizeToFit numberOfLines={1} style={styles.lastPrice}>
+              {formatPrice(instrument, (instrument.bid + instrument.ask) / 2)}
+            </AppText>
+            <View style={StyleSheet.flatten([styles.changePill, { borderColor: quoteVisual.color }])}>
+              <AppText numberOfLines={1} style={styles.changePillText} tone={quoteVisual.tone}>
+                {changePercent >= 0 ? t('common.trendUpSymbol') : t('common.trendDownSymbol')} {change > 0 ? t('common.plusSign') : ''}
+                {formatPrice(instrument, change)}
               </AppText>
             </View>
           </View>
-          <AppText numberOfLines={1} style={styles.instrumentSubtitle} tone="dim">
-            {localizeText(instrument.name, locale)}
-          </AppText>
-        </View>
-      </View>
-
-      <View style={styles.priceBlock}>
-        <View style={styles.priceTopRow}>
-          <AppText adjustsFontSizeToFit numberOfLines={1} style={styles.lastPrice}>
-            {formatPrice(instrument, (instrument.bid + instrument.ask) / 2)}
-          </AppText>
-          <View style={StyleSheet.flatten([styles.changePill, { borderColor: quoteVisual.color }])}>
-            <AppText numberOfLines={1} style={styles.changePillText} tone={quoteVisual.tone}>
-              {changePercent >= 0 ? t('common.trendUpSymbol') : t('common.trendDownSymbol')} {change > 0 ? t('common.plusSign') : ''}
-              {formatPrice(instrument, change)}
+          <View style={styles.quoteMetaRow}>
+            <AppText style={styles.inlineChange} tone={quoteVisual.tone}>
+              {formatPercent(changePercent)}
+            </AppText>
+            <View style={styles.quoteMetaDivider} />
+            <AppText style={styles.quoteMetaText} tone="dim">
+              {t('instrument.quoteUpdatedAt')} {formatQuoteTime(instrument.quoteUpdatedAt, locale)}
             </AppText>
           </View>
         </View>
-        <AppText style={styles.inlineChange} tone={quoteVisual.tone}>
-          {formatPercent(changePercent)} · {t('instrument.quoteUpdatedAt')} {formatQuoteTime(instrument.quoteUpdatedAt, locale)}
-        </AppText>
       </View>
 
-      <View style={styles.bidAskGrid}>
-        {summaryStats.map((item) => (
-          <QuoteTile key={item.label} label={item.label} tone={item.tone} value={item.value} />
-        ))}
-      </View>
-
-      <View style={styles.denseGrid}>
-        {denseStats.map((item) => (
-          <QuoteTile compact key={item.label} label={item.label} tone={item.tone} value={item.value} />
-        ))}
-      </View>
+      <MetricGroup items={snapshotItems} title={t('instrument.tradeSnapshot')} />
     </View>
   );
+}
+
+function buildTradeSnapshot(instrument: Instrument, locale: Locale, sampleLots: number, t: (key: TranslationKey, params?: Record<string, string | number>) => string): InstrumentMetric[] {
+  return [
+    { label: t('common.bid'), tone: 'down', value: formatPrice(instrument, instrument.bid) },
+    { label: t('common.ask'), tone: 'up', value: formatPrice(instrument, instrument.ask) },
+    { label: t('common.spread'), value: formatNumber(instrument.spread, 1, locale) },
+    { label: t('common.leverage'), value: `${instrument.leverage}x` },
+    { label: t('instrument.marginSample', { lots: sampleLots }), value: formatMoney(calculateMargin(instrument, sampleLots, instrument.ask), instrument.marginCurrency, 0, locale) },
+    { label: t('instrument.tradeHours'), value: localizeText(instrument.tradingHours, locale) },
+  ];
+}
+
+function buildSpecGroups(instrument: Instrument, locale: Locale, sampleLots: number, t: (key: TranslationKey, params?: Record<string, string | number>) => string): InstrumentMetricGroup[] {
+  return [
+    {
+      title: t('instrument.specGroup.priceRange'),
+      items: [
+        { label: t('instrument.open'), value: formatPrice(instrument, instrument.openPrice) },
+        { label: t('instrument.prevClose'), value: formatPrice(instrument, instrument.previousClose) },
+        { label: t('instrument.dayHigh'), tone: 'up', value: formatPrice(instrument, instrument.dayHigh) },
+        { label: t('instrument.dayLow'), tone: 'down', value: formatPrice(instrument, instrument.dayLow) },
+        { label: t('instrument.weekHigh'), value: formatPrice(instrument, instrument.weekHigh) },
+        { label: t('instrument.weekLow'), value: formatPrice(instrument, instrument.weekLow) },
+        { label: t('instrument.yearHigh'), value: formatPrice(instrument, instrument.yearHigh) },
+        { label: t('instrument.yearLow'), value: formatPrice(instrument, instrument.yearLow) },
+      ],
+    },
+    {
+      title: t('instrument.specGroup.contract'),
+      items: [
+        { label: t('common.contractSize'), value: formatNumber(instrument.contractSize, 0, locale) },
+        { label: t('instrument.pipSize'), value: formatNumber(instrument.pipSize, instrument.pipSize >= 0.01 ? 2 : 5, locale) },
+        { label: t('instrument.tickSize'), value: formatNumber(instrument.tickSize, instrument.tickSize >= 0.01 ? 2 : 5, locale) },
+        { label: t('instrument.tickValue'), value: formatMoney(instrument.tickValue, instrument.quoteCurrency, 2, locale) },
+        { label: t('instrument.baseCurrency'), value: instrument.baseCurrency },
+        { label: t('instrument.quoteCurrency'), value: instrument.quoteCurrency },
+      ],
+    },
+    {
+      title: t('instrument.specGroup.costsLimits'),
+      items: [
+        { label: t('instrument.minLot'), value: formatNumber(instrument.minLot, 2, locale) },
+        { label: t('instrument.maxLot'), value: formatNumber(instrument.maxLot, instrument.maxLot >= 100 ? 0 : 2, locale) },
+        { label: t('instrument.lotStep'), value: formatNumber(instrument.lotStep, 2, locale) },
+        { label: t('instrument.marginSample', { lots: sampleLots }), value: formatMoney(calculateMargin(instrument, sampleLots, instrument.ask), instrument.marginCurrency, 0, locale) },
+        { label: t('instrument.swapLong'), value: formatMoney(instrument.swapLong, instrument.marginCurrency, 2, locale) },
+        { label: t('instrument.swapShort'), value: formatMoney(instrument.swapShort, instrument.marginCurrency, 2, locale) },
+        { label: t('instrument.tradeHours'), value: localizeText(instrument.tradingHours, locale) },
+        { label: t('instrument.quoteStatus'), value: t(quoteStatusKey(instrument.quoteStatus)) },
+      ],
+    },
+  ];
 }
 
 function InstrumentTabPanel({
@@ -301,29 +331,16 @@ function InstrumentTabPanel({
   selectedTab: DetailTabKey;
   t: (key: TranslationKey, params?: Record<string, string | number>) => string;
 }) {
-  if (selectedTab === 'chart' || selectedTab === 'specs') {
-    const specItems: [string, string][] = [
-      [t('instrument.baseCurrency'), instrument.baseCurrency],
-      [t('instrument.quoteCurrency'), instrument.quoteCurrency],
-      [t('instrument.tradeHours'), localizeText(instrument.tradingHours, locale)],
-      [t('instrument.marginCurrency'), instrument.marginCurrency],
-      [t('instrument.minLot'), formatNumber(instrument.minLot, 2, locale)],
-      [t('instrument.maxLot'), formatNumber(instrument.maxLot, instrument.maxLot >= 100 ? 0 : 2, locale)],
-      [t('instrument.lotStep'), formatNumber(instrument.lotStep, 2, locale)],
-      [t('instrument.tickValue'), formatMoney(instrument.tickValue, instrument.marginCurrency, 2, locale)],
-      [t('instrument.marginSample', { lots: sampleLots }), formatMoney(calculateMargin(instrument, sampleLots, instrument.ask), instrument.marginCurrency, 0, locale)],
-    ];
+  if (selectedTab === 'chart') {
+    return null;
+  }
 
+  if (selectedTab === 'specs') {
     return (
       <View style={styles.specPanel}>
-        <AppText tone="dim" variant="eyebrow">
-          {t('instrument.specBackup')}
-        </AppText>
-        <View style={styles.specGrid}>
-          {specItems.map(([label, value]) => (
-            <QuoteTile compact key={label} label={label} value={value} />
-          ))}
-        </View>
+        {buildSpecGroups(instrument, locale, sampleLots, t).map((group) => (
+          <MetricGroup key={group.title} items={group.items} title={group.title} />
+        ))}
       </View>
     );
   }
@@ -364,9 +381,24 @@ function InstrumentTabPanel({
   );
 }
 
-function QuoteTile({ compact, label, tone = 'default', value }: { compact?: boolean; label: string; tone?: 'default' | 'down' | 'up'; value: string }) {
+function MetricGroup({ items, title }: InstrumentMetricGroup) {
   return (
-    <View style={StyleSheet.flatten([styles.quoteTile, compact && styles.quoteTileCompact])}>
+    <View style={styles.metricGroup}>
+      <AppText tone="dim" variant="eyebrow">
+        {title}
+      </AppText>
+      <View style={styles.metricGrid}>
+        {items.map((item) => (
+          <QuoteTile key={item.label} label={item.label} tone={item.tone} value={item.value} />
+        ))}
+      </View>
+    </View>
+  );
+}
+
+function QuoteTile({ label, tone = 'default', value }: InstrumentMetric) {
+  return (
+    <View style={styles.quoteTile}>
       <AppText numberOfLines={1} style={styles.quoteStatLabel} tone="dim">
         {label}
       </AppText>
@@ -437,9 +469,9 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
     borderWidth: lineWidth.hairline,
     flexDirection: 'row',
-    gap: spacing.sm,
+    gap: spacing.xs,
     minHeight: layout.touchTargetMin,
-    paddingHorizontal: spacing.sm + spacing.xxs,
+    paddingHorizontal: spacing.xs,
   },
   capsuleButton: {
     width: layout.headerIconButtonSize,
@@ -447,38 +479,19 @@ const styles = StyleSheet.create({
   content: {
     paddingBottom: size.viewport.detailFooterInset,
   },
-  dataGrid: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginTop: spacing.lg + spacing.xxs,
-  },
-  bidAskGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
   changePill: {
     borderRadius: radius.full,
     borderWidth: lineWidth.hairline,
-    paddingHorizontal: spacing.sm,
+    paddingHorizontal: spacing.sm + spacing.xxs,
     paddingVertical: spacing.xxs,
   },
   changePillText: {
     ...typography.caption,
   },
-  denseGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
-  divider: {
-    height: lineWidth.hairline,
-    marginTop: spacing.md,
-  },
   detailPage: {
     minHeight: size.viewport.detailPageMinHeight,
     paddingHorizontal: spacing.lg,
-    paddingTop: spacing.md,
+    paddingTop: spacing.sm + spacing.xxs,
   },
   detailTabs: {
     gap: spacing.xl,
@@ -487,13 +500,10 @@ const styles = StyleSheet.create({
   footerSafe: {
     borderTopWidth: lineWidth.hairline,
   },
-  gridDivider: {
-    width: lineWidth.hairline,
-  },
   identityBlock: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: spacing.sm,
+    gap: spacing.md,
     minWidth: 0,
   },
   identityCopy: {
@@ -508,8 +518,7 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   inlineChange: {
-    ...typography.bodyMd,
-    marginTop: spacing.xxs,
+    ...typography.caption,
   },
   instrumentSubtitle: {
     ...typography.captionSm,
@@ -524,19 +533,19 @@ const styles = StyleSheet.create({
   marketStatus: {
     ...typography.bodyMd,
   },
-  metricColumn: {
-    flex: 1,
-    gap: spacing.sm + spacing.xxs,
-    minWidth: 0,
-  },
   metricLabel: {
     ...typography.caption,
   },
-  metricLine: {
-    gap: spacing.xxs,
-  },
   metricValue: {
     ...typography.titleMd,
+  },
+  metricGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.md,
+  },
+  metricGroup: {
+    gap: spacing.md,
   },
   newsBrand: {
     ...typography.caption,
@@ -565,8 +574,8 @@ const styles = StyleSheet.create({
   },
   priceBlock: {
     alignItems: 'flex-start',
-    gap: spacing.xs,
-    marginTop: spacing.xs,
+    gap: spacing.sm,
+    marginTop: spacing.sm,
   },
   priceTopRow: {
     alignItems: 'flex-start',
@@ -577,33 +586,32 @@ const styles = StyleSheet.create({
   },
   quoteArea: {
     borderRadius: radius.none,
-    gap: spacing.sm,
-    marginTop: spacing.lg,
-  },
-  quoteInfoColumn: {
-    flex: 1,
-    gap: spacing.xs,
-    minWidth: 0,
-  },
-  quoteInfoGrid: {
-    flexDirection: 'row',
     gap: spacing.lg,
-    marginTop: spacing.xxs,
+    marginTop: spacing.md,
   },
-  quoteStat: {
+  quoteHero: {
+    gap: spacing.md,
+  },
+  quoteMetaDivider: {
+    borderRadius: radius.full,
+    height: spacing.xs,
+    opacity: 0.7,
+    width: lineWidth.strong,
+  },
+  quoteMetaRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: spacing.sm,
-    justifyContent: 'space-between',
-    minHeight: spacing.xl,
-    minWidth: 0,
-    paddingVertical: spacing.xxs,
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+  },
+  quoteMetaText: {
+    ...typography.caption,
   },
   quoteStatLabel: {
     ...typography.captionSm,
   },
   quoteStatValue: {
-    ...typography.caption,
+    ...typography.bodySm,
     flexShrink: 1,
     textAlign: 'right',
   },
@@ -613,14 +621,12 @@ const styles = StyleSheet.create({
     gap: spacing.xxs,
     minWidth: size.viewport.detailSideMinWidth,
   },
-  quoteTileCompact: {
-    flexBasis: '30%',
-  },
   riskPanel: {
     borderRadius: radius.card,
     borderWidth: lineWidth.none,
-    marginTop: spacing.xl,
-    padding: radius.lg,
+    marginTop: spacing.lg,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
   riskText: {
     ...typography.captionSm,
@@ -646,17 +652,11 @@ const styles = StyleSheet.create({
     gap: spacing.sm + spacing.xxs,
     marginTop: spacing.xs,
   },
-  specGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
   specPanel: {
     borderRadius: radius.card,
     borderWidth: lineWidth.none,
-    gap: spacing.md,
+    gap: spacing.xl,
     marginTop: spacing.lg,
-    padding: spacing.md,
   },
   statusCluster: {
     alignItems: 'flex-end',

@@ -1,5 +1,66 @@
 # @dpf/component-library Changelog
 
+## 2.4.3 - 2026-05-29
+
+- Added the governed BottomSheet horizontal spacing contract: Header 16px, card content 12px, list/article/detail-introduction content 16px, and Footer 16px.
+- Updated `BottomSheet` content so `contentPadding="card"` uses `layout.contentCardPaddingX` while `contentPadding="plain"` uses `layout.sheetContentPaddingX`.
+- Added style QA coverage so BottomSheet card and plain content cannot collapse into one shared horizontal inset.
+
+## 2.4.2 - 2026-05-29
+
+- Clarified BottomSheet surface governance for card-based selection sheets: `TradingAccountContextSwitcher` uses `sheetSurface="canvas"` with `contentPadding="card"` because account options are selectable cards on a gray bed.
+- Updated Markets, Portfolio/Trade, and Funding account-switcher entries to keep trading account selection on the gray canvas surface while plain selection lists continue to default to the white panel surface.
+- Added style QA coverage so trading account selection sheets cannot regress to the plain-list white sheet bed.
+
+## 2.4.1 - 2026-05-29
+
+- Documented the governed BottomSheet surface rule: card/detail content uses `sheetSurface="canvas"` for a gray sheet bed, while list/selection content uses `sheetSurface="panel"` for a white sheet bed.
+- Defaulted the shared `selection` preset to `sheetSurface="panel"` so list picker sheets use the white panel surface unless a caller explicitly overrides it.
+- Added style QA coverage for BottomSheet surface-token mapping and sheet background documentation.
+
+## 2.4.0 - 2026-05-29
+
+- Added governed `BottomSheet` `heightMode` support for `adaptive`, `fixed`, and `fullscreen` layouts.
+- Rebuilt the shared `BottomSheet` panel so Header, Content, and Footer render as direct children in one layout flow; Footer no longer uses `footerComponent`, portal placement, absolute/fixed positioning, independent animation, or measured content reserve.
+- Unified backdrop tap, close button, pan-down, Android back, cancel action, and business-completion dismissal through the same close lifecycle, with final cleanup deferred until the panel dismisses.
+- Updated static QA guards to block footer-outside-panel patterns and enforce adaptive/fixed/fullscreen flex contracts.
+
+## 2.3.5 - 2026-05-29
+
+- Fixed shared `BottomSheet` footer avoidance so short fixed-footer sheets keep natural content height instead of adding duplicate bottom reserve.
+- Kept measured footer margin adjustment as the single avoidance path for fixed footer actions.
+- Preserved page callers, sheet presets, footer actions, and business behavior for trade position and pending-order detail sheets.
+
+## 2.3.4 - 2026-05-29
+
+- Added the governed Bottom Sheet height and scenario principle to the public overlay registry.
+- Updated the BottomSheet manifest so `snapPoints` and `contentSizing` choices must map to documented height levels instead of arbitrary page-local values.
+- Kept runtime component API unchanged; this is a public-resource and manifest governance patch.
+
+## 2.3.3 - 2026-05-29
+
+- Fixed shared `BottomSheet` dismissal so header, content, and fixed footer actions use one internal visual progress while the gorhom container owns the sheet dismissal.
+- Changed fixed-footer content reserve from a static 148px gap to runtime measured footer height with the existing 148px first-frame fallback.
+- Kept footer actions interactive during the early dismissal segment and disabled repeated footer action presses after the first close-triggering tap.
+
+## 2.3.2 - 2026-05-29
+
+- Added a governed neutral filled surface option to `HeaderIconButton` so header icons on white panel surfaces can reuse the `IconSurface` neutral background contract.
+- Updated `/instrument/[id]` back navigation to use the neutral header icon surface while preserving the registered `icon.system.back` glyph, route fallback, touch target, and accessibility label.
+- Strengthened component and style QA coverage so header icon backgrounds stay on the panel/default or IconSurface-neutral contracts instead of page-local subtle backgrounds.
+
+## 2.3.1 - 2026-05-29
+
+- Added the governed auth phone validation contract: `CountryPhoneField` consumers must validate with the shared country-aware rule and pass account values forward in E.164 format.
+- Registered login, registration, and password-reset phone entry as shared country-picker consumers instead of page-local country-code handling.
+- Kept the visual `CountryPhoneField` and `CountryPickerModal` component API unchanged.
+
+## 2.3.0 - 2026-05-29
+
+- Added the governed `TradingOrderActionSheet` business sheet body for grouped position and pending-order action menus.
+- Exported `PositionDetailSheet` and `PendingOrderDetailSheet` wrappers through `OrderPositionDetailSheet` so `/trade` and `/portfolio` no longer own private order detail sheet shells.
+- Kept order mutation, close confirmation, OverlayQueue feedback, copy keys, and trading business behavior unchanged while removing page-local menu wrapper card styling from order sheets.
+
 ## 2.2.0 - 2026-05-28
 
 - Added governed `GlobalDialog` as the single centered feedback and confirmation Modal host while preserving the existing centered auth feedback visual design.
@@ -145,7 +206,7 @@
 ## 1.7.0 - 2026-05-28
 
 - Updated `Screen` so card-mode route content defaults to the full-site 12px horizontal inset, while plain/form content can opt into the 16px inset.
-- Updated `BottomSheet` so header and fixed footer action areas stay at 16px, card-mode content defaults to 12px, and plain/form content can opt into 16px through the shared preset contract.
+- Updated `BottomSheet` so header and fixed footer action areas stay at 16px, card-mode content defaults to 12px, and plain/list/article-detail introduction content uses 16px through the shared preset contract.
 - Updated `AppTopBar`, global list/row components, component manifests, token-binding maps, and QA guards so header/footer, Card, and List spacing follow the governed 16px/12px policy without page-local padding.
 
 ## 1.6.13 - 2026-05-28

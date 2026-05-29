@@ -1,5 +1,26 @@
 # Release Notes
 
+## 2026-05-29
+
+### Changed
+
+- Completed the trading order ticket flow for market, Limit, Stop, SL/TP, pending-order expiry, high-risk one-click trading confirmation, API schemas, and multilingual risk copy in the local simulation.
+- Redesigned `/instrument/[id]` as a clearer trading analysis page with a focused Quote Hero, six-field Trade Snapshot, risk strip before deeper analysis, chart-only Chart tab, and grouped Specs tab while preserving buy/sell routing and chart fullscreen behavior.
+- Refined `/instrument/[id]` visual rhythm with a cleaner quote metadata row, grouped market data metrics, a lighter risk strip, embedded chart density, and fully localized zh-CN tab / 52-week labels while preserving order routing and trading data.
+- Added BottomSheet horizontal spacing governance: Header 16px, card content 12px, list/article/detail-introduction content 16px, and Footer 16px through semantic tokens.
+- Documented `layout.sheetContentPaddingX` as the 16px BottomSheet plain/list/article-detail content inset while card content stays on the 12px `layout.contentCardPaddingX`.
+- Upgraded `@dpf/component-library` to `2.4.3` for the BottomSheet structural spacing contract.
+- Clarified BottomSheet surface governance for trading account selection: `TradingAccountContextSwitcher` is a card-based selection sheet, so Markets, Portfolio/Trade, and Funding account switchers use the gray `surface.canvas` sheet bed with white account cards.
+- Upgraded `@dpf/component-library` to `2.4.2` for the trading account card-selection surface contract.
+- Added BottomSheet surface governance: card/detail sheets use gray `surface.canvas`, list/selection sheets use white `surface.panel`, and the shared selection preset now defaults to `sheetSurface="panel"`.
+- Upgraded the shared `BottomSheet` contract to `@dpf/component-library` `2.4.0` with governed `heightMode="adaptive" | "fixed" | "fullscreen"` layouts and a single Panel-owned Header / Content / Footer lifecycle.
+- Added country-aware phone validation across login, registration, and password reset using `libphonenumber-js`.
+- Standardized auth phone account values to E.164 for OTP route parameters and remembered-account storage.
+- Updated login to use explicit email / phone modes, with phone login reusing the governed country picker and `CountryPhoneField`.
+- Upgraded `@dpf/component-library` to `2.3.1` for the shared auth phone validation contract.
+- Added the `HeaderIconButton` neutral filled surface mode and applied it to `/instrument/[id]` back navigation so the returned icon action uses the governed icon background on white detail panels.
+- Upgraded `@dpf/component-library` to `2.3.2` for the header icon surface contract.
+
 ## 2026-05-28
 
 ### Breaking
@@ -29,7 +50,7 @@
 - Updated funding quick-action icon semantics so 存款 uses the green success tone, 取款 keeps the amber warning tone, and 转账 remains info blue.
 - Tuned the `/accounts` trading account list card rhythm so currency metadata tightens to a 2px token gap, title-to-description spacing has a dedicated token layer, and secondary financial labels use regular caption weight.
 - Changed the standard blue token to `#1F72E8` and synchronized runtime colors, token registries, CSS mappings, and design-system mirrors.
-- Added the full-site page and bottom-sheet horizontal spacing contract: title/header and fixed footer actions stay at 16px, card-mode content uses 12px, plain/form content uses 16px, and global Card/List content defaults to 12px.
+- Added the full-site page and bottom-sheet horizontal spacing contract: title/header and fixed footer actions stay at 16px, BottomSheet card content uses 12px, BottomSheet list/article-detail introduction content uses 16px, and global Card/List content defaults to their registered row/card tokens.
 - Completed second-stage first-batch public-resource migration for Portfolio, DiscoverModule, Markets, InstrumentDetail, AccountDetails, and Appearance.
 - Promoted the migrated business components and patterns to active registry and dependency-graph assets.
 - Synced copy-table entries with runtime i18n keys for high-risk trading, Discover/Partner, Markets account-switch feedback, Appearance, Funding, and PIN copy surfaces.

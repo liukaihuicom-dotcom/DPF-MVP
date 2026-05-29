@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 
-import { buildAccount, buildAuthRoute, defaultCountry, safeRedirect, sanitizePhone } from '@/src/auth/authFlow';
+import { buildAuthRoute, defaultCountry, formatPhoneAccount, safeRedirect, sanitizePhone, validatePhoneNumber } from '@/src/auth/authFlow';
 import { ActionButton } from '@/src/design-public-assets/components';
 import { AuthDescriptionAction, AuthShell } from '@/src/design-public-assets/components';
 import { AuthContactConfirmDialog, AuthErrorSheet, CountryPhoneField } from '@/src/design-public-assets/components';
@@ -18,14 +18,15 @@ export default function RegisterPhoneScreen() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const redirect = safeRedirect(typeof params.redirect === 'string' ? params.redirect : undefined);
   const fromLogin = params.entry === 'login';
-  const account = buildAccount('phone', phone, country.dialCode);
-  const phoneError = submitted && phone.length < 6 ? t('auth.error.phone') : '';
-  const canSubmit = phone.length >= 6;
+  const phoneValidation = validatePhoneNumber(phone, country);
+  const account = formatPhoneAccount(phone, country);
+  const phoneError = submitted && !phoneValidation.valid ? t('auth.error.phone') : '';
+  const canSubmit = phoneValidation.valid;
 
   const submit = () => {
     setSubmitted(true);
 
-    if (phone.length < 6) {
+    if (!phoneValidation.valid) {
       void notifyWarning();
       setErrorOpen(true);
       return;

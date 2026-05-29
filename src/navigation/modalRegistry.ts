@@ -72,7 +72,7 @@ export const modalRegistry = [
   {
     id: 'auth.countryPicker',
     modalComponent: 'CountryPickerModal',
-    triggerPages: ['/auth/register-phone', '/auth/forgot-password'],
+    triggerPages: ['/auth', '/auth/register', '/auth/register-phone', '/auth/forgot-password'],
     triggerActions: ['Tap country code selector'],
     modalCloseBehavior: 'dismiss',
     confirmNavBehavior: 'selectThenDismiss',
@@ -223,7 +223,7 @@ export const modalRegistry = [
   },
   {
     id: 'tradingAccount.switchSheet',
-    modalComponent: 'TradingAccountSwitchSheet',
+    modalComponent: 'TradingAccountContextSwitcher inside GlobalBottomSheetHost with sheetSurface=canvas and contentPadding=card',
     triggerPages: ['/markets', '/trade', '/portfolio', '/funding/deposit', '/funding/withdrawal', '/funding/transfer'],
     triggerActions: ['Tap account selector or source/target account field'],
     modalCloseBehavior: 'dismiss',

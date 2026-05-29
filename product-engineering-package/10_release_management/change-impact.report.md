@@ -2,6 +2,9 @@
 
 | Area | Impact |
 |---|---|
+| Header icon neutral surface governance | Adds an optional `surface=neutral` mode to shared `HeaderIconButton` and applies it to `/instrument/[id]` back navigation; no navigation, trading, quote, copy, API, or risk-rule behavior changes. |
+| BottomSheet dismissal and footer reserve governance | Internal-only fix to the shared `BottomSheet` implementation: gorhom owns the container slide via 220ms `Easing.out(Easing.cubic)` `animationConfigs`, header/content/footer share one internal `sheetEntranceProgress` with a symmetric 18px exit translate and late footer opacity fade, content reserves dynamic measured footer height (48px floor, 148px first-frame fallback), and footer pointer events follow a 0.4 progress threshold on close. No public API signature, prop, preset, copy, route, or business-rule change. Affects every bottom-sheet caller (position/pending-order detail, close confirmation, trading action menus, quick/filter sheets, account switch, country picker, auth error sheet) — all require close-rhythm and footer-reserve regression. |
+| Trading order sheet governance | Moves Portfolio position and pending-order option sheet bodies into the governed `TradingOrderActionSheet` business component; no product flow change. |
 | Global dialog governance | Adds `GlobalDialog` as the centered feedback/confirmation host and removes auth-owned business Modal shells. |
 | BottomSheet governance | Page bottom sheets must continue through the global BottomSheet preset system; no product flow change. |
 | QA | Static checks now block unregistered business `Modal` and page-local bottom sheet shells. |

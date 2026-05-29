@@ -30,6 +30,7 @@ type DrawingShape = {
 };
 
 type TradingTerminalChartProps = {
+  density?: 'embedded' | 'terminal';
   instrument: Instrument;
   initialTimeframe?: InstrumentChartTimeframe;
   state?: TradingTerminalChartState;
@@ -102,12 +103,13 @@ type TranslationChartKey =
   | 'chart.type.candles'
   | 'chart.type.line';
 
-export function TradingTerminalChart({ initialTimeframe = '1m', instrument, state }: TradingTerminalChartProps) {
+export function TradingTerminalChart({ density = 'terminal', initialTimeframe = '1m', instrument, state }: TradingTerminalChartProps) {
   const modalStack = useModalStack();
   const openFullscreen = () => {
     modalStack.presentFullScreen({
       content: (
         <TradingTerminalSurface
+          density="terminal"
           fullscreen
           initialTimeframe={initialTimeframe}
           instrument={instrument}
@@ -120,18 +122,20 @@ export function TradingTerminalChart({ initialTimeframe = '1m', instrument, stat
   };
 
   return (
-    <TradingTerminalSurface fullscreen={false} initialTimeframe={initialTimeframe} instrument={instrument} onRequestFullscreen={openFullscreen} state={state} />
+    <TradingTerminalSurface density={density} fullscreen={false} initialTimeframe={initialTimeframe} instrument={instrument} onRequestFullscreen={openFullscreen} state={state} />
   );
 }
 
 function TradingTerminalSurface({
   fullscreen,
+  density,
   initialTimeframe,
   instrument,
   onRequestClose,
   onRequestFullscreen,
   state,
 }: {
+  density: 'embedded' | 'terminal';
   fullscreen: boolean;
   initialTimeframe: InstrumentChartTimeframe;
   instrument: Instrument;
@@ -272,9 +276,10 @@ function TradingTerminalSurface({
   const composedGesture = useMemo(() => Gesture.Simultaneous(panGesture, pinchGesture, longPressGesture, tapGesture), [longPressGesture, panGesture, pinchGesture, tapGesture]);
   const selectedCandle = crosshairIndex === null ? visibleCandles[visibleCandles.length - 1] : candles[crosshairIndex] ?? visibleCandles[visibleCandles.length - 1];
   const statusMessage = resolvedState === 'default' ? null : resolveStateCopy(resolvedState);
+  const isEmbedded = density === 'embedded' && !fullscreen;
 
   return (
-    <View style={StyleSheet.flatten([styles.surface, fullscreen && styles.fullscreenSurface, { backgroundColor: colors.surface.panel }])}>
+    <View style={StyleSheet.flatten([styles.surface, isEmbedded && styles.embeddedSurface, fullscreen && styles.fullscreenSurface, { backgroundColor: colors.surface.panel }])}>
       <View style={styles.headerRow}>
         <View style={styles.headerCopy}>
           <AppText numberOfLines={1} variant="title.pageCompact">
@@ -363,18 +368,19 @@ function TradingTerminalSurface({
 
           {selectedCandle ? <OhlcvPanel candle={selectedCandle} instrument={instrument} /> : null}
 
-          <View style={styles.toolbarHeader}>
+          <View style={StyleSheet.flatten([styles.toolbarHeader, isEmbedded && styles.embeddedToolbarHeader])}>
             <AppText tone="dim" variant="eyebrow">
               {t('chart.section.indicators')}
             </AppText>
             <View style={styles.toolbarActions}>
-              <ToolChip active icon="icon.wallet.withdrawal" label={t('chart.action.reset')} onPress={() => resetView(candles, setVisibleStart, setVisibleCount, setCrosshairIndex)} />
+              <ToolChip active compact={isEmbedded} icon="icon.wallet.withdrawal" label={t('chart.action.reset')} onPress={() => resetView(candles, setVisibleStart, setVisibleCount, setCrosshairIndex)} />
             </View>
           </View>
-          <ScrollView contentContainerStyle={styles.chipRow} horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView contentContainerStyle={StyleSheet.flatten([styles.chipRow, isEmbedded && styles.embeddedChipRow])} horizontal showsHorizontalScrollIndicator={false}>
             {indicatorOptions.map((item) => (
               <ToolChip
                 active={indicators[item.key]}
+                compact={isEmbedded}
                 icon={item.icon}
                 key={item.key}
                 label={t(item.labelKey)}
@@ -383,21 +389,21 @@ function TradingTerminalSurface({
             ))}
           </ScrollView>
 
-          <View style={styles.toolbarHeader}>
+          <View style={StyleSheet.flatten([styles.toolbarHeader, isEmbedded && styles.embeddedToolbarHeader])}>
             <AppText tone="dim" variant="eyebrow">
               {t('chart.section.drawings')}
             </AppText>
             <View style={styles.toolbarActions}>
-              <ToolChip active={Boolean(selectedDrawingId)} icon="icon.system.delete" label={t('chart.action.delete')} onPress={() => deleteSelectedDrawing(selectedDrawingId, setDrawings, setSelectedDrawingId)} />
-              <ToolChip active={drawings.length > 0} icon="icon.system.close" label={t('chart.action.clear')} onPress={() => clearDrawings(setDrawings, setSelectedDrawingId)} />
+              <ToolChip active={Boolean(selectedDrawingId)} compact={isEmbedded} icon="icon.system.delete" label={t('chart.action.delete')} onPress={() => deleteSelectedDrawing(selectedDrawingId, setDrawings, setSelectedDrawingId)} />
+              <ToolChip active={drawings.length > 0} compact={isEmbedded} icon="icon.system.close" label={t('chart.action.clear')} onPress={() => clearDrawings(setDrawings, setSelectedDrawingId)} />
             </View>
           </View>
-          <ScrollView contentContainerStyle={styles.chipRow} horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView contentContainerStyle={StyleSheet.flatten([styles.chipRow, isEmbedded && styles.embeddedChipRow])} horizontal showsHorizontalScrollIndicator={false}>
             {drawingToolOptions.map((item) => (
-              <ToolChip active={activeTool === item.key} icon={item.icon} key={item.key} label={t(item.labelKey)} onPress={() => setActiveTool(item.key)} />
+              <ToolChip active={activeTool === item.key} compact={isEmbedded} icon={item.icon} key={item.key} label={t(item.labelKey)} onPress={() => setActiveTool(item.key)} />
             ))}
           </ScrollView>
-          <ScrollView contentContainerStyle={styles.drawingRow} horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView contentContainerStyle={StyleSheet.flatten([styles.drawingRow, isEmbedded && styles.embeddedDrawingRow])} horizontal showsHorizontalScrollIndicator={false}>
             {drawings.length === 0 ? (
               <AppText tone="muted" variant="caption">
                 {t('chart.drawing.none')}
@@ -406,6 +412,7 @@ function TradingTerminalSurface({
               drawings.map((item, index) => (
                 <ToolChip
                   active={selectedDrawingId === item.id}
+                  compact={isEmbedded}
                   icon={drawingToolOptions.find((tool) => tool.key === item.tool)?.icon ?? 'icon.trading.market'}
                   key={item.id}
                   label={t('chart.drawing.selected', { index: index + 1 })}
@@ -781,7 +788,7 @@ function OhlcvPanel({ candle, instrument }: { candle: InstrumentCandle; instrume
   );
 }
 
-function ToolChip({ active, icon, label, onPress }: { active: boolean; icon: AppIconName; label: string; onPress?: () => void }) {
+function ToolChip({ active, compact, icon, label, onPress }: { active: boolean; compact?: boolean; icon: AppIconName; label: string; onPress?: () => void }) {
   const { colors } = useProductSettings();
 
   return (
@@ -792,6 +799,7 @@ function ToolChip({ active, icon, label, onPress }: { active: boolean; icon: App
       onPress={onPress}
       style={StyleSheet.flatten([
         styles.toolChip,
+        compact && styles.toolChipCompact,
         {
           backgroundColor: active ? colors.brand.bg : colors.surface.subtle,
           borderColor: active ? colors.brand.border : colors.border.subtle,
@@ -1003,6 +1011,23 @@ const styles = StyleSheet.create({
     minHeight: layout.touchTargetMin,
     paddingRight: spacing.sm,
   },
+  embeddedChipRow: {
+    gap: spacing.xs,
+    paddingRight: spacing.xs,
+  },
+  embeddedDrawingRow: {
+    gap: spacing.xs,
+    minHeight: size.control.sm,
+    paddingRight: spacing.xs,
+  },
+  embeddedSurface: {
+    gap: spacing.sm + spacing.xxs,
+    marginTop: spacing.md,
+    padding: spacing.sm + spacing.xxs,
+  },
+  embeddedToolbarHeader: {
+    marginTop: spacing.xs,
+  },
   fullscreenSurface: {
     borderRadius: radius.none,
     flex: 1,
@@ -1086,6 +1111,11 @@ const styles = StyleSheet.create({
     borderWidth: lineWidth.hairline,
     flexDirection: 'row',
     gap: spacing.xs,
+    paddingHorizontal: spacing.sm,
+  },
+  toolChipCompact: {
+    gap: spacing.xxs,
+    minHeight: size.control.sm,
     paddingHorizontal: spacing.sm,
   },
 });

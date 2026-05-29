@@ -1,7 +1,7 @@
 # Public Resource QA Checklist
 
-Version: `0.2.0`
-Date: `2026-05-28`
+Version: `0.2.4`
+Date: `2026-05-29`
 
 - `public-asset-registry.json` exists and every asset has source, owner, status, sync policy, and QA status.
 - `asset-dependency-graph.json` contains every route registered in `src/navigation/routeRegistry.ts`.
@@ -12,7 +12,10 @@ Date: `2026-05-28`
 - Filled `HeaderIconButton` action containers on gray page, sheet, or canvas backgrounds use `color.surface.panel`; page-local hardcoded white and gray subtle filled backgrounds are blocked.
 - Discover entry-card title and description stacks use `spacing.xs` as the governed 4px layer.
 - Discover entry and campaign cards use data-driven governed `IconSurfaceTone` values for warmer left-side icon expression instead of defaulting every card to neutral.
-- Shared `BottomSheet` footer action areas start hidden and follow the shared sheet entrance progress instead of appearing at the bottom by default.
+- Shared `BottomSheet` callers choose a governed `heightMode` and keep Header, Content, and Footer as direct Panel children; Footer must not use `footerComponent`, portal placement, fixed/absolute positioning, measured reserve padding, or independent animation.
+- Shared `BottomSheet` structural horizontal spacing remains governed by zone: Header 16px through `layout.topBarPaddingX`, card content 12px through `layout.contentCardPaddingX`, list/article/detail-introduction content 16px through `layout.sheetContentPaddingX`, and Footer 16px through `layout.bottomActionArea.paddingX`.
+- Shared `BottomSheet` callers choose a governed surface: card/detail content uses the gray `surface.canvas` bed, while list/selection content uses the white `surface.panel` bed.
+- Trading account selection is a card-based selection exception: `TradingAccountContextSwitcher` callers must use gray `sheetSurface="canvas"` with `contentPadding="card"` and keep white account card bodies inside.
 - High-risk pages include business component dependencies.
 - Icon surfaces depend on the local icon registry and must continue to pass `pnpm qa:icons`.
 - Route/page files must not import `react-native-svg`; registered public chart/gauge components may use SVG internally as data visualization.

@@ -132,21 +132,24 @@ if (exists(runtimeTokenPath) && exists(compatibilityRuntimeTokenPath) && exists(
     /contentCardPaddingX:\s*spacing\.md/.test(runtimeText)
       && /contentPlainPaddingX:\s*spacing\.lg/.test(runtimeText)
       && /topBarPaddingX:\s*spacing\.lg/.test(runtimeText)
+      && /sheetContentPaddingX:\s*spacing\.lg/.test(runtimeText)
       && /listRowPaddingX:\s*spacing\.md/.test(runtimeText)
       && /contentCardPaddingX:\s*spacing\.md/.test(compatibilityRuntimeText)
       && /contentPlainPaddingX:\s*spacing\.lg/.test(compatibilityRuntimeText)
       && /topBarPaddingX:\s*spacing\.lg/.test(compatibilityRuntimeText)
+      && /sheetContentPaddingX:\s*spacing\.lg/.test(compatibilityRuntimeText)
       && /listRowPaddingX:\s*spacing\.md/.test(compatibilityRuntimeText)
-      ? pass('QA_TOKENS_CONTENT_INSET_RUNTIME', 'Full-site content inset tokens export 12px card/list and 16px plain/header contracts', runtimeTokenPath)
-      : fail('QA_TOKENS_CONTENT_INSET_RUNTIME', 'Content inset tokens must map card/list to spacing.md and plain/header to spacing.lg in both runtime token layers', runtimeTokenPath),
+      ? pass('QA_TOKENS_CONTENT_INSET_RUNTIME', 'Full-site content inset tokens export 12px page card/list and 16px plain/header/BottomSheet content contracts', runtimeTokenPath)
+      : fail('QA_TOKENS_CONTENT_INSET_RUNTIME', 'Content inset tokens must map page card/list to spacing.md and plain/header/BottomSheet content to spacing.lg in both runtime token layers', runtimeTokenPath),
   );
   checks.push(
     tokenIndexText.includes('contentCardPaddingX')
       && tokenIndexText.includes('contentPlainPaddingX')
       && tokenIndexText.includes('topBarPaddingX')
+      && tokenIndexText.includes('sheetContentPaddingX / 16')
       && tokenIndexText.includes('listRowPaddingX / 12')
-      ? pass('QA_TOKENS_CONTENT_INSET_REGISTRY', 'Full-site content inset token contracts are registered', tokenIndexPath)
-      : fail('QA_TOKENS_CONTENT_INSET_REGISTRY', 'Token registry must document card/plain/top-bar/list-row horizontal inset contracts', tokenIndexPath),
+      ? pass('QA_TOKENS_CONTENT_INSET_REGISTRY', 'Full-site and BottomSheet content inset token contracts are registered', tokenIndexPath)
+      : fail('QA_TOKENS_CONTENT_INSET_REGISTRY', 'Token registry must document card/plain/top-bar/sheet-content/list-row horizontal inset contracts', tokenIndexPath),
   );
   checks.push(
     /semanticSpacing/.test(exportMapText)

@@ -503,6 +503,10 @@ const bottomSheetIssues = sourceFiles.flatMap((file) => {
 });
 
 const bottomSheetRuntimeText = read('src/components/BottomSheet.tsx');
+const bottomSheetSpecText = exists('design-system/03-components/sheet.md') ? read('design-system/03-components/sheet.md') : '';
+const bottomSheetPrinciplesText = exists('src/design-public-assets/overlays/registry/bottom-sheet-design-principles.md') ? read('src/design-public-assets/overlays/registry/bottom-sheet-design-principles.md') : '';
+const pageOverlayMatrixText = exists('src/design-public-assets/overlays/registry/page-overlay-matrix.md') ? read('src/design-public-assets/overlays/registry/page-overlay-matrix.md') : '';
+const componentManifestText = exists('packages/component-library/registry/component-manifest.json') ? read('packages/component-library/registry/component-manifest.json') : '';
 const screenRuntimeText = read('src/components/Screen.tsx');
 const appViewportText = read('src/components/AppViewport.tsx');
 const rootLayoutText = read('src/screens/navigation/RootLayout.tsx');
@@ -540,6 +544,7 @@ const semanticSpacingRoles = [
   'inlineGap',
   'controlGap',
   'sheetContentGap',
+  'sheetContentPaddingX',
   'sheetFooterGap',
   'quoteGroupGap',
   'dataRowGap',
@@ -547,9 +552,10 @@ const semanticSpacingRoles = [
 if (!/contentCardPaddingX: spacing\.md/.test(runtimeTokenText)
   || !/contentPlainPaddingX: spacing\.lg/.test(runtimeTokenText)
   || !/topBarPaddingX: spacing\.lg/.test(runtimeTokenText)
+  || !/sheetContentPaddingX: spacing\.lg/.test(runtimeTokenText)
   || !/listRowPaddingX: spacing\.md/.test(runtimeTokenText)
   || !/bottomActionArea:\s*\{[\s\S]*?paddingX: spacing\.lg/.test(runtimeTokenText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Full-site spacing must define 12px card/list content and 16px plain/header/footer insets through semantic layout tokens', 'src/theme/tokens.ts'));
+  bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Full-site spacing must define page card/list insets and 16px BottomSheet header/content/footer horizontal insets through semantic layout tokens', 'src/theme/tokens.ts'));
 }
 semanticSpacingRoles.forEach((role) => {
   const runtimePattern = new RegExp(`${role}:\\s*spacing\\.`);
@@ -667,35 +673,61 @@ const screenNoBottomPaddingCallSites = allSourceFiles
 if (/contentBottomPadding === 'none' \? 0/.test(screenRuntimeText) || screenNoBottomPaddingCallSites.length > 0) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_SCREEN_SAFE_BOTTOM', `Route pages must not remove the global Screen bottom safety gap with contentBottomPadding="none"${screenNoBottomPaddingCallSites.length ? `: ${screenNoBottomPaddingCallSites.join(', ')}` : ''}`, 'src/components/Screen.tsx'));
 }
-if (!/footerComponent=\{options\.footer \? footerComponent : undefined\}/.test(bottomSheetRuntimeText) || !/GorhomBottomSheetFooter animatedFooterPosition=\{animatedFooterPosition\}/.test(bottomSheetRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_FOOTER', 'Global BottomSheet footer actions must render through the component-owned fixed footer zone', 'src/components/BottomSheet.tsx'));
+if (/footerComponent=/.test(bottomSheetRuntimeText) || /GorhomBottomSheetFooter|BottomSheetFooterProps/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_FOOTER', 'Global BottomSheet footer actions must be direct Panel children, not gorhom footerComponent or a separate footer portal.', 'src/components/BottomSheet.tsx'));
 }
+if (!/export type BottomSheetHeightMode = 'adaptive' \| 'fixed' \| 'fullscreen'/.test(bottomSheetRuntimeText)
+  || !/heightMode\?: BottomSheetHeightMode/.test(bottomSheetRuntimeText)
+  || !/function resolveHeightMode\(options: BottomSheetOptions\): BottomSheetHeightMode/.test(bottomSheetRuntimeText)
+  || !/heightMode === 'adaptive' \? styles\.contentFrameAdaptive : styles\.contentFrameFixed/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_HEIGHT_MODE', 'Global BottomSheet must expose adaptive/fixed/fullscreen heightMode and map modes to governed content flex behavior.', 'src/components/BottomSheet.tsx'));
+}
+if (!/const sheetBackgroundColor = options\?\.sheetSurface === 'panel' \? colors\.surface\.panel : colors\.surface\.canvas/.test(bottomSheetRuntimeText)
+  || !/sheetSurface: sheetSurface \?\? 'panel'/.test(bottomSheetRuntimeText)
+  || !/sheetSurface="canvas"[\s\S]*colors\.surface\.canvas[\s\S]*gray sheet bed/i.test(bottomSheetSpecText)
+  || !/sheetSurface="panel"[\s\S]*colors\.surface\.panel[\s\S]*white sheet bed/i.test(bottomSheetSpecText)
+  || !/card-type content uses the gray `surface\.canvas` sheet bed/i.test(bottomSheetPrinciplesText)
+  || !/list-type content uses the white `surface\.panel` sheet bed/i.test(bottomSheetPrinciplesText)
+  || !/TradingAccountContextSwitcher[\s\S]*contentPadding="card"[\s\S]*sheetSurface="canvas"/.test(bottomSheetPrinciplesText)
+  || !/TradingAccountContextSwitcher[\s\S]*contentPadding="card"[\s\S]*sheetSurface="canvas"/.test(bottomSheetSpecText)
+  || !/Trading account selection[\s\S]*sheetSurface="canvas"[\s\S]*contentPadding="card"/.test(pageOverlayMatrixText)
+  || !/Card content[\s\S]*sheetSurface='canvas'/.test(componentManifestText)
+  || !/plain\/list content uses `sheetSurface='panel'`/i.test(componentManifestText)
+  || !/TradingAccountContextSwitcher explicitly use `sheetSurface='canvas'` and `contentPadding='card'`/.test(componentManifestText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_SURFACE', 'BottomSheet must document and enforce card gray beds via surface.canvas, list white beds via surface.panel, and trading account card selection as canvas/card.', 'src/components/BottomSheet.tsx'));
+}
+[
+  'src/screens/funding/FundingScreens.tsx',
+  'src/screens/markets/MarketsScreen.tsx',
+  'src/screens/portfolio/PortfolioScreen.tsx',
+].forEach((file) => {
+  const text = read(file);
+  if (/<TradingAccountContextSwitcher/.test(text)
+    && (!/contentPadding:\s*['"]card['"]/.test(text) || !/sheetSurface:\s*['"]canvas['"]/.test(text))) {
+    bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_TRADING_ACCOUNT_SURFACE', 'TradingAccountContextSwitcher is card-based selection content and must use contentPadding="card" with sheetSurface="canvas".', file));
+  }
+});
 if (!/enablePanDownToClose/.test(bottomSheetRuntimeText)
   || !/onPress=\{hide\}/.test(bottomSheetRuntimeText)
+  || !/onAnimate=\{handleSheetAnimate\}/.test(bottomSheetRuntimeText)
   || !/const \[backdropInteractive, setBackdropInteractive\] = useState\(false\)/.test(bottomSheetRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_DISMISS', 'Global BottomSheet must support pan-down close and app-owned backdrop tap dismissal', 'src/components/BottomSheet.tsx'));
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_DISMISS', 'Global BottomSheet must support pan-down, backdrop, Android back, footer, and programmatic closes through the shared close lifecycle.', 'src/components/BottomSheet.tsx'));
 }
 if (!/import \{ Keyboard, Platform/.test(bottomSheetRuntimeText)
   || !/function dismissActiveKeyboard\(\)/.test(bottomSheetRuntimeText)
   || !/Keyboard\.dismiss\(\)/.test(bottomSheetRuntimeText)
   || !/document\.activeElement/.test(bottomSheetRuntimeText)
   || !/activeElement\.blur\(\)/.test(bottomSheetRuntimeText)
-  || !/const show = useCallback\(\(nextOptions: BottomSheetOptions\) => \{[\s\S]*?dismissActiveKeyboard\(\);[\s\S]*?setStack\(\[nextOptions\]\);[\s\S]*?\}, \[\]\);/.test(bottomSheetRuntimeText)
+  || !/const show = useCallback\(\(nextOptions: BottomSheetOptions\) => \{[\s\S]*?dismissActiveKeyboard\(\);[\s\S]*?setStack\(\[nextOptions\]\);[\s\S]*?\}, \[[^\]]*\]\);/.test(bottomSheetRuntimeText)
   || !/const push = useCallback\(\(nextOptions: BottomSheetOptions\) => \{[\s\S]*?dismissActiveKeyboard\(\);[\s\S]*?setStack\(\(current\) => \[\.\.\.current, nextOptions\]\);[\s\S]*?\}, \[\]\);/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_KEYBOARD_DISMISS', 'Global BottomSheet show/push must dismiss the active keyboard and release focused web inputs before presentation', 'src/components/BottomSheet.tsx'));
 }
-if (!/const sheetEntranceProgress = useSharedValue\(0\)/.test(bottomSheetRuntimeText)
-  || !/function useBottomSheetEntranceStyle/.test(bottomSheetRuntimeText)
-  || !/function useBottomSheetFooterEntranceStyle\(entranceProgress: SharedValue<number>, hiddenOffset = layout\.bottomActionArea\.contentInset\)/.test(bottomSheetRuntimeText)
-  || !/entranceProgress=\{sheetEntranceProgress\}/.test(bottomSheetRuntimeText)
-  || !/interactive=\{backdropInteractive\}/.test(bottomSheetRuntimeText)
-  || !/const footerPointerEvents = interactive \? 'auto' : 'none'/.test(bottomSheetRuntimeText)
-  || !/function BottomSheetHeader\([\s\S]*?const entranceStyle = useBottomSheetEntranceStyle\(entranceProgress\)/.test(bottomSheetRuntimeText)
-  || !/style=\{\[styles\.headerEntrance, entranceStyle\]\}/.test(bottomSheetRuntimeText)
-  || !/<BottomSheetContent[\s\S]*?entranceProgress=\{sheetEntranceProgress\}/.test(bottomSheetRuntimeText)
-  || !/const entranceStyle = useBottomSheetFooterEntranceStyle\(entranceProgress\)/.test(bottomSheetRuntimeText)
-  || !/<Animated\.View pointerEvents=\{footerPointerEvents\} style=\{\[styles\.footerEntrance, entranceStyle\]\}>[\s\S]*?<View ref=\{footerRef\}/.test(bottomSheetRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_ENTRANCE', 'Global BottomSheet header, content, and fixed footer must share synchronized entrance progress; footer actions must start hidden and follow the sheet instead of appearing at the bottom by default', 'src/components/BottomSheet.tsx'));
+if (!/const backdropProgress = useSharedValue\(0\)/.test(bottomSheetRuntimeText)
+  || /function useBottomSheetEntranceStyle|function useBottomSheetFooterEntranceStyle|footerInteractive|useAnimatedReaction|useDerivedValue|runOnJS/.test(bottomSheetRuntimeText)
+  || !/<BottomSheetView style=\{panelStyle\}>[\s\S]*?<BottomSheetHeader[\s\S]*?<BottomSheetContent[\s\S]*?<AppBottomSheetFooter[\s\S]*?<\/BottomSheetView>/.test(bottomSheetRuntimeText)
+  || !/function AppBottomSheetFooter\([\s\S]*?return <View style=\{footerStyle\}>\{footer\}<\/View>/.test(bottomSheetRuntimeText)
+  || !/style=\{styles\.footerAction\}/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_PANEL_STRUCTURE', 'Global BottomSheet must keep Header, Content, and Footer as direct children of one Panel and animate only the overlay/panel lifecycle.', 'src/components/BottomSheet.tsx'));
 }
 const pageOwnedBottomSheetShellIssues = allSourceFiles
   .filter((file) => file !== 'src/components/BottomSheet.tsx')
@@ -753,25 +785,26 @@ if (/import \{[^}]*Modal[^}]*\} from ['"]react-native['"]/.test(read('src/compon
 if (!/export \* from '@\/src\/components\/GlobalDialog'/.test(read('src/design-public-assets/components/index.ts'))) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_GLOBAL_DIALOG_GOVERNANCE', 'GlobalDialog must be exported through design-public-assets components for governed page consumption', 'src/design-public-assets/components/index.ts'));
 }
-if (!/content:\s*\{[\s\S]*?paddingHorizontal: layout\.contentCardPaddingX/.test(bottomSheetRuntimeText)
-  || !/contentPlain:\s*\{[\s\S]*?paddingHorizontal: layout\.contentPlainPaddingX/.test(bottomSheetRuntimeText)
+if (!/contentInner:\s*\{[\s\S]*?paddingHorizontal: layout\.contentCardPaddingX/.test(bottomSheetRuntimeText)
+  || !/contentPlain:\s*\{[\s\S]*?paddingHorizontal: layout\.sheetContentPaddingX/.test(bottomSheetRuntimeText)
   || !/footer:\s*\{[\s\S]*?paddingHorizontal: layout\.bottomActionArea\.paddingX/.test(bottomSheetRuntimeText)
-  || !/headerEntrance:\s*\{[\s\S]*?paddingHorizontal: layout\.topBarPaddingX/.test(bottomSheetRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Global BottomSheet must use 12px card content, 16px plain content, and 16px header/footer horizontal inset tokens', 'src/components/BottomSheet.tsx'));
+  || !/header:\s*\{[\s\S]*?paddingHorizontal: layout\.topBarPaddingX/.test(bottomSheetRuntimeText)
+  || !/Header[\s\S]*layout\.topBarPaddingX[\s\S]*16px[\s\S]*Content: card[\s\S]*layout\.contentCardPaddingX[\s\S]*12px[\s\S]*Content: list \/ article detail introduction[\s\S]*layout\.sheetContentPaddingX[\s\S]*16px[\s\S]*Footer[\s\S]*layout\.bottomActionArea\.paddingX[\s\S]*16px/.test(bottomSheetSpecText)
+  || !/Header[\s\S]*layout\.topBarPaddingX[\s\S]*16px[\s\S]*Content: card[\s\S]*layout\.contentCardPaddingX[\s\S]*12px[\s\S]*Content: list \/ article detail introduction[\s\S]*layout\.sheetContentPaddingX[\s\S]*16px[\s\S]*Footer[\s\S]*layout\.bottomActionArea\.paddingX[\s\S]*16px/.test(bottomSheetPrinciplesText)
+  || !/Card content uses `layout\.contentCardPaddingX` at 12px[\s\S]*List content, article\/detail introduction content, and normal descriptive content use `layout\.sheetContentPaddingX` at 16px[\s\S]*Footer left\/right inset uses `layout\.bottomActionArea\.paddingX` at 16px/.test(componentManifestText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Global BottomSheet must use governed horizontal insets: Header 16px, card Content 12px, list/article Content 16px, and Footer 16px.', 'src/components/BottomSheet.tsx'));
 }
-if (!/<BottomSheetContent[\s\S]*?hasFooter=\{Boolean\(options\.footer\)\}/.test(bottomSheetRuntimeText) || !/enableFooterMarginAdjustment=\{hasFooter\}/.test(bottomSheetRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_FOOTER', 'Global BottomSheet scroll content must reserve space for the fixed footer actions', 'src/components/BottomSheet.tsx'));
+if (!/contentFrame:\s*\{[\s\S]*?minHeight: 0/.test(bottomSheetRuntimeText)
+  || !/contentFrameAdaptive:\s*\{[\s\S]*?flexGrow: 0,[\s\S]*?flexShrink: 1/.test(bottomSheetRuntimeText)
+  || !/contentFrameFixed:\s*\{[\s\S]*?flex: 1/.test(bottomSheetRuntimeText)
+  || !/footer:\s*\{[\s\S]*?flexGrow: 0,[\s\S]*?flexShrink: 0/.test(bottomSheetRuntimeText)
+  || !/panel:\s*\{[\s\S]*?flexDirection: 'column'[\s\S]*?overflow: 'hidden'/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_FLEX_CONTRACT', 'Global BottomSheet Panel/Content/Footer must use governed flex-column layout: adaptive content does not force-fill, fixed/fullscreen content fills, footer stays in flow.', 'src/components/BottomSheet.tsx'));
 }
-if (!/const ESTIMATED_FOOTER_HEIGHT = layout\.bottomActionArea\.contentInset/.test(bottomSheetRuntimeText)
-  || !/const \[footerHeight, setFooterHeight\] = useState(?:<number>)?\(ESTIMATED_FOOTER_HEIGHT\)/.test(bottomSheetRuntimeText)
-  || !/footerHeight=\{footerHeight\}/.test(bottomSheetRuntimeText)
-  || !/onHeightChange=\{handleFooterHeightChange\}/.test(bottomSheetRuntimeText)
-  || !/new ResizeObserver\(updateMeasuredHeight\)/.test(bottomSheetRuntimeText)
-  || !/const reservedFooterHeight = hasFooter \? Math\.max\(footerHeight, ESTIMATED_FOOTER_HEIGHT\) : 0/.test(bottomSheetRuntimeText)
-  || !/const availableContentHeight = Math\.max\(1, maxHeight - reservedFooterHeight\)/.test(bottomSheetRuntimeText)
-  || !/const shouldScroll = contentSizing === 'fill' \|\| contentHeight > availableContentHeight \+ 1/.test(bottomSheetRuntimeText)
-  || !/contentWithFooterReadingGap:\s*\{[\s\S]*?paddingBottom: layout\.bottomActionArea\.contentInset/.test(bottomSheetRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_SCROLL', 'Global BottomSheet must measure fixed footer height and only enable scroll when content plus footer exceeds the max-height cap', 'src/components/BottomSheet.tsx'));
+if (!/<BottomSheetScrollView[\s\S]*?style=\{contentFrameStyle\}[\s\S]*?>/.test(bottomSheetRuntimeText)
+  || !/contentContainerStyle=\{contentInnerStyle\}/.test(bottomSheetRuntimeText)
+  || /enableFooterMarginAdjustment|footerReserveHeight|ResizeObserver\(updateMeasuredHeight\)|reservedFooterHeight|contentWithFooterReadingGap/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_SCROLL', 'Global BottomSheet content must scroll inside the Panel and must not use footer reserve padding or external footer margin adjustment.', 'src/components/BottomSheet.tsx'));
 }
 if (!/icon\?: AppIconName/.test(bottomSheetRuntimeText) || !/icon=\{action\.icon\}/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_FOOTER', 'Global BottomSheet footer actions must support registered action icons', 'src/components/BottomSheet.tsx'));
@@ -834,17 +867,14 @@ const subMinimumTypographyIssues = allSourceFiles.flatMap((file) => {
   const matches = read(file).match(/\bfontSize\s*:\s*(?:[0-9]|1[01])\b/g) ?? [];
   return matches.map((match) => fail('QA_STYLE_MIN_TEXT_SIZE', `Text size ${match.trim()} is below the governed 10px minimum or bypasses label.minimum`, file));
 });
-if (!/function BottomSheetHeaderSpacer\(\)/.test(bottomSheetRuntimeText) || !/hasHeader \? <BottomSheetHeaderSpacer \/> : null/.test(bottomSheetRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_HEADER', 'Global BottomSheet content must insert the component-owned header spacer only when a header is present', 'src/components/BottomSheet.tsx'));
+if (/function BottomSheetHeaderSpacer\(\)|headerSpacer:|contentWithHeader:|headerEntrance:/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_HEADER', 'Global BottomSheet header must be an in-flow Panel child without spacer, absolute layer, or separate entrance wrapper.', 'src/components/BottomSheet.tsx'));
 }
-if (!/headerSpacer:\s*\{\s*height: SHEET_HEADER_HEIGHT,\s*\}/m.test(bottomSheetRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_HEADER', 'Global BottomSheet header spacer must use the same sheetHeaderHeight token as the visual header', 'src/components/BottomSheet.tsx'));
-}
-if (!/position: 'absolute'/.test(bottomSheetRuntimeText) || !/zIndex: zIndex\.raised/.test(bottomSheetRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_HEADER', 'Global BottomSheet visual header must be a fixed component-owned layer above scroll content', 'src/components/BottomSheet.tsx'));
-}
-if (!/contentWithHeader:\s*\{\s*paddingTop: 0,\s*\}/m.test(bottomSheetRuntimeText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_HEADER', 'Global BottomSheet must not simulate header height with content padding', 'src/components/BottomSheet.tsx'));
+if (!/header:\s*\{[\s\S]*?height: SHEET_HEADER_HEIGHT/.test(bottomSheetRuntimeText)
+  || !/header:\s*\{[\s\S]*?flexGrow: 0,[\s\S]*?flexShrink: 0/.test(bottomSheetRuntimeText)
+  || /header:\s*\{[\s\S]*?position: 'absolute'/m.test(bottomSheetRuntimeText)
+  || /header:\s*\{[\s\S]*?zIndex: zIndex\.raised/m.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_HEADER', 'Global BottomSheet header must use the sheetHeaderHeight token as an in-flow fixed-height Panel child.', 'src/components/BottomSheet.tsx'));
 }
 if (/header:\s*\{[\s\S]*?borderBottomWidth:/m.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_HEADER', 'Global BottomSheet header title bar must not render a divider line', 'src/components/BottomSheet.tsx'));
@@ -889,8 +919,11 @@ if (/\$\{action\.tone\}12/.test(quickActionSheetText) || /\$\{action\.tone\}55/.
 if (/button:\s*\{[^}]*borderWidth:/m.test(headerIconButtonText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_CONTAINER', 'Header icon buttons must keep touch area without rendering an outlined circular frame', 'src/components/HeaderIconButton.tsx'));
 }
-if (!/variant === 'filled' && \{\s*backgroundColor: colors\.surface\.panel,\s*\}/m.test(headerIconButtonText) || /variant === 'filled' && \{\s*backgroundColor: colors\.surface\.subtle/m.test(headerIconButtonText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_HEADER_ICON_SURFACE', 'Filled HeaderIconButton containers on gray page or sheet backgrounds must use colors.surface.panel, not the gray subtle surface.', 'src/components/HeaderIconButton.tsx'));
+if (!/surface\?: 'panel' \| 'neutral'/.test(headerIconButtonText)
+  || !/return colors\.surface\.panel;/.test(headerIconButtonText)
+  || !/resolveIconSurfaceColors\(colors, 'neutral'\)\.backgroundColor/.test(headerIconButtonText)
+  || /variant === 'filled' && \{\s*backgroundColor: colors\.surface\.subtle/m.test(headerIconButtonText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_HEADER_ICON_SURFACE', 'Filled HeaderIconButton containers must use panel by default and IconSurface neutral background for white-panel contexts, not page-local subtle backgrounds.', 'src/components/HeaderIconButton.tsx'));
 }
 if (/tone === 'default' \? 'tertiary' : tone/.test(headerIconButtonText)
   || !/const iconTone = tone === 'default' \? undefined : tone/.test(headerIconButtonText)

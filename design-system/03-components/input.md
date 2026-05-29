@@ -77,6 +77,7 @@ Production shared. Auth forms, order lot entry, market search, upgrade reason en
 - The country / dial-code chip is a button and must show the registered `expandDown` icon on the right side.
 - The arrow is a disclosure affordance only; it must use the text-dim token and must not replace the accessible label.
 - Page code must not create a custom country-code chip when `CountryPhoneField` can express the interaction.
+- Auth flows must validate the phone number against the selected country / region through the shared `validatePhoneNumber` rule and pass account values forward as E.164.
 
 ## Required RichTextField API
 

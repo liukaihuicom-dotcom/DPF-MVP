@@ -1,4 +1,5 @@
 import type { Href } from 'expo-router';
+import { parsePhoneNumberFromString, type CountryCode } from 'libphonenumber-js/min';
 
 import type { AuthChannel } from '@/src/domain/types';
 
@@ -10,10 +11,17 @@ export const RESEND_SECONDS = 15;
 export type AuthIntent = 'login' | 'registerEmail' | 'registerPhone' | 'reset';
 
 export type CountryOption = {
-  code: string;
+  code: CountryCode;
   dialCode: string;
   flag: string;
   name: string;
+};
+
+export type PhoneValidationResult = {
+  countryCode: CountryCode;
+  e164: string;
+  nationalNumber: string;
+  valid: boolean;
 };
 
 export const countryOptions: CountryOption[] = [
@@ -158,7 +166,26 @@ export function sanitizeOtp(value: string) {
 }
 
 export function sanitizePhone(value: string) {
-  return value.replace(/[^\d]/g, '').slice(0, 14);
+  return value.replace(/[^\d]/g, '').slice(0, 17);
+}
+
+export function validatePhoneNumber(value: string, country: CountryOption): PhoneValidationResult {
+  const nationalNumber = sanitizePhone(value);
+  const parsed = parsePhoneNumberFromString(nationalNumber, country.code);
+  const e164 = parsed?.number ?? '';
+  const valid = Boolean(parsed?.isValid() && parsed.country === country.code && e164.startsWith(country.dialCode));
+
+  return {
+    countryCode: country.code,
+    e164,
+    nationalNumber,
+    valid,
+  };
+}
+
+export function formatPhoneAccount(value: string, country: CountryOption) {
+  const result = validatePhoneNumber(value, country);
+  return result.valid ? result.e164 : '';
 }
 
 export function safeRedirect(value: string | undefined): AuthRouteTarget {
@@ -233,7 +260,23 @@ export function resolveDisplayName({ account, channel, fallback, nickname }: { a
 
 export function buildAccount(channel: AuthChannel, value: string, dialCode?: string) {
   const trimmed = value.trim();
-  return channel === 'phone' ? `${dialCode ?? defaultCountry.dialCode} ${trimmed}` : trimmed;
+  return channel === 'phone' ? normalizePhoneAccount(trimmed, dialCode) : trimmed;
+}
+
+function normalizePhoneAccount(value: string, dialCode = defaultCountry.dialCode) {
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return '';
+  }
+
+  if (trimmed.startsWith('+')) {
+    const digits = sanitizePhone(trimmed);
+    return digits ? `+${digits}` : trimmed;
+  }
+
+  const digits = sanitizePhone(trimmed);
+  return digits ? `${dialCode}${digits}` : trimmed;
 }
 
 export function getPasswordChecks(password: string) {

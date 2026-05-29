@@ -1,5 +1,7 @@
 export const overlayRegistryPaths = {
+  bottomSheetPrinciples: 'src/design-public-assets/overlays/registry/bottom-sheet-design-principles.md',
   dependencyGraph: 'src/design-public-assets/overlays/registry/overlay-dependency-graph.json',
+  l5Report: 'src/design-public-assets/overlays/registry/overlay-system-l5-report.md',
   matrix: 'src/design-public-assets/overlays/registry/page-overlay-matrix.md',
   registry: 'src/design-public-assets/overlays/registry/overlay-registry.json',
   schema: 'src/design-public-assets/overlays/registry/overlay-registry.schema.json',

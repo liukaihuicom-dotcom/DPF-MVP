@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { DEMO_OTP, buildAccount, buildAuthRoute, defaultCountry, isStrongPassword, isValidEmail, safeRedirect, sanitizePhone } from '@/src/auth/authFlow';
+import { DEMO_OTP, buildAccount, buildAuthRoute, defaultCountry, formatPhoneAccount, isStrongPassword, isValidEmail, safeRedirect, sanitizePhone, validatePhoneNumber } from '@/src/auth/authFlow';
 import { ActionButton } from '@/src/design-public-assets/components';
 import { AuthDescriptionAction, AuthLink, AuthShell, AuthTextField } from '@/src/design-public-assets/components';
 import { AuthErrorSheet, CountryPhoneField, OtpInput, PasswordRuleList, useCountdown } from '@/src/design-public-assets/components';
@@ -30,8 +30,9 @@ export default function ForgotPasswordScreen() {
   const [errorOpen, setErrorOpen] = useState(false);
   const { reset, secondsLeft } = useCountdown(15);
   const redirect = safeRedirect(typeof params.redirect === 'string' ? params.redirect : undefined);
-  const account = buildAccount(channel, channel === 'email' ? email : phone, country.dialCode);
-  const accountValid = channel === 'email' ? isValidEmail(email) : phone.length >= 6;
+  const phoneValidation = validatePhoneNumber(phone, country);
+  const account = channel === 'email' ? buildAccount('email', email) : formatPhoneAccount(phone, country);
+  const accountValid = channel === 'email' ? isValidEmail(email) : phoneValidation.valid;
   const passwordValid = isStrongPassword(password);
   const confirmValid = password === confirmPassword && confirmPassword.length > 0;
   const accountError = submitted && !accountValid ? (channel === 'email' ? t('auth.error.email') : t('auth.error.phone')) : '';

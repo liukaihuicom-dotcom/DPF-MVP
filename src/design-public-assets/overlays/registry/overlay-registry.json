@@ -5,7 +5,8 @@
   "source_of_truth": [
     "src/navigation/modalRegistry.ts",
     "src/navigation/routeRegistry.ts",
-    "src/screens/navigation/RootLayout.tsx"
+    "src/screens/navigation/RootLayout.tsx",
+    "src/design-public-assets/overlays/registry/bottom-sheet-design-principles.md"
   ],
   "overlays": [
     {
@@ -114,7 +115,15 @@
         "picker sheet",
         "action sheet",
         "detail sheet",
-        "short local task"
+        "filter sheet",
+        "form sheet",
+        "short local task",
+        "adaptive height sheet",
+        "fixed height modal sheet",
+        "fullscreen modal sheet",
+        "bottom sheet height governance",
+        "card-based account selection sheet",
+        "bottom sheet horizontal spacing governance"
       ],
       "owner": "design-system-engineering",
       "tokens": [
@@ -134,7 +143,11 @@
         "show",
         "push",
         "back",
+        "closeModal",
         "hide",
+        "panDown",
+        "backdropTap",
+        "androidBack",
         "onDismiss"
       ],
       "a11y": {
@@ -142,7 +155,9 @@
         "background_hidden": true,
         "android_back": "closes top sheet stack entry",
         "keyboard_safe": true,
-        "safe_area": true
+        "safe_area": true,
+        "panel_structure": "Header, Content, and Footer remain in one Panel until dismissal completes",
+        "footer_policy": "Footer is a normal Panel child, not portal, footerComponent, fixed, or absolute"
       },
       "platform": [
         "ios",

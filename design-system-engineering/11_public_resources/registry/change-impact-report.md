@@ -1,8 +1,110 @@
 # Public Resource Change Impact Report
 
-Version: `1.1.0`
-Date: `2026-05-28`
+Version: `1.2.3`
+Date: `2026-05-29`
 Decision scope: token public resource semantic migration.
+
+## 2026-05-29 BottomSheet Horizontal Spacing Governance
+
+- Clarified BottomSheet structural spacing: Header 16px, card content 12px, list/article/detail-introduction content 16px, and Footer 16px.
+- Updated the shared BottomSheet runtime so `contentPadding="card"` uses `layout.contentCardPaddingX` at 12px and `contentPadding="plain"` uses `layout.sheetContentPaddingX` at 16px.
+- Header and Footer remain on their existing 16px semantic insets: `layout.topBarPaddingX` and `layout.bottomActionArea.paddingX`.
+- Impacted dependents: all shared BottomSheet callers. Page `Screen` card-mode content also uses `layout.contentCardPaddingX` at 12px and keeps its existing density.
+- No route, copy, icon, API, business flow, account-scope rule, trading action, risk rule, or color token changed.
+
+Decision: `controlled_patch_ready` after token/style/component/public-resource/version/type QA pass.
+
+---
+
+## 2026-05-29 Trading Account Card Selection Surface Governance
+
+- Clarified that trading account selection is a card-based selection sheet, not a plain list picker.
+- Updated Markets, Portfolio/Trade, and Funding `TradingAccountContextSwitcher` BottomSheet calls to pass `contentPadding="card"` and `sheetSurface="canvas"`.
+- Impacted dependents: `tradingAccount.switchSheet`, `component.business.TradingAccountContextSwitcher`, `component.business.TradingAccountSwitchSheet`, and all account-switcher entries in Markets, Portfolio/Trade, and Funding forms.
+- Plain list pickers, country/region selection, language selection, and payment-method selection keep the white `sheetSurface="panel"` behavior unless their content becomes card-based.
+- No route, copy, icon, API, account-scope rule, trading operation, funding business rule, or new color token changed.
+
+Decision: `controlled_patch_ready` after style/component/public-resource/version/type QA pass.
+
+---
+
+## 2026-05-29 BottomSheet Surface Governance
+
+- Added governed BottomSheet surface rules: card/detail/form/confirmation content uses `sheetSurface="canvas"` and the gray `surface.canvas` sheet bed; list/picker/selection content uses `sheetSurface="panel"` and the white `surface.panel` sheet bed.
+- Updated `component.base.BottomSheet`, `principle.bottomSheet.heightSystem`, sheet component docs, component manifests, component-library version records, and static style QA.
+- Impacted dependents: all shared BottomSheet callers. Existing card/detail sheets keep the canvas default; selection sheets now default to the panel surface unless explicitly overridden.
+- No route, copy, icon, API, product flow, trading action, account-scope rule, risk rule, or new color token changed.
+
+Decision: `controlled_patch_ready` after style/component/public-resource/version/type QA pass.
+
+---
+
+## 2026-05-29 BottomSheet HeightMode Panel Governance
+
+- Updated `component.base.BottomSheet` to expose governed `heightMode` choices: `adaptive`, `fixed`, and `fullscreen`.
+- Rebuilt the public BottomSheet structure so Header, Content, and Footer are direct Panel children; Footer no longer uses `footerComponent`, portal placement, absolute/fixed positioning, measured reserve padding, or independent animation.
+- Impacted dependents: all shared BottomSheet callers, with focused coverage for short confirmation/form/detail sheets, long selection/filter sheets, and legacy explicit `snapPoints` callers.
+- No route, copy, icon, API, product flow, trading action, account-scope rule, or risk rule changed. Existing explicit `snapPoints` and `contentSizing: 'fill'` callers are preserved through fixed compatibility behavior.
+
+Decision: `controlled_patch_ready` after component/public-resource/version/type/style QA pass; device slow-motion keyboard and pan-down verification remains required before `l5_overlay_ready`.
+
+---
+
+## 2026-05-29 BottomSheet Footer Natural Height Governance
+
+- Updated `component.base.BottomSheet` so fixed-footer sheets no longer add duplicate manual content bottom reserve on top of the shared gorhom footer margin adjustment.
+- Impacted dependents: all shared BottomSheet callers with fixed footer actions, with focused coverage for `/trade` and `/portfolio` position detail and pending-order detail sheets.
+- Short content now keeps natural content height; over-height content still scrolls inside the shared sheet and avoids the measured footer.
+- No page-local sheet implementation, route, copy, icon, API, trading action, or business-risk behavior changed.
+
+Decision: `controlled_patch_ready` after component/public-resource/version/navigation/type QA and browser overlay verification pass.
+
+---
+
+## 2026-05-29 BottomSheet Height And Scenario Principles
+
+- Added `principle.bottomSheet.heightSystem` as a governed dialog-pattern asset in the public resource package.
+- New source of truth: `src/design-public-assets/overlays/registry/bottom-sheet-design-principles.md`.
+- Defined standard height levels for `content-fit`, `compact`, `medium`, `large`, and `max`, plus scenario rules for action, selection, search selection, filter, detail, form, confirmation, and error-recovery sheets.
+- Updated `component.base.BottomSheet`, overlay registry, overlay dependency graph, page overlay matrix, and sheet documentation to reference the new principle.
+- No runtime component API, route, business flow, copy, icon asset, or risk rule changed.
+
+Decision: `public_resource_principle_ready` after JSON parse, component manifest, overlay registry, and public-resource QA checks pass.
+
+---
+
+## 2026-05-29 BottomSheet Dismissal And Footer Reserve Governance
+
+- Updated `component.base.BottomSheet` internally so header, content, and fixed footer close through one shared visual progress while the gorhom container owns modal dismissal.
+- Changed fixed-footer content reserve from a static `layout.bottomActionArea.contentInset` padding to measured footer height with the existing first-frame fallback.
+- Impacted dependents: all pages and public business components that pass `footer` through the shared BottomSheet host, with focused coverage for position detail, pending-order detail, action menu, close confirmation, quick action, and metric description sheets.
+- No new public resource was introduced, no public BottomSheet prop was removed, and no route, copy, icon asset, API, product flow, or risk rule changed.
+
+Decision: `controlled_patch_ready` after component/public-resource/type QA and iOS/Android overlay close-path smoke verification pass.
+
+---
+
+## 2026-05-29 Header Icon Neutral Surface Governance
+
+- Added a `surface=neutral` option to `component.base.HeaderIconButton` so filled header icon actions placed on white panel surfaces reuse the governed `IconSurface` neutral background contract.
+- Updated `/instrument/[id]` back navigation to consume the shared neutral header icon surface instead of relying on a same-color panel background.
+- Impacted dependents: all `HeaderIconButton` consumers through the new optional surface prop; existing gray page, sheet, canvas, auth, AppTopBar, BottomSheet, and ProductControlPanel callers keep the default panel surface.
+- No route, copy, icon asset, trading action, API, data, account-scope rule, or risk rule changed.
+
+Decision: `controlled_patch_ready` after component/style/icon/version/public-resource/type QA and browser smoke verification pass.
+
+---
+
+## 2026-05-29 Trading Order Action Sheet Governance
+
+- Added `TradingOrderActionSheet` to `business.OrderPositionDetailSheet` so grouped position and pending-order action menus are owned by the public business component layer.
+- Updated `PortfolioScreen` to consume shared order sheet bodies through `bottomSheetPresets` without page-local position/pending-order option sheet shells.
+- Impacted dependents: `/trade` and `/portfolio` order workspaces, specifically position options, pending-order options, position detail, pending-order detail, close confirmation, and queued order mutation feedback.
+- No product flow, route, icon asset, i18n key, order mutation handler, account-scope rule, or trading risk rule changed.
+
+Decision: `controlled_patch_ready` after component/style/public-resource/i18n/type QA and browser smoke verification pass.
+
+---
 
 ## 2026-05-28 Card Borderless Surface Governance
 

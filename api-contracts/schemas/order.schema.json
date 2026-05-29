@@ -9,13 +9,19 @@
     "instrumentId": { "type": "string" },
     "symbol": { "type": "string" },
     "direction": { "type": "string", "enum": ["buy", "sell"] },
-    "type": { "type": "string", "enum": ["market", "limit"] },
+    "type": { "type": "string", "enum": ["market", "limit", "stop"] },
     "lots": { "type": "number" },
+    "expirationType": { "type": "string", "enum": ["gtc", "specified"] },
+    "expiresAt": { "type": "string" },
+    "limitPrice": { "type": "number" },
+    "oneClickTradingEnabled": { "type": "boolean" },
     "requestedPrice": { "type": "number" },
     "filledPrice": { "type": "number" },
     "marginRequired": { "type": "number" },
     "status": { "type": "string", "enum": ["filled", "pending", "closed", "cancelled"] },
+    "stopLoss": { "type": "number" },
+    "stopPrice": { "type": "number" },
+    "takeProfit": { "type": "number" },
     "createdAt": { "type": "string" }
   }
 }
-

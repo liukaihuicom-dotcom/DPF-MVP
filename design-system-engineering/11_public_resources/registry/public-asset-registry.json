@@ -8,7 +8,7 @@
       "asset_id": "token.design-tokens",
       "asset_type": "token",
       "name": "Design Tokens Package",
-      "version": "3.1.0",
+      "version": "3.3.0",
       "source_path": "packages/design-tokens/registry/tokens.json",
       "doc_path": "packages/design-tokens/registry/tokens.json",
       "usage_scope": [
@@ -31,7 +31,7 @@
       ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-28"
+      "last_updated": "2026-05-29"
     },
     {
       "asset_id": "token.color",
@@ -87,7 +87,7 @@
       "asset_id": "component.base.component-library",
       "asset_type": "base_component",
       "name": "Component Library Manifest",
-      "version": "2.2.0",
+      "version": "2.4.3",
       "source_path": "packages/component-library/registry/component-manifest.json",
       "doc_path": "packages/component-library/registry/component-manifest.json",
       "usage_scope": [
@@ -112,13 +112,13 @@
       ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-28"
+      "last_updated": "2026-05-29"
     },
     {
       "asset_id": "component.base.Screen",
       "asset_type": "base_component",
       "name": "Screen",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source_path": "packages/component-library/registry/component-manifest.json",
       "doc_path": "packages/component-library/registry/component-manifest.json",
       "usage_scope": [
@@ -218,7 +218,8 @@
         "token.design-tokens"
       ],
       "dependents": [
-        "registry.overlay-system"
+        "registry.overlay-system",
+        "principle.bottomSheet.heightSystem"
       ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
@@ -228,7 +229,7 @@
       "asset_id": "component.base.BottomSheet",
       "asset_type": "base_component",
       "name": "BottomSheet",
-      "version": "1.1.0",
+      "version": "1.3.3",
       "source_path": "packages/component-library/registry/component-manifest.json",
       "doc_path": "packages/component-library/registry/component-manifest.json",
       "usage_scope": [
@@ -250,7 +251,7 @@
       ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-28"
+      "last_updated": "2026-05-29"
     },
     {
       "asset_id": "component.base.ConfirmActionSheet",
@@ -2002,7 +2003,7 @@
       "asset_id": "token.motion-overlay",
       "asset_type": "token",
       "name": "Overlay motion tokens",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source_path": "packages/design-tokens/src/tokens.ts",
       "doc_path": "packages/design-tokens/registry/tokens.json",
       "usage_scope": [
@@ -2020,6 +2021,45 @@
       ],
       "dependents": [
         "component.base.OverlayQueue",
+        "component.base.BottomSheet"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-05-29"
+    },
+    {
+      "asset_id": "principle.bottomSheet.heightSystem",
+      "asset_type": "dialog_pattern",
+      "name": "Bottom Sheet Height And Scenario Principles",
+      "version": "1.1.4",
+      "source_path": "src/design-public-assets/overlays/registry/bottom-sheet-design-principles.md",
+      "doc_path": "src/design-public-assets/overlays/registry/bottom-sheet-design-principles.md",
+      "usage_scope": [
+        "bottom_sheet_overlays",
+        "selection_sheet",
+        "action_sheet",
+        "filter_sheet",
+        "detail_sheet",
+        "form_sheet",
+        "adaptive_height_sheet",
+        "fixed_height_sheet",
+        "fullscreen_sheet"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.BottomSheet",
+        "token.design-tokens",
+        "token.semantic-layout"
+      ],
+      "dependents": [
+        "qa.public-resource-check",
+        "qa.navigation-registry",
         "component.base.BottomSheet"
       ],
       "sync_policy": "controlled_sync",
@@ -2049,7 +2089,8 @@
         "component.base.ModalStack",
         "component.base.BottomSheet",
         "component.base.GlobalDialog",
-        "token.design-tokens"
+        "token.design-tokens",
+        "principle.bottomSheet.heightSystem"
       ],
       "dependents": [
         "qa.public-resource-check",

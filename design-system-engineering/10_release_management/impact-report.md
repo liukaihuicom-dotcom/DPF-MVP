@@ -1,5 +1,27 @@
 # Impact Report
 
+## v2.4.3-bottom-sheet-horizontal-spacing
+
+Impact: non-breaking BottomSheet spacing governance correction.
+
+- Runtime app behavior: routes, copy, icons, account selection, close lifecycle, and business workflows unchanged.
+- Component/source scope: `BottomSheet` card content now consumes `layout.contentCardPaddingX` at 12px; plain/list/article-detail content consumes `layout.sheetContentPaddingX` at 16px; Header and Footer consume 16px semantic inset tokens.
+- Visual scope: BottomSheet structural spacing is Header 16px, card content 12px, list/article/detail-introduction content 16px, and Footer 16px.
+- Regression focus: account selection sheets, country/language picker sheets, payment method sheets, detail sheets, and confirmation/action sheets.
+
+Decision: `controlled_patch_ready` after style/component/public-resource/version/type QA passes.
+
+## v2.4.2-trading-account-card-selection-surface
+
+Impact: non-breaking BottomSheet surface governance correction for account selection sheets.
+
+- Runtime app behavior: account selection, selected account state, disabled account reasons, route targets, copy, icons, and business workflows unchanged.
+- Component/source scope: Markets, Portfolio/Trade, and Funding account-switcher BottomSheet calls now pass `sheetSurface='canvas'` and `contentPadding='card'`.
+- Visual scope: trading account selection uses the gray `surface.canvas` sheet bed because the account list is rendered as white selectable cards; plain country/language/picker lists remain on white `surface.panel`.
+- Regression focus: `/markets`, `/trade`, `/portfolio`, `/funding/deposit`, `/funding/withdrawal`, and `/funding/transfer` account-switcher sheets.
+
+Decision: `controlled_patch_ready` after style/component/public-resource/version/type QA passes.
+
 ## v2.2.0-global-dialog-and-bottom-sheet-governance
 
 Impact: non-breaking dialog governance addition with stricter global modal ownership.

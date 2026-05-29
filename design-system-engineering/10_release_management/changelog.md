@@ -1,5 +1,67 @@
 # Design System Engineering Changelog
 
+## v2.4.3-bottom-sheet-horizontal-spacing
+
+- Added the BottomSheet horizontal spacing contract: Header 16px, card content 12px, list/article/detail-introduction content 16px, and Footer 16px.
+- Updated `BottomSheet` so card content uses `layout.contentCardPaddingX` and list/article/detail-introduction content uses `layout.sheetContentPaddingX`.
+- Synchronized runtime tokens, package tokens, sheet docs, public overlay principles, component manifests, release records, and style QA guards.
+
+## v2.4.2-trading-account-card-selection-surface
+
+- Clarified that `TradingAccountContextSwitcher` is a card-based selection sheet, not a plain list selection sheet.
+- Updated Markets, Portfolio/Trade, and Funding account-switcher BottomSheet calls to use `sheetSurface='canvas'` with `contentPadding='card'`.
+- Synchronized component manifests, sheet docs, overlay matrix, modal maps, public-resource records, release notes, and style QA guards so trading account selection keeps the gray canvas bed while plain pickers stay on the white panel bed.
+
+## v2.4.1-bottom-sheet-surface-governance
+
+- Added BottomSheet surface governance: card/detail content uses the gray `surface.canvas` bed and list/selection content uses the white `surface.panel` bed.
+- Defaulted the shared selection preset to `sheetSurface="panel"` so picker/list sheets follow the visual rule without page-level overrides.
+- Synchronized component manifests, sheet docs, public-resource records, release notes, and style QA guards.
+
+## v2.4.0-bottom-sheet-heightmode-panel-governance
+
+- Added `BottomSheet` `heightMode` governance for adaptive, fixed, and fullscreen sheet layouts.
+- Rebuilt the shared BottomSheet layout contract so Header, Content, and Footer are direct Panel children with the Footer inside normal layout flow.
+- Removed the old footer reserve / external footer pattern from governance language and aligned close lifecycle requirements around one shared panel dismissal path.
+- Synchronized component-library version records, manifests, public-resource registry, overlay matrix, overlay registry, migration plan, and QA guards.
+
+## v2.3.5-bottom-sheet-footer-natural-height
+
+- Fixed shared `BottomSheet` footer avoidance so short fixed-footer sheets keep natural content height instead of adding duplicate bottom reserve.
+- Kept the measured footer margin adjustment as the single avoidance path, while over-height sheet content still scrolls inside the shared sheet container.
+- Synchronized BottomSheet component manifests, sheet docs, public-resource principles, and component-library version records for the footer natural-height patch.
+
+## v2.3.4-bottom-sheet-height-principles
+
+- Added `principle.bottomSheet.heightSystem` to the public resource package as the standard Bottom Sheet height and scenario decision source.
+- Defined governed sheet height levels: content-fit, compact 45-50%, medium 60-66%, large 75-84%, and max available viewport.
+- Synchronized BottomSheet component manifests, overlay registry, overlay dependency graph, page overlay matrix, migration plan, and sheet docs so future page work cannot invent arbitrary bottom sheet heights.
+
+## v2.3.3-bottom-sheet-dismissal-reserve-sync
+
+- Added `@dpf/design-tokens` `3.2.0` motion roles for overlay internal exit translation and footer opacity pivot.
+- Fixed shared `BottomSheet` dismissal rhythm so header, content, and footer use the same internal `sheetEntranceProgress` while the gorhom container owns the modal dismissal animation.
+- Added runtime measured footer reserve for fixed-footer sheets, using `layout.bottomActionArea.contentInset` only before the first footer layout measurement.
+- Synchronized BottomSheet docs, component manifests, overlay matrix, and release records for the dismissal/spacing governance patch.
+
+## v2.3.2-header-icon-neutral-surface
+
+- Added a governed neutral filled surface mode to `HeaderIconButton` so header icon actions placed on white panel surfaces reuse the `IconSurface` neutral background contract.
+- Updated `/instrument/[id]` to use the neutral header icon surface for the registered `icon.system.back` action without changing route fallback, copy, touch target, or trading behavior.
+- Upgraded `@dpf/component-library` to `2.3.2` and synchronized component manifests plus QA guards for the new header icon background contract.
+
+## v2.3.1-auth-phone-country-validation
+
+- Added the shared auth phone validation contract so `CountryPhoneField` consumers validate against the selected country / region and pass phone accounts in E.164 format.
+- Registered `/auth` as a country-picker consumer for phone login while preserving registration and password-reset country picker governance.
+- Upgraded `@dpf/component-library` to `2.3.1` and synchronized component manifests, route modal maps, and public-resource documentation for auth phone entry.
+
+## v2.3.0-trading-order-action-sheet-governance
+
+- Added governed `TradingOrderActionSheet` as the shared business sheet body for position and pending-order grouped actions.
+- Updated Portfolio `/trade` and `/portfolio` order bottom sheets to consume public business sheet bodies instead of page-local option sheet shells and wrapper card styles.
+- Synchronized component manifests, business-component governance, pattern registry, and public-resource impact records under the current `@dpf/component-library` `2.3.1` version line.
+
 ## v2.2.0-global-dialog-and-bottom-sheet-governance
 
 - Added governed `GlobalDialog` as the single centered feedback and confirmation dialog host while preserving the existing centered auth feedback visual design.
@@ -135,7 +197,7 @@
 
 ## v1.10.0-full-site-horizontal-spacing-contract
 
-- Added the governed full-site horizontal spacing policy: page and sheet headers plus bottom action areas use 16px, card-mode content uses 12px, plain/form content uses 16px, and global Card/List content defaults to 12px.
+- Added the governed full-site horizontal spacing policy: page and sheet headers plus bottom action areas use 16px, BottomSheet card content uses 12px, BottomSheet list/article-detail introduction content uses 16px, and global Card/List content defaults to registered row/card tokens.
 - Added semantic token roles for card/plain/top-bar content insets and updated `Screen`, `BottomSheet`, `AppTopBar`, list/row components, manifests, token bindings, spacing docs, and QA guards.
 - Kept theme backgrounds semantic through `colors.surface.*` instead of hardcoding gray or white, preserving light/dark theme behavior.
 

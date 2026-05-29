@@ -1,5 +1,35 @@
 # Changelog
 
+## v1.0.20-instrument-detail-redesign
+
+- Redesigned `/instrument/[id]` into a clearer trading analysis page with Quote Hero, Trade Snapshot, Risk Strip, focused Chart tab, and grouped Contract Specs.
+- Moved long-form price range, contract, cost, and trading-limit fields out of the first screen and into the Specs tab groups.
+- Preserved order ticket routing, instrument data shape, registered components, embedded/fullscreen chart behavior, and financial risk copy.
+
+## v1.0.19-instrument-detail-visual-rhythm
+
+- Refined the `/instrument/[id]` detail page visual rhythm with a clearer quote metadata row, grouped market metrics, a lighter risk strip, and embedded chart density.
+- Preserved instrument data, order ticket routing, ModalStack fullscreen chart behavior, registered icon usage, and existing i18n keys.
+- Completed zh-CN copy cleanup for instrument tabs and 52-week labels.
+
+## v1.0.18-bottom-sheet-dismissal-governance
+
+- Fixed public BottomSheet close behavior so position and pending-order detail/action sheets keep content and footer moving as one panel.
+- Changed fixed-footer content reserve to follow measured footer height with the existing first-frame fallback, covering single-button, double-button, and no-footer sheet paths.
+- Preserved order, pending-order, confirmation, filter, and metric-detail product flows while changing only the shared overlay component implementation.
+
+## v1.0.17-auth-phone-country-validation
+
+- Added country-aware phone validation across login, registration, and password reset so phone accounts must match the selected country / region code before continuing.
+- Standardized phone account handoff to E.164 format for OTP routes and remembered-account storage.
+- Updated login to use explicit email / phone modes and the governed `CountryPhoneField` instead of guessing phone validity from a single account input.
+
+## v1.0.16-trading-order-sheet-governance
+
+- Moved Portfolio position and pending-order bottom-sheet option bodies into the governed `TradingOrderActionSheet` business component.
+- Kept order detail, pending-order detail, close confirmation, and mutation feedback on registered BottomSheet, ConfirmActionSheet, and OverlayQueue paths.
+- Preserved trading data, order mutation behavior, routes, icons, and i18n copy while removing page-local order option sheet shells.
+
 ## v1.0.15-global-dialog-bottom-sheet-governance
 
 - Added the governed `GlobalDialog` centered feedback host and migrated auth feedback/confirmation dialogs to consume it without changing the user-facing centered visual.

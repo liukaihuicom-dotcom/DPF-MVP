@@ -925,6 +925,8 @@
       "presentation": "screen",
       "risk_level": "medium",
       "primary_actions": [
+        "Choose email or phone login",
+        "Select country for phone login",
         "Enter account",
         "Enter password",
         "Submit login",
@@ -932,6 +934,7 @@
         "Open forgot password"
       ],
       "related_modals": [
+        "auth.countryPicker",
         "auth.errorSheet",
         "global.toastFeedback"
       ],

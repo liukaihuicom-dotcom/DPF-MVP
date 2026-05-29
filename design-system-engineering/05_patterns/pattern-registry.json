@@ -269,6 +269,8 @@
       ],
       "recommendedComponents": [
         "BottomSheet",
+        "TradingOrderActionSheet",
+        "OrderPositionDetailSheet",
         "TradeOrderList",
         "TradeDirectionIcon",
         "KeyValueList",
@@ -285,6 +287,8 @@
         "failed"
       ],
       "forbidden": [
+        "Do not create page-local position or pending-order option sheet shells.",
+        "Do not wrap GlobalMenuList with page-local card, surface, or border styles for this pattern.",
         "Do not use Alert.alert or window.confirm.",
         "Do not place high-risk mutation copy outside i18n/copy-table governance."
       ]

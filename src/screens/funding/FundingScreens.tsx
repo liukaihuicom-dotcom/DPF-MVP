@@ -297,6 +297,7 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
         onAddAccount: showAddAccountFeedback,
         title: t('funding.account.switchTitle'),
       }),
+      contentPadding: 'card',
       content: (
         <TradingAccountContextSwitcher
           accounts={profiles}
@@ -322,6 +323,7 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
           selectedId={mode === 'source' ? sourceAccountId : targetAccountId}
         />
       ),
+      sheetSurface: 'canvas',
     }));
   };
   const openMethodSheet = () => {

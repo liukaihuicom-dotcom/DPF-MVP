@@ -1,6 +1,6 @@
 # Versioning
 
-Current design system version: `1.0.3`.
+Current design system version: `1.0.9`.
 
 | Version Segment | Meaning |
 |---|---|

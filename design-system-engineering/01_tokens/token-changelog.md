@@ -1,5 +1,17 @@
 # Token Changelog
 
+## v3.3.0-bottom-sheet-horizontal-spacing
+
+- Added `layout.sheetContentPaddingX` at 16px as the dedicated BottomSheet plain/list/article-detail introduction content horizontal inset.
+- Kept card-mode content on `layout.contentCardPaddingX` at 12px for page cards and BottomSheet card content.
+- Documented the BottomSheet horizontal contract: Header 16px, card content 12px, list/article/detail-introduction content 16px, and Footer 16px.
+
+## v3.2.0-overlay-dismissal-motion
+
+- Added `motion.overlay.exitTranslateY` for shared internal overlay visual dismissal translation.
+- Added `motion.overlay.footerExitOpacityPivot` so fixed bottom-sheet footers stay opaque until the final dismissal segment.
+- Synchronized token registries and export maps for BottomSheet dismissal governance.
+
 ## v3.1.0-card-radius-governance
 
 - Added `radius.card` as the semantic 12px role for standard Card, card-like page panels, sheet content cards, and business component panels.

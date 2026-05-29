@@ -1,8 +1,12 @@
 {
   "instrumentId": "eur-usd",
   "direction": "buy",
-  "type": "market",
+  "type": "limit",
   "lots": 0.1,
+  "expirationType": "gtc",
+  "limitPrice": 1.0845,
+  "oneClickTradingEnabled": false,
+  "stopLoss": 1.0795,
+  "takeProfit": 1.0925,
   "idempotencyKey": "demo-ord-001"
 }
-

@@ -1,5 +1,5 @@
 {
-  "version": "2.2.0",
+  "version": "2.3.3",
   "allowedTokenSources": [
     "src/theme/tokens.ts",
     "src/theme/colors.ts",
@@ -222,6 +222,7 @@
       "layout.headerIconSize",
       "radius.full",
       "color.surface.panel",
+      "color.surface.subtle",
       "color.icon.primary",
       "iconRegistry.*"
     ],

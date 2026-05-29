@@ -11,7 +11,8 @@ Decision: `conditional_allow_for_contract_review`
 - QA test-plan drafting.
 - Production directory governance can enter next-stage review after `node scripts/qa/qa-all.js` and TypeScript checks pass.
 - Security Center can enter product, backend/API, risk/compliance, Design System, Financial Copy, Icon Governance, and UX Gate review as a contract-first package.
-- GlobalDialog and BottomSheet governance can enter implementation validation after TypeScript, component QA, style QA, public-resource QA, and full QA pass.
+- GlobalDialog, BottomSheet governance, and trading order sheet governance can enter implementation validation after TypeScript, component QA, style QA, public-resource QA, i18n QA, and browser smoke verification pass.
+- BottomSheet dismissal/reserve governance can enter device QA after TypeScript, component QA, public-resource QA, and the focused overlay close-path checks pass.
 
 ## Blocked
 
@@ -22,7 +23,8 @@ Decision: `conditional_allow_for_contract_review`
 - Any flow that treats demo balances as withdrawable funds.
 - Security Center production UI release until `/settings/security-center` route, backend identity/session/TOTP/GSL/audit services, notification delivery, and risk policy are implemented and approved.
 - Any implementation that treats TOTP/MFA as a reason to force local PIN setup by default.
-- Any page-owned business `Modal` or bottom-sheet shell that bypasses `GlobalDialog` or the global `BottomSheet` preset system.
+- Any page-owned business `Modal`, bottom-sheet shell, or trading order option sheet body that bypasses `GlobalDialog`, the global `BottomSheet` preset system, or registered order business components.
+- Production release of BottomSheet dismissal governance until iOS and Android close-path smoke checks confirm footer/content sync, measured footer reserve, and no residual backdrop after cleanup.
 
 ## Required Human Review
 

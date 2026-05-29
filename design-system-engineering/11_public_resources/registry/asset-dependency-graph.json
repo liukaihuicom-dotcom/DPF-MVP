@@ -1907,7 +1907,8 @@
         "AuthShell",
         "AuthFlowControls",
         "TextField",
-        "AppIcon"
+        "AppIcon",
+        "SegmentedTabs"
       ],
       "tokens": [
         "token.design-tokens",
@@ -2577,7 +2578,7 @@
       "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
       "status": "approved",
       "qa_status": "passed",
-      "version": "1.1.1"
+      "version": "1.2.0"
     },
     {
       "asset_id": "business.ConfirmActionSheet",
@@ -2952,6 +2953,14 @@
       "asset_type": "token",
       "name": "Overlay motion tokens",
       "source_path": "packages/design-tokens/src/tokens.ts",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "principle.bottomSheet.heightSystem",
+      "asset_type": "dialog_pattern",
+      "name": "Bottom Sheet Height And Scenario Principles",
+      "source_path": "src/design-public-assets/overlays/registry/bottom-sheet-design-principles.md",
       "status": "approved",
       "qa_status": "passed"
     },
@@ -7756,6 +7765,16 @@
     },
     {
       "from": "registry.overlay-system",
+      "to": "principle.bottomSheet.heightSystem",
+      "relation": "registers"
+    },
+    {
+      "from": "principle.bottomSheet.heightSystem",
+      "to": "component.base.BottomSheet",
+      "relation": "governs_height_and_scenario"
+    },
+    {
+      "from": "registry.overlay-system",
       "to": "component.base.GlobalDialog",
       "relation": "registers"
     },
@@ -7998,6 +8017,11 @@
       "from": "page.portfolio_alias",
       "to": "token.motion-overlay",
       "relation": "uses_token"
+    },
+    {
+      "from": "page.login",
+      "to": "component.base.SegmentedTabs",
+      "relation": "uses_base_component"
     }
   ],
   "pageReadinessMatrix": [

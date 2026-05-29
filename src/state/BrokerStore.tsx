@@ -1,8 +1,21 @@
-import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import Constants from 'expo-constants';
-import { Platform } from 'react-native';
+import {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import Constants from "expo-constants";
+import { Platform } from "react-native";
 
-import { initialAccount, initialUpgradeRequest, instruments as initialInstruments, partnerClients as initialPartnerClients } from '@/src/domain/mockData';
+import {
+  initialAccount,
+  initialUpgradeRequest,
+  instruments as initialInstruments,
+  partnerClients as initialPartnerClients,
+} from "@/src/domain/mockData";
 import {
   applyQuote,
   calculateMargin,
@@ -11,23 +24,49 @@ import {
   createPosition,
   recalculateAccount,
   refreshPositions,
-} from '@/src/domain/trading';
-import type { Account, Direction, Instrument, Order, OrderType, PartnerClient, Position, Role, UpgradeRequest } from '@/src/domain/types';
-import { useProductSettings } from '@/src/settings/ProductSettings';
+} from "@/src/domain/trading";
+import type {
+  Account,
+  Direction,
+  Instrument,
+  Order,
+  OrderExpirationType,
+  OrderType,
+  PartnerClient,
+  Position,
+  Role,
+  UpgradeRequest,
+} from "@/src/domain/types";
+import { useProductSettings } from "@/src/settings/ProductSettings";
 
-const UPGRADE_STORAGE_KEY = 'broker-fx-upgrade-state';
+const UPGRADE_STORAGE_KEY = "broker-fx-upgrade-state";
 const LOCAL_QUOTE_PROXY_PORT = 8091;
 const QUOTE_CONNECTION_TIMEOUT_MS = 8000;
 const QUOTE_RECONNECT_DELAY_MS = 2500;
 const SPARKLINE_SAMPLE_INTERVAL_MS = 30_000;
-const QUOTE_SYMBOLS = ['EURUSD', 'GBPUSD', 'AUDUSD', 'NZDUSD', 'USDJPY', 'USDCAD', 'USDCHF', 'XAUUSD'];
+const QUOTE_SYMBOLS = [
+  "EURUSD",
+  "GBPUSD",
+  "AUDUSD",
+  "NZDUSD",
+  "USDJPY",
+  "USDCAD",
+  "USDCHF",
+  "XAUUSD",
+];
 
 type PlaceOrderInput = {
   instrumentId: string;
   direction: Direction;
   type: OrderType;
   lots: number;
+  expirationType?: OrderExpirationType;
+  expiresAt?: string;
   limitPrice?: number;
+  oneClickTradingEnabled?: boolean;
+  stopLoss?: number;
+  stopPrice?: number;
+  takeProfit?: number;
 };
 
 type BrokerStore = {
@@ -39,7 +78,7 @@ type BrokerStore = {
   upgradeRequest: UpgradeRequest;
   positions: Position[];
   orders: Order[];
-  quoteStatus: 'connecting' | 'connected' | 'failed';
+  quoteStatus: "connecting" | "connected" | "failed";
   resetBrokerDemoState: () => void;
   submitUpgradeRequest: (reason: string) => void;
   approveUpgradeRequest: (clientId: string) => void;
@@ -57,7 +96,7 @@ const BrokerContext = createContext<BrokerStore | null>(null);
 type DupoinQuoteMessage = {
   t?: number;
   type?: string;
-  status?: 'connecting' | 'connected' | 'failed';
+  status?: "connecting" | "connected" | "failed";
   d?: {
     m?: string;
     s?: string;
@@ -67,7 +106,7 @@ type DupoinQuoteMessage = {
 };
 
 function normalizeQuoteSymbol(symbol: string) {
-  return symbol.replace('/', '').toUpperCase();
+  return symbol.replace("/", "").toUpperCase();
 }
 
 function isSubscribedQuoteSymbol(instrument: Instrument) {
@@ -75,12 +114,19 @@ function isSubscribedQuoteSymbol(instrument: Instrument) {
 }
 
 function getQuoteSocketUrl() {
-  if (Platform.OS === 'web' && typeof window !== 'undefined' && window.location?.hostname) {
+  if (
+    Platform.OS === "web" &&
+    typeof window !== "undefined" &&
+    window.location?.hostname
+  ) {
     return `ws://${window.location.hostname}:${LOCAL_QUOTE_PROXY_PORT}`;
   }
 
-  const hostUri = Constants.expoConfig?.hostUri ?? Constants.manifest2?.extra?.expoClient?.hostUri ?? Constants.manifest?.debuggerHost;
-  const host = typeof hostUri === 'string' ? hostUri.split(':')[0] : null;
+  const hostUri =
+    Constants.expoConfig?.hostUri ??
+    Constants.manifest2?.extra?.expoClient?.hostUri ??
+    Constants.manifest?.debuggerHost;
+  const host = typeof hostUri === "string" ? hostUri.split(":")[0] : null;
 
   if (host) {
     return `ws://${host}:${LOCAL_QUOTE_PROXY_PORT}`;
@@ -90,20 +136,32 @@ function getQuoteSocketUrl() {
 }
 
 function readStoredUpgradeState() {
-  if (Platform.OS !== 'web' || typeof window === 'undefined' || !window.localStorage) {
+  if (
+    Platform.OS !== "web" ||
+    typeof window === "undefined" ||
+    !window.localStorage
+  ) {
     return null;
   }
 
   try {
     const raw = window.localStorage.getItem(UPGRADE_STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as { partnerClients?: PartnerClient[]; upgradeRequest?: UpgradeRequest }) : null;
+    return raw
+      ? (JSON.parse(raw) as {
+          partnerClients?: PartnerClient[];
+          upgradeRequest?: UpgradeRequest;
+        })
+      : null;
   } catch {
     return null;
   }
 }
 
 function getSeedInstrument(id: string) {
-  return initialInstruments.find((instrument) => instrument.id === id) ?? initialInstruments[0];
+  return (
+    initialInstruments.find((instrument) => instrument.id === id) ??
+    initialInstruments[0]
+  );
 }
 
 function getPricePrecision(instrument: Instrument) {
@@ -119,9 +177,13 @@ function buildSamplePosition(params: {
   openedAt: string;
 }): Position {
   const precision = getPricePrecision(params.instrument);
-  const openPriceSource = params.direction === 'buy' ? params.instrument.ask : params.instrument.bid;
-  const openPrice = Number((openPriceSource + params.openPriceOffset).toFixed(precision));
-  const currentPrice = params.direction === 'buy' ? params.instrument.bid : params.instrument.ask;
+  const openPriceSource =
+    params.direction === "buy" ? params.instrument.ask : params.instrument.bid;
+  const openPrice = Number(
+    (openPriceSource + params.openPriceOffset).toFixed(precision),
+  );
+  const currentPrice =
+    params.direction === "buy" ? params.instrument.bid : params.instrument.ask;
 
   return {
     id: params.id,
@@ -132,30 +194,35 @@ function buildSamplePosition(params: {
     openPrice,
     currentPrice,
     marginUsed: calculateMargin(params.instrument, params.lots, openPrice),
-    unrealizedPnl: calculatePositionPnl(params.instrument, params.direction, params.lots, openPrice),
+    unrealizedPnl: calculatePositionPnl(
+      params.instrument,
+      params.direction,
+      params.lots,
+      openPrice,
+    ),
     openedAt: params.openedAt,
   };
 }
 
 function buildSamplePositions(): Position[] {
-  const eurUsd = getSeedInstrument('eur-usd');
-  const xauUsd = getSeedInstrument('xau-usd');
+  const eurUsd = getSeedInstrument("eur-usd");
+  const xauUsd = getSeedInstrument("xau-usd");
 
   return [
     buildSamplePosition({
-      direction: 'buy',
-      id: 'dev-pos-eur-usd',
+      direction: "buy",
+      id: "dev-pos-eur-usd",
       instrument: eurUsd,
       lots: 0.4,
-      openedAt: '05/22 10:08',
+      openedAt: "05/22 10:08",
       openPriceOffset: -eurUsd.pipSize * 18,
     }),
     buildSamplePosition({
-      direction: 'sell',
-      id: 'dev-pos-xau-usd',
+      direction: "sell",
+      id: "dev-pos-xau-usd",
       instrument: xauUsd,
       lots: 0.18,
-      openedAt: '05/22 11:34',
+      openedAt: "05/22 11:34",
       openPriceOffset: xauUsd.pipSize * 96,
     }),
   ];
@@ -168,65 +235,79 @@ function buildSamplePendingOrder(params: {
   lots: number;
   priceOffset: number;
   createdAt: string;
+  type?: Extract<OrderType, "limit" | "stop">;
 }): Order {
   const precision = getPricePrecision(params.instrument);
-  const priceSource = params.direction === 'buy' ? params.instrument.bid : params.instrument.ask;
+  const priceSource =
+    params.direction === "buy" ? params.instrument.bid : params.instrument.ask;
   const price = Number((priceSource + params.priceOffset).toFixed(precision));
+  const type = params.type ?? "limit";
 
   return {
     id: params.id,
     instrumentId: params.instrument.id,
     symbol: params.instrument.symbol,
     direction: params.direction,
-    type: 'limit',
+    type,
     lots: params.lots,
+    expirationType: "gtc",
+    limitPrice: type === "limit" ? price : undefined,
     requestedPrice: price,
-    filledPrice: price,
+    filledPrice: 0,
     marginRequired: calculateMargin(params.instrument, params.lots, price),
-    status: 'pending',
+    status: "pending",
+    stopPrice: type === "stop" ? price : undefined,
     createdAt: params.createdAt,
   };
 }
 
 function buildSamplePendingOrders(): Order[] {
-  const gbpUsd = getSeedInstrument('gbp-usd');
-  const usdJpy = getSeedInstrument('usd-jpy');
+  const gbpUsd = getSeedInstrument("gbp-usd");
+  const usdJpy = getSeedInstrument("usd-jpy");
 
   return [
     buildSamplePendingOrder({
-      createdAt: '05/22 12:10',
-      direction: 'buy',
-      id: 'dev-pending-gbp-usd',
+      createdAt: "05/22 12:10",
+      direction: "buy",
+      id: "dev-pending-gbp-usd",
       instrument: gbpUsd,
       lots: 0.25,
       priceOffset: -gbpUsd.pipSize * 22,
     }),
     buildSamplePendingOrder({
-      createdAt: '05/22 12:26',
-      direction: 'sell',
-      id: 'dev-pending-usd-jpy',
+      createdAt: "05/22 12:26",
+      direction: "sell",
+      id: "dev-pending-usd-jpy",
       instrument: usdJpy,
       lots: 0.12,
       priceOffset: usdJpy.pipSize * 18,
+      type: "stop",
     }),
   ];
 }
 
 export function BrokerProvider({ children }: PropsWithChildren) {
-  const { pendingOrderDataPreset, positionDataPreset, role, setRole } = useProductSettings();
+  const { pendingOrderDataPreset, positionDataPreset, role, setRole } =
+    useProductSettings();
   const storedUpgradeState = readStoredUpgradeState();
   const [instruments, setInstruments] = useState(initialInstruments);
   const [baseAccount, setBaseAccount] = useState(initialAccount);
-  const [partnerClients, setPartnerClients] = useState<PartnerClient[]>(storedUpgradeState?.partnerClients ?? initialPartnerClients);
-  const [upgradeRequest, setUpgradeRequest] = useState<UpgradeRequest>(storedUpgradeState?.upgradeRequest ?? initialUpgradeRequest);
+  const [partnerClients, setPartnerClients] = useState<PartnerClient[]>(
+    storedUpgradeState?.partnerClients ?? initialPartnerClients,
+  );
+  const [upgradeRequest, setUpgradeRequest] = useState<UpgradeRequest>(
+    storedUpgradeState?.upgradeRequest ?? initialUpgradeRequest,
+  );
   const [positions, setPositions] = useState<Position[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [quoteStatus, setQuoteStatus] = useState<'connecting' | 'connected' | 'failed'>('connecting');
+  const [quoteStatus, setQuoteStatus] = useState<
+    "connecting" | "connected" | "failed"
+  >("connecting");
   const sparklineSampledAtRef = useRef<Record<string, number>>({});
 
   useEffect(() => {
-    if (typeof WebSocket === 'undefined') {
-      setQuoteStatus('failed');
+    if (typeof WebSocket === "undefined") {
+      setQuoteStatus("failed");
       return;
     }
 
@@ -246,7 +327,7 @@ export function BrokerProvider({ children }: PropsWithChildren) {
       clearFailureTimer();
       failureTimer = setTimeout(() => {
         failureTimer = null;
-        setQuoteStatus('failed');
+        setQuoteStatus("failed");
         closeCurrentSocket();
         scheduleReconnect();
       }, QUOTE_CONNECTION_TIMEOUT_MS);
@@ -283,7 +364,10 @@ export function BrokerProvider({ children }: PropsWithChildren) {
       currentSocket.onerror = null;
       currentSocket.onclose = null;
 
-      if (currentSocket.readyState === WebSocket.CONNECTING || currentSocket.readyState === WebSocket.OPEN) {
+      if (
+        currentSocket.readyState === WebSocket.CONNECTING ||
+        currentSocket.readyState === WebSocket.OPEN
+      ) {
         currentSocket.close();
       }
     };
@@ -291,32 +375,37 @@ export function BrokerProvider({ children }: PropsWithChildren) {
     const handleQuoteMessage = (symbol: string, bid: number, ask: number) => {
       clearFailureTimer();
       clearReconnectTimer();
-      setQuoteStatus('connected');
+      setQuoteStatus("connected");
 
       const quoteSymbol = normalizeQuoteSymbol(symbol);
       const sampledAt = Date.now();
       const lastSampledAt = sparklineSampledAtRef.current[quoteSymbol] ?? 0;
-      const updateSparkline = sampledAt - lastSampledAt >= SPARKLINE_SAMPLE_INTERVAL_MS;
+      const updateSparkline =
+        sampledAt - lastSampledAt >= SPARKLINE_SAMPLE_INTERVAL_MS;
 
       if (updateSparkline) {
         sparklineSampledAtRef.current[quoteSymbol] = sampledAt;
       }
 
       setInstruments((current) =>
-        current.map((instrument) => (normalizeQuoteSymbol(instrument.symbol) === quoteSymbol ? applyQuote(instrument, bid, ask, { updateSparkline }) : instrument)),
+        current.map((instrument) =>
+          normalizeQuoteSymbol(instrument.symbol) === quoteSymbol
+            ? applyQuote(instrument, bid, ask, { updateSparkline })
+            : instrument,
+        ),
       );
     };
 
     function connectQuoteSocket() {
       closeCurrentSocket();
-      setQuoteStatus('connecting');
+      setQuoteStatus("connecting");
       startFailureTimer();
 
       const nextSocket = new WebSocket(getQuoteSocketUrl());
       socket = nextSocket;
 
       nextSocket.onopen = () => {
-        setQuoteStatus('connecting');
+        setQuoteStatus("connecting");
         startFailureTimer();
       };
 
@@ -324,17 +413,17 @@ export function BrokerProvider({ children }: PropsWithChildren) {
         try {
           const message = JSON.parse(String(event.data)) as DupoinQuoteMessage;
 
-          if (message.type === 'quote-status') {
-            if (message.status === 'failed') {
+          if (message.type === "quote-status") {
+            if (message.status === "failed") {
               clearFailureTimer();
-              setQuoteStatus('failed');
-            } else if (message.status === 'connecting') {
-              setQuoteStatus('connecting');
+              setQuoteStatus("failed");
+            } else if (message.status === "connecting") {
+              setQuoteStatus("connecting");
               startFailureTimer();
-            } else if (message.status === 'connected') {
+            } else if (message.status === "connected") {
               clearFailureTimer();
               clearReconnectTimer();
-              setQuoteStatus('connected');
+              setQuoteStatus("connected");
             }
             return;
           }
@@ -343,7 +432,12 @@ export function BrokerProvider({ children }: PropsWithChildren) {
           const bid = message.d?.b?.[0]?.p;
           const ask = message.d?.a?.[0]?.p;
 
-          if (message.t !== 2 || !symbol || typeof bid !== 'number' || typeof ask !== 'number') {
+          if (
+            message.t !== 2 ||
+            !symbol ||
+            typeof bid !== "number" ||
+            typeof ask !== "number"
+          ) {
             return;
           }
 
@@ -354,7 +448,7 @@ export function BrokerProvider({ children }: PropsWithChildren) {
       };
 
       nextSocket.onerror = () => {
-        setQuoteStatus('failed');
+        setQuoteStatus("failed");
         scheduleReconnect();
       };
 
@@ -366,7 +460,7 @@ export function BrokerProvider({ children }: PropsWithChildren) {
         clearFailureTimer();
 
         if (!closedByCleanup) {
-          setQuoteStatus('failed');
+          setQuoteStatus("failed");
           scheduleReconnect();
         }
       };
@@ -388,25 +482,39 @@ export function BrokerProvider({ children }: PropsWithChildren) {
   }, [instruments]);
 
   useEffect(() => {
-    setPositions(positionDataPreset === 'sample' ? buildSamplePositions() : []);
+    setPositions(positionDataPreset === "sample" ? buildSamplePositions() : []);
   }, [positionDataPreset]);
 
   useEffect(() => {
-    setOrders(pendingOrderDataPreset === 'sample' ? buildSamplePendingOrders() : []);
+    setOrders(
+      pendingOrderDataPreset === "sample" ? buildSamplePendingOrders() : [],
+    );
   }, [pendingOrderDataPreset]);
 
   useEffect(() => {
-    if (Platform.OS !== 'web' || typeof window === 'undefined' || !window.localStorage) {
+    if (
+      Platform.OS !== "web" ||
+      typeof window === "undefined" ||
+      !window.localStorage
+    ) {
       return;
     }
 
-    window.localStorage.setItem(UPGRADE_STORAGE_KEY, JSON.stringify({ partnerClients, upgradeRequest }));
+    window.localStorage.setItem(
+      UPGRADE_STORAGE_KEY,
+      JSON.stringify({ partnerClients, upgradeRequest }),
+    );
   }, [partnerClients, upgradeRequest]);
 
-  const account = useMemo(() => recalculateAccount(baseAccount, positions), [baseAccount, positions]);
+  const account = useMemo(
+    () => recalculateAccount(baseAccount, positions),
+    [baseAccount, positions],
+  );
 
   const placeOrder = (input: PlaceOrderInput) => {
-    const instrument = instruments.find((item) => item.id === input.instrumentId);
+    const instrument = instruments.find(
+      (item) => item.id === input.instrumentId,
+    );
 
     if (!instrument) {
       return null;
@@ -415,7 +523,7 @@ export function BrokerProvider({ children }: PropsWithChildren) {
     const order = createOrder({ ...input, instrument });
 
     setOrders((current) => [order, ...current]);
-    if (order.status === 'filled') {
+    if (order.status === "filled") {
       const position = createPosition(order);
       setPositions((current) => [position, ...current]);
     }
@@ -440,18 +548,18 @@ export function BrokerProvider({ children }: PropsWithChildren) {
           id: `cls-${Date.now()}`,
           instrumentId: position.instrumentId,
           symbol: position.symbol,
-          direction: position.direction === 'buy' ? 'sell' : 'buy',
-          type: 'market',
+          direction: position.direction === "buy" ? "sell" : "buy",
+          type: "market",
           lots: position.lots,
           requestedPrice: position.currentPrice,
           filledPrice: position.currentPrice,
           marginRequired: 0,
-          status: 'closed',
-          createdAt: new Date().toLocaleString('zh-CN', {
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
+          status: "closed",
+          createdAt: new Date().toLocaleString("zh-CN", {
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
           }),
         },
         ...existingOrders,
@@ -480,95 +588,117 @@ export function BrokerProvider({ children }: PropsWithChildren) {
   };
 
   const submitUpgradeRequest = (reason: string) => {
-    if (upgradeRequest.status === 'pending') {
+    if (upgradeRequest.status === "pending") {
       return;
     }
 
-    const submittedAt = new Date().toLocaleString('zh-CN', {
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
+    const submittedAt = new Date().toLocaleString("zh-CN", {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
     });
 
     setUpgradeRequest({
-      applicantClientId: 'client-001',
-      applicantName: '陈思远',
+      applicantClientId: "client-001",
+      applicantName: "陈思远",
       id: `upgrade-${Date.now()}`,
       messages: [
         {
-          author: 'trader',
+          author: "trader",
           body: {
-            'en-US': reason,
-            'zh-CN': reason,
+            "en-US": reason,
+            "zh-CN": reason,
           },
           createdAt: submittedAt,
           id: `msg-${Date.now()}`,
         },
         {
-          author: 'superior',
+          author: "superior",
           body: {
-            'en-US': 'Application received. I will review your client activation plan from the Partner desk.',
-            'zh-CN': '申请已收到，我会在 Partner 工作台审核你的客户激活计划。',
+            "en-US":
+              "Application received. I will review your client activation plan from the Partner desk.",
+            "zh-CN": "申请已收到，我会在 Partner 工作台审核你的客户激活计划。",
           },
           createdAt: submittedAt,
           id: `msg-reply-${Date.now()}`,
         },
       ],
       reason,
-      status: 'pending',
+      status: "pending",
       submittedAt,
-      superiorName: 'Dupoin IB Desk',
+      superiorName: "Dupoin IB Desk",
     });
     setPartnerClients((current) =>
       current.map((client) =>
-        client.id === 'client-001' ? { ...client, role: 'trader', upgradeStatus: 'pending', superiorName: 'Dupoin IB Desk' } : client,
+        client.id === "client-001"
+          ? {
+              ...client,
+              role: "trader",
+              upgradeStatus: "pending",
+              superiorName: "Dupoin IB Desk",
+            }
+          : client,
       ),
     );
   };
 
   const approveUpgradeRequest = (clientId: string) => {
     setPartnerClients((current) =>
-      current.map((client) => (client.id === clientId ? { ...client, role: 'partner', upgradeStatus: 'approved' } : client)),
+      current.map((client) =>
+        client.id === clientId
+          ? { ...client, role: "partner", upgradeStatus: "approved" }
+          : client,
+      ),
     );
     if (clientId === upgradeRequest.applicantClientId) {
       setUpgradeRequest((current) => ({
         ...current,
-        status: 'approved',
+        status: "approved",
         messages: [
           ...current.messages,
           {
-            author: 'superior',
+            author: "superior",
             body: {
-              'en-US': 'Approved. Your Partner workspace is now enabled for this session.',
-              'id-ID': 'Disetujui. Ruang kerja Partner Anda sekarang aktif untuk sesi ini.',
-              'zh-CN': '已批准。你的 Partner 工作台已在当前会话中启用。',
+              "en-US":
+                "Approved. Your Partner workspace is now enabled for this session.",
+              "id-ID":
+                "Disetujui. Ruang kerja Partner Anda sekarang aktif untuk sesi ini.",
+              "zh-CN": "已批准。你的 Partner 工作台已在当前会话中启用。",
             },
-            createdAt: new Date().toLocaleString('zh-CN', {
-              month: '2-digit',
-              day: '2-digit',
-              hour: '2-digit',
-              minute: '2-digit',
+            createdAt: new Date().toLocaleString("zh-CN", {
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
             }),
             id: `msg-approved-${Date.now()}`,
           },
         ],
       }));
-      setRole('partner');
+      setRole("partner");
     }
   };
 
   const rejectUpgradeRequest = (clientId: string) => {
     setPartnerClients((current) =>
-      current.map((client) => (client.id === clientId ? { ...client, role: 'trader', upgradeStatus: 'rejected' } : client)),
+      current.map((client) =>
+        client.id === clientId
+          ? { ...client, role: "trader", upgradeStatus: "rejected" }
+          : client,
+      ),
     );
     if (clientId === upgradeRequest.applicantClientId) {
-      setUpgradeRequest((current) => ({ ...current, status: 'rejected' }));
+      setUpgradeRequest((current) => ({ ...current, status: "rejected" }));
     }
   };
 
   const resetBrokerDemoState = () => {
-    if (Platform.OS === 'web' && typeof window !== 'undefined' && window.localStorage) {
+    if (
+      Platform.OS === "web" &&
+      typeof window !== "undefined" &&
+      window.localStorage
+    ) {
       window.localStorage.removeItem(UPGRADE_STORAGE_KEY);
     }
 
@@ -594,24 +724,37 @@ export function BrokerProvider({ children }: PropsWithChildren) {
       submitUpgradeRequest,
       approveUpgradeRequest,
       rejectUpgradeRequest,
-      getPartnerClientProfile: (clientId: string) => partnerClients.find((client) => client.id === clientId),
+      getPartnerClientProfile: (clientId: string) =>
+        partnerClients.find((client) => client.id === clientId),
       placeOrder,
       modifyOrder,
       deleteOrder,
       closePosition,
-      findInstrument: (id: string) => instruments.find((instrument) => instrument.id === id),
+      findInstrument: (id: string) =>
+        instruments.find((instrument) => instrument.id === id),
     }),
-    [account, instruments, orders, partnerClients, positions, quoteStatus, role, upgradeRequest],
+    [
+      account,
+      instruments,
+      orders,
+      partnerClients,
+      positions,
+      quoteStatus,
+      role,
+      upgradeRequest,
+    ],
   );
 
-  return <BrokerContext.Provider value={value}>{children}</BrokerContext.Provider>;
+  return (
+    <BrokerContext.Provider value={value}>{children}</BrokerContext.Provider>
+  );
 }
 
 export function useBroker() {
   const context = useContext(BrokerContext);
 
   if (!context) {
-    throw new Error('useBroker must be used inside BrokerProvider');
+    throw new Error("useBroker must be used inside BrokerProvider");
   }
 
   return context;

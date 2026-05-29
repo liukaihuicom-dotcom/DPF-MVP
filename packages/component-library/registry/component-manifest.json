@@ -1,5 +1,5 @@
 {
-  "version": "2.2.0",
+  "version": "2.4.3",
   "source": "src/components compatibility runtime; governance source is packages/component-library",
   "components": {
     "ActionButton": {
@@ -334,6 +334,7 @@
       "tokenBindings": [
         "layout.contentCardPaddingX",
         "layout.contentPlainPaddingX",
+        "layout.sheetContentPaddingX",
         "layout.topBarPaddingX",
         "layout.screenGap",
         "layout.screenBottomPadding",
@@ -408,6 +409,7 @@
         "header",
         "content",
         "footer",
+        "heightMode",
         "snapPoints",
         "contentSizing",
         "sheetSurface",
@@ -416,7 +418,10 @@
       "variants": [
         "actionMenu",
         "detail",
-        "selection"
+        "selection",
+        "adaptive",
+        "fixed",
+        "fullscreen"
       ],
       "states": [
         "closed",
@@ -429,10 +434,10 @@
         "Backdrop tap dismisses the sheet through the shared hide() path",
         "Pan-down dismissal is enabled for header and headerless sheets",
         "Opening or stacking a sheet dismisses the active keyboard and releases input focus first",
-        "Header and content keep full text opacity while translating through the shared entrance progress; fixed footer action zones reveal and dismiss through the shared entrance progress and start hidden until the sheet entrance is complete",
+        "Header, Content, and Footer remain mounted together as direct children of one Panel until the shared dismiss lifecycle finishes",
         "Header actions require accessibility labels",
-        "Short content must not expose unnecessary scroll behavior",
-        "Short content with footer actions must use natural content height with measured footer avoidance and a governed reading gap before the action area",
+        "Adaptive short content keeps natural height and does not expose unnecessary scroll behavior",
+        "Fixed and fullscreen content fills the middle panel area and scrolls internally when over height",
         "Footer actions keep safe-area spacing without visual separation from the sheet surface"
       ],
       "platforms": [
@@ -447,21 +452,29 @@
         "layout.contentPlainPaddingX",
         "layout.topBarPaddingX",
         "layout.bottomActionArea.*",
+        "motion.overlay.*",
+        "color.surface.canvas",
+        "color.surface.panel",
         "palette.*",
         "spacing.*"
       ],
-      "usage": "Global bottom sheet system. Use presets for every page-triggered mobile sheet. Opening or stacking a sheet dismisses the active keyboard and releases input focus before presentation. Header and fixed footer actions keep 16px horizontal inset; card-mode content defaults to 12px, while plain/form content opts into 16px. List-only selection sheets can request sheetSurface=panel so the sheet uses the white panel surface instead of the page canvas; card/detail sheets keep the canvas default. Selection sheets default to fill sizing so long option lists use the governed scroll container. Header and content keep full text opacity while translating through the shared entrance progress, preserving readable sheet content after presentation. Fixed footer action areas start hidden below the sheet, follow the sheet entrance and dismissal, and never remain visible after content exits. Footer action areas do not render a top divider; short content uses a non-scroll container at natural content height with a governed reading gap before fixed actions, measured footer avoidance protects actions, backdrop tap and pan-down close are mandatory, and only over-height content becomes scrollable. Every page-level bottom sheet must be opened through useBottomSheet with bottomSheetPresets.selection/detail/actionMenu or a registered business sheet wrapper exported from design-public-assets.",
+      "usage": "Global bottom sheet system. Use presets for every page-triggered mobile sheet. Height decisions must follow src/design-public-assets/overlays/registry/bottom-sheet-design-principles.md and choose heightMode='adaptive', 'fixed', or 'fullscreen'. Adaptive is for action menus, short forms, short confirmations, and detail sheets: the Panel grows from Header + Content + Footer, maxes at 90dvh, and only Content scrolls when over height. Fixed is for page-like sheets, long selections, complex local flows, and explicit legacy snapPoints/contentSizing='fill': Panel height is 90dvh and Content uses the remaining middle space. Fullscreen is for full-screen modal-equivalent flows: Panel height is 100dvh, radius is removed, and Content fills the middle area with safe-area aware Footer. Header, Content, and Footer must render as direct children inside one Panel; Footer is in normal layout flow with flex: 0 0 auto, not footerComponent, portal, fixed, or absolute. Opening or stacking a sheet dismisses the active keyboard and releases input focus before presentation. Backdrop tap, close button, pan-down, Android back, cancel action, and business-completion close all use the shared closeModal lifecycle, and cleanup happens only after the Panel dismisses. Header left/right inset uses `layout.topBarPaddingX` at 16px. Card content uses `layout.contentCardPaddingX` at 12px. List content, article/detail introduction content, and normal descriptive content use `layout.sheetContentPaddingX` at 16px. Footer left/right inset uses `layout.bottomActionArea.paddingX` at 16px. Card content keeps the gray `sheetSurface='canvas'` bed (`color.surface.canvas`) with white `color.surface.panel` card bodies; plain/list content uses `sheetSurface='panel'` so picker, selection, and list sheets sit on a white bed. The selection preset defaults to this panel surface. Card-based selection sheets such as TradingAccountContextSwitcher explicitly use `sheetSurface='canvas'` and `contentPadding='card'` because account options are selectable cards on a gray bed. Flush content is reserved for public business components that own their full internal surface and spacing. Every page-level bottom sheet must be opened through useBottomSheet with bottomSheetPresets.selection/detail/actionMenu or a registered business sheet wrapper exported from design-public-assets.",
       "forbidden": [
         "Do not call bottomSheet.show or bottomSheet.push with ad hoc options; use bottomSheetPresets",
         "Do not add page-local Keyboard.dismiss calls before bottomSheet.show or bottomSheet.push; the shared provider owns keyboard dismissal",
         "Do not import or render BottomSheetModal outside src/components/BottomSheet.tsx",
         "Do not create page-local sheet containers",
         "Do not create page-local scrims, handles, SafeArea bottom shells, or absolute bottom modal containers",
+        "Do not use footerComponent, GorhomBottomSheetFooter, a footer portal, fixed footer positioning, or absolute footer positioning for shared BottomSheet actions",
         "Do not override BottomSheet footer background or add page-local footer dividers",
-        "Do not add fixed content bottom insets to compensate for footer actions",
+        "Do not add fixed content bottom insets, footerReserveHeight, measured footer avoidance, or page-local padding to compensate for footer actions",
+        "Do not use page-local background wrappers or hardcoded colors to simulate card gray beds or list white beds; choose sheetSurface='canvas' or sheetSurface='panel'",
+        "Do not use page-local padding to set BottomSheet horizontal inset; use layout.contentCardPaddingX for card content, layout.sheetContentPaddingX for list/article/detail introduction content, layout.topBarPaddingX for Header, and layout.bottomActionArea.paddingX for Footer",
         "Do not wrap short sheet content in page-local vertical scroll containers to force scrolling",
-        "Do not animate content and fixed footer on separate entrance or dismissal timelines",
-        "Do not render fixed footer action areas visible or interactive before the shared sheet entrance progress completes or after dismissal begins",
+        "Do not hardcode arbitrary snapPoints or heights in page code; choose a governed heightMode first and use snapPoints only as a fixed compatibility input",
+        "Do not use max-height Bottom Sheet for multi-step, high-risk, compliance, KYC, funding, or long agreement flows; promote to Modal Page or Full-screen Modal",
+        "Do not animate Header, Content, or Footer on separate entrance or dismissal timelines; only the Panel may slide while the Overlay fades",
+        "Do not conditionally mount, hide, delay, or unmount Footer separately from Panel content",
         "Do not import useBottomSheet or bottomSheetPresets in pages from runtime-private component paths; use src/design-public-assets/components.",
         "Do not use React Native Modal to simulate a bottom sheet."
       ],
@@ -698,6 +711,9 @@
       "path": "src/components/business/OrderPositionDetailSheet.tsx",
       "exports": [
         "OrderPositionDetailSheet",
+        "PositionDetailSheet",
+        "PendingOrderDetailSheet",
+        "TradingOrderActionSheet",
         "ClosedOrderDetailSheet"
       ],
       "props": [
@@ -705,6 +721,8 @@
         "summary",
         "title",
         "valueHero",
+        "groups",
+        "items",
         "dealCountLabel",
         "deals",
         "pnlDelta",
@@ -714,6 +732,8 @@
       ],
       "variants": [
         "openOrderPosition",
+        "positionActionMenu",
+        "pendingOrderActionMenu",
         "closedOrder",
         "valueHero"
       ],
@@ -740,9 +760,11 @@
         "typography.*",
         "palette.*"
       ],
-      "usage": "Reusable order, position, and closed-order detail sheet body for trading/account task flows. It owns dense financial value layout and registered numeric auto-fit behavior for constrained PnL/value hero surfaces.",
+      "usage": "Reusable order, position, pending-order, closed-order detail, and grouped order action sheet bodies for trading/account task flows. It owns dense financial value layout, registered numeric auto-fit behavior for constrained PnL/value hero surfaces, and the TradingOrderActionSheet action-menu body that uses GlobalMenuList contained spacing without page-owned wrapper cards.",
       "forbidden": [
         "Do not recreate order or position detail sheet bodies in route pages",
+        "Do not create page-local position or pending-order option sheet shells",
+        "Do not add page-local GlobalMenuList wrapper cards for trading order sheets",
         "Do not use auto-fit for titles or labels inside this sheet",
         "Do not hardcode financial value colors outside AppText tone semantics"
       ],
@@ -1142,7 +1164,7 @@
         "layout.*",
         "iconRegistry.*"
       ],
-      "usage": "Authentication and verification helper controls. CountryPickerModal uses the shared BottomSheet selection preset with sheetSurface=panel, plain list padding, and an explicit snap point so long country/region lists use the shared max-height and scroll behavior without re-opening on parent callback or selected-country reference changes. The picker exposes 128 mainstream global phone regions with Indonesia first as the default, keeps search over country/region name, ISO code, and dial code, and shows a localized empty state for unmatched searches. Country rows stack the dial code above the country or region name and render the selected state with the registered icon.status.check AppIcon at the default 24px component icon size. Dismissal remains owned by the shared BottomSheet backdrop, pan-down gesture, and selected-option paths. AuthContactConfirmDialog, AuthLeaveVerifiedStepDialog, and AuthErrorDialog keep the centered feedback visual but delegate the React Native Modal host to GlobalDialog.",
+      "usage": "Authentication and verification helper controls. CountryPickerModal uses the shared BottomSheet selection preset with sheetSurface=panel, plain list padding, and an explicit snap point so long country/region lists use the shared max-height and scroll behavior without re-opening on parent callback or selected-country reference changes. The picker exposes 128 mainstream global phone regions with Indonesia first as the default, keeps search over country/region name, ISO code, and dial code, and shows a localized empty state for unmatched searches. CountryPhoneField consumers must validate phone numbers through the shared libphonenumber-js auth rule and pass account values forward in E.164 format. Country rows stack the dial code above the country or region name and render the selected state with the registered icon.status.check AppIcon at the default 24px component icon size. Dismissal remains owned by the shared BottomSheet backdrop, pan-down gesture, and selected-option paths. AuthContactConfirmDialog, AuthLeaveVerifiedStepDialog, and AuthErrorDialog keep the centered feedback visual but delegate the React Native Modal host to GlobalDialog.",
       "forbidden": [
         "Do not recreate this pattern inside app route files",
         "Do not bypass token or icon registry bindings",
@@ -1364,13 +1386,23 @@
         "HeaderIconSlot"
       ],
       "props": [
-        "documented in TypeScript props"
+        "accessibilityLabel",
+        "disabled",
+        "icon",
+        "onPress",
+        "surface",
+        "style",
+        "tone",
+        "variant"
       ],
       "variants": [
-        "default"
+        "filled-panel",
+        "filled-neutral",
+        "ghost"
       ],
       "states": [
-        "default"
+        "default",
+        "disabled"
       ],
       "a11y": [
         "Visible labels or caller-provided accessibility labels are required for interactive use"
@@ -1383,6 +1415,7 @@
       "tokenBindings": [
         "palette.*",
         "color.surface.panel",
+        "color.surface.subtle",
         "color.icon.primary",
         "spacing.*",
         "typography.*",
@@ -1392,11 +1425,12 @@
         "layout.*",
         "iconRegistry.*"
       ],
-      "usage": "Icon button and slot for top bars and headers. Filled header/icon action containers render on the white panel surface token when placed over gray page, sheet, or canvas backgrounds, while the default glyph uses the neutral primary icon token. Pass an explicit semantic tone only for selected, destructive, status, inverse, or deliberately low-emphasis tertiary header actions.",
+      "usage": "Icon button and slot for top bars and headers. Filled header/icon action containers default to the white panel surface token when placed over gray page, sheet, or canvas backgrounds. When a header icon sits on a white panel surface, pass surface=neutral so the background is resolved from the governed IconSurface neutral background while the default glyph keeps the neutral primary icon token. Pass an explicit semantic tone only for selected, destructive, status, inverse, or deliberately low-emphasis tertiary header actions.",
       "forbidden": [
         "Do not recreate this pattern inside app route files",
         "Do not bypass token or icon registry bindings",
-        "Do not hardcode white or use the gray subtle surface for filled header icon action containers on gray page or sheet backgrounds"
+        "Do not hardcode white or use page-local background containers for header icon actions",
+        "Do not use surface=neutral on gray page, sheet, or canvas backgrounds where panel contrast is required"
       ],
       "status": "active"
     },
@@ -1917,7 +1951,7 @@
         "layout.*",
         "iconRegistry.*"
       ],
-      "usage": "Trading account selection sheet and reusable account card. Account rows use exported `TradingAccountCard`; selection sheets pass `trailing=radio`, account list/detail entry contexts pass `trailing=chevron`, and compact switcher headers can pass `trailing=currency`. Rows keep the governed `icon.wallet.balance` glyph in a medium default-tone IconSurface with visible governed background so balance/equity semantics stay visible without overpowering account content.",
+      "usage": "Trading account selection sheet and reusable account card. Account rows use exported `TradingAccountCard`; selection sheets pass `trailing=radio`, account list/detail entry contexts pass `trailing=chevron`, and compact switcher headers can pass `trailing=currency`. Because this is a card-based selection pattern, BottomSheet callers must use `sheetSurface='canvas'` with `contentPadding='card'`; the sheet bed is gray `color.surface.canvas` while account card bodies remain white `color.surface.panel`. Rows keep the governed `icon.wallet.balance` glyph in a medium default-tone IconSurface with visible governed background so balance/equity semantics stay visible without overpowering account content.",
       "forbidden": [
         "Do not recreate this pattern inside app route files",
         "Do not bypass token or icon registry bindings",
@@ -2027,7 +2061,7 @@
         "palette.*",
         "iconRegistry.*"
       ],
-      "usage": "Business wrapper for trading account selection contexts. It reuses TradingAccountSwitchSheet while giving markets, portfolio, funding, and trading flows a governed account-switcher entry point.",
+      "usage": "Business wrapper for trading account selection contexts. It reuses TradingAccountSwitchSheet while giving markets, portfolio, funding, and trading flows a governed account-switcher entry point. BottomSheet entry points render it as card-based selection content with `sheetSurface='canvas'` and `contentPadding='card'`, not the plain-list `selection` default.",
       "forbidden": [
         "Do not rebuild account switcher rows in route pages",
         "Do not bypass TradingAccountSwitchSheet for account selection visuals",

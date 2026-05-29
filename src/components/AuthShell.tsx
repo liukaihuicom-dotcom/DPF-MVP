@@ -11,7 +11,7 @@ import { localeOptions, type Locale } from '@/src/i18n/translations';
 import { AppIcon } from './AppIcon';
 import { NativePressable } from './NativePressable';
 import type { AppIconName } from './AppIcon';
-import { bottomSheetPresets, useBottomSheet } from './BottomSheet';
+import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
 import { FlagIcon } from './FlagIcon';
 import { HeaderIconButton } from './HeaderIconButton';
 import { useKeyboardVisible } from './layout/useKeyboardVisible';
@@ -234,6 +234,10 @@ export function AuthLanguageAction() {
   const openLanguageSheet = () => {
     bottomSheet.show(bottomSheetPresets.selection({
       content: <AuthLanguageSheetContent onSelect={selectLocale} selectedLocale={locale} />,
+      contentPadding: 'plain',
+      contentSizing: 'auto',
+      heightMode: 'adaptive',
+      sheetSurface: 'panel',
       title: t('auth.language.selectTitle'),
     }));
   };

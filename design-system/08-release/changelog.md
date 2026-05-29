@@ -1,5 +1,53 @@
 # Changelog
 
+## 1.0.9 - 2026-05-29
+
+### Changed
+
+- Added the BottomSheet horizontal spacing contract: Header 16px, card content 12px, list/article/detail-introduction content 16px, and Footer 16px.
+- Updated BottomSheet runtime spacing so `contentPadding="card"` uses the governed 12px card inset while `contentPadding="plain"` uses the governed 16px list/article inset.
+- Updated BottomSheet documentation and QA to block card/plain content from collapsing into one shared horizontal inset.
+
+## 1.0.8 - 2026-05-29
+
+### Changed
+
+- Clarified that trading account selection is a card-based BottomSheet selection, not a plain list.
+- Updated account-switcher BottomSheet entries to use gray `surface.canvas` with `contentPadding="card"` while plain pickers and list selections stay on white `surface.panel`.
+- Added QA coverage for the trading account card-selection surface rule.
+
+## 1.0.7 - 2026-05-29
+
+### Changed
+
+- Added BottomSheet surface governance: card/detail content uses the gray `surface.canvas` sheet bed, while list/selection content uses the white `surface.panel` sheet bed.
+- Updated the shared selection preset contract so picker/list sheets default to the white panel surface without page-local background wrappers.
+- Added QA coverage for BottomSheet surface token mapping and documentation.
+
+## 1.0.6 - 2026-05-29
+
+### Changed
+
+- Updated shared `BottomSheet` dismissal governance so the sheet container dismissal is owned by `@gorhom/bottom-sheet` while header, content, and fixed footer share one internal visual progress.
+- Added measured footer reserve behavior for fixed-footer sheets, keeping `layout.bottomActionArea.contentInset` only as the first-frame fallback.
+- Documented symmetric closing rhythm, late footer opacity fade, and progress-threshold footer interactivity for bottom-sheet QA.
+
+## 1.0.5 - 2026-05-29
+
+### Changed
+
+- Added a neutral filled surface mode to the governed `HeaderIconButton` contract so white-panel header actions can reuse the `IconSurface` neutral background.
+- Updated `/instrument/[id]` back navigation to use the neutral header icon surface while preserving the registered back icon, navigation fallback, and trading entry behavior.
+- Added QA coverage for the panel/default and IconSurface-neutral header icon background modes.
+
+## 1.0.4 - 2026-05-29
+
+### Changed
+
+- Added the governed auth phone validation contract for `CountryPhoneField`: phone entries must match the selected country / region and account handoff uses E.164.
+- Registered login, registration, and password-reset phone entry as shared country-picker consumers.
+- Updated component and route documentation so phone validation remains shared instead of page-local.
+
 ## 1.0.3 - 2026-05-28
 
 ### Changed
@@ -58,7 +106,7 @@
 
 ### Changed
 
-- Added the full-site horizontal spacing contract for route pages and BottomSheet surfaces: 16px for headers and fixed action areas, 12px for card/list content, and 16px for plain/form content.
+- Added the full-site horizontal spacing contract for route pages and BottomSheet surfaces: 16px for headers and fixed action areas, 12px for BottomSheet card content, and 16px for BottomSheet list/article-detail introduction content.
 - Synced token, component, public-resource, and QA governance so later page work consumes shared spacing modes instead of page-local padding.
 
 ## 0.4.2 - 2026-05-28

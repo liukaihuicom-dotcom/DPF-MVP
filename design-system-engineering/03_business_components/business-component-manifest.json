@@ -410,6 +410,8 @@
       "states": [
         "position-detail",
         "pending-order-detail",
+        "position-action-menu",
+        "pending-order-action-menu",
         "history-order-detail",
         "restricted",
         "mutation-feedback"
@@ -434,13 +436,14 @@
         "web"
       ],
       "currentSources": [
-        "src/components/business/OrderPositionDetailSheet.tsx",
-        "src/screens/portfolio/PortfolioScreen.tsx"
+        "src/components/business/OrderPositionDetailSheet.tsx"
       ],
       "extractionStatus": "implemented_active",
       "qaGate": [
         "Uses ConfirmActionSheet for high-risk close/delete flows",
         "Uses KeyValueList and TradeDirectionIcon",
+        "Uses TradingOrderActionSheet for grouped position and pending-order action menus",
+        "No page-local GlobalMenuList wrapper cards inside order action sheets",
         "No page-local hardcoded high-risk copy after migration",
         "Portfolio detail sheets import the shared sheet body component"
       ],

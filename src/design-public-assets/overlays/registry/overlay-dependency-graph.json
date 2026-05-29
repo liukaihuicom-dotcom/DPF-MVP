@@ -28,6 +28,10 @@
       "type": "component"
     },
     {
+      "id": "principle.bottomSheet.heightSystem",
+      "type": "governance_principle"
+    },
+    {
       "id": "component.ModalStackProvider",
       "type": "component"
     },
@@ -105,6 +109,16 @@
       "from": "overlay.global.bottomSheet",
       "to": "component.BottomSheetProvider",
       "relation": "implemented_by"
+    },
+    {
+      "from": "overlay.global.bottomSheet",
+      "to": "principle.bottomSheet.heightSystem",
+      "relation": "governed_by"
+    },
+    {
+      "from": "principle.bottomSheet.heightSystem",
+      "to": "component.BottomSheetProvider",
+      "relation": "constrains"
     },
     {
       "from": "component.BottomSheetProvider",

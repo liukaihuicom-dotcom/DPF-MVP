@@ -1,5 +1,17 @@
 # Token Changelog
 
+## 3.3.0 - 2026-05-29
+
+- Added `layout.sheetContentPaddingX` at 16px as the dedicated BottomSheet plain/list/article-detail content horizontal inset.
+- Kept card-mode content on `layout.contentCardPaddingX` at 12px for page cards and BottomSheet card content.
+- Documented the BottomSheet horizontal contract: Header 16px, card content 12px, list/article/detail-introduction content 16px, and Footer 16px.
+
+## 3.2.0 - 2026-05-29
+
+- Added `motion.overlay.exitTranslateY` for shared internal overlay visual dismissal translation.
+- Added `motion.overlay.footerExitOpacityPivot` so fixed bottom-sheet footers stay opaque until the final dismissal segment.
+- Synchronized package token source, compatibility runtime tokens, registry metadata, and export-map coverage for BottomSheet dismissal governance.
+
 ## 3.1.0 - 2026-05-28
 
 - Added the semantic `radius.card` role at 12px for standard Card, card-like page panels, sheet content cards, and business component panels.
@@ -21,7 +33,7 @@
 
 ## 2.5.0 - 2026-05-28
 
-- Added the full-site horizontal content inset contract: card-mode page and BottomSheet content use `layout.contentCardPaddingX` at 12px, while plain text/form content and top bars use 16px aliases.
+- Added the full-site horizontal content inset contract: card-mode page and BottomSheet card content use `layout.contentCardPaddingX` at 12px, while BottomSheet plain/list/article-detail introduction content and top bars use governed 16px aliases.
 - Changed `layout.listRowPaddingX` to the governed 12px list/row horizontal inset while preserving `layout.formFieldTextInset` at 12px and footer action horizontal padding at 16px.
 - Synchronized package and runtime compatibility token registries, export maps, and spacing documentation for the new 12px/16px layout policy.
 

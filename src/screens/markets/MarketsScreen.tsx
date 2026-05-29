@@ -145,6 +145,7 @@ function AccountMiniCard({
         onAddAccount: showAddAccountFeedback,
         title: t('funding.account.switchTitle'),
       }),
+      contentPadding: 'card',
       content: (
         <TradingAccountContextSwitcher
           accounts={accounts}
@@ -156,6 +157,7 @@ function AccountMiniCard({
           selectedId={selectedAccount.id}
         />
       ),
+      sheetSurface: 'canvas',
     }));
   };
   const metrics = [

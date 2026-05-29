@@ -39,14 +39,12 @@ export default function LoginScreen() {
   const hasAccountParam = typeof params.account === 'string' && params.account.length > 0;
   const [useRememberedAccount, setUseRememberedAccount] = useState(Boolean(rememberedLoginSnapshot?.account) && !hasAccountParam);
   const remembered = useRememberedAccount && Boolean(rememberedLoginSnapshot?.account);
-  const [accountInput, setAccountInput] = useState(
-    typeof params.account === 'string' ? normalizeInitialAccount(params.account, params.channel) : '',
-  );
+  const [loginAccount, setLoginAccount] = useState(typeof params.account === 'string' ? normalizeInitialAccount(params.account) : '');
   const [password, setPassword] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
   const redirect = safeRedirect(typeof params.redirect === 'string' ? params.redirect : undefined);
-  const resolvedAccount = resolveLoginAccount(accountInput);
+  const resolvedAccount = resolveLoginAccount(loginAccount);
   const account = remembered && rememberedLoginSnapshot ? rememberedLoginSnapshot.account : resolvedAccount.account;
   const channel = remembered && rememberedLoginSnapshot ? rememberedLoginSnapshot.channel : resolvedAccount.channel;
   const rememberedAccountLabel = rememberedLoginSnapshot
@@ -101,7 +99,7 @@ export default function LoginScreen() {
 
   const switchAccount = () => {
     setUseRememberedAccount(false);
-    setAccountInput('');
+    setLoginAccount('');
     setPassword('');
     setSubmitted(false);
   };
@@ -166,18 +164,23 @@ export default function LoginScreen() {
       ) : null}
 
       {!remembered ? (
-        <AuthTextField
-          autoFocus
-          autoComplete="username"
-          error={accountError}
-          inputMode="email"
-          keyboardType="email-address"
-          label={t('auth.account')}
-          onChangeText={setAccountInput}
-          placeholder={t('auth.accountPlaceholder')}
-          textContentType="username"
-          value={accountInput}
-        />
+        <View style={styles.loginInputStack}>
+          <AuthTextField
+            autoFocus
+            autoComplete="username"
+            error={accountError}
+            inputMode="email"
+            keyboardType="email-address"
+            label={t('auth.login.account')}
+            onChangeText={(value) => {
+              setLoginAccount(value);
+              setSubmitted(false);
+            }}
+            placeholder={t('auth.login.accountPlaceholder')}
+            textContentType="username"
+            value={loginAccount}
+          />
+        </View>
       ) : null}
 
       <AuthTextField
@@ -203,20 +206,16 @@ function resolveLoginAccount(value: string): { account: string; channel: AuthCha
   }
 
   const phone = sanitizePhone(trimmed);
-  return { account: phone, channel: 'phone', valid: phone.length >= 6 };
+
+  if (phone.length >= 6) {
+    return { account: phone, channel: 'phone', valid: true };
+  }
+
+  return { account: trimmed, channel: trimmed.includes('@') ? 'email' : 'phone', valid: false };
 }
 
-function normalizeInitialAccount(value: string, channel?: AuthChannel) {
-  if (channel === 'phone') {
-    return sanitizePhone(value);
-  }
-
-  if (isValidEmail(value)) {
-    return value;
-  }
-
-  const phone = sanitizePhone(value);
-  return phone.length > 0 ? phone : value;
+function normalizeInitialAccount(value: string) {
+  return value.trim();
 }
 
 function getDemoDeviceLabel() {
@@ -303,6 +302,9 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
     minWidth: 0,
+  },
+  loginInputStack: {
+    gap: spacing.md,
   },
   switchAccountButton: {
     alignItems: 'center',

@@ -5,14 +5,13 @@ import { useState } from "react";
 import { layout, lineWidth, radius, spacing } from '@/src/design-public-assets/tokens';
 import { ActionButton } from '@/src/design-public-assets/components';
 import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
-import { ClosedOrderDetailSheet as SharedClosedOrderDetailSheet, createTradingAccountContextSwitcherHeader, FilterPillGroup, OrderPositionDetailSheet, TradingAccountContextSwitcher } from '@/src/design-public-assets/business-components';
+import { ClosedOrderDetailSheet as SharedClosedOrderDetailSheet, createTradingAccountContextSwitcherHeader, FilterPillGroup, PendingOrderDetailSheet as SharedPendingOrderDetailSheet, PositionDetailSheet as SharedPositionDetailSheet, TradingAccountContextSwitcher, TradingOrderActionSheet } from '@/src/design-public-assets/business-components';
 import { Card } from '@/src/design-public-assets/components';
 import { ConfirmActionSheet } from '@/src/design-public-assets/components';
 import { MiniBarChart, TradeOrderList } from '@/src/design-public-assets/components';
 import { EmptyState } from '@/src/design-public-assets/components';
 import { FundActionGrid } from '@/src/design-public-assets/components';
 import { GlobalMenuList } from '@/src/design-public-assets/components';
-import { SheetGroupTitle } from '@/src/design-public-assets/components';
 import { IconSurface } from '@/src/design-public-assets/components';
 import {
   KeyValueList,
@@ -261,6 +260,7 @@ export function TraderPortfolioScreen() {
         onAddAccount: showAddAccountFeedback,
         title: t("funding.account.switchTitle"),
       }),
+      contentPadding: "card",
       content: (
         <TradingAccountContextSwitcher
           accounts={accountProfiles}
@@ -272,6 +272,7 @@ export function TraderPortfolioScreen() {
           selectedId={selectedAccount.id}
         />
       ),
+      sheetSurface: "canvas",
     }));
   };
   const openAccountMenu = () => {
@@ -299,15 +300,45 @@ export function TraderPortfolioScreen() {
     bottomSheet.show(bottomSheetPresets.detail({
       title: t("portfolio.positionOptionsTitle"),
       content: (
-        <PositionOptionsSheet
-          onAction={(title) => {
-            toast.show({
-              message: t("common.demoActionNoPosition"),
-              title,
-              tone: "default",
-            });
-            bottomSheet.hide();
-          }}
+        <TradingOrderActionSheet
+          groups={[
+            {
+              id: "view-mode",
+              title: t("portfolio.optionGroupViewMode"),
+              items: [
+                {
+                  description: t("portfolio.optionByOrderDesc"),
+                  icon: "icon.trading.order",
+                  label: t("portfolio.optionByOrder"),
+                  onPress: () => showPositionOptionFeedback(t("portfolio.optionByOrder")),
+                },
+                {
+                  description: t("portfolio.optionBySymbolDesc"),
+                  icon: "icon.trading.group_by_symbol",
+                  label: t("portfolio.optionBySymbol"),
+                  onPress: () => showPositionOptionFeedback(t("portfolio.optionBySymbol")),
+                },
+              ],
+            },
+            {
+              id: "bulk-actions",
+              title: t("portfolio.optionGroupBulkActions"),
+              items: [
+                {
+                  description: t("portfolio.optionCloseAllDesc"),
+                  icon: "icon.trading.close_position",
+                  label: t("portfolio.optionCloseAll"),
+                  onPress: () => showPositionOptionFeedback(t("portfolio.optionCloseAll")),
+                },
+                {
+                  description: t("portfolio.optionCloseLosingDesc"),
+                  icon: "icon.trading.close_losing_position",
+                  label: t("portfolio.optionCloseLosing"),
+                  onPress: () => showPositionOptionFeedback(t("portfolio.optionCloseLosing")),
+                },
+              ],
+            },
+          ]}
         />
       ),
     }));
@@ -317,18 +348,64 @@ export function TraderPortfolioScreen() {
       leftIcon: "icon.system.settings",
       title: t("portfolio.pendingOptionsTitle"),
       content: (
-        <PendingOrderOptionsSheet
-          onAction={(title) => {
-            toast.show({
-              message: t("common.demoActionNoPendingOrder"),
-              title,
-              tone: "default",
-            });
-            bottomSheet.hide();
-          }}
+        <TradingOrderActionSheet
+          groups={[
+            {
+              id: "list",
+              title: t("portfolio.pendingOptionGroupList"),
+              items: [
+                {
+                  description: t("portfolio.pendingOptionSortDesc"),
+                  icon: "icon.system.settings",
+                  label: t("portfolio.pendingOptionSort"),
+                  onPress: () => showPendingOptionFeedback(t("portfolio.pendingOptionSort")),
+                },
+                {
+                  description: t("portfolio.pendingOptionBySymbolDesc"),
+                  icon: "icon.trading.group_by_symbol",
+                  label: t("portfolio.pendingOptionBySymbol"),
+                  onPress: () => showPendingOptionFeedback(t("portfolio.pendingOptionBySymbol")),
+                },
+              ],
+            },
+            {
+              id: "bulk-actions",
+              title: t("portfolio.optionGroupBulkActions"),
+              items: [
+                {
+                  description: t("portfolio.pendingOptionCancelSelectedDesc"),
+                  icon: "icon.trading.order",
+                  label: t("portfolio.pendingOptionCancelSelected"),
+                  onPress: () => showPendingOptionFeedback(t("portfolio.pendingOptionCancelSelected")),
+                },
+                {
+                  description: t("portfolio.pendingOptionCancelAllDesc"),
+                  icon: "icon.system.delete",
+                  label: t("portfolio.pendingOptionCancelAll"),
+                  onPress: () => showPendingOptionFeedback(t("portfolio.pendingOptionCancelAll")),
+                },
+              ],
+            },
+          ]}
         />
       ),
     }));
+  };
+  const showPositionOptionFeedback = (title: string) => {
+    toast.show({
+      message: t("common.demoActionNoPosition"),
+      title,
+      tone: "default",
+    });
+    bottomSheet.hide();
+  };
+  const showPendingOptionFeedback = (title: string) => {
+    toast.show({
+      message: t("common.demoActionNoPendingOrder"),
+      title,
+      tone: "default",
+    });
+    bottomSheet.hide();
   };
   const openPositionDetail = (position: (typeof positionRows)[number]) => {
     bottomSheet.show(bottomSheetPresets.actionMenu({
@@ -728,138 +805,6 @@ function AccountMenuSheet({
   );
 }
 
-function PositionOptionsSheet({
-  onAction,
-}: {
-  onAction: (title: string) => void;
-}) {
-  const { colors, t } = useProductSettings();
-  const viewModes = [
-    {
-      description: t("portfolio.optionByOrderDesc"),
-      icon: "icon.trading.order" as const,
-      label: t("portfolio.optionByOrder"),
-    },
-    {
-      description: t("portfolio.optionBySymbolDesc"),
-      icon: "icon.trading.group_by_symbol" as const,
-      label: t("portfolio.optionBySymbol"),
-    },
-  ];
-  const bulkActions = [
-    {
-      description: t("portfolio.optionCloseAllDesc"),
-      icon: "icon.trading.close_position" as const,
-      label: t("portfolio.optionCloseAll"),
-    },
-    {
-      description: t("portfolio.optionCloseLosingDesc"),
-      icon: "icon.trading.close_losing_position" as const,
-      label: t("portfolio.optionCloseLosing"),
-    },
-  ];
-
-  return (
-    <View style={styles.positionOptionsSheet}>
-      <View style={styles.positionOptionsModule}>
-        <SheetGroupTitle title={t("portfolio.optionGroupViewMode")} />
-        <View style={StyleSheet.flatten([styles.menuListInset, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-          <GlobalMenuList
-            contained
-            items={viewModes.map((item) => ({
-              description: item.description,
-              icon: item.icon,
-              label: item.label,
-              onPress: () => onAction(item.label),
-            }))}
-            variant="descriptive"
-          />
-        </View>
-      </View>
-
-      <View style={styles.positionOptionsModule}>
-        <SheetGroupTitle title={t("portfolio.optionGroupBulkActions")} />
-        <View style={StyleSheet.flatten([styles.menuListInset, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-          <GlobalMenuList
-            contained
-            items={bulkActions.map((item) => ({
-              description: item.description,
-              icon: item.icon,
-              label: item.label,
-              onPress: () => onAction(item.label),
-            }))}
-            variant="descriptive"
-          />
-        </View>
-      </View>
-    </View>
-  );
-}
-
-function PendingOrderOptionsSheet({
-  onAction,
-}: {
-  onAction: (title: string) => void;
-}) {
-  const { colors, t } = useProductSettings();
-  const listActions = [
-    {
-      description: t("portfolio.pendingOptionSortDesc"),
-      icon: "icon.system.settings" as const,
-      label: t("portfolio.pendingOptionSort"),
-    },
-    {
-      description: t("portfolio.pendingOptionBySymbolDesc"),
-      icon: "icon.trading.group_by_symbol" as const,
-      label: t("portfolio.pendingOptionBySymbol"),
-    },
-  ];
-  const batchActions = [
-    {
-      description: t("portfolio.pendingOptionCancelSelectedDesc"),
-      icon: "icon.trading.order" as const,
-      label: t("portfolio.pendingOptionCancelSelected"),
-    },
-    {
-      description: t("portfolio.pendingOptionCancelAllDesc"),
-      icon: "icon.system.delete" as const,
-      label: t("portfolio.pendingOptionCancelAll"),
-    },
-  ];
-
-  return (
-    <View style={styles.positionOptionsSheet}>
-      <SheetGroupTitle title={t("portfolio.pendingOptionGroupList")} />
-      <View style={StyleSheet.flatten([styles.menuListInset, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-        <GlobalMenuList
-          contained
-          items={listActions.map((item) => ({
-            description: item.description,
-            icon: item.icon,
-            label: item.label,
-            onPress: () => onAction(item.label),
-          }))}
-          variant="descriptive"
-        />
-      </View>
-
-      <SheetGroupTitle title={t("portfolio.optionGroupBulkActions")} />
-      <View style={StyleSheet.flatten([styles.menuListInset, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-        <GlobalMenuList
-          contained
-          items={batchActions.map((item) => ({
-            description: item.description,
-            icon: item.icon,
-            label: item.label,
-            onPress: () => onAction(item.label),
-          }))}
-          variant="descriptive"
-        />
-      </View>
-    </View>
-  );
-}
-
 type PositionDetailRow = {
   closable: boolean;
   currentPrice: string;
@@ -903,7 +848,7 @@ function PendingOrderDetailSheet({ order }: { order: PendingOrderRow }) {
   ];
 
   return (
-    <OrderPositionDetailSheet
+    <SharedPendingOrderDetailSheet
       detailItems={details}
       summary={{
         direction: order.direction,
@@ -935,7 +880,7 @@ function PositionDetailSheet({ position }: { position: PositionDetailRow }) {
   ];
 
   return (
-    <OrderPositionDetailSheet
+    <SharedPositionDetailSheet
       detailItems={details}
       summary={{
         direction: position.direction,
@@ -1527,11 +1472,6 @@ const styles = StyleSheet.create({
   menuAccountNo: {
     textAlign: "center",
   },
-  menuListInset: {
-    borderRadius: radius.card,
-    borderWidth: lineWidth.none,
-    overflow: "hidden",
-  },
   listCard: {
     paddingVertical: spacing.none,
   },
@@ -1611,6 +1551,11 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     minWidth: 92,
   },
+  menuListInset: {
+    borderRadius: radius.card,
+    borderWidth: lineWidth.none,
+    overflow: "hidden",
+  },
   orderContent: {
     gap: spacing.sm + spacing.xxs,
     minHeight: spacing.section * 5 + spacing.xxs,
@@ -1647,13 +1592,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: spacing.sm + spacing.xxs,
     justifyContent: "space-between",
-  },
-  positionOptionsSheet: {
-    gap: layout.sectionGap,
-    paddingTop: spacing.xxs,
-  },
-  positionOptionsModule: {
-    gap: layout.controlGap,
   },
   sectionTitle: {
     alignItems: "center",

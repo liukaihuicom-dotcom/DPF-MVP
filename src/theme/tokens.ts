@@ -54,6 +54,8 @@ export const motion = {
     fastMs: 160,
     standardMs: 220,
     cleanupDelayMs: 260,
+    exitTranslateY: 18,
+    footerExitOpacityPivot: 0.85,
   },
 } as const;
 
@@ -292,6 +294,8 @@ export const layout = {
   menuRowMinHeight: size.menu.rowMinHeight,
   menuDescriptiveRowMinHeight: size.menu.descriptiveRowMinHeight,
   sheetContentGap: spacing.md,
+  /** BottomSheet plain/list/article-detail content inset; card content uses contentCardPaddingX. */
+  sheetContentPaddingX: spacing.lg,
   sheetFooterGap: spacing.md,
   sheetHandlePaddingBottom: spacing.xs + lineWidth.strong,
   sheetHandlePaddingTop: spacing.sm,

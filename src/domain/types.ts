@@ -1,54 +1,77 @@
-export type Role = 'trader' | 'partner';
+export type Role = "trader" | "partner";
 
-export type AuthStatus = 'guest' | 'signedIn';
+export type AuthStatus = "guest" | "signedIn";
 
-export type AuthChannel = 'email' | 'phone';
+export type AuthChannel = "email" | "phone";
 
-export type PinStatus = 'unset' | 'skipped' | 'set';
+export type PinStatus = "unset" | "skipped" | "set";
 
-export type KycStatus = 'notStarted' | 'reviewing' | 'approved' | 'rejected';
+export type KycStatus = "notStarted" | "reviewing" | "approved" | "rejected";
 
-export type TradingAccountUsageOverride = 'auto' | 'normal' | 'warning' | 'abnormal';
+export type TradingAccountUsageOverride =
+  | "auto"
+  | "normal"
+  | "warning"
+  | "abnormal";
 
-export type TradingAccountUsageStatus = 'normal' | 'warning' | 'abnormal';
+export type TradingAccountUsageStatus = "normal" | "warning" | "abnormal";
 
-export type TradeWorkspaceDataPreset = 'empty' | 'sample';
+export type TradeWorkspaceDataPreset = "empty" | "sample";
 
 export type DiscoverModuleId =
-  | 'challenge'
-  | 'education'
-  | 'community'
-  | 'profile'
-  | 'onboarding'
-  | 'partner'
-  | 'markets'
-  | 'accounts'
-  | 'support'
-  | 'rewards';
+  | "challenge"
+  | "education"
+  | "community"
+  | "profile"
+  | "onboarding"
+  | "partner"
+  | "markets"
+  | "accounts"
+  | "support"
+  | "rewards";
 
-export type Direction = 'buy' | 'sell';
+export type Direction = "buy" | "sell";
 
-export type OrderType = 'market' | 'limit' | 'stop';
+export type OrderType = "market" | "limit" | "stop";
 
-export type OrderStatus = 'filled' | 'pending' | 'closed' | 'cancelled';
+export type OrderExpirationType = "gtc" | "specified";
 
-export type TransactionStatus = 'completed' | 'reviewing' | 'rejected';
+export type OrderStatus = "filled" | "pending" | "closed" | "cancelled";
 
-export type UpgradeStatus = 'none' | 'pending' | 'approved' | 'rejected';
+export type TransactionStatus = "completed" | "reviewing" | "rejected";
+
+export type UpgradeStatus = "none" | "pending" | "approved" | "rejected";
 
 export type LocalizedText = {
-  'en-US': string;
-  'id-ID'?: string;
-  'zh-CN': string;
+  "en-US": string;
+  "id-ID"?: string;
+  "zh-CN": string;
 };
 
-export type InstrumentAssetClass = 'forex' | 'metals' | 'futures' | 'stocks';
+export type InstrumentAssetClass = "forex" | "metals" | "futures" | "stocks";
 
-export type InstrumentChartTimeframe = '1m' | '5m' | '15m' | '30m' | '1H' | '4H' | '1D' | '1W';
+export type InstrumentChartTimeframe =
+  | "1m"
+  | "5m"
+  | "15m"
+  | "30m"
+  | "1H"
+  | "4H"
+  | "1D"
+  | "1W";
 
-export type InstrumentQuoteStatus = 'live' | 'stale' | 'delayed' | 'closed' | 'restricted';
+export type InstrumentQuoteStatus =
+  | "live"
+  | "stale"
+  | "delayed"
+  | "closed"
+  | "restricted";
 
-export type InstrumentMarketStatus = 'open' | 'closed' | 'preMarket' | 'restricted';
+export type InstrumentMarketStatus =
+  | "open"
+  | "closed"
+  | "preMarket"
+  | "restricted";
 
 export type InstrumentCandle = {
   close: number;
@@ -104,9 +127,16 @@ export type Order = {
   direction: Direction;
   type: OrderType;
   lots: number;
+  limitPrice?: number;
+  stopPrice?: number;
   requestedPrice: number;
   filledPrice: number;
   marginRequired: number;
+  expirationType?: OrderExpirationType;
+  expiresAt?: string;
+  stopLoss?: number;
+  takeProfit?: number;
+  oneClickTradingEnabled?: boolean;
   status: OrderStatus;
   createdAt: string;
 };
@@ -126,7 +156,7 @@ export type Position = {
 
 export type Transaction = {
   id: string;
-  type: 'deposit' | 'withdrawal' | 'adjustment';
+  type: "deposit" | "withdrawal" | "adjustment";
   amount: number;
   status: TransactionStatus;
   createdAt: string;
@@ -152,7 +182,7 @@ export type Account = {
 export type PartnerClient = {
   id: string;
   name: string;
-  status: 'invited' | 'funded' | 'active' | 'dormant';
+  status: "invited" | "funded" | "active" | "dormant";
   role: Role;
   upgradeStatus: UpgradeStatus;
   superiorName: string;
@@ -166,7 +196,7 @@ export type PartnerClient = {
 
 export type UpgradeMessage = {
   id: string;
-  author: 'trader' | 'superior';
+  author: "trader" | "superior";
   body: LocalizedText;
   createdAt: string;
 };
@@ -190,7 +220,7 @@ export type Commission = {
   volume: number;
   ratePerMillion: number;
   amount: number;
-  status: 'pending' | 'settled';
+  status: "pending" | "settled";
   period: string;
 };
 

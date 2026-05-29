@@ -10,6 +10,8 @@ Source of truth: `src/navigation/routeRegistry.ts` and `src/navigation/modalRegi
 | `/quick` | Open quick trade action | `order.ticket.route` | Routeable transparent modal at `/order/[id]` |
 | `/discover` | Open challenge ticket or trade entry | `order.ticket.route` | Routeable transparent modal at `/order/[id]` |
 | `/discover` | Open layout settings | `discover.layout.route` | Routeable transparent modal at `/discover-layout`; review demotion need |
+| `/auth` | Tap country code selector in phone login mode | `auth.countryPicker` | Non-routeable picker sheet |
+| `/auth/register` | Tap country code selector | `auth.countryPicker` | Non-routeable picker sheet |
 | `/auth/register-phone` | Tap country code selector | `auth.countryPicker` | Non-routeable picker sheet |
 | `/auth/forgot-password` | Tap country code selector in phone reset mode | `auth.countryPicker` | Non-routeable picker sheet |
 | `/auth/register` | Continue with a valid email | `auth.contactConfirm` | Non-routeable confirmation dialog; confirm opens `/auth/register-email-code` |
@@ -19,9 +21,9 @@ Source of truth: `src/navigation/routeRegistry.ts` and `src/navigation/modalRegi
 | `/auth/register-phone`, `/auth/register-password` | Android/system back after verified step | `global.modalQueue` | Queued dirty-state Alert Dialog; confirm dispatches the original navigation action |
 | `/auth`, `/auth/register`, `/auth/register-phone`, `/auth/register-password`, `/auth/forgot-password` | Submit invalid form | `auth.errorSheet` | Non-routeable error recovery sheet |
 | `/auth/pin-setup` | Enter wrong unlock PIN or mismatched PIN | `auth.errorDialog` | Non-routeable blocking error dialog |
-| `/markets` | Tap trading account selector | `tradingAccount.switchSheet` | Non-routeable selection sheet |
-| `/trade`, `/portfolio` | Tap trading account selector | `tradingAccount.switchSheet` | Non-routeable selection sheet |
-| `/funding/deposit`, `/funding/withdrawal`, `/funding/transfer` | Tap source or target account field | `tradingAccount.switchSheet` | Non-routeable selection sheet with disabled account reasons |
+| `/markets` | Tap trading account selector | `tradingAccount.switchSheet` | Non-routeable card selection sheet with gray `sheetSurface="canvas"` bed |
+| `/trade`, `/portfolio` | Tap trading account selector | `tradingAccount.switchSheet` | Non-routeable card selection sheet with gray `sheetSurface="canvas"` bed |
+| `/funding/deposit`, `/funding/withdrawal`, `/funding/transfer` | Tap source or target account field | `tradingAccount.switchSheet` | Non-routeable card selection sheet with disabled account reasons and gray `sheetSurface="canvas"` bed |
 | `/funding/deposit`, `/funding/withdrawal` | Tap payment or payout method field | `funding.paymentMethodSheet` | Non-routeable method selection sheet |
 | `/funding/deposit`, `/funding/withdrawal`, `/funding/transfer` | Submit funding form | `funding.submitFeedbackAlert` | Non-routeable queued Alert Dialog; handler navigates to `/funding/transactions/[id]` |
 | `/funding/deposit`, `/funding/withdrawal`, `/funding/transfer` | Android/system back with entered amount or transfer target | `global.modalQueue` | Queued dirty-state Alert Dialog; confirm dispatches the original navigation action |

@@ -203,12 +203,16 @@ if (headerIconButtonEntry) {
   const headerIconButtonText = read('src/components/HeaderIconButton.tsx');
   const headerIconButtonManifestText = JSON.stringify(headerIconButtonEntry);
   checks.push(
-    /variant === 'filled' && \{\s*backgroundColor: colors\.surface\.panel,\s*\}/m.test(headerIconButtonText)
+    /surface\?: 'panel' \| 'neutral'/.test(headerIconButtonText)
+      && /const filledBackgroundColor = resolveHeaderIconButtonBackground\(colors, surface\);/.test(headerIconButtonText)
+      && /return colors\.surface\.panel;/.test(headerIconButtonText)
+      && /resolveIconSurfaceColors\(colors, 'neutral'\)\.backgroundColor/.test(headerIconButtonText)
       && headerIconButtonManifestText.includes('color.surface.panel')
-      && headerIconButtonManifestText.includes('gray page, sheet, or canvas backgrounds')
-      && headerIconButtonManifestText.includes('Do not hardcode white')
-      ? pass('QA_COMPONENT_HEADER_ICON_PANEL_SURFACE', 'HeaderIconButton filled surfaces use the panel token on gray backgrounds', manifestPath)
-      : fail('QA_COMPONENT_HEADER_ICON_PANEL_SURFACE', 'HeaderIconButton runtime and manifest must bind filled gray-background containers to color.surface.panel', 'src/components/HeaderIconButton.tsx'),
+      && headerIconButtonManifestText.includes('color.surface.subtle')
+      && headerIconButtonManifestText.includes('surface=neutral')
+      && headerIconButtonManifestText.includes('IconSurface neutral background')
+      ? pass('QA_COMPONENT_HEADER_ICON_SURFACE_MODE', 'HeaderIconButton supports panel and IconSurface-neutral filled backgrounds', manifestPath)
+      : fail('QA_COMPONENT_HEADER_ICON_SURFACE_MODE', 'HeaderIconButton runtime and manifest must expose panel and IconSurface-neutral filled background modes', 'src/components/HeaderIconButton.tsx'),
   );
 }
 

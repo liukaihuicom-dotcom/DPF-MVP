@@ -8,7 +8,7 @@ import { useProductSettings } from '@/src/settings/ProductSettings';
 import { ActionButton } from './ActionButton';
 import { AppIcon } from './AppIcon';
 import { AuthTextField } from './AuthShell';
-import { bottomSheetPresets, useBottomSheet } from './BottomSheet';
+import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
 import { FlagIcon } from './FlagIcon';
 import { GlobalDialog } from './GlobalDialog';
 import { IconSurface } from './IconSurface';
@@ -130,6 +130,7 @@ export function CountryPickerModal({
         />
       ),
       contentPadding: 'plain',
+      heightMode: 'fixed',
       onDismiss: () => onCloseRef.current(),
       sheetSurface: 'panel',
       snapPoints: [countryPickerSnapPoint],

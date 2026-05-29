@@ -1,5 +1,5 @@
 {
-  "version": "2.2.0",
+  "version": "2.3.3",
   "allowedTokenSources": [
     "src/theme/tokens.ts",
     "src/theme/colors.ts",
@@ -207,11 +207,22 @@
       "layout.bottomActionArea.*",
       "palette.*"
     ],
+    "AppViewport": [
+      "layout.appDeviceWidth",
+      "layout.appDeviceHeight",
+      "layout.appPreviewSafeAreaInsets",
+      "radius.sheet",
+      "lineWidth.hairline",
+      "color.surface.canvas",
+      "color.surface.subtle",
+      "color.border.subtle"
+    ],
     "HeaderIconButton": [
       "layout.headerIconButtonSize",
       "layout.headerIconSize",
       "radius.full",
       "color.surface.panel",
+      "color.surface.subtle",
       "color.icon.primary",
       "iconRegistry.*"
     ],

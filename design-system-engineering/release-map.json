@@ -4,7 +4,7 @@
   "packages": {
     "@dpf/design-tokens": {
       "path": "packages/design-tokens",
-      "version": "3.1.0",
+      "version": "3.3.0",
       "sourceOfTruth": [
         "packages/design-tokens/registry/tokens.json",
         "packages/design-tokens/registry/tokens.color.json",
@@ -13,7 +13,7 @@
     },
     "@dpf/component-library": {
       "path": "packages/component-library",
-      "version": "2.2.0",
+      "version": "2.4.3",
       "sourceOfTruth": [
         "packages/component-library/registry/component-manifest.json",
         "packages/component-library/registry/component.schema.json",

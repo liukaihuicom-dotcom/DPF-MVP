@@ -1,14 +1,16 @@
 import { StyleSheet, View } from 'react-native';
 
 import { DetailInline } from '@/src/components/data-display';
+import { GlobalMenuList, type GlobalMenuListItem } from '@/src/components/GlobalMenuList';
 import { KeyValueList, type KeyValueListItem } from '@/src/components/KeyValueList';
+import { SheetGroupTitle } from '@/src/components/layout/SheetGroupTitle';
 import { TradeDirectionIcon } from '@/src/components/TradeDirectionIcon';
 import { AppText, type AppTextTone } from '@/src/components/Typography';
 import type { Direction } from '@/src/domain/types';
 import { useThemeColors } from '@/src/settings/ProductSettings';
 import { layout, lineWidth, radius, spacing } from '@/src/theme/tokens';
 
-type DataSummaryHeroProps = {
+export type DataSummaryHeroProps = {
   emphasis?: 'default' | 'strong';
   label: string;
   supportingValue?: string;
@@ -16,7 +18,7 @@ type DataSummaryHeroProps = {
   value: string;
 };
 
-type DirectionSummary = {
+export type DirectionSummary = {
   direction: Direction;
   label: string;
   lots: string;
@@ -24,11 +26,21 @@ type DirectionSummary = {
   symbol: string;
 };
 
-type OrderPositionDetailSheetProps = {
+export type OrderPositionDetailSheetProps = {
   detailItems: KeyValueListItem[];
   summary: DirectionSummary;
   title?: string;
   valueHero?: DataSummaryHeroProps;
+};
+
+type OrderActionGroup = {
+  id: string;
+  items: GlobalMenuListItem[];
+  title: string;
+};
+
+export type TradingOrderActionSheetProps = {
+  groups: OrderActionGroup[];
 };
 
 type ClosedOrderDeal = {
@@ -76,6 +88,27 @@ export function OrderPositionDetailSheet({ detailItems, summary, title, valueHer
       <View style={StyleSheet.flatten([styles.detailCard, { backgroundColor: colors.surface.panel }])}>
         <KeyValueList divided inset="none" items={detailItems} variant="detail" />
       </View>
+    </View>
+  );
+}
+
+export function PositionDetailSheet({ detailItems, summary, valueHero }: OrderPositionDetailSheetProps) {
+  return <OrderPositionDetailSheet detailItems={detailItems} summary={summary} valueHero={valueHero} />;
+}
+
+export function PendingOrderDetailSheet({ detailItems, summary, title }: OrderPositionDetailSheetProps) {
+  return <OrderPositionDetailSheet detailItems={detailItems} summary={summary} title={title} />;
+}
+
+export function TradingOrderActionSheet({ groups }: TradingOrderActionSheetProps) {
+  return (
+    <View style={styles.actionSheet}>
+      {groups.map((group) => (
+        <View key={group.id} style={styles.actionModule}>
+          <SheetGroupTitle title={group.title} />
+          <GlobalMenuList contained items={group.items} variant="descriptive" />
+        </View>
+      ))}
     </View>
   );
 }
@@ -201,6 +234,13 @@ function PnlBlock({ delta, pnlText, tone }: { delta: string; pnlText: string; to
 }
 
 const styles = StyleSheet.create({
+  actionModule: {
+    gap: layout.controlGap,
+  },
+  actionSheet: {
+    gap: layout.sectionGap,
+    paddingTop: spacing.xxs,
+  },
   closedCard: {
     borderRadius: radius.card,
     borderWidth: lineWidth.none,

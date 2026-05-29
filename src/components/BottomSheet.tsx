@@ -1,14 +1,20 @@
 import { createContext, PropsWithChildren, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Keyboard, Platform, BackHandler, Pressable, StyleSheet, useWindowDimensions, View, type LayoutChangeEvent } from 'react-native';
-import Animated, { Easing, Extrapolation, interpolate, useAnimatedStyle, useSharedValue, withTiming, type SharedValue } from 'react-native-reanimated';
+import { Keyboard, Platform, BackHandler, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import Animated, {
+  Easing,
+  Extrapolation,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import {
-  BottomSheetFooter as GorhomBottomSheetFooter,
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetScrollView,
   BottomSheetView,
+  useBottomSheetTimingConfigs,
   type BottomSheetBackdropProps,
-  type BottomSheetFooterProps,
 } from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -52,14 +58,19 @@ export type BottomSheetHeaderOptions = {
   title: string;
 };
 
+export type BottomSheetHeightMode = 'adaptive' | 'fixed' | 'fullscreen';
+
 export type BottomSheetOptions = {
   content: ReactNode;
   contentPadding?: 'card' | 'flush' | 'plain';
+  /** @deprecated Use `heightMode` for new sheet layout decisions. `fill` is treated as fixed-height compatibility. */
   contentSizing?: 'auto' | 'fill';
   footer?: ReactNode | BottomSheetAction[];
   header?: false | BottomSheetHeaderOptions;
+  heightMode?: BottomSheetHeightMode;
   onDismiss?: () => void;
   sheetSurface?: 'canvas' | 'panel';
+  /** @deprecated Explicit snap points are treated as fixed-height compatibility. Prefer `heightMode`. */
   snapPoints?: Array<string | number>;
   /** @deprecated Use `header.title` or `header: false` so the header mode is explicit. */
   subtitle?: string;
@@ -67,7 +78,7 @@ export type BottomSheetOptions = {
   title?: string;
 };
 
-type BottomSheetPresetBaseOptions = Pick<BottomSheetOptions, 'content' | 'contentPadding' | 'contentSizing' | 'footer' | 'onDismiss' | 'sheetSurface' | 'snapPoints'>;
+type BottomSheetPresetBaseOptions = Pick<BottomSheetOptions, 'content' | 'contentPadding' | 'contentSizing' | 'footer' | 'heightMode' | 'onDismiss' | 'sheetSurface' | 'snapPoints'>;
 type BottomSheetHeaderPresetOptions = BottomSheetPresetBaseOptions & BottomSheetHeaderOptions;
 
 export const bottomSheetPresets = {
@@ -75,35 +86,50 @@ export const bottomSheetPresets = {
     return {
       ...options,
       header: false,
+      heightMode: options.heightMode ?? resolvePresetHeightMode(options),
     };
   },
   detail(options: BottomSheetHeaderPresetOptions): BottomSheetOptions {
-    const { content, contentSizing, footer, onDismiss, sheetSurface, snapPoints, ...header } = options;
+    const { content, contentSizing, footer, heightMode, onDismiss, sheetSurface, snapPoints, ...header } = options;
 
     return {
       content,
       contentSizing,
       footer,
       header,
+      heightMode: heightMode ?? resolvePresetHeightMode(options),
       onDismiss,
       sheetSurface,
       snapPoints,
     };
   },
   selection(options: BottomSheetHeaderPresetOptions): BottomSheetOptions {
-    const { content, contentSizing, footer, onDismiss, sheetSurface, snapPoints, ...header } = options;
+    const { content, contentSizing, footer, heightMode, onDismiss, sheetSurface, snapPoints, ...header } = options;
 
     return {
       content,
       contentSizing: contentSizing ?? 'fill',
       footer,
       header,
+      heightMode: heightMode ?? 'fixed',
       onDismiss,
-      sheetSurface,
+      sheetSurface: sheetSurface ?? 'panel',
       snapPoints,
     };
   },
 };
+
+function resolvePresetHeightMode(options: Pick<BottomSheetOptions, 'contentSizing' | 'heightMode' | 'snapPoints'>): BottomSheetHeightMode {
+  if (options.heightMode) {
+    return options.heightMode;
+  }
+
+  if (options.snapPoints?.length || options.contentSizing === 'fill') {
+    return 'fixed';
+  }
+
+  return 'adaptive';
+}
 
 type BottomSheetContextValue = {
   back: () => void;
@@ -121,7 +147,6 @@ const SHEET_ANIMATION_CONFIG = {
   duration: SHEET_ANIMATION_DURATION,
   easing: Easing.out(Easing.cubic),
 };
-const ESTIMATED_FOOTER_HEIGHT = layout.bottomActionArea.contentInset;
 
 const BottomSheetContext = createContext<BottomSheetContextValue | null>(null);
 const BottomSheetOptionsContext = createContext<BottomSheetOptions | null>(null);
@@ -140,12 +165,13 @@ export function BottomSheetProvider({ children }: PropsWithChildren) {
   stackRef.current = stack;
   closingStackRef.current = closingStack;
 
-  const finishClose = useCallback((nextStack: BottomSheetOptions[] = []) => {
+  const finishClose = useCallback((nextStack: BottomSheetOptions[] = [], dismissedStack?: BottomSheetOptions[]) => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
       closeTimerRef.current = null;
     }
 
+    dismissedStack?.at(-1)?.onDismiss?.();
     stackRef.current = nextStack;
     closingStackRef.current = null;
     pendingCloseStackRef.current = [];
@@ -158,24 +184,22 @@ export function BottomSheetProvider({ children }: PropsWithChildren) {
       clearTimeout(closeTimerRef.current);
     }
 
-    currentStack.at(-1)?.onDismiss?.();
     stackRef.current = nextStack;
     closingStackRef.current = currentStack;
     pendingCloseStackRef.current = nextStack;
     setClosingStack(currentStack);
-    closeTimerRef.current = setTimeout(() => finishClose(nextStack), SHEET_CLOSE_CLEANUP_DELAY);
+    closeTimerRef.current = setTimeout(() => finishClose(nextStack, currentStack), SHEET_CLOSE_CLEANUP_DELAY);
   }, [finishClose]);
 
   const handleNativeDismiss = useCallback(() => {
     const currentClosingStack = closingStackRef.current;
 
     if (currentClosingStack) {
-      finishClose(pendingCloseStackRef.current);
+      finishClose(pendingCloseStackRef.current, currentClosingStack);
       return;
     }
 
-    stackRef.current.at(-1)?.onDismiss?.();
-    finishClose();
+    finishClose([], stackRef.current);
   }, [finishClose]);
 
   useEffect(() => () => {
@@ -184,38 +208,37 @@ export function BottomSheetProvider({ children }: PropsWithChildren) {
     }
   }, []);
 
-  const hide = useCallback(() => {
-    setStack((current) => {
-      if (!current.length) {
-        return current;
-      }
+  const closeModal = useCallback((nextStack: BottomSheetOptions[] = []) => {
+    const current = stackRef.current;
+    if (!current.length) {
+      return;
+    }
 
-      scheduleClose(current);
-      return [];
-    });
+    scheduleClose(current, nextStack);
+    setStack(nextStack);
   }, [scheduleClose]);
+  const hide = useCallback(() => {
+    closeModal();
+  }, [closeModal]);
   const show = useCallback((nextOptions: BottomSheetOptions) => {
     dismissActiveKeyboard();
     finishClose();
     stackRef.current = [nextOptions];
     setStack([nextOptions]);
-  }, []);
+  }, [finishClose]);
   const push = useCallback((nextOptions: BottomSheetOptions) => {
     dismissActiveKeyboard();
     stackRef.current = [...stackRef.current, nextOptions];
     setStack((current) => [...current, nextOptions]);
   }, []);
   const back = useCallback(() => {
-    setStack((current) => {
-      if (!current.length) {
-        return current;
-      }
+    const current = stackRef.current;
+    if (!current.length) {
+      return;
+    }
 
-      const nextStack = current.length > 1 ? current.slice(0, -1) : [];
-      scheduleClose(current, nextStack);
-      return nextStack;
-    });
-  }, [scheduleClose]);
+    closeModal(current.length > 1 ? current.slice(0, -1) : []);
+  }, [closeModal]);
   const value = useMemo(() => ({ back, hide, push, show }), [back, hide, push, show]);
   const visibleStack = closingStack ?? stack;
   const options = visibleStack.at(-1) ?? null;
@@ -281,16 +304,17 @@ export function GlobalBottomSheetHost() {
   const insets = useSafeAreaInsets();
   const { locale, colors } = useProductSettings();
   const modalRef = useRef<BottomSheetModal>(null);
-  const sheetEntranceProgress = useSharedValue(0);
+  const backdropProgress = useSharedValue(0);
+  const sheetAnimationConfigs = useBottomSheetTimingConfigs(SHEET_ANIMATION_CONFIG);
   const [backdropInteractive, setBackdropInteractive] = useState(false);
-  const [footerHeight, setFooterHeight] = useState<number>(ESTIMATED_FOOTER_HEIGHT);
   const optionsRef = useRef(options);
-  const maxHeight = Math.max(1, height - insets.top - TOP_RESERVED_SPACE);
+  const maxAvailableHeight = Math.max(1, height - insets.top - TOP_RESERVED_SPACE);
+  const maxSheetHeight = Math.max(1, Math.min(maxAvailableHeight, height * 0.9));
   const sheetWidth = Math.min(width, MAX_PAGE_SHEET_WIDTH);
   const horizontalInset = Math.max(0, (width - sheetWidth) / 2);
   const backdropColor = colors.overlay.backdrop;
   const sheetBackgroundColor = options?.sheetSurface === 'panel' ? colors.surface.panel : colors.surface.canvas;
-  const hasFooter = Boolean(options?.footer);
+  const heightMode = options ? resolveHeightMode(options) : 'adaptive';
   const snapPoints = useMemo(() => {
     if (options?.snapPoints?.length) {
       return options.snapPoints;
@@ -299,34 +323,26 @@ export function GlobalBottomSheetHost() {
     return [];
   }, [options?.snapPoints]);
   const hasExplicitSnapPoints = snapPoints.length > 0;
-  const maxContentHeight = hasExplicitSnapPoints ? resolveMaxSnapPointHeight(snapPoints, maxHeight) : maxHeight;
-  const handleFooterHeightChange = useCallback((nextHeight: number) => {
-    setFooterHeight((currentHeight) => (Math.abs(currentHeight - nextHeight) > 1 ? nextHeight : currentHeight));
-  }, []);
+  const fixedPanelHeight = heightMode === 'fullscreen'
+    ? height
+    : hasExplicitSnapPoints
+      ? resolveMaxSnapPointHeight(snapPoints, maxSheetHeight)
+      : maxSheetHeight;
+  const resolvedSnapPoints = useMemo(() => {
+    if (heightMode === 'adaptive') {
+      return snapPoints;
+    }
+
+    return hasExplicitSnapPoints ? snapPoints : [fixedPanelHeight];
+  }, [fixedPanelHeight, hasExplicitSnapPoints, heightMode, snapPoints]);
   const dismissModal = useCallback(() => {
     modalRef.current?.dismiss();
   }, []);
   const hostBackdropStyle = useAnimatedStyle(
     () => ({
-      opacity: interpolate(sheetEntranceProgress.value, [0, 1], [0, 1], Extrapolation.CLAMP),
+      opacity: interpolate(backdropProgress.value, [0, 1], [0, 1], Extrapolation.CLAMP),
     }),
-    [sheetEntranceProgress],
-  );
-  const footerComponent = useCallback(
-    (props: BottomSheetFooterProps) => (
-      options?.footer ? (
-        <AppBottomSheetFooter
-          {...props}
-          backgroundColor={sheetBackgroundColor}
-          entranceProgress={sheetEntranceProgress}
-          footer={options.footer}
-          hide={hide}
-          interactive={backdropInteractive}
-          onHeightChange={handleFooterHeightChange}
-        />
-      ) : null
-    ),
-    [backdropInteractive, handleFooterHeightChange, hide, options?.footer, sheetBackgroundColor, sheetEntranceProgress],
+    [backdropProgress],
   );
 
   useEffect(() => {
@@ -335,10 +351,9 @@ export function GlobalBottomSheetHost() {
 
     if (options && !isClosing) {
       setBackdropInteractive(false);
-      setFooterHeight(ESTIMATED_FOOTER_HEIGHT);
-      sheetEntranceProgress.value = 0;
+      backdropProgress.value = 0;
       modalRef.current?.present();
-      sheetEntranceProgress.value = withTiming(1, SHEET_ANIMATION_CONFIG);
+      backdropProgress.value = withTiming(1, SHEET_ANIMATION_CONFIG);
       const timer = setTimeout(() => {
         setBackdropInteractive(true);
       }, SHEET_ANIMATION_DURATION);
@@ -346,17 +361,30 @@ export function GlobalBottomSheetHost() {
       return () => clearTimeout(timer);
     } else if ((options && isClosing) || wasOpen) {
       setBackdropInteractive(false);
-      sheetEntranceProgress.value = withTiming(0, SHEET_ANIMATION_CONFIG);
+      backdropProgress.value = withTiming(0, SHEET_ANIMATION_CONFIG);
       dismissModal();
     }
-  }, [dismissModal, isClosing, options, sheetEntranceProgress]);
+  }, [backdropProgress, dismissModal, isClosing, options]);
 
   const renderBackdrop = useCallback((props: BottomSheetBackdropProps) => <AppBottomSheetBackdrop {...props} backgroundColor={backdropColor} />, [backdropColor]);
+  const handleSheetAnimate = useCallback((_fromIndex: number, toIndex: number) => {
+    if (toIndex < 0 && options && !isClosing) {
+      hide();
+    }
+  }, [hide, isClosing, options]);
+
   if (!options) {
     return null;
   }
 
   const headerOptions = resolveHeaderOptions(options);
+  const panelStyle = StyleSheet.flatten([
+    styles.panel,
+    { backgroundColor: sheetBackgroundColor },
+    heightMode === 'adaptive' && { maxHeight: maxSheetHeight },
+    heightMode === 'fixed' && { height: fixedPanelHeight, maxHeight: maxSheetHeight },
+    heightMode === 'fullscreen' && { height, maxHeight: height },
+  ]);
 
   return (
     <>
@@ -369,45 +397,62 @@ export function GlobalBottomSheetHost() {
         style={[styles.hostBackdrop, { backgroundColor: backdropColor, height, width }, hostBackdropStyle]}
       />
       <BottomSheetModal
+        animationConfigs={sheetAnimationConfigs}
         backdropComponent={renderBackdrop}
         backgroundStyle={{ backgroundColor: sheetBackgroundColor }}
         containerStyle={styles.modalContainer}
         detached={false}
         enableContentPanningGesture
-        enableDynamicSizing={!hasExplicitSnapPoints}
+        enableDynamicSizing={heightMode === 'adaptive'}
         enablePanDownToClose
-        footerComponent={options.footer ? footerComponent : undefined}
+        handleComponent={heightMode === 'fullscreen' ? null : undefined}
         handleIndicatorStyle={{ backgroundColor: colors.border.default, width: size.sheet.handleWidth }}
         handleStyle={styles.handle}
         index={0}
+        keyboardBehavior="interactive"
         keyboardBlurBehavior="restore"
-        maxDynamicContentSize={maxHeight}
+        maxDynamicContentSize={heightMode === 'fullscreen' ? height : maxSheetHeight}
+        onAnimate={handleSheetAnimate}
         onDismiss={handleNativeDismiss ?? hide}
         ref={modalRef}
-        snapPoints={snapPoints}
-        style={StyleSheet.flatten([styles.modal, { borderColor: colors.border.subtle, marginLeft: horizontalInset, width: sheetWidth }])}
-        topInset={insets.top + TOP_RESERVED_SPACE}>
-        {headerOptions ? (
-          <BottomSheetHeader
-            back={back}
-            backgroundColor={sheetBackgroundColor}
-            entranceProgress={sheetEntranceProgress}
-            header={headerOptions}
-            isNested={stackDepth > 1}
-            locale={locale}
-          />
-        ) : null}
-        <BottomSheetContent
-          backgroundColor={sheetBackgroundColor}
-          entranceProgress={sheetEntranceProgress}
-          footerHeight={footerHeight}
-          hasFooter={Boolean(options.footer)}
-          maxHeight={maxContentHeight}>
-          {options.content}
-        </BottomSheetContent>
+        snapPoints={resolvedSnapPoints}
+        style={StyleSheet.flatten([
+          styles.modal,
+          { borderColor: colors.border.subtle, marginLeft: heightMode === 'fullscreen' ? 0 : horizontalInset, width: heightMode === 'fullscreen' ? width : sheetWidth },
+          heightMode === 'fullscreen' && styles.modalFullscreen,
+        ])}
+        topInset={heightMode === 'fullscreen' ? 0 : insets.top + TOP_RESERVED_SPACE}>
+        <BottomSheetView style={panelStyle}>
+          {headerOptions ? (
+            <BottomSheetHeader
+              back={back}
+              backgroundColor={sheetBackgroundColor}
+              header={headerOptions}
+              isNested={stackDepth > 1}
+              locale={locale}
+            />
+          ) : null}
+          <BottomSheetContent
+            contentPadding={options.contentPadding ?? 'card'}
+            contentSizing={options.contentSizing ?? 'auto'}
+            heightMode={heightMode}>
+            {options.content}
+          </BottomSheetContent>
+          {options.footer ? (
+            <AppBottomSheetFooter
+              backgroundColor={sheetBackgroundColor}
+              footer={options.footer}
+              hide={hide}
+            />
+          ) : null}
+        </BottomSheetView>
       </BottomSheetModal>
     </>
   );
+}
+
+function resolveHeightMode(options: BottomSheetOptions): BottomSheetHeightMode {
+  return options.heightMode ?? resolvePresetHeightMode(options);
 }
 
 function resolveMaxSnapPointHeight(snapPoints: Array<string | number>, maxHeight: number) {
@@ -447,19 +492,16 @@ function resolveHeaderOptions(options: BottomSheetOptions): BottomSheetHeaderOpt
 function BottomSheetHeader({
   back,
   backgroundColor,
-  entranceProgress,
   header,
   isNested,
   locale,
 }: {
   back: () => void;
   backgroundColor: string;
-  entranceProgress: SharedValue<number>;
   header: BottomSheetHeaderOptions;
   isNested: boolean;
   locale: string;
 }) {
-  const entranceStyle = useBottomSheetEntranceStyle(entranceProgress);
   const nestedBackAction: BottomSheetHeaderAction = useMemo(
     () => ({
       accessibilityLabel: locale !== 'zh-CN' ? 'Back' : '返回',
@@ -472,42 +514,40 @@ function BottomSheetHeader({
   const rightAction = resolveHeaderRightAction(header);
 
   return (
-    <BottomSheetView style={StyleSheet.flatten([styles.header, { backgroundColor }])}>
-      <Animated.View style={[styles.headerEntrance, entranceStyle]}>
-        <HeaderIconSlot>
-          {leftAction ? (
-            <HeaderIconButton
-              accessibilityLabel={leftAction.accessibilityLabel}
-              icon={leftAction.icon}
-              onPress={leftAction.onPress}
-              tone="default"
-            />
-          ) : header.leftIcon ? (
-            <View
-              accessibilityElementsHidden
-              importantForAccessibility="no-hide-descendants"
-              style={styles.decorativeHeaderIcon}>
-              <AppIcon name={header.leftIcon} size={layout.headerIconSize} />
-            </View>
-          ) : null}
-        </HeaderIconSlot>
-        <View style={styles.headerCopy}>
-          <AppText ellipsizeMode="tail" numberOfLines={1} style={styles.headerTitle} variant="title.sheet">
-            {header.title}
-          </AppText>
-        </View>
-        <HeaderIconSlot>
-          {rightAction ? (
-            <HeaderIconButton
-              accessibilityLabel={rightAction.accessibilityLabel}
-              icon={rightAction.icon}
-              onPress={rightAction.onPress}
-              tone="default"
-            />
-          ) : null}
-        </HeaderIconSlot>
-      </Animated.View>
-    </BottomSheetView>
+    <View style={StyleSheet.flatten([styles.header, { backgroundColor }])}>
+      <HeaderIconSlot>
+        {leftAction ? (
+          <HeaderIconButton
+            accessibilityLabel={leftAction.accessibilityLabel}
+            icon={leftAction.icon}
+            onPress={leftAction.onPress}
+            tone="default"
+          />
+        ) : header.leftIcon ? (
+          <View
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+            style={styles.decorativeHeaderIcon}>
+            <AppIcon name={header.leftIcon} size={layout.headerIconSize} />
+          </View>
+        ) : null}
+      </HeaderIconSlot>
+      <View style={styles.headerCopy}>
+        <AppText ellipsizeMode="tail" numberOfLines={1} style={styles.headerTitle} variant="title.sheet">
+          {header.title}
+        </AppText>
+      </View>
+      <HeaderIconSlot>
+        {rightAction ? (
+          <HeaderIconButton
+            accessibilityLabel={rightAction.accessibilityLabel}
+            icon={rightAction.icon}
+            onPress={rightAction.onPress}
+            tone="default"
+          />
+        ) : null}
+      </HeaderIconSlot>
+    </View>
   );
 }
 
@@ -528,239 +568,94 @@ function resolveHeaderRightAction(header: BottomSheetHeaderOptions): BottomSheet
 }
 
 function BottomSheetContent({
-  backgroundColor,
   children,
-  entranceProgress,
-  footerHeight,
-  hasFooter,
-  maxHeight,
+  contentPadding,
+  contentSizing,
+  heightMode,
 }: {
-  backgroundColor: string;
   children: ReactNode;
-  entranceProgress: SharedValue<number>;
-  footerHeight: number;
-  hasFooter: boolean;
-  maxHeight: number;
+  contentPadding: NonNullable<BottomSheetOptions['contentPadding']>;
+  contentSizing: NonNullable<BottomSheetOptions['contentSizing']>;
+  heightMode: BottomSheetHeightMode;
 }) {
-  const options = useContext(BottomSheetOptionsContext);
-  const hasHeader = Boolean(options && resolveHeaderOptions(options));
-  const contentSizing = options?.contentSizing ?? 'auto';
-  const contentPadding = options?.contentPadding ?? 'card';
-  const [contentHeight, setContentHeight] = useState(0);
-  const staticContentRef = useRef<View | null>(null);
-  const baseContentStyle = StyleSheet.flatten([
-    styles.content,
-    { backgroundColor },
+  const contentFrameStyle = StyleSheet.flatten([
+    styles.contentFrame,
+    heightMode === 'adaptive' ? styles.contentFrameAdaptive : styles.contentFrameFixed,
+  ]);
+  const contentInnerStyle = StyleSheet.flatten([
+    styles.contentInner,
     contentPadding === 'plain' && styles.contentPlain,
     contentPadding === 'flush' && styles.contentFlush,
-    contentSizing === 'fill' && styles.contentFill,
-    hasHeader && styles.contentWithHeader,
+    (contentSizing === 'fill' || heightMode !== 'adaptive') && styles.contentInnerFill,
   ]);
-  const reservedFooterHeight = hasFooter ? Math.max(footerHeight, ESTIMATED_FOOTER_HEIGHT) : 0;
-  const availableContentHeight = Math.max(1, maxHeight - reservedFooterHeight);
-  const shouldScroll = contentSizing === 'fill' || contentHeight > availableContentHeight + 1;
-  const entranceStyle = useBottomSheetEntranceStyle(entranceProgress);
 
-  useEffect(() => {
-    setContentHeight(0);
-  }, [children, contentSizing, footerHeight, hasFooter, hasHeader, maxHeight]);
-
-  const updateContentHeight = useCallback((nextHeight: number) => {
-    setContentHeight((currentHeight) => (Math.abs(currentHeight - nextHeight) > 1 ? nextHeight : currentHeight));
-  }, []);
-  const handleStaticContentLayout = useCallback(
-    (event: LayoutChangeEvent) => {
-      updateContentHeight(event.nativeEvent.layout.height);
-    },
-    [updateContentHeight],
-  );
-  const staticContentLayoutProps: { onLayout?: (event: LayoutChangeEvent) => void } = Platform.OS === 'web' ? {} : { onLayout: handleStaticContentLayout };
-
-  useEffect(() => {
-    if (Platform.OS !== 'web') {
-      return undefined;
-    }
-
-    const element = staticContentRef.current as unknown as HTMLElement | null;
-    if (!element || typeof element.getBoundingClientRect !== 'function') {
-      return undefined;
-    }
-
-    const updateMeasuredHeight = () => updateContentHeight(element.getBoundingClientRect().height);
-    updateMeasuredHeight();
-
-    if (typeof ResizeObserver === 'undefined') {
-      return undefined;
-    }
-
-    const observer = new ResizeObserver(updateMeasuredHeight);
-    observer.observe(element);
-
-    return () => observer.disconnect();
-  }, [contentSizing, hasFooter, hasHeader, maxHeight, updateContentHeight]);
-
-  const content = (
-    <>
-      {hasHeader ? <BottomSheetHeaderSpacer /> : null}
-      {children}
-    </>
-  );
-
-  return shouldScroll ? (
-    <BottomSheetScrollView
-      enableFooterMarginAdjustment={hasFooter}
-      contentContainerStyle={StyleSheet.flatten([baseContentStyle, hasFooter && styles.contentWithFooterReadingGap])}
-      keyboardShouldPersistTaps="handled"
-      onContentSizeChange={(_, nextHeight) => updateContentHeight(nextHeight)}
-      showsVerticalScrollIndicator={false}>
-      <Animated.View style={entranceStyle}>{content}</Animated.View>
-    </BottomSheetScrollView>
-  ) : (
-    <BottomSheetView enableFooterMarginAdjustment={hasFooter}>
-      <Animated.View style={entranceStyle}>
-        <View
-          ref={staticContentRef}
-          {...staticContentLayoutProps}
-          style={StyleSheet.flatten([baseContentStyle, hasFooter && styles.contentWithFooterReadingGap])}>
-          {content}
-        </View>
-      </Animated.View>
-    </BottomSheetView>
-  );
-}
-
-function useBottomSheetEntranceStyle(entranceProgress: SharedValue<number>) {
-  return useAnimatedStyle(
-    () => ({
-      transform: [
-        {
-          translateY: interpolate(entranceProgress.value, [0, 1], [18, 0], Extrapolation.CLAMP),
-        },
-      ],
-    }),
-    [entranceProgress],
-  );
-}
-
-function useBottomSheetFooterEntranceStyle(entranceProgress: SharedValue<number>, hiddenOffset = layout.bottomActionArea.contentInset) {
-  return useAnimatedStyle(
-    () => ({
-      opacity: interpolate(entranceProgress.value, [0, 0.35, 1], [0, 0.35, 1], Extrapolation.CLAMP),
-      transform: [
-        {
-          translateY: interpolate(entranceProgress.value, [0, 1], [hiddenOffset, 0], Extrapolation.CLAMP),
-        },
-      ],
-    }),
-    [entranceProgress, hiddenOffset],
-  );
-}
-
-function BottomSheetHeaderSpacer() {
   return (
-    <View
-      accessibilityElementsHidden
-      importantForAccessibility="no-hide-descendants"
-      pointerEvents="none"
-      style={styles.headerSpacer}
-    />
+    <BottomSheetScrollView
+      contentContainerStyle={contentInnerStyle}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      style={contentFrameStyle}>
+      {children}
+    </BottomSheetScrollView>
   );
 }
 
 function AppBottomSheetFooter({
-  animatedFooterPosition,
   backgroundColor,
-  entranceProgress,
   footer,
   hide,
-  interactive,
-  onHeightChange,
 }: {
-  animatedFooterPosition: BottomSheetFooterProps['animatedFooterPosition'];
   backgroundColor: string;
-  entranceProgress: SharedValue<number>;
   footer: ReactNode | BottomSheetAction[];
   hide: () => void;
-  interactive: boolean;
-  onHeightChange: (height: number) => void;
 }) {
   const insets = useSafeAreaInsets();
-  const footerRef = useRef<View | null>(null);
+  const [pressedActionKey, setPressedActionKey] = useState<string | null>(null);
   const footerStyle = StyleSheet.flatten([
     styles.footer,
     {
       backgroundColor,
-      paddingBottom: Math.max(insets.bottom, layout.bottomActionArea.paddingBottom),
+      paddingBottom: layout.bottomActionArea.paddingBottom + insets.bottom,
     },
   ]);
-  const handleFooterViewLayout = useCallback(
-    (event: LayoutChangeEvent) => {
-      onHeightChange(event.nativeEvent.layout.height);
-    },
-    [onHeightChange],
-  );
-  const footerLayoutProps: { onLayout?: (event: LayoutChangeEvent) => void } = Platform.OS === 'web' ? {} : { onLayout: handleFooterViewLayout };
-  const entranceStyle = useBottomSheetFooterEntranceStyle(entranceProgress);
-  const footerPointerEvents = interactive ? 'auto' : 'none';
 
   useEffect(() => {
-    if (Platform.OS !== 'web') {
-      return undefined;
-    }
-
-    const element = footerRef.current as unknown as HTMLElement | null;
-    if (!element || typeof element.getBoundingClientRect !== 'function') {
-      return undefined;
-    }
-
-    const updateMeasuredHeight = () => onHeightChange(element.getBoundingClientRect().height);
-    updateMeasuredHeight();
-
-    if (typeof ResizeObserver === 'undefined') {
-      return undefined;
-    }
-
-    const observer = new ResizeObserver(updateMeasuredHeight);
-    observer.observe(element);
-
-    return () => observer.disconnect();
-  }, [footer, onHeightChange]);
+    setPressedActionKey(null);
+  }, [footer]);
 
   if (!Array.isArray(footer)) {
-    return (
-      <GorhomBottomSheetFooter animatedFooterPosition={animatedFooterPosition}>
-        <Animated.View pointerEvents={footerPointerEvents} style={[styles.footerEntrance, entranceStyle]}>
-          <View ref={footerRef} {...footerLayoutProps} style={footerStyle}>{footer}</View>
-        </Animated.View>
-      </GorhomBottomSheetFooter>
-    );
+    return <View style={footerStyle}>{footer}</View>;
   }
 
   return (
-    <GorhomBottomSheetFooter animatedFooterPosition={animatedFooterPosition}>
-      <Animated.View pointerEvents={footerPointerEvents} style={[styles.footerEntrance, entranceStyle]}>
-        <View ref={footerRef} {...footerLayoutProps} style={footerStyle}>
-          {footer.map((action) => (
-            <ActionButton
-              accessibilityLabel={action.accessibilityLabel}
-              disabled={action.disabled}
-              icon={action.icon}
-              key={action.label}
-              label={action.label}
-              loading={action.loading}
-              onPress={() => {
-                const shouldClose = action.onPress();
-                if (shouldClose !== false) {
-                  hide();
-                }
-              }}
-              tone={action.tone}
-              variant={action.variant ?? 'filled'}
-            />
-          ))}
-        </View>
-      </Animated.View>
-    </GorhomBottomSheetFooter>
+    <View style={footerStyle}>
+      {footer.map((action) => (
+        <ActionButton
+          accessibilityLabel={action.accessibilityLabel}
+          disabled={action.disabled || pressedActionKey !== null}
+          icon={action.icon}
+          key={action.label}
+          label={action.label}
+          loading={action.loading}
+          onPress={() => {
+            if (pressedActionKey !== null) {
+              return;
+            }
+
+            setPressedActionKey(action.label);
+            const shouldClose = action.onPress();
+            if (shouldClose !== false) {
+              hide();
+            } else {
+              setPressedActionKey(null);
+            }
+          }}
+          style={styles.footerAction}
+          tone={action.tone}
+          variant={action.variant ?? 'filled'}
+        />
+      ))}
+    </View>
   );
 }
 
@@ -790,33 +685,39 @@ const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
   },
-  content: {
+  contentFrame: {
+    minHeight: 0,
+  },
+  contentFrameAdaptive: {
+    flexGrow: 0,
+    flexShrink: 1,
+  },
+  contentFrameFixed: {
+    flex: 1,
+  },
+  contentInner: {
     gap: spacing.md,
     paddingHorizontal: layout.contentCardPaddingX,
     paddingBottom: layout.contentCardPaddingX,
     paddingTop: spacing.md,
   },
-  contentWithFooterReadingGap: {
-    paddingBottom: layout.bottomActionArea.contentInset,
-  },
-  contentFill: {
+  contentInnerFill: {
     flexGrow: 1,
   },
   contentFlush: {
     paddingHorizontal: spacing.none,
   },
   contentPlain: {
-    paddingHorizontal: layout.contentPlainPaddingX,
-  },
-  contentWithHeader: {
-    paddingTop: 0,
+    paddingHorizontal: layout.sheetContentPaddingX,
   },
   footer: {
+    flexGrow: 0,
+    flexShrink: 0,
     gap: layout.bottomActionArea.gap,
     paddingHorizontal: layout.bottomActionArea.paddingX,
     paddingTop: layout.bottomActionArea.paddingTop,
   },
-  footerEntrance: {
+  footerAction: {
     width: '100%',
   },
   handle: {
@@ -830,17 +731,11 @@ const styles = StyleSheet.create({
     zIndex: zIndex.bottomSheetBackdrop,
   },
   header: {
-    backgroundColor: 'transparent',
-    height: SHEET_HEADER_HEIGHT,
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    zIndex: zIndex.raised,
-  },
-  headerEntrance: {
     alignItems: 'center',
+    backgroundColor: 'transparent',
     flexDirection: 'row',
+    flexGrow: 0,
+    flexShrink: 0,
     gap: spacing.md,
     height: SHEET_HEADER_HEIGHT,
     paddingHorizontal: layout.topBarPaddingX,
@@ -859,17 +754,24 @@ const styles = StyleSheet.create({
   headerTitle: {
     textAlign: 'center',
   },
-  headerSpacer: {
-    height: SHEET_HEADER_HEIGHT,
-  },
   modal: {
     borderTopLeftRadius: radius.sheet,
     borderTopRightRadius: radius.sheet,
     borderTopWidth: lineWidth.hairline,
     overflow: 'hidden',
   },
+  modalFullscreen: {
+    borderTopLeftRadius: radius.none,
+    borderTopRightRadius: radius.none,
+    borderTopWidth: lineWidth.none,
+  },
   modalContainer: {
     ...StyleSheet.absoluteFillObject,
     zIndex: zIndex.bottomSheet,
+  },
+  panel: {
+    flexDirection: 'column',
+    overflow: 'hidden',
+    width: '100%',
   },
 });
