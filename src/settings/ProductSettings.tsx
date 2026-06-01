@@ -21,6 +21,7 @@ import {
   normalizeDiscoverLayoutItems,
   type DiscoverLayoutItem,
 } from "@/src/domain/discoverLayout";
+import { getDiscoverModuleIds } from "@/src/domain/discoverModules";
 import type { Locale, TranslationKey } from "@/src/i18n/translations";
 import { translations } from "@/src/i18n/translations";
 import type { ProfileAvatarId } from "@/src/components/ProfileAvatar";
@@ -50,18 +51,7 @@ const DEFAULT_DISCOVER_MODULE_BY_ROLE: Record<Role, DiscoverModuleId> = {
 };
 const DEFAULT_PROFILE_AVATAR_ID: ProfileAvatarId = "frank";
 const DEFAULT_SELECTED_TRADING_ACCOUNT_ID = "demo-main";
-const discoverModuleIds: DiscoverModuleId[] = [
-  "challenge",
-  "education",
-  "community",
-  "profile",
-  "onboarding",
-  "partner",
-  "markets",
-  "accounts",
-  "support",
-  "rewards",
-];
+const discoverModuleIds: DiscoverModuleId[] = getDiscoverModuleIds();
 const tradingAccountScenarios: TradingAccountScenario[] = [
   "default",
   "stateAnalysis",

@@ -2,6 +2,11 @@
 
 | Goal / Rule | Page Contract | API Contract | Error Codes | Test Cases |
 |---|---|---|---|---|
+| Workspace segment routing (`BR-WORKSPACE-001`) | `app-workspace.page-contract.json` | Future identity/KYC/account/partner entitlement services | `WORKSPACE_SEGMENT_UNRESOLVED` | `TC-WORKSPACE-001`, `TC-WORKSPACE-002`, `TC-WORKSPACE-003`, `TC-WORKSPACE-004` |
+| Trader-mode tab safety (`BR-WORKSPACE-002`) | Workspace + bottom tab contract | Future navigation and trading/funding entitlement services | `WORKSPACE_TAB_NOT_ALLOWED` | `TC-WORKSPACE-005` |
+| Approved Partner Mode only (`BR-WORKSPACE-003`) | Workspace + Partner tab contract | Future partner entitlement service | `PARTNER_PERMISSION_DENIED` | `TC-WORKSPACE-006` |
+| Workspace Assist weak-entry boundary (`BR-WORKSPACE-004`) | Workspace Assist copy/interaction contract | Support/education routes only | `WORKSPACE_ASSIST_ACTION_BLOCKED` | `TC-WORKSPACE-007` |
+| Workspace public-resource governance (`BR-WORKSPACE-005`) | Workspace page contract + public resource graph | N/A | N/A | `TC-WORKSPACE-008`, `TC-WORKSPACE-009` |
 | Guest cannot access funding (`BR-FUND-001`) | App funding pages | All `/funding/*` | `FUNDING_PERMISSION_DENIED` | `TC-PERM-001` |
 | Trader own-account scope (`BR-FUND-002`) | Deposit, withdrawal, transfer forms | `POST /funding/*` | `FUNDING_PERMISSION_DENIED` | `TC-PERM-002` |
 | Partner cannot initiate funding (`BR-FUND-003`) | App funding pages | `POST /funding/*` | `FUNDING_PERMISSION_DENIED` | `TC-PERM-003` |

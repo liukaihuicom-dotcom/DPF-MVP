@@ -91,6 +91,7 @@ export default function LaunchScreen() {
 const styles = StyleSheet.create({
   actions: {
     gap: spacing.md,
+    marginTop: 'auto',
     width: '100%',
   },
   brandHalo: {
@@ -108,7 +109,8 @@ const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
     gap: spacing.sm,
-    marginTop: spacing.xl,
+    marginBottom: spacing.xxl,
+    marginTop: spacing.xxl,
     width: '100%',
   },
   safe: {
@@ -117,9 +119,9 @@ const styles = StyleSheet.create({
   screen: {
     alignItems: 'center',
     flex: 1,
-    justifyContent: 'space-between',
     paddingBottom: spacing.xl,
     paddingHorizontal: spacing.xl,
+    paddingTop: spacing.xxl,
   },
   subtitle: {
     textAlign: 'center',
@@ -129,10 +131,11 @@ const styles = StyleSheet.create({
   },
   visualStage: {
     alignItems: 'center',
-    flex: 1,
+    flexGrow: 1,
+    flexShrink: 1,
     justifyContent: 'center',
     maxHeight: size.viewport.launchVisualMaxHeight,
-    minHeight: size.viewport.launchVisualMinHeight,
+    minHeight: size.viewport.launchVisualMinHeight + spacing.xxl,
     width: '100%',
   },
 });

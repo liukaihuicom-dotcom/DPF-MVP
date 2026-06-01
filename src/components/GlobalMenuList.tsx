@@ -38,12 +38,14 @@ export type GlobalMenuListItem = {
 type GlobalMenuListProps = {
   items: GlobalMenuListItem[];
   contained?: boolean;
+  containerShape?: 'plain' | 'rounded';
   showChevron?: boolean;
   variant?: 'navigation' | 'descriptive';
 };
 
-export function GlobalMenuList({ contained, items, showChevron = true, variant = 'navigation' }: GlobalMenuListProps) {
+export function GlobalMenuList({ contained, containerShape = 'rounded', items, showChevron = true, variant = 'navigation' }: GlobalMenuListProps) {
   const colors = useThemeColors();
+  const isPlainContainer = contained && containerShape === 'plain';
   const content = (
     <View style={StyleSheet.flatten([styles.list, contained && styles.containedList, contained && { borderColor: colors.border.subtle }])}>
       {items.map((item, index) => {
@@ -83,7 +85,7 @@ export function GlobalMenuList({ contained, items, showChevron = true, variant =
   );
 
   if (contained) {
-    return <View style={styles.container}>{content}</View>;
+    return <View style={StyleSheet.flatten([styles.container, isPlainContainer && styles.containerPlain])}>{content}</View>;
   }
 
   return <Card compact>{content}</Card>;
@@ -142,6 +144,9 @@ const styles = StyleSheet.create({
     borderRadius: radius.card,
     borderWidth: lineWidth.none,
     overflow: 'hidden',
+  },
+  containerPlain: {
+    borderRadius: radius.none,
   },
   descriptiveRow: {
     gap: layout.controlGap,

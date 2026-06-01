@@ -1,7 +1,7 @@
 const { complete, fail, pass, read, requireContains, requireFiles } = require('./qa-utils.cjs');
 
 const translationText = read('src/i18n/translations.ts');
-const skillText = read('.codex/skills/ui-build-production/addons/financial-copy-localization/SKILL.md');
+const skillText = read('.codex/skills/l2-addons/ui-build-governance/financial-ux-copy-localization-governance-skill-v1.0.0-l5.md');
 const enStart = translationText.indexOf('  "en-US": {');
 const zhStart = translationText.indexOf('  "zh-CN": {');
 const enBlock = enStart >= 0 && zhStart > enStart ? translationText.slice(enStart, zhStart) : '';
@@ -35,17 +35,17 @@ const protectedTermIssues = englishEntries.flatMap(({ key, value }) => {
 const capitalizationRuleIssues = [
   skillText.includes('en-capitalization.rules.md')
     ? pass('QA_I18N_CAPITALIZATION_RULE', 'Financial copy skill requires English capitalization rules')
-    : fail('QA_I18N_CAPITALIZATION_RULE', 'Financial copy skill must require en-capitalization.rules.md for English UI copy tasks', '.codex/skills/ui-build-production/addons/financial-copy-localization/SKILL.md'),
+    : fail('QA_I18N_CAPITALIZATION_RULE', 'Financial copy skill must require en-capitalization.rules.md for English UI copy tasks', '.codex/skills/l2-addons/ui-build-governance/financial-ux-copy-localization-governance-skill-v1.0.0-l5.md'),
   skillText.includes('Page Copy Review')
     ? pass('QA_I18N_PAGE_COPY_REVIEW', 'Financial copy skill requires Page Copy Review')
-    : fail('QA_I18N_PAGE_COPY_REVIEW', 'Financial copy skill must require Page Copy Review after English UI copy changes', '.codex/skills/ui-build-production/addons/financial-copy-localization/SKILL.md'),
+    : fail('QA_I18N_PAGE_COPY_REVIEW', 'Financial copy skill must require Page Copy Review after English UI copy changes', '.codex/skills/l2-addons/ui-build-governance/financial-ux-copy-localization-governance-skill-v1.0.0-l5.md'),
 ];
 
 complete('qa:i18n', [
   ...requireFiles([
     'src/i18n/translations.ts',
     'docs/12-i18n-rules.md',
-    '.codex/skills/ui-build-production/addons/financial-copy-localization/rules/en-capitalization.rules.md',
+    '.codex/skills/l3-supporting-references/financial-copy/financial-ux-copy-localization-en-capitalization-rules.md',
     'handoff/templates/i18n-keys.md',
     'i18n/en-US.json',
     'i18n/zh-CN.json',

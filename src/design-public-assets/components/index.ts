@@ -38,6 +38,7 @@ export * from '@/src/components/TradeOrderList';
 export * from '@/src/components/TradingAccountSwitchSheet';
 export * from '@/src/components/Typography';
 export * from '@/src/components/UpgradeChatCard';
+export * from '@/src/components/business/workspace';
 export * from '@/src/components/data-display';
 export * from '@/src/components/feedback';
 export * from '@/src/components/forms';

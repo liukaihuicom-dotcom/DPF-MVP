@@ -4,7 +4,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useThemeColors } from '@/src/settings/ProductSettings';
 import { lineWidth, layout, spacing } from '@/src/theme/tokens';
-import type { NavigationTarget } from '@/src/navigation/navigationPolicy';
+import type { LeftAction, NavigationContract, NavigationTarget } from '@/src/navigation/navigationPolicy';
 
 import { AppTopBar, type AppTopBarAction } from './AppTopBar';
 import { useKeyboardVisible } from './layout/useKeyboardVisible';
@@ -13,11 +13,16 @@ type ScreenProps = PropsWithChildren<{
   align?: 'left' | 'center';
   back?: boolean;
   backHref?: NavigationTarget;
+  closeHref?: NavigationTarget;
   contentBottomPadding?: 'default' | 'none';
   contentInsetBottom?: number;
   contentPadding?: 'card' | 'default' | 'flush' | 'plain';
   dismissKeyboardOnTap?: boolean;
   keyboardAware?: boolean;
+  leftAction?: LeftAction;
+  leftAccessibilityLabel?: string;
+  navigationContract?: NavigationContract;
+  onLeftPress?: () => void;
   overlay?: ReactNode;
   rightActions?: AppTopBarAction[];
   scroll?: boolean;
@@ -33,10 +38,15 @@ export function Screen({
   back,
   backHref,
   children,
+  closeHref,
   contentInsetBottom = 0,
   contentPadding = 'default',
   dismissKeyboardOnTap,
   keyboardAware,
+  leftAccessibilityLabel,
+  leftAction,
+  navigationContract,
+  onLeftPress,
   overlay,
   rightActions,
   scroll = true,
@@ -49,7 +59,21 @@ export function Screen({
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const keyboardVisible = useKeyboardVisible(keyboardAware);
-  const header = topBar ?? (title ? <AppTopBar actions={rightActions} align={align} back={back} backHref={backHref} subtitle={subtitle} title={title} /> : null);
+  const resolvedLeftAction = navigationContract?.leftAction ?? leftAction;
+  const header = topBar ?? (title ? (
+    <AppTopBar
+      actions={rightActions}
+      align={align}
+      back={back}
+      backHref={backHref}
+      closeHref={closeHref}
+      leftAccessibilityLabel={leftAccessibilityLabel}
+      leftAction={resolvedLeftAction}
+      onLeftPress={onLeftPress}
+      subtitle={subtitle}
+      title={title}
+    />
+  ) : null);
   const compactFooterForKeyboard = keyboardVisible;
   const bottomActionInset = compactFooterForKeyboard ? layout.bottomActionArea.keyboardContentInset : layout.bottomActionArea.contentInset;
   const bottomActionPadding = compactFooterForKeyboard ? layout.bottomActionArea.keyboardPaddingBottom : layout.bottomActionArea.paddingBottom;

@@ -177,11 +177,11 @@ function OverviewSideMetric({ label, tone, value }: { label: string; tone?: 'dow
   );
 }
 
-export function CommissionScreen({ showBack = false }: { showBack?: boolean }) {
+export function CommissionScreen({ backHref = '/quick', showBack = false }: { backHref?: '/quick' | '/workspace'; showBack?: boolean }) {
   const { locale, colors, t } = useProductSettings();
 
   return (
-    <Screen back={showBack} backHref="/quick" title={t('commission.title')}>
+    <Screen back={showBack} backHref={backHref} title={t('commission.title')}>
       <Card highlight>
         <View style={styles.metricRow}>
           <Metric label={t('commission.pending')} tone="amber" value={formatCompactMoney(partnerMetrics.pendingCommission, 'USD', locale)} />
@@ -232,7 +232,7 @@ export function CommissionScreen({ showBack = false }: { showBack?: boolean }) {
 }
 
 export function PartnerCommissionRoute() {
-  return <CommissionScreen showBack />;
+  return <CommissionScreen backHref="/workspace" showBack />;
 }
 
 function buildAccountOverview(accounts: TradingAccountProfile[], openPositionCount: number): AccountOverview {

@@ -13,6 +13,7 @@ Decision: `conditional_allow_for_contract_review`
 - Security Center can enter product, backend/API, risk/compliance, Design System, Financial Copy, Icon Governance, and UX Gate review as a contract-first package.
 - GlobalDialog, BottomSheet governance, and trading order sheet governance can enter implementation validation after TypeScript, component QA, style QA, public-resource QA, i18n QA, and browser smoke verification pass.
 - BottomSheet dismissal/reserve governance can enter device QA after TypeScript, component QA, public-resource QA, and the focused overlay close-path checks pass.
+- Agentic Workspace Trader six-tab navigation can enter product/UI QA after TypeScript, navigation, i18n, icon, version, public-resource, workspace-boundary, and browser smoke checks pass.
 
 ## Blocked
 
@@ -25,6 +26,8 @@ Decision: `conditional_allow_for_contract_review`
 - Any implementation that treats TOTP/MFA as a reason to force local PIN setup by default.
 - Any page-owned business `Modal`, bottom-sheet shell, or trading order option sheet body that bypasses `GlobalDialog`, the global `BottomSheet` preset system, or registered order business components.
 - Production release of BottomSheet dismissal governance until iOS and Android close-path smoke checks confirm footer/content sync, measured footer reserve, and no residual backdrop after cleanup.
+- Production release of Workspace remains blocked until backend identity, KYC, trading-account, funding, trading, and Partner entitlement services enforce destination permissions and high-risk action boundaries server-side.
+- Any Workspace Assist behavior that recommends buy/sell direction, submits orders, moves funds, sends client messages, or promises returns is blocked.
 
 ## Required Human Review
 
@@ -33,6 +36,7 @@ Decision: `conditional_allow_for_contract_review`
 - Provider contract and SLA review.
 - Finance/accounting ledger and reconciliation review.
 - Native-language and compliance copy review before UI release.
+- Native-language and compliance copy review for Workspace Assist, funding, trading, Partner commission, and risk-boundary copy before production release.
 - Security/risk owner review for TOTP storage, recovery-code hashing, GSL scheduler, remote login thresholds, mandatory DMP lock rules, withdrawal verification, and audit export policy.
 
 ## Validation Gate

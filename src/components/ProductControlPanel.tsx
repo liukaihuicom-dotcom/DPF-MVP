@@ -44,12 +44,14 @@ import { AppText } from './Typography';
 
 type ConsoleScreen = 'home' | 'pages' | 'state';
 type PageConsoleGroup = 'markets' | 'trading' | 'accounts' | 'funding' | 'growth' | 'auth';
+type PageConsoleLevel = 'detail' | 'modal' | 'primary';
 type ScenarioTone = 'amber' | 'blue' | 'brand' | 'danger' | 'down' | 'up';
 type DevScenarioId = 'guest' | 'login' | 'markets' | 'trade' | 'order' | 'accounts' | 'funding' | 'partner' | 'discover';
 
 type PageConsoleEntry = {
   group: PageConsoleGroup;
   icon: AppIconName;
+  level: PageConsoleLevel;
   moduleKey: TranslationKey;
   route: Href;
   routeLabel: string;
@@ -83,6 +85,10 @@ const discoverModuleIds: DiscoverModuleId[] = ['challenge', 'education', 'commun
 const upgradeStatuses: UpgradeStatus[] = ['none', 'pending', 'approved', 'rejected'];
 const fundingPresets: FundingDevPreset[] = ['default', 'awaitingPayment', 'reviewing', 'cancelled'];
 const pageGroups: PageConsoleGroup[] = ['markets', 'trading', 'accounts', 'funding', 'growth', 'auth'];
+const pageLevelLabels: Record<Exclude<PageConsoleLevel, 'primary'>, TranslationKey> = {
+  detail: 'control.pageConsole.level.detail',
+  modal: 'control.pageConsole.level.modal',
+};
 const maxVisibleScenarios = 6;
 const devConsoleFabDragThreshold = spacing.xs;
 const devConsoleFabEdgeInset = spacing.sm;
@@ -896,7 +902,7 @@ function buildQuickScenarios(anchorId: string): QuickScenario[] {
 function buildPageEntries(anchorId: string): PageConsoleEntry[] {
   return [
     pageEntry('markets', 'icon.trading.market', 'control.pageConsole.module.markets', '/markets', '/markets', 'control.pageConsole.page.home.title', 'brand'),
-    pageEntry('markets', 'icon.trading.market', 'control.pageConsole.module.markets', `/instrument/${anchorId}` as Href, '/instrument/[id]', 'control.pageConsole.page.instrument.title', 'blue'),
+    pageEntry('markets', 'icon.trading.market', 'control.pageConsole.module.markets', `/instrument/${anchorId}` as Href, '/instrument/[id]', 'control.pageConsole.page.instrument.title', 'blue', 'detail'),
     pageEntry('trading', 'icon.trading.order_ticket', 'control.pageConsole.module.trading', '/trade', '/trade', 'control.pageConsole.page.trade.title', 'up'),
     pageEntry('trading', 'icon.trading.order_ticket', 'control.pageConsole.module.trading', `/order/${anchorId}?direction=buy` as Href, '/order/[id]', 'control.pageConsole.page.order.title', 'up'),
     pageEntry('accounts', 'icon.account.trading', 'control.pageConsole.module.accounts', '/accounts', '/accounts', 'control.pageConsole.page.accounts.title', 'blue'),
@@ -927,8 +933,9 @@ function pageEntry(
   routeLabel: string,
   titleKey: TranslationKey,
   tone: ScenarioTone,
+  level: PageConsoleLevel = 'primary',
 ): PageConsoleEntry {
-  return { group, icon, moduleKey, route, routeLabel, titleKey, tone };
+  return { group, icon, level, moduleKey, route, routeLabel, titleKey, tone };
 }
 
 function TopSelectControl({
@@ -1049,9 +1056,16 @@ function PageRow({ entry, onClose }: { entry: PageConsoleEntry; onClose: () => v
           {entry.routeLabel}
         </AppText>
       </View>
-      <AppText numberOfLines={1} tone="dim" variant="eyebrow">
-        {t(entry.moduleKey)}
-      </AppText>
+      <View style={styles.pageMetaStack}>
+        <AppText numberOfLines={1} tone="dim" variant="eyebrow">
+          {t(entry.moduleKey)}
+        </AppText>
+        {entry.level !== 'primary' ? (
+          <AppText numberOfLines={1} tone="dim" variant="eyebrow">
+            {t(pageLevelLabels[entry.level])}
+          </AppText>
+        ) : null}
+      </View>
     </NativePressable>
   );
 }
@@ -1297,6 +1311,10 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: spacing.xxs,
     minWidth: 0,
+  },
+  pageMetaStack: {
+    alignItems: 'flex-end',
+    gap: spacing.xxs,
   },
   scenarioGrid: {
     columnGap: spacing.sm,

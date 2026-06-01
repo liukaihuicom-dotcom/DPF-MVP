@@ -615,7 +615,7 @@ function AppBottomSheetFooter({
     styles.footer,
     {
       backgroundColor,
-      paddingBottom: layout.bottomActionArea.paddingBottom + insets.bottom,
+      paddingBottom: layout.sheetFooterPaddingBottom + insets.bottom,
     },
   ]);
 
@@ -698,7 +698,7 @@ const styles = StyleSheet.create({
   contentInner: {
     gap: spacing.md,
     paddingHorizontal: layout.contentCardPaddingX,
-    paddingBottom: layout.contentCardPaddingX,
+    paddingBottom: layout.sheetContentPaddingBottom,
     paddingTop: spacing.md,
   },
   contentInnerFill: {
@@ -711,9 +711,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: layout.sheetContentPaddingX,
   },
   footer: {
+    flexBasis: 'auto',
     flexGrow: 0,
     flexShrink: 0,
-    gap: layout.bottomActionArea.gap,
+    gap: layout.sheetFooterGap,
     paddingHorizontal: layout.bottomActionArea.paddingX,
     paddingTop: layout.bottomActionArea.paddingTop,
   },

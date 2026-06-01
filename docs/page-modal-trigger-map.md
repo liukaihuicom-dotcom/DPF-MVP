@@ -6,10 +6,10 @@ Source of truth: `src/navigation/routeRegistry.ts` and `src/navigation/modalRegi
 
 | Page route | Trigger action | Modal id | Result / routeability |
 |---|---|---|---|
-| `/instrument/[id]` | Tap buy or sell footer quote | `order.ticket.route` | Routeable transparent modal at `/order/[id]` |
-| `/quick` | Open quick trade action | `order.ticket.route` | Routeable transparent modal at `/order/[id]` |
-| `/discover` | Open challenge ticket or trade entry | `order.ticket.route` | Routeable transparent modal at `/order/[id]` |
-| `/discover` | Open layout settings | `discover.layout.route` | Routeable transparent modal at `/discover-layout`; review demotion need |
+| `/instrument/[id]` | Tap buy or sell footer quote | `order.ticket.route` | Routeable full-screen Modal Page at `/order/[id]` with Close and dirty guard |
+| `/quick` | Open quick trade action | `order.ticket.route` | Routeable full-screen Modal Page at `/order/[id]` with Close and dirty guard |
+| `/discover` | Open challenge ticket or trade entry | `order.ticket.route` | Routeable full-screen Modal Page at `/order/[id]` with Close and dirty guard |
+| `/discover` | Open layout settings | `discover.layout.route` | Routeable modal at `/discover-layout` with Close / Cancel / Save and draft dirty guard |
 | `/auth` | Tap country code selector in phone login mode | `auth.countryPicker` | Non-routeable picker sheet |
 | `/auth/register` | Tap country code selector | `auth.countryPicker` | Non-routeable picker sheet |
 | `/auth/register-phone` | Tap country code selector | `auth.countryPicker` | Non-routeable picker sheet |

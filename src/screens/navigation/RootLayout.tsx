@@ -108,6 +108,9 @@ function RootLayoutNav() {
       pathname === '/' ||
       pathname === '/brand-splash' ||
       pathname === '/launch' ||
+      pathname === '/workspace' ||
+      pathname === '/learn' ||
+      pathname === '/demo' ||
       pathname === '/discover' ||
       pathname === '/quick' ||
       pathname === '/auth' ||
@@ -182,6 +185,7 @@ function RootLayoutNav() {
                       }}
                     />
                     <Stack.Screen name="client/[id]" />
+                    <Stack.Screen name="partner-tools" />
                     <Stack.Screen name="partner/client-orders" />
                     <Stack.Screen name="partner/commission" />
                     <Stack.Screen name="account-basic/[id]" />

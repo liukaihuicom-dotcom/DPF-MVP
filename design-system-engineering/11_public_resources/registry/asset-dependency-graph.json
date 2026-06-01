@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "generated_at": "2026-05-28",
+  "version": "0.3.0",
+  "generated_at": "2026-06-01",
   "source_of_truth": [
     "src/navigation/routeRegistry.ts",
     "product-engineering-package/01_modules_and_navigation/page.inventory.md",
@@ -123,6 +123,407 @@
       ],
       "migrationStatus": "reference_migration_complete",
       "pageSource": "route-registry:LaunchScreen",
+      "qaEvidence": [
+        "pnpm qa:tokens",
+        "pnpm qa:style",
+        "pnpm qa:components",
+        "pnpm qa:icons",
+        "pnpm qa:i18n",
+        "pnpm qa:public-resources",
+        "npx tsc --noEmit",
+        "strict source scans"
+      ]
+    },
+    {
+      "page_id": "workspace",
+      "route": "/workspace",
+      "component": "WorkspaceScreen",
+      "module": "Workspace",
+      "platform": "app",
+      "riskLevel": "medium",
+      "patterns": [
+        "agenticWorkspace",
+        "metricCluster",
+        "discoverProfileCommerce"
+      ],
+      "businessComponents": [
+        "AgenticWorkspace",
+        "MetricCluster",
+        "PartnerPortalSummary",
+        "RewardSummaryCard",
+        "VerificationStatusCard"
+      ],
+      "baseComponents": [
+        "Screen",
+        "Card",
+        "AppText",
+        "ActionButton",
+        "StatusPill",
+        "Metric",
+        "HeaderIconButton",
+        "NativePressable",
+        "IconSurface",
+        "AppIcon"
+      ],
+      "tokens": [
+        "token.design-tokens",
+        "token.color",
+        "token.semantic-layout",
+        "runtime.design-public-assets.facade"
+      ],
+      "icons": [
+        "icon.icon-library"
+      ],
+      "copyNamespaces": [
+        "workspace",
+        "tabs",
+        "common"
+      ],
+      "migrationStatus": "reference_migration_complete",
+      "pageSource": "src/screens/workspace/WorkspaceScreen.tsx",
+      "qaEvidence": [
+        "pnpm qa:tokens",
+        "pnpm qa:style",
+        "pnpm qa:components",
+        "pnpm qa:icons",
+        "pnpm qa:i18n",
+        "pnpm qa:public-resources",
+        "npx tsc --noEmit",
+        "strict source scans"
+      ]
+    },
+    {
+      "page_id": "learn",
+      "route": "/learn",
+      "component": "LearnRoute",
+      "module": "Discover",
+      "platform": "app",
+      "riskLevel": "low",
+      "patterns": [
+        "discoverProfileCommerce",
+        "list"
+      ],
+      "businessComponents": [
+        "PartnerPortalSummary",
+        "RewardSummaryCard",
+        "VerificationStatusCard",
+        "MetricCluster"
+      ],
+      "baseComponents": [
+        "Screen",
+        "Card",
+        "AppText",
+        "ActionButton",
+        "GlobalMenuList",
+        "Metric",
+        "StatusPill",
+        "ProfileAvatar",
+        "IconSurface",
+        "AppIcon",
+        "UpgradeChatCard"
+      ],
+      "tokens": [
+        "token.design-tokens",
+        "token.color",
+        "token.semantic-layout",
+        "runtime.design-public-assets.facade"
+      ],
+      "icons": [
+        "icon.icon-library"
+      ],
+      "copyNamespaces": [
+        "discover",
+        "workspace",
+        "common"
+      ],
+      "migrationStatus": "reference_migration_complete",
+      "pageSource": "src/screens/workspace/WorkspaceTabRoutes.tsx",
+      "qaEvidence": [
+        "pnpm qa:tokens",
+        "pnpm qa:style",
+        "pnpm qa:components",
+        "pnpm qa:icons",
+        "pnpm qa:i18n",
+        "pnpm qa:public-resources",
+        "npx tsc --noEmit",
+        "strict source scans"
+      ]
+    },
+    {
+      "page_id": "demo",
+      "route": "/demo",
+      "component": "DemoRoute",
+      "module": "Discover",
+      "platform": "app",
+      "riskLevel": "medium",
+      "patterns": [
+        "discoverProfileCommerce",
+        "review"
+      ],
+      "businessComponents": [
+        "PartnerPortalSummary",
+        "RewardSummaryCard",
+        "VerificationStatusCard",
+        "MetricCluster"
+      ],
+      "baseComponents": [
+        "Screen",
+        "Card",
+        "AppText",
+        "ActionButton",
+        "GlobalMenuList",
+        "Metric",
+        "StatusPill",
+        "ProfileAvatar",
+        "IconSurface",
+        "AppIcon",
+        "UpgradeChatCard"
+      ],
+      "tokens": [
+        "token.design-tokens",
+        "token.color",
+        "token.semantic-layout",
+        "runtime.design-public-assets.facade"
+      ],
+      "icons": [
+        "icon.icon-library"
+      ],
+      "copyNamespaces": [
+        "discover",
+        "workspace",
+        "common"
+      ],
+      "migrationStatus": "reference_migration_complete",
+      "pageSource": "src/screens/workspace/WorkspaceTabRoutes.tsx",
+      "qaEvidence": [
+        "pnpm qa:tokens",
+        "pnpm qa:style",
+        "pnpm qa:components",
+        "pnpm qa:icons",
+        "pnpm qa:i18n",
+        "pnpm qa:public-resources",
+        "npx tsc --noEmit",
+        "strict source scans"
+      ]
+    },
+    {
+      "page_id": "clients",
+      "route": "/clients",
+      "component": "PartnerClientsScreen",
+      "module": "Partner",
+      "platform": "app",
+      "riskLevel": "high",
+      "patterns": [
+        "list",
+        "detail"
+      ],
+      "businessComponents": [
+        "PartnerPortalSummary",
+        "RewardSummaryCard",
+        "VerificationStatusCard",
+        "MetricCluster"
+      ],
+      "baseComponents": [
+        "Screen",
+        "Card",
+        "AppText",
+        "ActionButton",
+        "GlobalMenuList",
+        "Metric",
+        "StatusPill",
+        "ProfileAvatar",
+        "IconSurface",
+        "AppIcon",
+        "UpgradeChatCard"
+      ],
+      "tokens": [
+        "token.design-tokens",
+        "token.color",
+        "token.semantic-layout",
+        "runtime.design-public-assets.facade"
+      ],
+      "icons": [
+        "icon.icon-library"
+      ],
+      "copyNamespaces": [
+        "discover",
+        "partner",
+        "upgrade",
+        "common"
+      ],
+      "migrationStatus": "reference_migration_complete",
+      "pageSource": "src/screens/workspace/WorkspaceTabRoutes.tsx",
+      "qaEvidence": [
+        "pnpm qa:tokens",
+        "pnpm qa:style",
+        "pnpm qa:components",
+        "pnpm qa:icons",
+        "pnpm qa:i18n",
+        "pnpm qa:public-resources",
+        "npx tsc --noEmit",
+        "strict source scans"
+      ]
+    },
+    {
+      "page_id": "growth",
+      "route": "/growth",
+      "component": "PartnerToolsScreen",
+      "module": "Partner",
+      "platform": "app",
+      "riskLevel": "medium",
+      "patterns": [
+        "discoverProfileCommerce"
+      ],
+      "businessComponents": [
+        "PartnerPortalSummary",
+        "RewardSummaryCard",
+        "VerificationStatusCard",
+        "MetricCluster"
+      ],
+      "baseComponents": [
+        "Screen",
+        "Card",
+        "AppText",
+        "ActionButton",
+        "GlobalMenuList",
+        "Metric",
+        "StatusPill",
+        "ProfileAvatar",
+        "IconSurface",
+        "AppIcon",
+        "UpgradeChatCard"
+      ],
+      "tokens": [
+        "token.design-tokens",
+        "token.color",
+        "token.semantic-layout",
+        "runtime.design-public-assets.facade"
+      ],
+      "icons": [
+        "icon.icon-library"
+      ],
+      "copyNamespaces": [
+        "discover",
+        "partner",
+        "upgrade",
+        "common"
+      ],
+      "migrationStatus": "reference_migration_complete",
+      "pageSource": "src/screens/workspace/WorkspaceTabRoutes.tsx",
+      "qaEvidence": [
+        "pnpm qa:tokens",
+        "pnpm qa:style",
+        "pnpm qa:components",
+        "pnpm qa:icons",
+        "pnpm qa:i18n",
+        "pnpm qa:public-resources",
+        "npx tsc --noEmit",
+        "strict source scans"
+      ]
+    },
+    {
+      "page_id": "wallet",
+      "route": "/wallet",
+      "component": "CommissionScreen",
+      "module": "Partner",
+      "platform": "app",
+      "riskLevel": "medium",
+      "patterns": [
+        "detail",
+        "metricCluster"
+      ],
+      "businessComponents": [
+        "PartnerPortalSummary",
+        "RewardSummaryCard",
+        "VerificationStatusCard",
+        "MetricCluster"
+      ],
+      "baseComponents": [
+        "Screen",
+        "Card",
+        "AppText",
+        "ActionButton",
+        "GlobalMenuList",
+        "Metric",
+        "StatusPill",
+        "ProfileAvatar",
+        "IconSurface",
+        "AppIcon",
+        "UpgradeChatCard"
+      ],
+      "tokens": [
+        "token.design-tokens",
+        "token.color",
+        "token.semantic-layout",
+        "runtime.design-public-assets.facade"
+      ],
+      "icons": [
+        "icon.icon-library"
+      ],
+      "copyNamespaces": [
+        "discover",
+        "partner",
+        "upgrade",
+        "common"
+      ],
+      "migrationStatus": "reference_migration_complete",
+      "pageSource": "src/screens/workspace/WorkspaceTabRoutes.tsx",
+      "qaEvidence": [
+        "pnpm qa:tokens",
+        "pnpm qa:style",
+        "pnpm qa:components",
+        "pnpm qa:icons",
+        "pnpm qa:i18n",
+        "pnpm qa:public-resources",
+        "npx tsc --noEmit",
+        "strict source scans"
+      ]
+    },
+    {
+      "page_id": "me",
+      "route": "/me",
+      "component": "SettingsScreen",
+      "module": "Settings",
+      "platform": "app",
+      "riskLevel": "medium",
+      "patterns": [
+        "discoverProfileCommerce",
+        "list"
+      ],
+      "businessComponents": [
+        "PartnerPortalSummary",
+        "RewardSummaryCard",
+        "VerificationStatusCard",
+        "MetricCluster"
+      ],
+      "baseComponents": [
+        "Screen",
+        "Card",
+        "AppText",
+        "ActionButton",
+        "GlobalMenuList",
+        "StatusPill",
+        "IconSurface",
+        "AppIcon",
+        "UpgradeChatCard"
+      ],
+      "tokens": [
+        "token.design-tokens",
+        "token.color",
+        "token.semantic-layout",
+        "runtime.design-public-assets.facade"
+      ],
+      "icons": [
+        "icon.icon-library"
+      ],
+      "copyNamespaces": [
+        "discover",
+        "settings",
+        "securityLog",
+        "common"
+      ],
+      "migrationStatus": "reference_migration_complete",
+      "pageSource": "src/screens/workspace/WorkspaceTabRoutes.tsx",
       "qaEvidence": [
         "pnpm qa:tokens",
         "pnpm qa:style",
@@ -2400,7 +2801,8 @@
       "name": "Component Library Manifest",
       "source_path": "packages/component-library/registry/component-manifest.json",
       "status": "approved",
-      "qa_status": "passed"
+      "qa_status": "passed",
+      "version": "2.5.0"
     },
     {
       "asset_id": "component.base.Screen",
@@ -2545,7 +2947,8 @@
       "name": "Business Component Manifest",
       "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
       "status": "approved",
-      "qa_status": "passed"
+      "qa_status": "passed",
+      "version": "1.2.0"
     },
     {
       "asset_id": "business.FundingOperationWorkspace",
@@ -2690,7 +3093,8 @@
       "name": "Pattern Registry",
       "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
       "status": "approved",
-      "qa_status": "passed"
+      "qa_status": "passed",
+      "version": "1.2.0"
     },
     {
       "asset_id": "pattern.page.dashboard",
@@ -2818,7 +3222,8 @@
       "name": "Public Copy Table",
       "source_path": "design-system-engineering/11_public_resources/copy/copy-table.json",
       "status": "approved",
-      "qa_status": "passed"
+      "qa_status": "passed",
+      "version": "0.3.0"
     },
     {
       "asset_id": "illustration.registry",
@@ -2858,7 +3263,8 @@
       "name": "Asset Dependency Graph",
       "source_path": "design-system-engineering/11_public_resources/registry/asset-dependency-graph.json",
       "status": "approved",
-      "qa_status": "passed"
+      "qa_status": "passed",
+      "version": "0.3.0"
     },
     {
       "asset_id": "business.LocalPinSecurityFlow",
@@ -2971,6 +3377,30 @@
       "source_path": "src/design-public-assets/overlays/registry/overlay-registry.json",
       "status": "approved",
       "qa_status": "passed"
+    },
+    {
+      "asset_id": "business.AgenticWorkspace",
+      "asset_type": "business_component",
+      "name": "AgenticWorkspace",
+      "source_path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "version": "1.0.0",
+      "status": "approved"
+    },
+    {
+      "asset_id": "pattern.page.agenticWorkspace",
+      "asset_type": "page_pattern",
+      "name": "Agentic Workspace Pattern",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "version": "1.0.0",
+      "status": "approved"
+    },
+    {
+      "asset_id": "component.business.WorkspaceComponents",
+      "asset_type": "business_component",
+      "name": "Workspace public component set",
+      "source_path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "version": "2.5.0",
+      "status": "approved"
     }
   ],
   "edges": [
@@ -3237,7 +3667,7 @@
     },
     {
       "from": "page.trade",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -3710,7 +4140,7 @@
     },
     {
       "from": "page.portfolio_alias",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -4188,7 +4618,7 @@
     },
     {
       "from": "page.order_ticket",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -4323,7 +4753,7 @@
     },
     {
       "from": "page.client_profile",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -4439,7 +4869,7 @@
     },
     {
       "from": "page.partner_client_orders",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -4550,7 +4980,7 @@
     },
     {
       "from": "page.partner_commission",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -4661,7 +5091,7 @@
     },
     {
       "from": "page.discover_entry",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -4888,7 +5318,7 @@
     },
     {
       "from": "page.account_details",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -5014,7 +5444,7 @@
     },
     {
       "from": "page.account_basic",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -5135,7 +5565,7 @@
     },
     {
       "from": "page.account_balance",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -5382,7 +5812,7 @@
     },
     {
       "from": "page.funding_home",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -5492,7 +5922,7 @@
     },
     {
       "from": "page.deposit_form",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -5602,7 +6032,7 @@
     },
     {
       "from": "page.withdrawal_form",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -5712,7 +6142,7 @@
     },
     {
       "from": "page.transfer_form",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -5922,7 +6352,7 @@
     },
     {
       "from": "page.funding_transaction_detail",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -6112,7 +6542,7 @@
     },
     {
       "from": "page.security_login_log",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -6889,7 +7319,7 @@
     },
     {
       "from": "page.pin_setup",
-      "to": "pattern.page.detail",
+      "to": "pattern.detail",
       "relation": "uses_pattern"
     },
     {
@@ -8022,6 +8452,872 @@
       "from": "page.login",
       "to": "component.base.SegmentedTabs",
       "relation": "uses_base_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "token.design-tokens",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.workspace",
+      "to": "token.color",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.workspace",
+      "to": "token.semantic-layout",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.workspace",
+      "to": "runtime.design-public-assets.facade",
+      "relation": "consumes_public_resource_facade"
+    },
+    {
+      "from": "page.workspace",
+      "to": "pattern.page.agenticWorkspace",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.workspace",
+      "to": "pattern.list.metricCluster",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.workspace",
+      "to": "pattern.page.discoverProfileCommerce",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.workspace",
+      "to": "business.AgenticWorkspace",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "business.MetricCluster",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "business.PartnerPortalSummary",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "business.RewardSummaryCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "business.VerificationStatusCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "component.base.Screen",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "component.base.Card",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "component.base.AppText",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "component.base.ActionButton",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "component.base.StatusPill",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "component.base.Metric",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "component.base.HeaderIconButton",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "component.base.NativePressable",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "component.base.IconSurface",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "component.base.AppIcon",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.workspace",
+      "to": "copy.copy-table",
+      "relation": "uses_copy_namespace",
+      "namespaces": [
+        "workspace"
+      ]
+    },
+    {
+      "from": "page.workspace",
+      "to": "icon.icon-library",
+      "relation": "uses_icon_registry"
+    },
+    {
+      "from": "page.learn",
+      "to": "token.design-tokens",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.learn",
+      "to": "token.color",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.learn",
+      "to": "token.semantic-layout",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.learn",
+      "to": "runtime.design-public-assets.facade",
+      "relation": "consumes_public_resource_facade"
+    },
+    {
+      "from": "page.learn",
+      "to": "pattern.page.discoverProfileCommerce",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.learn",
+      "to": "pattern.list",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.learn",
+      "to": "business.PartnerPortalSummary",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "business.RewardSummaryCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "business.VerificationStatusCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "business.MetricCluster",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "component.base.Screen",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "component.base.Card",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "component.base.AppText",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "component.base.ActionButton",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "component.base.GlobalMenuList",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "component.base.Metric",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "component.base.StatusPill",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "component.base.ProfileAvatar",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "component.base.IconSurface",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "component.base.AppIcon",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "component.base.UpgradeChatCard",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.learn",
+      "to": "copy.copy-table",
+      "relation": "uses_copy_namespace",
+      "namespaces": [
+        "discover"
+      ]
+    },
+    {
+      "from": "page.learn",
+      "to": "icon.icon-library",
+      "relation": "uses_icon_registry"
+    },
+    {
+      "from": "page.demo",
+      "to": "token.design-tokens",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.demo",
+      "to": "token.color",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.demo",
+      "to": "token.semantic-layout",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.demo",
+      "to": "runtime.design-public-assets.facade",
+      "relation": "consumes_public_resource_facade"
+    },
+    {
+      "from": "page.demo",
+      "to": "pattern.page.discoverProfileCommerce",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.demo",
+      "to": "pattern.review",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.demo",
+      "to": "business.PartnerPortalSummary",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "business.RewardSummaryCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "business.VerificationStatusCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "business.MetricCluster",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "component.base.Screen",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "component.base.Card",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "component.base.AppText",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "component.base.ActionButton",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "component.base.GlobalMenuList",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "component.base.Metric",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "component.base.StatusPill",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "component.base.ProfileAvatar",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "component.base.IconSurface",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "component.base.AppIcon",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "component.base.UpgradeChatCard",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.demo",
+      "to": "copy.copy-table",
+      "relation": "uses_copy_namespace",
+      "namespaces": [
+        "discover"
+      ]
+    },
+    {
+      "from": "page.demo",
+      "to": "icon.icon-library",
+      "relation": "uses_icon_registry"
+    },
+    {
+      "from": "page.clients",
+      "to": "token.design-tokens",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.clients",
+      "to": "token.color",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.clients",
+      "to": "token.semantic-layout",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.clients",
+      "to": "runtime.design-public-assets.facade",
+      "relation": "consumes_public_resource_facade"
+    },
+    {
+      "from": "page.clients",
+      "to": "pattern.list",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.clients",
+      "to": "pattern.detail",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.clients",
+      "to": "business.PartnerPortalSummary",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "business.RewardSummaryCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "business.VerificationStatusCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "business.MetricCluster",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "component.base.Screen",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "component.base.Card",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "component.base.AppText",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "component.base.ActionButton",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "component.base.GlobalMenuList",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "component.base.Metric",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "component.base.StatusPill",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "component.base.ProfileAvatar",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "component.base.IconSurface",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "component.base.AppIcon",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "component.base.UpgradeChatCard",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.clients",
+      "to": "copy.copy-table",
+      "relation": "uses_copy_namespace",
+      "namespaces": [
+        "discover"
+      ]
+    },
+    {
+      "from": "page.clients",
+      "to": "icon.icon-library",
+      "relation": "uses_icon_registry"
+    },
+    {
+      "from": "page.growth",
+      "to": "token.design-tokens",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.growth",
+      "to": "token.color",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.growth",
+      "to": "token.semantic-layout",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.growth",
+      "to": "runtime.design-public-assets.facade",
+      "relation": "consumes_public_resource_facade"
+    },
+    {
+      "from": "page.growth",
+      "to": "pattern.page.discoverProfileCommerce",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.growth",
+      "to": "business.PartnerPortalSummary",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "business.RewardSummaryCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "business.VerificationStatusCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "business.MetricCluster",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "component.base.Screen",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "component.base.Card",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "component.base.AppText",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "component.base.ActionButton",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "component.base.GlobalMenuList",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "component.base.Metric",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "component.base.StatusPill",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "component.base.ProfileAvatar",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "component.base.IconSurface",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "component.base.AppIcon",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "component.base.UpgradeChatCard",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.growth",
+      "to": "copy.copy-table",
+      "relation": "uses_copy_namespace",
+      "namespaces": [
+        "discover"
+      ]
+    },
+    {
+      "from": "page.growth",
+      "to": "icon.icon-library",
+      "relation": "uses_icon_registry"
+    },
+    {
+      "from": "page.wallet",
+      "to": "token.design-tokens",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.wallet",
+      "to": "token.color",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.wallet",
+      "to": "token.semantic-layout",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.wallet",
+      "to": "runtime.design-public-assets.facade",
+      "relation": "consumes_public_resource_facade"
+    },
+    {
+      "from": "page.wallet",
+      "to": "pattern.detail",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.wallet",
+      "to": "pattern.list.metricCluster",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.wallet",
+      "to": "business.PartnerPortalSummary",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "business.RewardSummaryCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "business.VerificationStatusCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "business.MetricCluster",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "component.base.Screen",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "component.base.Card",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "component.base.AppText",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "component.base.ActionButton",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "component.base.GlobalMenuList",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "component.base.Metric",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "component.base.StatusPill",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "component.base.ProfileAvatar",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "component.base.IconSurface",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "component.base.AppIcon",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "component.base.UpgradeChatCard",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.wallet",
+      "to": "copy.copy-table",
+      "relation": "uses_copy_namespace",
+      "namespaces": [
+        "discover"
+      ]
+    },
+    {
+      "from": "page.wallet",
+      "to": "icon.icon-library",
+      "relation": "uses_icon_registry"
+    },
+    {
+      "from": "page.me",
+      "to": "token.design-tokens",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.me",
+      "to": "token.color",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.me",
+      "to": "token.semantic-layout",
+      "relation": "uses_token"
+    },
+    {
+      "from": "page.me",
+      "to": "runtime.design-public-assets.facade",
+      "relation": "consumes_public_resource_facade"
+    },
+    {
+      "from": "page.me",
+      "to": "pattern.page.discoverProfileCommerce",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.me",
+      "to": "pattern.list",
+      "relation": "uses_pattern"
+    },
+    {
+      "from": "page.me",
+      "to": "business.PartnerPortalSummary",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.me",
+      "to": "business.RewardSummaryCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.me",
+      "to": "business.VerificationStatusCard",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.me",
+      "to": "business.MetricCluster",
+      "relation": "uses_business_component"
+    },
+    {
+      "from": "page.me",
+      "to": "component.base.Screen",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.me",
+      "to": "component.base.Card",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.me",
+      "to": "component.base.AppText",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.me",
+      "to": "component.base.ActionButton",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.me",
+      "to": "component.base.GlobalMenuList",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.me",
+      "to": "component.base.StatusPill",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.me",
+      "to": "component.base.IconSurface",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.me",
+      "to": "component.base.AppIcon",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.me",
+      "to": "component.base.UpgradeChatCard",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.me",
+      "to": "copy.copy-table",
+      "relation": "uses_copy_namespace",
+      "namespaces": [
+        "discover"
+      ]
+    },
+    {
+      "from": "page.me",
+      "to": "icon.icon-library",
+      "relation": "uses_icon_registry"
+    },
+    {
+      "from": "business.AgenticWorkspace",
+      "to": "component.business.WorkspaceComponents",
+      "relation": "composes"
+    },
+    {
+      "from": "business.AgenticWorkspace",
+      "to": "copy.copy-table",
+      "relation": "requires_copy_asset",
+      "namespaces": [
+        "workspace",
+        "tabs",
+        "common"
+      ]
+    },
+    {
+      "from": "business.AgenticWorkspace",
+      "to": "icon.icon-library",
+      "relation": "uses_icon_registry"
+    },
+    {
+      "from": "business.AgenticWorkspace",
+      "to": "token.design-tokens",
+      "relation": "uses_token"
+    },
+    {
+      "from": "component.business.WorkspaceComponents",
+      "to": "component.base.component-library",
+      "relation": "registered_in"
+    },
+    {
+      "from": "component.business.WorkspaceComponents",
+      "to": "token.design-tokens",
+      "relation": "uses_token"
+    },
+    {
+      "from": "component.business.WorkspaceComponents",
+      "to": "icon.icon-library",
+      "relation": "uses_icon_registry"
+    },
+    {
+      "from": "pattern.page.agenticWorkspace",
+      "to": "business.AgenticWorkspace",
+      "relation": "requires_business_component"
+    },
+    {
+      "from": "pattern.page.agenticWorkspace",
+      "to": "component.base.component-library",
+      "relation": "requires_component_manifest"
     }
   ],
   "pageReadinessMatrix": [
@@ -8058,6 +9354,97 @@
       "token": "reference_migrated",
       "componentReuse": "reference_migrated",
       "businessComponent": "not_applicable",
+      "pattern": "reference_migrated",
+      "icon": "registered_no_page_svg",
+      "copy": "i18n_keyed_copy_table_synced",
+      "dependencyGraph": "synced",
+      "migrationStatus": "reference_migration_complete"
+    },
+    {
+      "page_id": "workspace",
+      "route": "/workspace",
+      "component": "WorkspaceScreen",
+      "token": "reference_migrated",
+      "componentReuse": "reference_migrated",
+      "businessComponent": "reference_migrated",
+      "pattern": "reference_migrated",
+      "icon": "registered_no_page_svg",
+      "copy": "i18n_keyed_copy_table_synced",
+      "dependencyGraph": "synced",
+      "migrationStatus": "reference_migration_complete"
+    },
+    {
+      "page_id": "learn",
+      "route": "/learn",
+      "component": "LearnRoute",
+      "token": "reference_migrated",
+      "componentReuse": "reference_migrated",
+      "businessComponent": "reference_migrated",
+      "pattern": "reference_migrated",
+      "icon": "registered_no_page_svg",
+      "copy": "i18n_keyed_copy_table_synced",
+      "dependencyGraph": "synced",
+      "migrationStatus": "reference_migration_complete"
+    },
+    {
+      "page_id": "demo",
+      "route": "/demo",
+      "component": "DemoRoute",
+      "token": "reference_migrated",
+      "componentReuse": "reference_migrated",
+      "businessComponent": "reference_migrated",
+      "pattern": "reference_migrated",
+      "icon": "registered_no_page_svg",
+      "copy": "i18n_keyed_copy_table_synced",
+      "dependencyGraph": "synced",
+      "migrationStatus": "reference_migration_complete"
+    },
+    {
+      "page_id": "clients",
+      "route": "/clients",
+      "component": "PartnerClientsScreen",
+      "token": "reference_migrated",
+      "componentReuse": "reference_migrated",
+      "businessComponent": "reference_migrated",
+      "pattern": "reference_migrated",
+      "icon": "registered_no_page_svg",
+      "copy": "i18n_keyed_copy_table_synced",
+      "dependencyGraph": "synced",
+      "migrationStatus": "reference_migration_complete"
+    },
+    {
+      "page_id": "growth",
+      "route": "/growth",
+      "component": "PartnerToolsScreen",
+      "token": "reference_migrated",
+      "componentReuse": "reference_migrated",
+      "businessComponent": "reference_migrated",
+      "pattern": "reference_migrated",
+      "icon": "registered_no_page_svg",
+      "copy": "i18n_keyed_copy_table_synced",
+      "dependencyGraph": "synced",
+      "migrationStatus": "reference_migration_complete"
+    },
+    {
+      "page_id": "wallet",
+      "route": "/wallet",
+      "component": "CommissionScreen",
+      "token": "reference_migrated",
+      "componentReuse": "reference_migrated",
+      "businessComponent": "reference_migrated",
+      "pattern": "reference_migrated",
+      "icon": "registered_no_page_svg",
+      "copy": "i18n_keyed_copy_table_synced",
+      "dependencyGraph": "synced",
+      "migrationStatus": "reference_migration_complete"
+    },
+    {
+      "page_id": "me",
+      "route": "/me",
+      "component": "SettingsScreen",
+      "token": "reference_migrated",
+      "componentReuse": "reference_migrated",
+      "businessComponent": "reference_migrated",
       "pattern": "reference_migrated",
       "icon": "registered_no_page_svg",
       "copy": "i18n_keyed_copy_table_synced",
@@ -8622,10 +10009,10 @@
     }
   ],
   "releaseDecision": {
-    "decision": "production_resource_governed_ready",
-    "reason": "All route registry pages have readiness rows and are marked reference_migration_complete; route screens consume the page-facing design-public-assets facade, strict scans report no page-level hardcoded visual styles, inline SVG, unregistered icon imports, legacy public-resource imports, or naked visible copy.",
+    "decision": "conditional_allow_next_stage",
     "canEnterNextStage": true,
-    "nextStage": "full QA and targeted UX regression evidence for trading, funding, markets, Partner, Auth/PIN, security-login-log, and planned Security Center contract implementation"
+    "reason": "Workspace bottom navigation and all 50 route-registry entries are covered by the dependency graph and readiness rows; Workspace uses governed business components, i18n copy, registered icons, and token-bound layout. Production backend entitlement, KYC, funding, trading, and partner services remain required before live release.",
+    "nextStage": "full QA and targeted UX regression evidence for Workspace segments, bottom tab visibility, trading/funding/partner entitlement boundaries, and compliance copy review"
   },
   "assets": [
     {

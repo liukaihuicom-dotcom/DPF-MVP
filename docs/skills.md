@@ -1,30 +1,115 @@
 # Project Skill Index
 
-本项目使用生产级 AI 产品设计工程 Skill 系统：3 个 Core Skills + 4 个 Add-on Skills。Codex 必须按任务类型选择 Skill，不允许默认读取全部 Skill。
+本项目使用生产级 AI 产品设计工程 Skill 系统。Codex 必须按任务类型选择 Skill，不允许默认读取全部 Skill。
 
 ## Directory Contract
 
 ```text
 .codex/skills/
-├── quick-local-expo-demo-startup/
-│   └── SKILL.md
-├── ai-product-production-delivery/
-│   └── SKILL.md
-├── design-system-engineering/
-│   ├── SKILL.md
-│   └── addons/
-│       └── icon-asset-library-governance/
-│           └── SKILL.md
-└── ui-build-production/
-    ├── SKILL.md
-    └── addons/
-        ├── financial-copy-localization/
-        │   └── SKILL.md
-        ├── reference-adaptation/
-        │   └── SKILL.md
-        └── ux-interaction-quality-gate/
-            └── SKILL.md
+├── l0-utility-startup/
+│   └── quick-local-expo-demo-startup-skill-v1.3.0.md
+├── l1-core/
+│   ├── product-engineering/
+│   │   └── ai-product-production-delivery-skill-v3.0.0-l5.md
+│   ├── design-system-engineering/
+│   │   └── design-system-engineering-skill-v3.0.0-l5.md
+│   └── ui-build-production/
+│       └── ui-build-production-skill-v3.0.0-l5.md
+├── l2-addons/
+│   ├── design-system-governance/
+│   │   ├── design-public-resource-package-governance-skill-v1.1.0-l5.md
+│   │   └── local-icon-asset-library-governance-skill-v1.1.0-l5.md
+│   ├── ui-build-governance/
+│   │   ├── app-modal-overlay-system-governance-skill-v2.0.0-l5.md
+│   │   ├── financial-ux-copy-localization-governance-skill-v1.0.0-l5.md
+│   │   ├── page-visual-rhythm-spacing-governance-skill-v1.0.0-l5.md
+│   │   └── ui-reference-adaptation-add-on-skill-v1.0.0-l5.md
+│   ├── ui-quality-gates/
+│   │   ├── elite-ux-ui-remediation-board-skill-v4.0.0-l5.md
+│   │   └── ux-interaction-quality-gate-skill-v1.0.0-l5.md
+│   └── localization/
+│       └── indonesian-ui-localization-broker-l5-skill.md
+└── l3-supporting-references/
+    ├── financial-copy/
+    │   └── financial-ux-copy-localization-en-capitalization-rules.md
+    └── localization/
+        └── indonesian-ui-localization-broker-l5-skill-zh-v2.0.0.md
 ```
+
+Rules:
+
+- Every Skill document must live under `.codex/skills/` with an explicit layer/category path.
+- Keep file names complete and versioned.
+- Do not place Add-ons beside Core Skills.
+- Do not place L3 supporting references in L0/L1/L2 Skill folders.
+- `AGENTS.md` routing paths must stay synchronized with this directory contract.
+
+## Classification Model
+
+The project uses four Skill layers:
+
+| Layer | Category | Role | Rule |
+|---|---|---|---|
+| L0 | Utility Startup | Quick local environment operations that do not change product scope or UI | Can run independently when the request is only local startup or preview |
+| L1 | Core Skills | Product, Design System, and UI Build foundations | Add-ons cannot replace Core Skills |
+| L2 | Governance Add-ons | Specialized gates attached to a Core Skill | Must run after its parent Core Skill is selected and before implementation or release |
+| L3 | Supporting References | Rule/reference documents consumed by a parent Skill | Must not be invoked as standalone Skills |
+
+## Skill Hierarchy
+
+```text
+L0 Utility Startup
+└── Quick Local Expo Demo Startup Skill
+
+L1 Core Product Engineering
+└── AI Product Production Delivery Skill
+
+L1 Core Design System Engineering
+├── Design System Engineering Skill
+├── Design Public Resource Package Governance Add-on
+└── Local Icon Asset Library Governance Add-on
+
+L1 Core UI Build Production
+├── UI Build Production Skill
+├── UI Reference Adaptation Add-on
+├── Financial UX Copy & Localization Governance Add-on
+│   ├── English UI Copy Capitalization Rules
+│   └── Indonesian UI Localization Broker L5 Skill
+│       └── Indonesian UI Localization Broker L5 Reference
+├── App Modal & Overlay System Governance Add-on
+├── Page Visual Rhythm & Spacing Governance Add-on
+├── Elite UX/UI Remediation Board Add-on
+└── UX Interaction Quality Gate Add-on
+```
+
+## Classification Matrix
+
+| Skill / Document | Layer | Category | Parent | Depends On | Standalone |
+|---|---|---|---|---|---|
+| Quick Local Expo Demo Startup Skill | L0 | Utility Startup | None | Expo project context | Yes |
+| AI Product Production Delivery Skill | L1 | Core Product Engineering | None | Business inputs, roles, risks, scope | Yes |
+| Design System Engineering Skill | L1 | Core Design System Engineering | None | Product Kernel or Page Contract when UI-bound | Yes |
+| UI Build Production Skill | L1 | Core UI Build Production | None | Page Contract, Design System, patterns, states | Yes |
+| Design Public Resource Package Governance Add-on | L2 | Design System Governance Add-on | Design System Engineering Skill | Public asset registries, component/pattern/icon registries | No |
+| Local Icon Asset Library Governance Add-on | L2 | Design System Governance Add-on | Design System Engineering Skill | Icon registry, local icon assets, token rules | No |
+| UI Reference Adaptation Add-on | L2 | UI Build Governance Add-on | UI Build Production Skill | Page Contract, Design System, reference input | No |
+| Financial UX Copy & Localization Governance Add-on | L2 | UI Build Governance Add-on | UI Build Production Skill | Product risk rules, i18n keys, terminology | No |
+| Indonesian UI Localization Broker L5 Skill | L2 | Localization Add-on | Financial UX Copy & Localization Governance Add-on | Indonesian localization reference | No |
+| App Modal & Overlay System Governance Add-on | L2 | UI Build Governance Add-on | UI Build Production Skill | Overlay registry, modal policy, platform behavior | No |
+| Page Visual Rhythm & Spacing Governance Add-on | L2 | UI Build Governance Add-on | UI Build Production Skill | Tokens, component patterns, surface hierarchy | No |
+| Elite UX/UI Remediation Board Add-on | L2 | UI Quality Gate Add-on | UI Build Production Skill | Evidence chain, real usage scenarios, fix cards | No |
+| UX Interaction Quality Gate Add-on | L2 | UI Quality Gate Add-on | UI Build Production Skill | Task flow, state matrix, error recovery | No |
+| English UI Copy Capitalization Rules | L3 | Supporting Rule Document | Financial UX Copy & Localization Governance Add-on | English UI copy task | No |
+| Indonesian UI Localization Broker L5 Reference | L3 | Supporting Reference Document | Indonesian UI Localization Broker L5 Skill | Indonesian UI copy task | No |
+
+## Version Record
+
+| Version | Date | Change |
+|---|---|---|
+| v1.4.0 | 2026-06-01 | Reintroduced mandatory path hierarchy under `.codex/skills/` using L0/L1/L2/L3 layer and category directories while keeping complete versioned file names. |
+| v1.3.0 | 2026-06-01 | Added explicit Skill layers, categories, parent-child hierarchy, dependency rules, and standalone-use rules. |
+| v1.2.0 | 2026-06-01 | Removed `.codex/skills/` and flattened all Skill documents into fully named Markdown files under `.codex/`. |
+| v1.1.0 | 2026-06-01 | Flattened the previous nested Add-on directory structure and synchronized AGENTS routing paths. |
 
 ## Pre-task Routing Output
 
@@ -41,24 +126,24 @@ Before starting any task, Codex must output:
 
 | Skill | Path | Trigger | Required Outputs | Hard Rules |
 |---|---|---|---|---|
-| Quick Local Expo Demo Startup Skill | `.codex/skills/quick-local-expo-demo-startup/SKILL.md` | Quick Expo/Metro startup, local app demo startup, mobile phone demo, QR scan preview, `start expo`, `run app`, `local demo`, `phone preview` | Project root and Expo dependency check, port `8081` check, existing service decision, startup script audit, default command `npm run dev:app`, LAN mode, local Metro address, phone demo instructions, blockers and next-stage decision | Check port `8081` before startup. Reuse existing Expo/Metro service. Use `npm run dev:app` when no Expo/Metro service is running. Default to LAN. Do not allow automatic port drift, default to tunnel, silently kill port owners, or treat LAN/tunnel URLs as stable fixed links. |
+| Quick Local Expo Demo Startup Skill | `.codex/skills/l0-utility-startup/quick-local-expo-demo-startup-skill-v1.3.0.md` | Quick Expo/Metro startup, local app demo startup, mobile phone demo, QR scan preview, `start expo`, `run app`, `local demo`, `phone preview` | Project root and Expo dependency check, port `8081` check, existing service decision, startup script audit, default command `npm run dev:app`, LAN mode, local Metro address, phone demo instructions, blockers and next-stage decision | Check port `8081` before startup. Reuse existing Expo/Metro service. Use `npm run dev:app` when no Expo/Metro service is running. Default to LAN. Do not allow automatic port drift, default to tunnel, silently kill port owners, or treat LAN/tunnel URLs as stable fixed links. |
 
 ## Core Skills
 
 | Skill | Path | Trigger | Required Outputs | Hard Rules |
 |---|---|---|---|---|
-| Product Engineering Skill | `.codex/skills/ai-product-production-delivery/SKILL.md` | Product requirements, business requirements, product scope, user roles, permission matrix, state machine, Page Contract, API Contract, error codes, risk/compliance rules, traceability, test case mapping, release decision, production product delivery package | Product Kernel, Module Contract, Business Rule Matrix, RBAC Policy, State Machine, Page Contract, API Draft, Error Code Mapping, Traceability Matrix, Test Case Mapping, QA Gate, Release Decision | Do not generate UI before Page Contract is clear. Do not assume business rules silently. Missing rules must be assumptions or blockers. Do not bypass Product Skill for business logic, permissions, state, risk, API, or compliance. |
-| Design System Engineering Skill | `.codex/skills/design-system-engineering/SKILL.md` | Design tokens, variables, Component Manifest, business components, icon registry, pattern registry, theme/brand/density/platform modes, CSS variables, Tailwind mapping, React/Vue mapping, Design System QA, production design-system governance | tokens.json, component-manifest.json, business-component-manifest.json, icon-registry.json, pattern-registry.json, ai-readable-index.json, code mapping, QA Gate | Do not create random visual styles or one-off page components. Do not hardcode color, spacing, radius, shadow, typography, or icon style. All UI must bind to tokens and registered components. If icons are involved, also use Icon Governance. |
-| UI Build Production Skill | `.codex/skills/ui-build-production/SKILL.md` | Building App/H5/Web/Admin pages, HTML/React/Vue UI output, state matrix, interaction flow, responsive behavior, visual QA, dev handoff, page implementation | Page implementation, State Matrix, Interaction Map, Token Usage Report, Component Usage Report, Visual QA Report, Dev Handoff, Release Decision | UI Build must consume Page Contract, tokens.json, component-manifest.json, pattern-registry.json, platform rules, UX Gate when available, copy package when copy is involved, and icon registry when icons are involved. Do not build static demo pages, bypass Page Contract/Design System, generate random styles, or mark production-ready without QA. |
+| Product Engineering Skill | `.codex/skills/l1-core/product-engineering/ai-product-production-delivery-skill-v3.0.0-l5.md` | Product requirements, business requirements, product scope, user roles, permission matrix, state machine, Page Contract, API Contract, error codes, risk/compliance rules, traceability, test case mapping, release decision, production product delivery package | Product Kernel, Module Contract, Business Rule Matrix, RBAC Policy, State Machine, Page Contract, API Draft, Error Code Mapping, Traceability Matrix, Test Case Mapping, QA Gate, Release Decision | Do not generate UI before Page Contract is clear. Do not assume business rules silently. Missing rules must be assumptions or blockers. Do not bypass Product Skill for business logic, permissions, state, risk, API, or compliance. |
+| Design System Engineering Skill | `.codex/skills/l1-core/design-system-engineering/design-system-engineering-skill-v3.0.0-l5.md` | Design tokens, variables, Component Manifest, business components, icon registry, pattern registry, theme/brand/density/platform modes, CSS variables, Tailwind mapping, React/Vue mapping, Design System QA, production design-system governance | tokens.json, component-manifest.json, business-component-manifest.json, icon-registry.json, pattern-registry.json, ai-readable-index.json, code mapping, QA Gate | Do not create random visual styles or one-off page components. Do not hardcode color, spacing, radius, shadow, typography, or icon style. All UI must bind to tokens and registered components. If icons are involved, also use Icon Governance. |
+| UI Build Production Skill | `.codex/skills/l1-core/ui-build-production/ui-build-production-skill-v3.0.0-l5.md` | Building App/H5/Web/Admin pages, HTML/React/Vue UI output, state matrix, interaction flow, responsive behavior, visual QA, dev handoff, page implementation | Page implementation, State Matrix, Interaction Map, Token Usage Report, Component Usage Report, Visual QA Report, Dev Handoff, Release Decision | UI Build must consume Page Contract, tokens.json, component-manifest.json, pattern-registry.json, platform rules, UX Gate when available, copy package when copy is involved, and icon registry when icons are involved. Do not build static demo pages, bypass Page Contract/Design System, generate random styles, or mark production-ready without QA. |
 
 ## Add-on Skills
 
 | Add-on | Parent | Path | Trigger | Required Outputs | Hard Rules |
 |---|---|---|---|---|---|
-| Reference Adaptation Add-on | UI Build Production | `.codex/skills/ui-build-production/addons/reference-adaptation/SKILL.md` | Mobbin reference, app/web screenshot, competitor UI, Dribbble, Behance, Figma Community reference, "参考这个页面风格", "借鉴这个页面", "复刻这个 UI 风格", "按照这个截图优化 UI" | Visual DNA, Similarity Risk Checklist, Token Mapping, Component Mapping, Pattern Mapping, Business Adaptation, UI Build Reference Input | Do not copy reference UI directly. Do not copy logo, brand color, original icon, original copywriting, proprietary illustration, pixel-level layout, or trade dress. Output is only UI Build Reference Input. Final UI still goes through Product + Design System + UI Build. If reference contains icons, use Icon Governance. If reference contains copy, use Financial Copy. |
-| UX Interaction Quality Gate Add-on | UI Build Production | `.codex/skills/ui-build-production/addons/ux-interaction-quality-gate/SKILL.md` | UX review, task flow, interaction quality, error recovery, feedback quality, platform behavior, accessibility baseline, financial UX risk, cognitive load, release readiness, "是否符合国际 UX 标准", "检查交互是否合理", "优化用户体验" | UX Task Flow Report, Interaction Review Report, Feedback Recovery Report, Accessibility Checklist, Financial UX Risk Report, UX Quality Score, Severity: Blocker/Critical/Major/Minor, Decision: ux_ready/conditional_ready/major_fix_required/blocked | Any Blocker or Critical UX issue prevents production delivery. Do not mark UX ready if users cannot complete the core task or error recovery is missing. Do not weaken financial risk information for visual simplicity. UX Gate must run before production handoff for high-risk financial flows. |
-| Financial Copy & Localization Add-on | UI Build Production | `.codex/skills/ui-build-production/addons/financial-copy-localization/SKILL.md` | UX copy, English copy, Indonesian localization, Bahasa Indonesia, financial terminology, Forex/CFD/derivatives/broker terminology, CTA wording, error/toast/dialog/empty/success/failed state copy, risk disclosure, agreement copy, KYC copy, deposit/withdrawal copy, i18n keys, compliance-sensitive copy | UX Copy Table, English Copy, Indonesian Copy, i18n Keys, Terminology Mapping, Risk Copy Review, CTA Safety Review, Copy QA Score, Release Decision | Do not promise profits or use "risk-free", "guaranteed profit", "easy money", "safe investment", or similar claims. Do not weaken risk disclosures, translate financial terms inconsistently, copy competitor wording, or hardcode user-facing copy without i18n keys. Mark high-risk copy for native/compliance review when needed. |
-| Icon Asset Library Governance Add-on | Design System Engineering | `.codex/skills/design-system-engineering/addons/icon-asset-library-governance/SKILL.md` | Icon library, financial icons, App/Web/Admin icons, navigation icons, system operation icons, Phosphor Icons, Remix Icon, Lucide, icon-registry.json, icon naming, SVG quality, Icon QA, "图标质量低", "搭建金融图标库" | Icon taxonomy, icon-registry.schema.json, icon-registry.json, Icon naming rules, source/license metadata, token binding, React/Vue mapping, Figma mapping, Icon QA Report, Release Decision | Use Phosphor as primary library, Remix as financial/business supplement, Lucide as linear system-operation supplement, and custom icons only when approved libraries cannot express the business meaning. Do not randomly draw icons, use unknown-source SVG, copy competitor icons, use unregistered production icons, hardcode icon color/size, or mix libraries without registry approval. |
+| Reference Adaptation Add-on | UI Build Production | `.codex/skills/l2-addons/ui-build-governance/ui-reference-adaptation-add-on-skill-v1.0.0-l5.md` | Mobbin reference, app/web screenshot, competitor UI, Dribbble, Behance, Figma Community reference, "参考这个页面风格", "借鉴这个页面", "复刻这个 UI 风格", "按照这个截图优化 UI" | Visual DNA, Similarity Risk Checklist, Token Mapping, Component Mapping, Pattern Mapping, Business Adaptation, UI Build Reference Input | Do not copy reference UI directly. Do not copy logo, brand color, original icon, original copywriting, proprietary illustration, pixel-level layout, or trade dress. Output is only UI Build Reference Input. Final UI still goes through Product + Design System + UI Build. If reference contains icons, use Icon Governance. If reference contains copy, use Financial Copy. |
+| UX Interaction Quality Gate Add-on | UI Build Production | `.codex/skills/l2-addons/ui-quality-gates/ux-interaction-quality-gate-skill-v1.0.0-l5.md` | UX review, task flow, interaction quality, error recovery, feedback quality, platform behavior, accessibility baseline, financial UX risk, cognitive load, release readiness, "是否符合国际 UX 标准", "检查交互是否合理", "优化用户体验" | UX Task Flow Report, Interaction Review Report, Feedback Recovery Report, Accessibility Checklist, Financial UX Risk Report, UX Quality Score, Severity: Blocker/Critical/Major/Minor, Decision: ux_ready/conditional_ready/major_fix_required/blocked | Any Blocker or Critical UX issue prevents production delivery. Do not mark UX ready if users cannot complete the core task or error recovery is missing. Do not weaken financial risk information for visual simplicity. UX Gate must run before production handoff for high-risk financial flows. |
+| Financial Copy & Localization Add-on | UI Build Production | `.codex/skills/l2-addons/ui-build-governance/financial-ux-copy-localization-governance-skill-v1.0.0-l5.md` | UX copy, English copy, Indonesian localization, Bahasa Indonesia, financial terminology, Forex/CFD/derivatives/broker terminology, CTA wording, error/toast/dialog/empty/success/failed state copy, risk disclosure, agreement copy, KYC copy, deposit/withdrawal copy, i18n keys, compliance-sensitive copy | UX Copy Table, English Copy, Indonesian Copy, i18n Keys, Terminology Mapping, Risk Copy Review, CTA Safety Review, Copy QA Score, Release Decision | Do not promise profits or use "risk-free", "guaranteed profit", "easy money", "safe investment", or similar claims. Do not weaken risk disclosures, translate financial terms inconsistently, copy competitor wording, or hardcode user-facing copy without i18n keys. Mark high-risk copy for native/compliance review when needed. |
+| Icon Asset Library Governance Add-on | Design System Engineering | `.codex/skills/l2-addons/design-system-governance/local-icon-asset-library-governance-skill-v1.1.0-l5.md` | Icon library, financial icons, App/Web/Admin icons, navigation icons, system operation icons, Phosphor Icons, Remix Icon, Lucide, icon-registry.json, icon naming, SVG quality, Icon QA, "图标质量低", "搭建金融图标库" | Icon taxonomy, icon-registry.schema.json, icon-registry.json, Icon naming rules, source/license metadata, token binding, React/Vue mapping, Figma mapping, Icon QA Report, Release Decision | Use Phosphor as primary library, Remix as financial/business supplement, Lucide as linear system-operation supplement, and custom icons only when approved libraries cannot express the business meaning. Do not randomly draw icons, use unknown-source SVG, copy competitor icons, use unregistered production icons, hardcode icon color/size, or mix libraries without registry approval. |
 
 ## Execution Order
 

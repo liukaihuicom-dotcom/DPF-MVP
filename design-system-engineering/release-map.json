@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated_at": "2026-05-28",
+  "generated_at": "2026-06-01",
   "packages": {
     "@dpf/design-tokens": {
       "path": "packages/design-tokens",
@@ -13,7 +13,7 @@
     },
     "@dpf/component-library": {
       "path": "packages/component-library",
-      "version": "2.4.3",
+      "version": "2.5.0",
       "sourceOfTruth": [
         "packages/component-library/registry/component-manifest.json",
         "packages/component-library/registry/component.schema.json",

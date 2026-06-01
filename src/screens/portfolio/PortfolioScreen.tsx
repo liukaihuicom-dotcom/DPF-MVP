@@ -261,6 +261,7 @@ export function TraderPortfolioScreen() {
         title: t("funding.account.switchTitle"),
       }),
       contentPadding: "card",
+      contentSizing: "auto",
       content: (
         <TradingAccountContextSwitcher
           accounts={accountProfiles}
@@ -272,6 +273,7 @@ export function TraderPortfolioScreen() {
           selectedId={selectedAccount.id}
         />
       ),
+      heightMode: "adaptive",
       sheetSurface: "canvas",
     }));
   };
@@ -298,6 +300,7 @@ export function TraderPortfolioScreen() {
   };
   const openPositionOptions = () => {
     bottomSheet.show(bottomSheetPresets.detail({
+      contentPadding: "plain",
       title: t("portfolio.positionOptionsTitle"),
       content: (
         <TradingOrderActionSheet
@@ -345,6 +348,7 @@ export function TraderPortfolioScreen() {
   };
   const openPendingOrderOptions = () => {
     bottomSheet.show(bottomSheetPresets.detail({
+      contentPadding: "plain",
       leftIcon: "icon.system.settings",
       title: t("portfolio.pendingOptionsTitle"),
       content: (
@@ -409,6 +413,7 @@ export function TraderPortfolioScreen() {
   };
   const openPositionDetail = (position: (typeof positionRows)[number]) => {
     bottomSheet.show(bottomSheetPresets.actionMenu({
+      sheetSurface: "canvas",
       content: <PositionDetailSheet position={position} />,
       footer: [
         {
@@ -455,10 +460,12 @@ export function TraderPortfolioScreen() {
       leftIcon: "icon.trading.history",
       title: t("portfolio.closedOrderDetailTitle"),
       content: <ClosedOrderDetailSheet order={order} />,
+      sheetSurface: "canvas",
     }));
   };
   const openPendingOrderDetail = (order: (typeof orderRows)[number]) => {
     bottomSheet.show(bottomSheetPresets.actionMenu({
+      sheetSurface: "canvas",
       content: <PendingOrderDetailSheet order={order} />,
       footer: [
         {
@@ -1287,7 +1294,7 @@ function getHistoryOrderRows(_locale: Locale): HistoryOrderRow[] {
   ];
 }
 
-export function PartnerClientsScreen({ showBack = false }: { showBack?: boolean }) {
+export function PartnerClientsScreen({ backHref = '/quick', showBack = false }: { backHref?: '/quick' | '/workspace'; showBack?: boolean }) {
   const { partnerClients, upgradeRequest } = useBroker();
   const { locale, t } = useProductSettings();
   const active = partnerClients.filter(
@@ -1302,7 +1309,7 @@ export function PartnerClientsScreen({ showBack = false }: { showBack?: boolean 
   ).length;
 
   return (
-    <Screen back={showBack} backHref="/quick" title={t("portfolio.partnerTitle")}>
+    <Screen back={showBack} backHref={backHref} title={t("portfolio.partnerTitle")}>
       <Card highlight>
         <View style={styles.metricRow}>
           <Metric
@@ -1398,7 +1405,7 @@ export function PartnerClientsScreen({ showBack = false }: { showBack?: boolean 
 }
 
 export function PartnerClientOrdersRoute() {
-  return <PartnerClientsScreen showBack />;
+  return <PartnerClientsScreen backHref="/workspace" showBack />;
 }
 
 const styles = StyleSheet.create({

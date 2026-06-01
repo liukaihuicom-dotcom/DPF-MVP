@@ -284,9 +284,9 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
 
   useDirtyStateGuard({
     body: t('overlay.dirty.funding.body'),
-    confirmLabel: t('overlay.dirty.exit'),
+    confirmLabel: t('overlay.dirty.leave'),
     dirty: dirty && !submitting,
-    stayLabel: t('overlay.dirty.stay'),
+    stayLabel: t('overlay.dirty.continueEditing'),
     title: t('overlay.dirty.funding.title'),
   });
 
@@ -298,6 +298,7 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
         title: t('funding.account.switchTitle'),
       }),
       contentPadding: 'card',
+      contentSizing: 'auto',
       content: (
         <TradingAccountContextSwitcher
           accounts={profiles}
@@ -323,6 +324,7 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
           selectedId={mode === 'source' ? sourceAccountId : targetAccountId}
         />
       ),
+      heightMode: 'adaptive',
       sheetSurface: 'canvas',
     }));
   };

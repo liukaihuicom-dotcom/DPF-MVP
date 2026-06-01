@@ -6,6 +6,7 @@ const scripts = [
   'check-tokens.js',
   'check-page-delivery.js',
   'check-navigation-registry.js',
+  'check-back-close-governance.js',
   'check-state-coverage.js',
   'check-handoff-docs.js',
   'check-api-contract.js',

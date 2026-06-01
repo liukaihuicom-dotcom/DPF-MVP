@@ -20,6 +20,7 @@ import { TextField } from '@/src/design-public-assets/components';
 import { useOverlayQueue } from '@/src/design-public-assets/components';
 import { AppText } from '@/src/design-public-assets/components';
 import { ProfileAvatar, getProfileAvatarUri, profileAvatarOptions, type ProfileAvatarId } from '@/src/design-public-assets/components';
+import { getDiscoverModuleIds, getDiscoverModuleMeta } from '@/src/domain/discoverModules';
 import { dupoinInsights, dupoinOnboardingSteps } from '@/src/domain/dupoinMvp';
 import { formatCompactMoney, formatMoney, formatPercent, formatPrice, localizeText } from '@/src/domain/format';
 import { partnerMetrics } from '@/src/domain/mockData';
@@ -31,13 +32,14 @@ import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
 import { lineWidth, layout, radius, size, spacing, typography, zIndex } from '@/src/design-public-assets/tokens';
 
-export default function DiscoverModuleScreen() {
+export default function DiscoverModuleScreen({ moduleIdOverride }: { moduleIdOverride?: DiscoverModuleId } = {}) {
   const { account, instruments, positions, role, submitUpgradeRequest, upgradeRequest } = useBroker();
   const { locale, colors, selectedDiscoverModuleId, setSelectedDiscoverModule, t } = useProductSettings();
-  const selectedInstrument = getPrimaryInstrument(selectedDiscoverModuleId, instruments);
-  const moduleMeta = getModuleMeta(selectedDiscoverModuleId);
+  const activeModuleId = moduleIdOverride ?? selectedDiscoverModuleId;
+  const selectedInstrument = getPrimaryInstrument(activeModuleId, instruments);
+  const moduleMeta = getDiscoverModuleMeta(activeModuleId);
 
-  if (selectedDiscoverModuleId === 'profile') {
+  if (activeModuleId === 'profile') {
     return (
       <Screen
         contentInsetBottom={12}
@@ -55,15 +57,15 @@ export default function DiscoverModuleScreen() {
     <Screen
       rightActions={[{ icon: 'icon.navigation.discover', label: t('tabs.discover'), onPress: () => router.push('/partner-tools' as never) }]}
       subtitle={t('discover.subtitle')}
-      title={t(`discover.module.${selectedDiscoverModuleId}.title`)}>
+      title={t(`discover.module.${activeModuleId}.title`)}>
       <Card>
         <View style={styles.hero}>
           <View style={styles.heroCopy}>
             <IconSurface icon={moduleMeta.icon} sizeVariant="lg" tone={resolveDiscoverIconSurfaceTone(moduleMeta.tone)} />
             <View style={styles.flex}>
-              <AppText variant="largeNumber">{t(`discover.module.${selectedDiscoverModuleId}.short`)}</AppText>
+              <AppText variant="largeNumber">{t(`discover.module.${activeModuleId}.short`)}</AppText>
               <AppText numberOfLines={3} tone="muted" variant="caption">
-                {t(`discover.module.${selectedDiscoverModuleId}.hint`)}
+                {t(`discover.module.${activeModuleId}.hint`)}
               </AppText>
             </View>
           </View>
@@ -71,20 +73,20 @@ export default function DiscoverModuleScreen() {
         </View>
       </Card>
 
-      {selectedDiscoverModuleId === 'challenge' ? <ChallengeModule instrument={selectedInstrument} /> : null}
-      {selectedDiscoverModuleId === 'education' ? <EducationModule /> : null}
-      {selectedDiscoverModuleId === 'community' ? <CommunityModule /> : null}
-      {selectedDiscoverModuleId === 'onboarding' ? <OnboardingModule /> : null}
-      {selectedDiscoverModuleId === 'partner' ? <PartnerModule role={role} submitUpgradeRequest={submitUpgradeRequest} upgradeStatus={upgradeRequest.status} /> : null}
-      {selectedDiscoverModuleId === 'markets' ? <MarketsModule instruments={instruments} /> : null}
-      {selectedDiscoverModuleId === 'accounts' ? <AccountsModule account={account} positionsCount={positions.length} /> : null}
-      {selectedDiscoverModuleId === 'support' ? <SupportModule /> : null}
-      {selectedDiscoverModuleId === 'rewards' ? <RewardsModule /> : null}
+      {activeModuleId === 'challenge' ? <ChallengeModule instrument={selectedInstrument} /> : null}
+      {activeModuleId === 'education' ? <EducationModule /> : null}
+      {activeModuleId === 'community' ? <CommunityModule /> : null}
+      {activeModuleId === 'onboarding' ? <OnboardingModule /> : null}
+      {activeModuleId === 'partner' ? <PartnerModule role={role} submitUpgradeRequest={submitUpgradeRequest} upgradeStatus={upgradeRequest.status} /> : null}
+      {activeModuleId === 'markets' ? <MarketsModule instruments={instruments} /> : null}
+      {activeModuleId === 'accounts' ? <AccountsModule account={account} positionsCount={positions.length} /> : null}
+      {activeModuleId === 'support' ? <SupportModule /> : null}
+      {activeModuleId === 'rewards' ? <RewardsModule /> : null}
 
       <ScrollView contentContainerStyle={styles.moduleRail} horizontal showsHorizontalScrollIndicator={false}>
-        {getModuleIds().map((moduleId) => {
-          const meta = getModuleMeta(moduleId);
-          const selected = selectedDiscoverModuleId === moduleId;
+        {getDiscoverModuleIds().map((moduleId) => {
+          const meta = getDiscoverModuleMeta(moduleId);
+          const selected = activeModuleId === moduleId;
 
           return (
             <NativePressable
@@ -789,27 +791,6 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 function getPrimaryInstrument(moduleId: DiscoverModuleId, instruments: Instrument[]) {
   const preferredId = moduleId === 'challenge' ? 'xau-usd' : 'eur-usd';
   return instruments.find((instrument) => instrument.id === preferredId) ?? instruments[0];
-}
-
-function getModuleIds(): DiscoverModuleId[] {
-  return ['challenge', 'education', 'community', 'profile', 'onboarding', 'partner', 'markets', 'accounts', 'support', 'rewards'];
-}
-
-function getModuleMeta(moduleId: DiscoverModuleId) {
-  const meta: Record<DiscoverModuleId, { icon: AppIconName; tone: IconTone }> = {
-    accounts: { icon: 'icon.account.trading', tone: 'blue' },
-    challenge: { icon: 'icon.promotion.achievement', tone: 'amber' },
-    community: { icon: 'icon.copy.community', tone: 'textMuted' },
-    education: { icon: 'icon.education.academy', tone: 'brand' },
-    markets: { icon: 'icon.trading.market', tone: 'up' },
-    onboarding: { icon: 'icon.kyc.identity', tone: 'down' },
-    partner: { icon: 'icon.ib.network', tone: 'brand' },
-    profile: { icon: 'icon.account.avatar', tone: 'text' },
-    rewards: { icon: 'icon.promotion.reward', tone: 'amber' },
-    support: { icon: 'icon.support.headset', tone: 'textMuted' },
-  };
-
-  return meta[moduleId];
 }
 
 function resolveDiscoverIconSurfaceTone(tone: IconTone): IconSurfaceTone {

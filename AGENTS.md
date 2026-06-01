@@ -17,6 +17,35 @@ Before starting any task, Codex must classify the task and output:
 5. Missing Inputs
 6. Expected Outputs
 
+Codex must also classify selected Skills by hierarchy:
+
+- L0 Utility Startup: independent local startup / preview operations.
+- L1 Core Skills: Product Engineering, Design System Engineering, UI Build Production.
+- L2 Governance Add-ons: specialized gates that must attach to a selected L1 parent.
+- L3 Supporting References: rule/reference documents consumed by a parent Skill; never invoke as standalone Skills.
+
+Routing hierarchy rules:
+
+- Select at least one L1 Core Skill for product, design-system, or UI delivery work.
+- Do not use an L2 Add-on as a replacement for its L1 parent.
+- Do not use an L3 supporting document as a Skill.
+- When multiple Skills apply, output parent-child order, not a flat list.
+- Keep all Skill documents as fully named `.md` files under the required `.codex/skills/<layer>/<category>/` path hierarchy.
+
+Skill layer map:
+
+| Layer | Category | Documents |
+|---|---|---|
+| L0 | Utility Startup | `.codex/skills/l0-utility-startup/quick-local-expo-demo-startup-skill-v1.3.0.md` |
+| L1 | Core Product Engineering | `.codex/skills/l1-core/product-engineering/ai-product-production-delivery-skill-v3.0.0-l5.md` |
+| L1 | Core Design System Engineering | `.codex/skills/l1-core/design-system-engineering/design-system-engineering-skill-v3.0.0-l5.md` |
+| L1 | Core UI Build Production | `.codex/skills/l1-core/ui-build-production/ui-build-production-skill-v3.0.0-l5.md` |
+| L2 | Design System Governance Add-on | `.codex/skills/l2-addons/design-system-governance/design-public-resource-package-governance-skill-v1.1.0-l5.md`, `.codex/skills/l2-addons/design-system-governance/local-icon-asset-library-governance-skill-v1.1.0-l5.md` |
+| L2 | UI Build Governance Add-on | `.codex/skills/l2-addons/ui-build-governance/ui-reference-adaptation-add-on-skill-v1.0.0-l5.md`, `.codex/skills/l2-addons/ui-build-governance/financial-ux-copy-localization-governance-skill-v1.0.0-l5.md`, `.codex/skills/l2-addons/ui-build-governance/app-modal-overlay-system-governance-skill-v2.0.0-l5.md`, `.codex/skills/l2-addons/ui-build-governance/app-native-back-close-interaction-governance-skill-v2.0.0-l5.md`, `.codex/skills/l2-addons/ui-build-governance/page-visual-rhythm-spacing-governance-skill-v1.0.0-l5.md` |
+| L2 | UI Quality Gate Add-on | `.codex/skills/l2-addons/ui-quality-gates/elite-ux-ui-remediation-board-skill-v4.0.0-l5.md`, `.codex/skills/l2-addons/ui-quality-gates/ux-interaction-quality-gate-skill-v1.0.0-l5.md` |
+| L2 | Localization Add-on | `.codex/skills/l2-addons/localization/indonesian-ui-localization-broker-l5-skill.md` |
+| L3 | Supporting References | `.codex/skills/l3-supporting-references/financial-copy/financial-ux-copy-localization-en-capitalization-rules.md`, `.codex/skills/l3-supporting-references/localization/indonesian-ui-localization-broker-l5-skill-zh-v2.0.0.md` |
+
 # Codex Plan And Automation Language Rule
 
 Codex 在对话中提供计划、计划任务模式说明、执行计划、状态说明、面向用户的解释、自动化、提醒、监控、定时执行任务时，必须统一使用中文描述，不要使用英文或其他语言，除非用户明确要求使用其他语言。
@@ -27,7 +56,7 @@ Codex 创建、更新或提议任何自动化、周期任务、提醒、监控�
 
 Use:
 
-`.codex/skills/quick-local-expo-demo-startup/SKILL.md`
+`.codex/skills/l0-utility-startup/quick-local-expo-demo-startup-skill-v1.3.0.md`
 
 Priority:
 
@@ -100,7 +129,7 @@ Hard rules:
 
 Use:
 
-`.codex/skills/ai-product-production-delivery/SKILL.md`
+`.codex/skills/l1-core/product-engineering/ai-product-production-delivery-skill-v3.0.0-l5.md`
 
 Trigger when the task involves:
 
@@ -145,7 +174,7 @@ Hard rules:
 
 Use:
 
-`.codex/skills/design-system-engineering/SKILL.md`
+`.codex/skills/l1-core/design-system-engineering/design-system-engineering-skill-v3.0.0-l5.md`
 
 Trigger when the task involves:
 
@@ -185,7 +214,7 @@ Hard rules:
 
 Use:
 
-`.codex/skills/ui-build-production/SKILL.md`
+`.codex/skills/l1-core/ui-build-production/ui-build-production-skill-v3.0.0-l5.md`
 
 Trigger when the task involves:
 
@@ -232,7 +261,7 @@ Hard rules:
 
 Use:
 
-`.codex/skills/design-system-engineering/addons/design-public-resource-package-governance/SKILL.md`
+`.codex/skills/l2-addons/design-system-governance/design-public-resource-package-governance-skill-v1.1.0-l5.md`
 
 Trigger when the task involves:
 
@@ -277,7 +306,7 @@ Hard rules:
 
 Use:
 
-`.codex/skills/ui-build-production/addons/reference-adaptation/SKILL.md`
+`.codex/skills/l2-addons/ui-build-governance/ui-reference-adaptation-add-on-skill-v1.0.0-l5.md`
 
 Trigger when the task includes:
 
@@ -316,7 +345,7 @@ Hard rules:
 
 Use:
 
-`.codex/skills/ui-build-production/addons/ux-interaction-quality-gate/SKILL.md`
+`.codex/skills/l2-addons/ui-quality-gates/ux-interaction-quality-gate-skill-v1.0.0-l5.md`
 
 Trigger when the task involves:
 
@@ -357,7 +386,7 @@ Hard rules:
 
 Use:
 
-`.codex/skills/ui-build-production/addons/elite-ux-ui-remediation-board/SKILL.md`
+`.codex/skills/l2-addons/ui-quality-gates/elite-ux-ui-remediation-board-skill-v4.0.0-l5.md`
 
 This Skill is mandatory when the task involves:
 
@@ -404,7 +433,7 @@ Hard rules:
 
 Use:
 
-`.codex/skills/ui-build-production/addons/app-modal-overlay-system-governance/SKILL.md`
+`.codex/skills/l2-addons/ui-build-governance/app-modal-overlay-system-governance-skill-v2.0.0-l5.md`
 
 This Skill is mandatory when the task involves:
 
@@ -454,11 +483,68 @@ Hard rules:
 - Final output must include Page Overlay Matrix and Overlay System L5 Report.
 - Do not output `l5_overlay_ready` unless the score is 100/100 and there are 0 Blocker / 0 Critical / 0 Major issues.
 
-## 6C. Page Visual Rhythm & Spacing Governance Add-on
+## 6C. App Native Back / Close Interaction Governance Add-on
 
 Use:
 
-`.codex/skills/ui-build-production/addons/page-visual-rhythm-spacing-governance/SKILL.md`
+`.codex/skills/l2-addons/ui-build-governance/app-native-back-close-interaction-governance-skill-v2.0.0-l5.md`
+
+This Skill is mandatory when the task involves:
+
+- 返回
+- 关闭
+- Back
+- Close
+- Cancel
+- Done
+- Android Back
+- iOS 手势
+- Header Back
+- Header Close
+- router.back
+- navigation.goBack
+- BackHandler
+- UnsavedGuard
+- WebView 返回
+- Deep Link fallback
+- Push 入口返回
+- 成功页返回
+- NavigationContract
+- OverlayContract
+- 统一返回管线
+- 返回 / 关闭交互审计
+- 资金 / KYC / 支付流程退出治理
+
+Required outputs:
+
+- Back / Close Inventory
+- Navigation Contract Check
+- Overlay Contract Check
+- Back Pipeline Review
+- Redline Items for every issue
+- Fix Cards for every Redline Item
+- Fix Order
+- Back / Close L5 Gate Score
+- Release Decision
+
+Hard rules:
+
+- Do not let pages write private back or close implementations.
+- Do not use fixed home navigation as a fake back action.
+- Root Tab must not show Back.
+- Dialog and Bottom Sheet must not use BackIcon.
+- Dirty, uploading, processing, funding, KYC, and payment flows must use guard behavior.
+- Android Back must go through the unified back pipeline.
+- Header Back / Close must be resolved from NavigationContract, not page-local button logic.
+- WebView must use internal history before app-level back when `canGoBack` is true.
+- Deep Link and Push entries must have safe fallback behavior.
+- Success terminal pages must not navigate back to repeatable submit forms.
+
+## 6D. Page Visual Rhythm & Spacing Governance Add-on
+
+Use:
+
+`.codex/skills/l2-addons/ui-build-governance/page-visual-rhythm-spacing-governance-skill-v1.0.0-l5.md`
 
 This Skill is mandatory when the task involves:
 
@@ -504,7 +590,7 @@ Hard rules:
 
 Use:
 
-`.codex/skills/ui-build-production/addons/financial-copy-localization/SKILL.md`
+`.codex/skills/l2-addons/ui-build-governance/financial-ux-copy-localization-governance-skill-v1.0.0-l5.md`
 
 Trigger when the task involves:
 
@@ -553,7 +639,7 @@ Hard rules:
 
 Use:
 
-`.codex/skills/design-system-engineering/addons/icon-asset-library-governance/SKILL.md`
+`.codex/skills/l2-addons/design-system-governance/local-icon-asset-library-governance-skill-v1.1.0-l5.md`
 
 Trigger when the task involves:
 
@@ -643,6 +729,24 @@ Trigger this mode when the user says:
 - 合规弹框
 - App 弹框设计
 - 弹框系统审计
+- 返回
+- 关闭
+- Back
+- Close
+- Cancel
+- Done
+- Android Back
+- iOS 手势
+- Header Back
+- Header Close
+- router.back
+- navigation.goBack
+- BackHandler
+- UnsavedGuard
+- WebView 返回
+- Deep Link fallback
+- Push 入口返回
+- 成功页返回
 - 页面整体风格
 - 间距治理
 - 布局节奏
@@ -661,16 +765,17 @@ Codex must run UI quality governance in this order:
 2. Use Design System Skill to confirm tokens, components, patterns, and layout rules.
 3. Use Design Public Resource Package Governance Add-on to confirm reusable public assets and prevent page-level copies.
 4. Use App Modal & Overlay System Governance Add-on when Toast, Snackbar, Dialog, Sheet, Modal Page, Full-screen Modal, Modal Stack, Modal Queue, global overlays, funding/KYC/security/compliance overlays, app modal design, or overlay system audit is involved.
-5. Use Page Visual Rhythm & Spacing Governance Add-on when page-wide style, spacing, layout rhythm, consistency, visual density, card hierarchy, typography hierarchy, surface system, or cross-page visual governance is involved.
-6. Use Elite UX/UI Remediation Board Add-on when the task involves top-tier UX/UI audit, UI remediation, user psychology, real scenarios, financial trust, explicit UI rationale, L5 design judgment, or pre-delivery design gate.
-7. Use Reference Adaptation Add-on if screenshots, Mobbin, or competitor references are provided.
-8. Use Icon Governance Add-on if icons are involved.
-9. Use Financial Copy & Localization Add-on if user-facing copy is involved.
-10. Use UI Build Skill to refactor the page only after evidence, Redline Items, Fix Cards, Fix Order, any required Overlay Matrix, and any required Page Visual Rhythm Matrix are available.
-11. Use UX Interaction Quality Gate to audit task flow, feedback, error recovery, accessibility, and financial UX risk.
-12. Capture or generate a preview screenshot / visual snapshot for review.
-13. Score the page using UI Quality Scorecard.
-14. If score < 85 or any Blocker / Critical exists, fix and re-run QA.
+5. Use App Native Back / Close Interaction Governance Add-on when Back, Close, Cancel, Done, Android Back, iOS gesture, Header Back / Close, router.back, navigation.goBack, BackHandler, UnsavedGuard, WebView back, Deep Link fallback, Push entry return, success terminal return, or app back / close audit is involved.
+6. Use Page Visual Rhythm & Spacing Governance Add-on when page-wide style, spacing, layout rhythm, consistency, visual density, card hierarchy, typography hierarchy, surface system, or cross-page visual governance is involved.
+7. Use Elite UX/UI Remediation Board Add-on when the task involves top-tier UX/UI audit, UI remediation, user psychology, real scenarios, financial trust, explicit UI rationale, L5 design judgment, or pre-delivery design gate.
+8. Use Reference Adaptation Add-on if screenshots, Mobbin, or competitor references are provided.
+9. Use Icon Governance Add-on if icons are involved.
+10. Use Financial Copy & Localization Add-on if user-facing copy is involved.
+11. Use UI Build Skill to refactor the page only after evidence, Redline Items, Fix Cards, Fix Order, any required Overlay Matrix, any required Back / Close Inventory, and any required Page Visual Rhythm Matrix are available.
+12. Use UX Interaction Quality Gate to audit task flow, feedback, error recovery, accessibility, and financial UX risk.
+13. Capture or generate a preview screenshot / visual snapshot for review.
+14. Score the page using UI Quality Scorecard.
+15. If score < 85 or any Blocker / Critical exists, fix and re-run QA.
 
 Required outputs:
 
@@ -686,6 +791,11 @@ Required outputs:
 - Page Overlay Matrix
 - Overlay System L5 Report
 - 100-Point Overlay L5 Gate Score
+- Back / Close Inventory
+- Navigation Contract Check
+- Overlay Contract Check
+- Back Pipeline Review
+- Back / Close L5 Gate Score
 - Page Visual Rhythm Matrix
 - 100-Point Visual Rhythm L5 Gate Score
 - Page Refactor Plan
@@ -733,6 +843,12 @@ Hard rules:
 - Do not modify pages before evidence, Redline Items, Fix Cards, and Fix Order are produced when Elite UX/UI Remediation Board is triggered.
 - Do not let pages write private overlay or modal implementations when App Modal & Overlay System Governance is triggered.
 - Do not use Toast or ordinary Bottom Sheet to carry funding, KYC, security, or compliance risk.
+- Do not let pages write private back or close implementations when App Native Back / Close Interaction Governance is triggered.
+- Do not use fixed home navigation as a fake back action.
+- Root Tab must not show Back.
+- Dialog and Bottom Sheet must not use BackIcon.
+- Dirty, uploading, processing, funding, KYC, and payment flows must use guard behavior.
+- Android Back must go through the unified back pipeline.
 - Do not randomly adjust px values when Page Visual Rhythm & Spacing Governance is triggered.
 - Fix visual rhythm issues by system layer first: token → component → pattern → public resource → page.
 - If the same visual issue appears on 2 or more pages, fix it at the shared resource layer.
@@ -771,11 +887,12 @@ Hard rules:
 5. Icon Governance Add-on, if icons are involved
 6. Reference Adaptation Add-on, if reference material is provided
 7. App Modal & Overlay System Governance Add-on, if Toast, Snackbar, Dialog, Action Sheet, Picker Sheet, Bottom Sheet, Modal Page, Full-screen Modal, Modal Stack, Modal Queue, global overlays, funding/KYC/security/compliance overlays, app modal design, or overlay system audit is involved
-8. Page Visual Rhythm & Spacing Governance Add-on, if page-wide style, spacing governance, layout rhythm, page consistency, visual density, card hierarchy, typography hierarchy, surface system, or cross-page visual governance is involved
-9. Elite UX/UI Remediation Board Add-on, if top-tier UX/UI audit, UI quality remediation, user psychology, real usage scenarios, financial trust, explicit UI rationale, L5 design quality judgment, or pre-delivery design gate is involved
-10. UI Build Skill
-11. UX Interaction Quality Gate
-12. Final QA / Release Decision
+8. App Native Back / Close Interaction Governance Add-on, if Back, Close, Cancel, Done, Android Back, iOS gesture, Header Back / Close, router.back, navigation.goBack, BackHandler, UnsavedGuard, WebView back, Deep Link fallback, Push entry return, success terminal return, or app back / close audit is involved
+9. Page Visual Rhythm & Spacing Governance Add-on, if page-wide style, spacing governance, layout rhythm, page consistency, visual density, card hierarchy, typography hierarchy, surface system, or cross-page visual governance is involved
+10. Elite UX/UI Remediation Board Add-on, if top-tier UX/UI audit, UI quality remediation, user psychology, real usage scenarios, financial trust, explicit UI rationale, L5 design quality judgment, or pre-delivery design gate is involved
+11. UI Build Skill
+12. UX Interaction Quality Gate
+13. Final QA / Release Decision
 
 ## Page-only work
 
@@ -786,10 +903,11 @@ Hard rules:
 5. Use Financial Copy Add-on if user-facing copy is involved
 6. Use Icon Governance Add-on if icons are involved
 7. Use App Modal & Overlay System Governance Add-on before page edits if Toast, Snackbar, Dialog, Action Sheet, Picker Sheet, Bottom Sheet, Modal Page, Full-screen Modal, Modal Stack, Modal Queue, global overlays, funding/KYC/security/compliance overlays, app modal design, or overlay system audit is involved
-8. Use Page Visual Rhythm & Spacing Governance Add-on before page edits if page-wide style, spacing governance, layout rhythm, page consistency, visual density, card hierarchy, typography hierarchy, surface system, or cross-page visual governance is involved
-9. Use Elite UX/UI Remediation Board Add-on before page edits if the task involves top-tier UX/UI audit, UI quality remediation, user psychology, real usage scenarios, financial trust, explicit UI rationale, L5 design quality judgment, or pre-delivery design gate
-10. Use UI Build Skill
-11. Use UX Gate before delivery
+8. Use App Native Back / Close Interaction Governance Add-on before page edits if Back, Close, Cancel, Done, Android Back, iOS gesture, Header Back / Close, router.back, navigation.goBack, BackHandler, UnsavedGuard, WebView back, Deep Link fallback, Push entry return, success terminal return, or app back / close audit is involved
+9. Use Page Visual Rhythm & Spacing Governance Add-on before page edits if page-wide style, spacing governance, layout rhythm, page consistency, visual density, card hierarchy, typography hierarchy, surface system, or cross-page visual governance is involved
+10. Use Elite UX/UI Remediation Board Add-on before page edits if the task involves top-tier UX/UI audit, UI quality remediation, user psychology, real usage scenarios, financial trust, explicit UI rationale, L5 design quality judgment, or pre-delivery design gate
+11. Use UI Build Skill
+12. Use UX Gate before delivery
 
 ## Design system work
 

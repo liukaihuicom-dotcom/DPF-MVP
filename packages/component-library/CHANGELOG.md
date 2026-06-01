@@ -1,5 +1,27 @@
 # @dpf/component-library Changelog
 
+## 2.5.2 - 2026-06-01
+
+- Clarified trading account switch sheet bottom spacing governance so content bottom reserve is owned by shared `BottomSheet` `layout.sheetContentPaddingBottom`.
+- Added QA coverage to block local bottom padding or margin on `TradingAccountSwitchSheet` wrappers.
+
+## 2.5.1 - 2026-06-01
+
+- Removed the shared `BottomSheet` Footer top divider so footer actions share the sheet surface without a visual separation line.
+- Preserved Footer safe-area padding, in-Panel layout flow, action spacing, close lifecycle, and the public `BottomSheet` API.
+
+## 2.5.0 - 2026-06-01
+
+- Added the governed Workspace component set: `WorkspaceHeader`, `ModeStatusBadge`, `WorkspaceSummaryCard`, `QuietAssistBar`, `StatusMetricTile`, `PriorityFocusCard`, `CompactActionRow`, `MarketMiniCard`, `PartnerMetricCard`, and `ModeSwitchEntry`.
+- Registered Workspace components in the component manifest and token-binding map so the Broker App workbench uses public Card, StatusPill, ActionButton, AppIcon, IconSurface, HeaderIconButton, and NativePressable contracts.
+- Kept Workspace Assist as a weak support/education entry with no trading, funding, transfer, client-message, buy/sell recommendation, or profit-promise behavior.
+
+## 2.4.4 - 2026-06-01
+
+- Updated shared `BottomSheet` Footer safe-area handling so the in-Panel Footer uses `layout.sheetFooterPaddingBottom + insets.bottom` instead of page-local or footer-reserve spacing.
+- Added a governed `layout.sheetContentPaddingBottom` breathing space for BottomSheet scroll content so the final item does not sit against the Footer.
+- Kept Header, Content, and Footer mounted in the same Panel layout flow across adaptive, fixed, and fullscreen modes.
+
 ## 2.4.3 - 2026-05-29
 
 - Added the governed BottomSheet horizontal spacing contract: Header 16px, card content 12px, list/article/detail-introduction content 16px, and Footer 16px.

@@ -1,5 +1,35 @@
 # Release Notes
 
+## 2026-06-01
+
+### Added
+
+- Added Back / Close native interaction governance for route contracts, full-screen Modal Page roots, dirty-state confirmation copy, ModalStack root-close vs nested-back semantics, and automated QA via `pnpm qa:back-close`.
+- Added the role-aware Broker App `Workspace` as the first bottom navigation tab with a unified Trader tab set and an approved Partner Mode tab set.
+- Added governed Workspace public components and upgraded `@dpf/component-library` to `2.5.0`.
+- Added `/learn`, `/demo`, `/clients`, `/growth`, `/wallet`, and `/me` semantic tab routes while preserving existing Accounts, Markets, Trade, Profile, Partner clients, Partner tools, and commission wallet capabilities.
+
+### Changed
+
+- Bumped the root app version to `1.1.7` for App-wide Back / Close governance.
+- Changed `/order/[id]` from a private backdrop / draggable sheet implementation to a full-screen Modal Page with Close semantics and queued dirty-state confirmation.
+- Changed `/discover-layout` from modal-root Back semantics to Close / Cancel / Save semantics with generic unsaved-change confirmation.
+- Changed `/me` so the primary Tab entry reuses `SettingsScreen` without rendering Back, while `/settings` keeps Back.
+- Bumped the root app version to `1.1.6` for `/order/[id]` success feedback governance.
+- Changed order ticket submit success and pending-order creation success feedback from queued confirmation dialogs to auto-dismiss Toast feedback, while preserving pre-submit high-risk confirmation, invalid-submit blocking alerts, dirty-state leave confirmation, and one-click trading switch confirmation.
+- Kept users on the current order ticket after successful submit instead of automatically replacing the route with `/trade`.
+- Bumped the root app version to `1.1.5` for trading account switch sheet bottom-spacing governance and upgraded `@dpf/component-library` to `2.5.2`.
+- Aligned trading account switch sheet content-bottom reserve with the shared BottomSheet `layout.sheetContentPaddingBottom` rule across Trade, Markets, and Funding account switchers.
+- Bumped the root app version to `1.1.4` for the shared BottomSheet Footer divider removal and Trader six-entry bottom-navigation patch; upgraded `@dpf/component-library` to `2.5.1`.
+- Removed the global `BottomSheet` bottom action-area divider while preserving footer safe-area padding, in-Panel layout, close lifecycle, routes, business behavior, copy, icons, and public API.
+- Restored all non-Partner Trader Workspace segments to the unified bottom navigation `Workspace / Markets / Trade / Accounts / Discover / Dynamic Discover Module`.
+- Reordered Expo Router JavaScript Tabs so Trader tabs render as `workspace`, `markets`, `trade`, `accounts`, `discover`, and `quick`, while approved Partner Mode keeps `Workspace / Clients / Growth / Wallet / Me`.
+- Reframed Workspace public-resource governance from `WorkspaceDashboard` / `workspaceDashboard` to `AgenticWorkspace` / `agenticWorkspace`, keeping financial status visible in GUI and Assist as a quiet explain/diagnose/suggest layer.
+- Updated Workspace header mode labels so Trader shows `交易模式` and approved Partner shows `Partner 模式`.
+- Updated Workspace navigation to hide non-applicable tabs with `expo-router` JavaScript Tabs `href: null`, keeping SDK 54 native tabs out of this release.
+- Synced Workspace route registry, page contracts, i18n copy, public resource dependency graph, business component manifest, pattern registry, copy table, and release records.
+- `@dpf/icon-library` is unchanged because no new runtime icon provider or icon package was added.
+
 ## 2026-05-29
 
 ### Changed

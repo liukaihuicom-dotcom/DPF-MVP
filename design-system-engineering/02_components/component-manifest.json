@@ -1,5 +1,5 @@
 {
-  "version": "2.4.3",
+  "version": "2.5.0",
   "source": "src/components compatibility runtime; governance source is packages/component-library",
   "components": {
     "ActionButton": {
@@ -450,15 +450,18 @@
         "layout.topReservedSpace",
         "layout.contentCardPaddingX",
         "layout.contentPlainPaddingX",
+        "layout.sheetContentPaddingBottom",
         "layout.topBarPaddingX",
         "layout.bottomActionArea.*",
+        "layout.sheetFooterGap",
+        "layout.sheetFooterPaddingBottom",
         "motion.overlay.*",
         "color.surface.canvas",
         "color.surface.panel",
         "palette.*",
         "spacing.*"
       ],
-      "usage": "Global bottom sheet system. Use presets for every page-triggered mobile sheet. Height decisions must follow src/design-public-assets/overlays/registry/bottom-sheet-design-principles.md and choose heightMode='adaptive', 'fixed', or 'fullscreen'. Adaptive is for action menus, short forms, short confirmations, and detail sheets: the Panel grows from Header + Content + Footer, maxes at 90dvh, and only Content scrolls when over height. Fixed is for page-like sheets, long selections, complex local flows, and explicit legacy snapPoints/contentSizing='fill': Panel height is 90dvh and Content uses the remaining middle space. Fullscreen is for full-screen modal-equivalent flows: Panel height is 100dvh, radius is removed, and Content fills the middle area with safe-area aware Footer. Header, Content, and Footer must render as direct children inside one Panel; Footer is in normal layout flow with flex: 0 0 auto, not footerComponent, portal, fixed, or absolute. Opening or stacking a sheet dismisses the active keyboard and releases input focus before presentation. Backdrop tap, close button, pan-down, Android back, cancel action, and business-completion close all use the shared closeModal lifecycle, and cleanup happens only after the Panel dismisses. Header left/right inset uses `layout.topBarPaddingX` at 16px. Card content uses `layout.contentCardPaddingX` at 12px. List content, article/detail introduction content, and normal descriptive content use `layout.sheetContentPaddingX` at 16px. Footer left/right inset uses `layout.bottomActionArea.paddingX` at 16px. Card content keeps the gray `sheetSurface='canvas'` bed (`color.surface.canvas`) with white `color.surface.panel` card bodies; plain/list content uses `sheetSurface='panel'` so picker, selection, and list sheets sit on a white bed. The selection preset defaults to this panel surface. Card-based selection sheets such as TradingAccountContextSwitcher explicitly use `sheetSurface='canvas'` and `contentPadding='card'` because account options are selectable cards on a gray bed. Flush content is reserved for public business components that own their full internal surface and spacing. Every page-level bottom sheet must be opened through useBottomSheet with bottomSheetPresets.selection/detail/actionMenu or a registered business sheet wrapper exported from design-public-assets.",
+      "usage": "Global bottom sheet system. Use presets for every page-triggered mobile sheet. Height decisions must follow src/design-public-assets/overlays/registry/bottom-sheet-design-principles.md and choose heightMode='adaptive', 'fixed', or 'fullscreen'. Adaptive is for action menus, short forms, short confirmations, and detail sheets: the Panel grows from Header + Content + Footer, maxes at 90dvh, and only Content scrolls when over height. Fixed is for page-like sheets, long selections, complex local flows, and explicit legacy snapPoints/contentSizing='fill': Panel height is 90dvh and Content uses the remaining middle space. Fullscreen is for full-screen modal-equivalent flows: Panel height is 100dvh, radius is removed, and Content fills the middle area with safe-area aware Footer. Header, Content, and Footer must render as direct children inside one Panel; Footer is in normal layout flow with flex: 0 0 auto, not footerComponent, portal, fixed, or absolute. Footer bottom padding is `layout.sheetFooterPaddingBottom + useSafeAreaInsets().bottom`, so the Footer background covers the system safe area and buttons do not sit on the iOS Home Indicator or Android gesture area. ContentInner bottom padding uses `layout.sheetContentPaddingBottom` so the final scroll item keeps breathing space before the in-flow Footer. Opening or stacking a sheet dismisses the active keyboard and releases input focus before presentation. Backdrop tap, close button, pan-down, Android back, cancel action, and business-completion close all use the shared closeModal lifecycle, and cleanup happens only after the Panel dismisses. Header left/right inset uses `layout.topBarPaddingX` at 16px. Card content uses `layout.contentCardPaddingX` at 12px. List content, article/detail introduction content, and normal descriptive content use `layout.sheetContentPaddingX` at 16px. Footer left/right inset uses `layout.bottomActionArea.paddingX` at 16px and stacked Footer actions use `layout.sheetFooterGap` at 12px. Card content keeps the gray `sheetSurface='canvas'` bed (`color.surface.canvas`) with white `color.surface.panel` card bodies; plain/list content uses `sheetSurface='panel'` so picker, selection, and list sheets sit on a white bed. The selection preset defaults to this panel surface. Card-based selection sheets such as TradingAccountContextSwitcher explicitly use `sheetSurface='canvas'` and `contentPadding='card'` because account options are selectable cards on a gray bed. Flush content is reserved for public business components that own their full internal surface and spacing. Every page-level bottom sheet must be opened through useBottomSheet with bottomSheetPresets.selection/detail/actionMenu or a registered business sheet wrapper exported from design-public-assets.",
       "forbidden": [
         "Do not call bottomSheet.show or bottomSheet.push with ad hoc options; use bottomSheetPresets",
         "Do not add page-local Keyboard.dismiss calls before bottomSheet.show or bottomSheet.push; the shared provider owns keyboard dismissal",
@@ -468,6 +471,7 @@
         "Do not use footerComponent, GorhomBottomSheetFooter, a footer portal, fixed footer positioning, or absolute footer positioning for shared BottomSheet actions",
         "Do not override BottomSheet footer background or add page-local footer dividers",
         "Do not add fixed content bottom insets, footerReserveHeight, measured footer avoidance, or page-local padding to compensate for footer actions",
+        "Do not repeat safe-area calculations in page-level sheet content or Footer wrappers; the shared BottomSheet owns `useSafeAreaInsets().bottom`",
         "Do not use page-local background wrappers or hardcoded colors to simulate card gray beds or list white beds; choose sheetSurface='canvas' or sheetSurface='panel'",
         "Do not use page-local padding to set BottomSheet horizontal inset; use layout.contentCardPaddingX for card content, layout.sheetContentPaddingX for list/article/detail introduction content, layout.topBarPaddingX for Header, and layout.bottomActionArea.paddingX for Footer",
         "Do not wrap short sheet content in page-local vertical scroll containers to force scrolling",
@@ -760,7 +764,7 @@
         "typography.*",
         "palette.*"
       ],
-      "usage": "Reusable order, position, pending-order, closed-order detail, and grouped order action sheet bodies for trading/account task flows. It owns dense financial value layout, registered numeric auto-fit behavior for constrained PnL/value hero surfaces, and the TradingOrderActionSheet action-menu body that uses GlobalMenuList contained spacing without page-owned wrapper cards.",
+      "usage": "Reusable order, position, pending-order, closed-order detail, and grouped order action sheet bodies for trading/account task flows. It owns dense financial value layout, registered numeric auto-fit behavior for constrained PnL/value hero surfaces, and the TradingOrderActionSheet action-menu body that uses GlobalMenuList plain contained spacing without page-owned wrapper cards or card-like content shells.",
       "forbidden": [
         "Do not recreate order or position detail sheet bodies in route pages",
         "Do not create page-local position or pending-order option sheet shells",
@@ -861,6 +865,7 @@
       "props": [
         "items",
         "contained",
+        "containerShape",
         "showChevron",
         "item.accessory",
         "variant"
@@ -869,6 +874,7 @@
         "navigation",
         "descriptive",
         "contained",
+        "plainContained",
         "switchAccessory",
         "valueAccessory",
         "ratingAccessory"
@@ -3739,6 +3745,406 @@
       "exports": [
         "FinancialTransactionRow"
       ]
+    },
+    "WorkspaceHeader": {
+      "category": "business-workspace",
+      "path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "exports": [
+        "WorkspaceHeader"
+      ],
+      "props": [
+        "viewModel"
+      ],
+      "variants": [
+        "trader",
+        "partner"
+      ],
+      "states": [
+        "new_trader",
+        "kyc_approved_no_deposit",
+        "active_trader",
+        "partner_mode"
+      ],
+      "a11y": [
+        "Header actions carry accessibility labels",
+        "Mode badge keeps visible text"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.topBarPaddingX",
+        "size.sheet.headerHeight",
+        "spacing.*",
+        "color.surface.canvas",
+        "iconRegistry.*"
+      ],
+      "usage": "Workspace top header for role-aware Broker App workbench screens, with explicit Trader Mode and Partner Mode labels.",
+      "forbidden": [
+        "Do not place page-local header action shells in Workspace routes",
+        "Do not hardcode tab or status copy outside i18n"
+      ],
+      "status": "active"
+    },
+    "ModeStatusBadge": {
+      "category": "business-workspace",
+      "path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "exports": [
+        "ModeStatusBadge"
+      ],
+      "props": [
+        "label",
+        "tone"
+      ],
+      "variants": [
+        "compact-status"
+      ],
+      "states": [
+        "neutral",
+        "brand"
+      ],
+      "a11y": [
+        "Visible mode label is required"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "StatusPill",
+        "radius.full",
+        "palette.*"
+      ],
+      "usage": "Compact mode indicator for Trader and Partner Workspace states.",
+      "forbidden": [
+        "Do not replace mode status with color-only indicators"
+      ],
+      "status": "active"
+    },
+    "WorkspaceSummaryCard": {
+      "category": "business-workspace",
+      "path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "exports": [
+        "WorkspaceSummaryCard"
+      ],
+      "props": [
+        "viewModel"
+      ],
+      "variants": [
+        "new-trader",
+        "ready-trader",
+        "active-trader",
+        "partner"
+      ],
+      "states": [
+        "default",
+        "reviewing",
+        "restricted",
+        "tradable"
+      ],
+      "a11y": [
+        "Primary status and assist entry remain visible text"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "Card",
+        "IconSurface",
+        "StatusPill",
+        "layout.cardPaddingX",
+        "layout.cardPaddingY",
+        "lineWidth.hairline",
+        "spacing.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Primary Workspace state summary card driven by domain workspace view model.",
+      "forbidden": [
+        "Do not put AI chat, trading execution, or funding submission inside this summary card"
+      ],
+      "status": "active"
+    },
+    "QuietAssistBar": {
+      "category": "business-workspace",
+      "path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "exports": [
+        "QuietAssistBar"
+      ],
+      "props": [
+        "viewModel"
+      ],
+      "variants": [
+        "weak-entry"
+      ],
+      "states": [
+        "default",
+        "tagged"
+      ],
+      "a11y": [
+        "Assist remains a user-initiated support entry with visible tags"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "ActionButton",
+        "StatusPill",
+        "layout.cardPaddingX",
+        "layout.cardPaddingY",
+        "radius.card",
+        "spacing.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Low-emphasis support/education entry for Workspace without recommendations or automated actions.",
+      "forbidden": [
+        "Do not render a large chat panel",
+        "Do not recommend buy/sell direction",
+        "Do not submit funding, trading, transfer, or client-message actions"
+      ],
+      "status": "active"
+    },
+    "StatusMetricTile": {
+      "category": "business-workspace",
+      "path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "exports": [
+        "StatusMetricTile"
+      ],
+      "props": [
+        "metric"
+      ],
+      "variants": [
+        "financial",
+        "status"
+      ],
+      "states": [
+        "neutral",
+        "brand",
+        "success",
+        "warning",
+        "info",
+        "up",
+        "down"
+      ],
+      "a11y": [
+        "Metric label and value are both rendered as text"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.cardPaddingX",
+        "size.viewport.detailSideMinWidth",
+        "layout.menuDescriptiveRowMinHeight",
+        "radius.card",
+        "typography.*",
+        "palette.*"
+      ],
+      "usage": "Compact Workspace KPI tile for status, account, margin, PnL, client, and commission metrics.",
+      "forbidden": [
+        "Do not encode financial status by color only",
+        "Do not omit unit or label context"
+      ],
+      "status": "active"
+    },
+    "PriorityFocusCard": {
+      "category": "business-workspace",
+      "path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "exports": [
+        "PriorityFocusCard"
+      ],
+      "props": [
+        "viewModel"
+      ],
+      "variants": [
+        "guided-focus"
+      ],
+      "states": [
+        "default",
+        "reviewing",
+        "risk-attention",
+        "partner-follow-up"
+      ],
+      "a11y": [
+        "Primary focus title, body, and CTA are visible text"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "Card",
+        "ActionButton",
+        "spacing.*",
+        "typography.*"
+      ],
+      "usage": "Single priority focus card for the current Workspace segment.",
+      "forbidden": [
+        "Do not create a feature grid or multiple competing primary CTAs"
+      ],
+      "status": "active"
+    },
+    "CompactActionRow": {
+      "category": "business-workspace",
+      "path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "exports": [
+        "CompactActionRow"
+      ],
+      "props": [
+        "action"
+      ],
+      "variants": [
+        "row-action"
+      ],
+      "states": [
+        "default",
+        "pressed"
+      ],
+      "a11y": [
+        "Rows expose accessibilityRole=button and labels from i18n"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "NativePressable",
+        "IconSurface",
+        "layout.menuRowMinHeight",
+        "layout.menuDisclosureIconSize",
+        "layout.cardPaddingX",
+        "radius.card",
+        "spacing.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed compact Workspace shortcut row limited by domain action list.",
+      "forbidden": [
+        "Do not show more than the domain-provided action set",
+        "Do not put high-risk direct execution in shortcut rows"
+      ],
+      "status": "active"
+    },
+    "MarketMiniCard": {
+      "category": "business-workspace",
+      "path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "exports": [
+        "MarketMiniCard"
+      ],
+      "props": [
+        "market"
+      ],
+      "variants": [
+        "low-noise-market"
+      ],
+      "states": [
+        "up",
+        "down",
+        "muted"
+      ],
+      "a11y": [
+        "Symbol, price, and change are visible text"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "size.themePreview.optionMinWidth",
+        "radius.card",
+        "spacing.*",
+        "palette.*"
+      ],
+      "usage": "Low-noise market focus card for active and ready Trader Workspace segments.",
+      "forbidden": [
+        "Do not display directional recommendations or profit promises"
+      ],
+      "status": "active"
+    },
+    "PartnerMetricCard": {
+      "category": "business-workspace",
+      "path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "exports": [
+        "PartnerMetricCard"
+      ],
+      "props": [
+        "none"
+      ],
+      "variants": [
+        "partner-summary"
+      ],
+      "states": [
+        "default"
+      ],
+      "a11y": [
+        "Partner metrics are rendered as visible text"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "Card",
+        "size.metric.minWidth",
+        "spacing.*",
+        "typography.*"
+      ],
+      "usage": "Compact Partner Mode metric strip for conversion and network status.",
+      "forbidden": [
+        "Do not imply guaranteed commission income"
+      ],
+      "status": "active"
+    },
+    "ModeSwitchEntry": {
+      "category": "business-workspace",
+      "path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "exports": [
+        "ModeSwitchEntry"
+      ],
+      "props": [
+        "action",
+        "onPress"
+      ],
+      "variants": [
+        "mode-switch"
+      ],
+      "states": [
+        "default",
+        "pressed"
+      ],
+      "a11y": [
+        "Switch entry exposes accessibilityRole=button and visible label"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "NativePressable",
+        "IconSurface",
+        "layout.menuRowMinHeight",
+        "layout.menuDisclosureIconSize",
+        "layout.cardPaddingX",
+        "radius.card",
+        "spacing.*"
+      ],
+      "usage": "Approved Partner Mode entry for switching back to Trader context.",
+      "forbidden": [
+        "Do not expose Partner Mode to unapproved potential partners"
+      ],
+      "status": "active"
     }
   },
   "package": "@dpf/component-library"

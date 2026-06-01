@@ -1,5 +1,11 @@
 # Token Changelog
 
+## v3.4.0-bottom-sheet-safe-area
+
+- Added BottomSheet safe-area spacing roles: `layout.safeAreaBottom`, `layout.sheetContentPaddingBottom`, and `layout.sheetFooterPaddingBottom`.
+- Standardized shared BottomSheet Footer padding as base Footer padding plus the runtime device bottom safe-area inset from `SafeAreaProvider`.
+- Documented ContentInner bottom breathing space so the final scroll item does not sit against the in-flow Footer.
+
 ## v3.3.0-bottom-sheet-horizontal-spacing
 
 - Added `layout.sheetContentPaddingX` at 16px as the dedicated BottomSheet plain/list/article-detail introduction content horizontal inset.

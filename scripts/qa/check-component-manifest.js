@@ -198,6 +198,26 @@ if (actionButtonEntry) {
   );
 }
 
+const bottomSheetEntry = componentEntries.BottomSheet;
+if (bottomSheetEntry) {
+  const bottomSheetText = read('src/components/BottomSheet.tsx');
+  const bottomSheetManifestText = JSON.stringify(bottomSheetEntry);
+  const bottomSheetTokenBindings = Array.isArray(bottomSheetEntry.tokenBindings) ? bottomSheetEntry.tokenBindings : [];
+  checks.push(
+    /paddingBottom: layout\.sheetFooterPaddingBottom \+ insets\.bottom/.test(bottomSheetText)
+      && /paddingBottom: layout\.sheetContentPaddingBottom/.test(bottomSheetText)
+      && /flexBasis: 'auto'/.test(bottomSheetText)
+      && /gap: layout\.sheetFooterGap/.test(bottomSheetText)
+      && bottomSheetManifestText.includes('layout.sheetFooterPaddingBottom + useSafeAreaInsets().bottom')
+      && bottomSheetManifestText.includes('layout.sheetContentPaddingBottom')
+      && bottomSheetTokenBindings.includes('layout.sheetContentPaddingBottom')
+      && bottomSheetTokenBindings.includes('layout.sheetFooterPaddingBottom')
+      && bottomSheetTokenBindings.includes('layout.sheetFooterGap')
+      ? pass('QA_COMPONENT_BOTTOM_SHEET_SAFE_AREA', 'BottomSheet runtime and manifest centralize Footer safe area and ContentInner breathing space', 'src/components/BottomSheet.tsx')
+      : fail('QA_COMPONENT_BOTTOM_SHEET_SAFE_AREA', 'BottomSheet must use layout.sheetFooterPaddingBottom + safe-area inset, layout.sheetContentPaddingBottom, and manifest token bindings', 'src/components/BottomSheet.tsx'),
+  );
+}
+
 const headerIconButtonEntry = componentEntries.HeaderIconButton;
 if (headerIconButtonEntry) {
   const headerIconButtonText = read('src/components/HeaderIconButton.tsx');

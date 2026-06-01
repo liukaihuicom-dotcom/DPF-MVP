@@ -1,6 +1,6 @@
 {
-  "version": "0.2.0",
-  "generated_at": "2026-05-28",
+  "version": "0.3.0",
+  "generated_at": "2026-06-01",
   "governance_skill": "financial-copy-localization-governance v1.0.0-L5",
   "languages": [
     "en-US",
@@ -397,6 +397,246 @@
       "zhCN": "当前设备不能在此处移除。",
       "idID": "Perangkat saat ini tidak dapat dihapus di sini.",
       "notes": "Device management prevention copy; normal sign-out remains the recovery path."
+    },
+    {
+      "key": "workspace.primary.newTrader.title",
+      "namespace": "workspace",
+      "module": "Workspace",
+      "surface": "section_title",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/i18n/translations.ts",
+        "src/domain/workspace.ts",
+        "src/screens/workspace/WorkspaceScreen.tsx"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Start with a verified workspace",
+      "zhCN": "先完成验证工作台",
+      "idID": "Mulai dengan workspace terverifikasi",
+      "notes": "New Trader summary title; does not imply account approval before KYC is complete."
+    },
+    {
+      "key": "workspace.primary.readyTrader.title",
+      "namespace": "workspace",
+      "module": "Workspace",
+      "surface": "section_title",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/i18n/translations.ts",
+        "src/domain/workspace.ts",
+        "src/screens/workspace/WorkspaceScreen.tsx"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Account ready for activation",
+      "zhCN": "账户已准备激活",
+      "idID": "Akun siap diaktifkan",
+      "notes": "KYC-approved no-deposit title; avoids live-trading availability language until active account exists."
+    },
+    {
+      "key": "workspace.primary.activeTrader.title",
+      "namespace": "workspace",
+      "module": "Workspace",
+      "surface": "section_title",
+      "riskLevel": "high",
+      "sourcePaths": [
+        "src/i18n/translations.ts",
+        "src/domain/workspace.ts",
+        "src/screens/workspace/WorkspaceScreen.tsx"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy",
+        "ux_gate"
+      ],
+      "enUS": "Review account risk before action",
+      "zhCN": "操作前先查看账户风险",
+      "idID": "Tinjau risiko akun sebelum bertindak",
+      "notes": "Active Trader focus title; directs user to risk/status review without recommending trades."
+    },
+    {
+      "key": "workspace.primary.partner.title",
+      "namespace": "workspace",
+      "module": "Workspace",
+      "surface": "section_title",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/i18n/translations.ts",
+        "src/domain/workspace.ts",
+        "src/screens/workspace/WorkspaceScreen.tsx"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Partner follow-up workspace",
+      "zhCN": "Partner 跟进工作台",
+      "idID": "Workspace tindak lanjut Partner",
+      "notes": "Approved Partner Mode title; avoids commission-income promise."
+    },
+    {
+      "key": "workspace.riskNote",
+      "namespace": "workspace",
+      "module": "Workspace",
+      "surface": "risk_disclosure",
+      "riskLevel": "high",
+      "sourcePaths": [
+        "src/i18n/translations.ts",
+        "src/domain/workspace.ts",
+        "src/screens/workspace/WorkspaceScreen.tsx"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy",
+        "ux_gate"
+      ],
+      "enUS": "Assist explains, diagnoses, and suggests paths only. Funding, trading, transfers, and client messages must stay in explicit user-confirmed GUI flows.",
+      "zhCN": "Assist 只解释、诊断和建议路径。资金、交易、转账和客户消息必须保留在用户主动确认的明确 GUI 流程中。",
+      "idID": "Assist hanya menjelaskan, mendiagnosis, dan menyarankan jalur. Pendanaan, trading, transfer, dan pesan klien harus tetap melalui alur GUI yang dikonfirmasi pengguna.",
+      "notes": "High-risk Workspace Assist boundary copy; must stay quiet, conservative, and non-executing."
+    },
+    {
+      "key": "tabs.workspace",
+      "namespace": "tabs",
+      "module": "Navigation",
+      "surface": "tab_label",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/i18n/translations.ts",
+        "src/domain/workspace.ts",
+        "src/screens/workspace/WorkspaceScreen.tsx"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Workspace",
+      "zhCN": "Workspace",
+      "idID": "Workspace",
+      "notes": "Bottom tab label for role-aware workspace."
+    },
+    {
+      "key": "tabs.learn",
+      "namespace": "tabs",
+      "module": "Navigation",
+      "surface": "tab_label",
+      "riskLevel": "low",
+      "sourcePaths": [
+        "src/i18n/translations.ts",
+        "src/domain/workspace.ts",
+        "src/screens/workspace/WorkspaceScreen.tsx"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Learn",
+      "zhCN": "Learn",
+      "idID": "Learn",
+      "notes": "Bottom tab label for learning/risk education wrapper. Retained as route/i18n capability but not shown in the unified Trader Mode bottom bar."
+    },
+    {
+      "key": "tabs.demo",
+      "namespace": "tabs",
+      "module": "Navigation",
+      "surface": "tab_label",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/i18n/translations.ts",
+        "src/domain/workspace.ts",
+        "src/screens/workspace/WorkspaceScreen.tsx"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Demo",
+      "zhCN": "Demo",
+      "idID": "Demo",
+      "notes": "Bottom tab label for paper/demo experience; must not imply live funding. Retained as route/i18n capability but not shown in the unified Trader Mode bottom bar."
+    },
+    {
+      "key": "tabs.growth",
+      "namespace": "tabs",
+      "module": "Navigation",
+      "surface": "tab_label",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/i18n/translations.ts",
+        "src/domain/workspace.ts",
+        "src/screens/workspace/WorkspaceScreen.tsx"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Growth",
+      "zhCN": "Growth",
+      "idID": "Growth",
+      "notes": "Bottom tab label for approved Partner growth tools."
+    },
+    {
+      "key": "tabs.profile",
+      "namespace": "tabs",
+      "module": "Navigation",
+      "surface": "tab_label",
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "sourcePaths": [
+        "src/i18n/translations.ts",
+        "src/domain/workspace.ts",
+        "src/screens/navigation/TabLayout.tsx"
+      ],
+      "riskLevel": "medium",
+      "enUS": "Me",
+      "zhCN": "我的",
+      "idID": "Saya",
+      "notes": "Me appears as a fixed tab only for approved Partner Mode. Trader bottom navigation uses /quick as the dynamic Discover module carrier."
+    },
+    {
+      "key": "workspace.mode.trader",
+      "namespace": "workspace",
+      "module": "Workspace",
+      "surface": "mode_badge",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/i18n/translations.ts",
+        "src/components/business/workspace/WorkspaceComponents.tsx"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Trader Mode",
+      "zhCN": "交易模式",
+      "idID": "Mode Trader",
+      "notes": "Workspace header badge that distinguishes Trader Mode from approved Partner Mode."
+    },
+    {
+      "key": "workspace.mode.partner",
+      "namespace": "workspace",
+      "module": "Workspace",
+      "surface": "mode_badge",
+      "riskLevel": "medium",
+      "sourcePaths": [
+        "src/i18n/translations.ts",
+        "src/components/business/workspace/WorkspaceComponents.tsx"
+      ],
+      "status": "i18n_keyed",
+      "reviewRequired": [
+        "financial_copy"
+      ],
+      "enUS": "Partner Mode",
+      "zhCN": "Partner 模式",
+      "idID": "Mode Partner",
+      "notes": "Workspace header badge shown only when role=partner and partner entitlement is approved."
     }
   ],
   "migrationPolicy": {

@@ -80,43 +80,43 @@ export default function InstrumentDetailScreen() {
     <View style={StyleSheet.flatten([styles.shell, { backgroundColor: colors.surface.canvas }])}>
       <Stack.Screen options={{ title: instrument.symbol }} />
       <SafeAreaView edges={['top']} style={styles.safe}>
+        <View style={StyleSheet.flatten([styles.pageHeader, { backgroundColor: colors.surface.canvas }])}>
+          <HeaderIconButton
+            accessibilityLabel={t('top.back')}
+            icon="icon.system.back"
+            onPress={() => {
+              void impactLight();
+              navigateBackOrReplace(safeRouteTargets.markets);
+            }}
+            surface="neutral"
+            tone="default"
+          />
+
+          <View style={StyleSheet.flatten([styles.actionCapsule, { backgroundColor: colors.surface.subtle, borderColor: colors.border.default }])}>
+            <HeaderIconButton
+              accessibilityLabel={t('instrument.share')}
+              icon="icon.ib.network"
+              onPress={() => showPlaceholder(t('instrument.share'))}
+              style={styles.capsuleButton}
+              tone="default"
+              variant="ghost"
+            />
+            <HeaderIconButton
+              accessibilityLabel={t('top.more')}
+              icon="icon.system.more"
+              onPress={() => showPlaceholder(t('top.more'))}
+              style={styles.capsuleButton}
+              variant="ghost"
+            />
+          </View>
+        </View>
+
         <ScrollView
           contentContainerStyle={styles.content}
           contentInsetAdjustmentBehavior="never"
           showsVerticalScrollIndicator={false}
           style={StyleSheet.flatten([styles.scroller, { backgroundColor: colors.surface.canvas }])}>
           <View style={StyleSheet.flatten([styles.detailPage, { backgroundColor: colors.surface.panel }])}>
-            <View style={styles.pageActions}>
-              <HeaderIconButton
-                accessibilityLabel={t('top.back')}
-                icon="icon.system.back"
-                onPress={() => {
-                  void impactLight();
-                  navigateBackOrReplace(safeRouteTargets.markets);
-                }}
-                surface="neutral"
-                tone="default"
-              />
-
-              <View style={StyleSheet.flatten([styles.actionCapsule, { backgroundColor: colors.surface.subtle, borderColor: colors.border.default }])}>
-                <HeaderIconButton
-                  accessibilityLabel={t('instrument.share')}
-                  icon="icon.ib.network"
-                  onPress={() => showPlaceholder(t('instrument.share'))}
-                  style={styles.capsuleButton}
-                  tone="default"
-                  variant="ghost"
-                />
-                <HeaderIconButton
-                  accessibilityLabel={t('top.more')}
-                  icon="icon.system.more"
-                  onPress={() => showPlaceholder(t('top.more'))}
-                  style={styles.capsuleButton}
-                  variant="ghost"
-                />
-              </View>
-            </View>
-
             <MainQuoteArea
               change={change}
               changePercent={changePercent}
@@ -212,6 +212,11 @@ function MainQuoteArea({
   return (
     <View style={styles.quoteArea}>
       <View style={styles.quoteHero}>
+        <View style={styles.detailContextRow}>
+          <AppText numberOfLines={1} style={styles.detailContextText} tone="dim">
+            {t('markets.title')} / {t('control.pageConsole.page.instrument.title')}
+          </AppText>
+        </View>
         <View style={styles.identityBlock}>
           <InstrumentIcon instrument={instrument} size={layout.touchTargetMin} />
           <View style={styles.identityCopy}>
@@ -491,7 +496,14 @@ const styles = StyleSheet.create({
   detailPage: {
     minHeight: size.viewport.detailPageMinHeight,
     paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm + spacing.xxs,
+    paddingTop: spacing.md,
+  },
+  detailContextRow: {
+    flexDirection: 'row',
+    minWidth: 0,
+  },
+  detailContextText: {
+    ...typography.captionSm,
   },
   detailTabs: {
     gap: spacing.xl,
@@ -567,10 +579,13 @@ const styles = StyleSheet.create({
     gap: spacing.sm + spacing.xxs,
     marginTop: spacing.lg + spacing.xxs,
   },
-  pageActions: {
+  pageHeader: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingBottom: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.sm,
   },
   priceBlock: {
     alignItems: 'flex-start',

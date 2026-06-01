@@ -3,7 +3,7 @@
   "source_of_truth": "src/navigation/routeRegistry.ts",
   "runtime": {
     "expo_sdk": "54",
-    "router": "expo-router 6",
+    "router": "expo-router 6 JavaScript Tabs",
     "root_stack": "app/_layout.tsx",
     "tab_layout": "app/(tabs)/_layout.tsx"
   },
@@ -11,18 +11,25 @@
     "index_redirect": "/",
     "brand_splash": "/brand-splash",
     "launch": "/launch",
+    "workspace": "/workspace",
+    "learn": "/learn",
+    "demo": "/demo",
     "markets": "/markets",
     "markets_account_demo": "/markets-account-demo",
     "trade": "/trade",
     "accounts": "/accounts",
     "discover": "/discover",
     "quick": "/quick",
+    "clients": "/clients",
+    "growth": "/growth",
+    "wallet": "/wallet",
+    "me": "/me",
     "portfolio_alias": "/portfolio",
     "account_alias": "/account",
-    "partner_tools": "/partner-tools",
     "instrument_detail": "/instrument/[id]",
     "order_ticket": "/order/[id]",
     "client_profile": "/client/[id]",
+    "partner_tools": "/partner-tools",
     "partner_client_orders": "/partner/client-orders",
     "partner_commission": "/partner/commission",
     "discover_entry": "/discover-entry/[id]",
@@ -52,6 +59,42 @@
     "verify_legacy_redirect": "/auth/verify",
     "not_found": "/(not-found)"
   },
+  "workspace_bottom_tabs": {
+    "segments": {
+      "new_trader": [
+        "/workspace",
+        "/markets",
+        "/trade",
+        "/accounts",
+        "/discover",
+        "/quick"
+      ],
+      "kyc_approved_no_deposit": [
+        "/workspace",
+        "/markets",
+        "/trade",
+        "/accounts",
+        "/discover",
+        "/quick"
+      ],
+      "active_trader": [
+        "/workspace",
+        "/markets",
+        "/trade",
+        "/accounts",
+        "/discover",
+        "/quick"
+      ],
+      "partner_mode": [
+        "/workspace",
+        "/clients",
+        "/growth",
+        "/wallet",
+        "/me"
+      ]
+    },
+    "hidden_by_href_null": true
+  },
   "routeable_modals": {
     "order_ticket": {
       "path": "/order/[id]",
@@ -68,8 +111,7 @@
   },
   "hidden_tab_routes": {
     "portfolio_alias": "/portfolio",
-    "account_alias": "/account",
-    "partner_tools": "/partner-tools"
+    "account_alias": "/account"
   },
   "legacy_or_compatibility_routes": {
     "index_redirect": "/",
@@ -87,19 +129,10 @@
       ]
     }
   },
-  "admin_routes": {
-    "admin_funding_review_list": "/admin/funding/reviews",
-    "admin_funding_review_detail": "/admin/funding/reviews/:id",
-    "admin_funding_channel_config": "/admin/funding/channels",
-    "admin_funding_limit_fee_config": "/admin/funding/rules",
-    "admin_funding_exception_reconciliation": "/admin/funding/exceptions"
-  },
   "governance_rules": [
     "Every app/**/*.tsx product page must be registered in src/navigation/routeRegistry.ts.",
-    "Ordinary confirmation, success, failure, toast, tips, delete confirmation, and picker sheets must stay in src/navigation/modalRegistry.ts with routeable false.",
-    "Routeable modals must map to a real route path and match RootLayout transparentModal presentation when applicable.",
-    "Routeable false modal entries must not define routePath.",
-    "Partner client orders and commission settlement are secondary Partner detail routes; primary tabs /trade and /accounts remain trader workspace routes.",
+    "Workspace tabs are role-segment driven: all non-Partner Trader segments expose Workspace, Markets, Trade, Accounts, Discover, and the dynamic /quick Discover carrier; disallowed routes remain hidden with href null.",
+    "Partner client orders and commission wallet are Partner mode tabs and must not replace Trader /trade or /accounts.",
     "Security Center canonical route /settings/security-center is planned contract-first and must be added to src/navigation/routeRegistry.ts only during the App implementation stage."
   ]
 }

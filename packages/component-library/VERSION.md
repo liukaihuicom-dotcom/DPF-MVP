@@ -1,6 +1,6 @@
 # @dpf/component-library Version
 
-Current version: `2.4.3`
+Current version: `2.5.2`
 
 This package owns reusable foundation, layout, form, feedback, data-display, and navigation component governance.
 

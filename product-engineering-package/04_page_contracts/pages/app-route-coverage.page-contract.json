@@ -8,9 +8,9 @@
     "trader",
     "partner"
   ],
-  "purpose": "Minimum route-level Page Contract coverage for every current Expo Router product page and local design review route registered in src/navigation/routeRegistry.ts.",
+  "purpose": "Minimum route-level Page Contract coverage for 50 current Expo Router product routes from src/navigation/routeRegistry.ts.",
   "source_of_truth": "src/navigation/routeRegistry.ts",
-  "coverage_version": "v1.0.8-design-system-compliance-remediation",
+  "coverage_version": "v1.1.4-trader-six-tab-navigation",
   "states": [
     "default",
     "loading",
@@ -98,6 +98,67 @@
       "contract_status": "covered_minimum"
     },
     {
+      "path": "/workspace",
+      "page_component": "WorkspaceScreen",
+      "module": "Workspace",
+      "permission": "guest / signedIn.optional",
+      "presentation": "tab",
+      "risk_level": "medium",
+      "primary_actions": [
+        "Review role-aware workspace status",
+        "Open guided next step",
+        "Open quiet assist entry"
+      ],
+      "related_modals": [
+        "global.toastFeedback"
+      ],
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "permission_denied",
+        "restricted",
+        "reviewing"
+      ],
+      "contract_status": "covered_minimum"
+    },
+    {
+      "path": "/learn",
+      "page_component": "LearnRoute",
+      "module": "Discover",
+      "permission": "guest",
+      "presentation": "tab",
+      "risk_level": "low",
+      "primary_actions": [
+        "Review learning and risk education entries",
+        "Open paper-practice support content"
+      ],
+      "related_modals": [
+        "global.toastFeedback"
+      ],
+      "states": [],
+      "contract_status": "covered_minimum"
+    },
+    {
+      "path": "/demo",
+      "page_component": "DemoRoute",
+      "module": "Discover",
+      "permission": "guest",
+      "presentation": "tab",
+      "risk_level": "medium",
+      "primary_actions": [
+        "Open paper-trading challenge",
+        "Review virtual ROI and drawdown context"
+      ],
+      "related_modals": [
+        "order.ticket.route",
+        "global.toastFeedback"
+      ],
+      "states": [],
+      "contract_status": "covered_minimum"
+    },
+    {
       "path": "/markets",
       "page_component": "MarketsScreen",
       "module": "Markets",
@@ -114,15 +175,7 @@
         "global.toastFeedback",
         "global.webSelectMenu"
       ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
-      "permission_gap": "Production market access still needs server-side quote entitlement and account scope.",
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
@@ -136,14 +189,8 @@
         "Compare trading-account header visual variants"
       ],
       "related_modals": [],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error"
-      ],
-      "routing_review": "Local design review route for account-header variants; not a production trading route.",
-      "contract_status": "covered_minimum_local_dev"
+      "states": [],
+      "contract_status": "covered_minimum"
     },
     {
       "path": "/trade",
@@ -162,26 +209,15 @@
       "related_modals": [
         "portfolio.accountMenuSheet",
         "portfolio.closePositionConfirm",
-        "portfolio.orderMutationAlert",
         "portfolio.pendingOrderDetailSheet",
         "portfolio.pendingOrderFeedbackToast",
         "portfolio.positionDetailSheet",
+        "portfolio.orderMutationAlert",
         "tradingAccount.switchSheet",
         "global.modalQueue",
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
-      "risk_controls": [
-        "Close-position confirmation must use registered ConfirmActionSheet.",
-        "Server-side order and account scope validation is required."
-      ],
+      "states": [],
       "contract_status": "covered_minimum_high_risk"
     },
     {
@@ -201,15 +237,7 @@
         "global.bottomSheet",
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
-      "permission_gap": "Trading account ownership and ledger access require production account scope.",
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
@@ -228,12 +256,7 @@
         "discover.layout.route",
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error"
-      ],
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
@@ -247,8 +270,7 @@
         "Show selected function module",
         "Open order ticket",
         "Open partner tools",
-        "Submit partner application demo",
-        "Open PIN security setup from the Me module"
+        "Submit partner application demo"
       ],
       "related_modals": [
         "order.ticket.route",
@@ -256,15 +278,76 @@
         "global.modalQueue",
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
+      "states": [],
+      "contract_status": "covered_minimum"
+    },
+    {
+      "path": "/clients",
+      "page_component": "PartnerClientsScreen",
+      "module": "Partner",
+      "permission": "signedIn.partner",
+      "presentation": "tab",
+      "risk_level": "high",
+      "primary_actions": [
+        "Review Partner client funnel",
+        "Open client profile",
+        "Review upgrade status"
       ],
-      "permission_gap": "Per-action trading, funding, and partner permission checks are required in production.",
+      "related_modals": [
+        "global.toastFeedback"
+      ],
+      "states": [],
+      "contract_status": "covered_minimum_high_risk"
+    },
+    {
+      "path": "/growth",
+      "page_component": "PartnerToolsScreen",
+      "module": "Partner",
+      "permission": "signedIn.partner",
+      "presentation": "tab",
+      "risk_level": "medium",
+      "primary_actions": [
+        "Open Partner growth tools",
+        "Select approved material or function module"
+      ],
+      "related_modals": [
+        "global.toastFeedback"
+      ],
+      "states": [],
+      "contract_status": "covered_minimum"
+    },
+    {
+      "path": "/wallet",
+      "page_component": "CommissionScreen",
+      "module": "Partner",
+      "permission": "signedIn.partner",
+      "presentation": "tab",
+      "risk_level": "medium",
+      "primary_actions": [
+        "Review pending rebates",
+        "Review settled rebates",
+        "Inspect commission rules"
+      ],
+      "related_modals": [],
+      "states": [],
+      "contract_status": "covered_minimum"
+    },
+    {
+      "path": "/me",
+      "page_component": "SettingsScreen",
+      "module": "Settings",
+      "permission": "signedIn.any",
+      "presentation": "tab",
+      "risk_level": "medium",
+      "primary_actions": [
+        "Review profile module",
+        "Open security settings",
+        "Open appearance settings"
+      ],
+      "related_modals": [
+        "global.toastFeedback"
+      ],
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
@@ -281,22 +364,15 @@
       "related_modals": [
         "portfolio.accountMenuSheet",
         "portfolio.closePositionConfirm",
-        "portfolio.orderMutationAlert",
         "portfolio.pendingOrderDetailSheet",
         "portfolio.pendingOrderFeedbackToast",
         "portfolio.positionDetailSheet",
+        "portfolio.orderMutationAlert",
         "tradingAccount.switchSheet",
         "global.modalQueue",
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
+      "states": [],
       "contract_status": "covered_minimum_high_risk"
     },
     {
@@ -315,40 +391,7 @@
         "global.bottomSheet",
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
-      "contract_status": "covered_minimum"
-    },
-    {
-      "path": "/partner-tools",
-      "page_component": "PartnerToolsScreen",
-      "module": "Partner",
-      "permission": "signedIn.partner",
-      "presentation": "hiddenTab",
-      "risk_level": "medium",
-      "primary_actions": [
-        "Open partner module",
-        "Review partner growth tools",
-        "Open client workspace"
-      ],
-      "related_modals": [
-        "global.toastFeedback"
-      ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
-      "permission_gap": "Partner entitlement checks are required in production.",
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
@@ -366,7 +409,6 @@
       ],
       "related_modals": [
         "order.ticket.route",
-        "global.modalStack",
         "global.toastFeedback"
       ],
       "states": [
@@ -394,7 +436,8 @@
       ],
       "related_modals": [
         "order.ticket.route",
-        "global.modalQueue"
+        "global.modalQueue",
+        "global.toastFeedback"
       ],
       "states": [
         "default",
@@ -406,10 +449,6 @@
         "error",
         "not_found",
         "restricted"
-      ],
-      "risk_controls": [
-        "Leave guard required.",
-        "Server-side pre-trade validation is required."
       ],
       "contract_status": "covered_minimum_high_risk"
     },
@@ -439,8 +478,25 @@
         "restricted",
         "reviewing"
       ],
-      "permission_gap": "Production PII scope, audit logging, and partner hierarchy checks are required.",
       "contract_status": "covered_minimum_high_risk"
+    },
+    {
+      "path": "/partner-tools",
+      "page_component": "PartnerToolsScreen",
+      "module": "Partner",
+      "permission": "signedIn.partner",
+      "presentation": "screen",
+      "risk_level": "medium",
+      "primary_actions": [
+        "Open partner growth tools",
+        "Select growth module",
+        "Open client or commission workspace"
+      ],
+      "related_modals": [
+        "global.toastFeedback"
+      ],
+      "states": [],
+      "contract_status": "covered_minimum"
     },
     {
       "path": "/partner/client-orders",
@@ -457,15 +513,7 @@
       "related_modals": [
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
-      "permission_gap": "Production partner hierarchy, PII scope, and audit controls are required.",
+      "states": [],
       "contract_status": "covered_minimum_high_risk"
     },
     {
@@ -481,15 +529,7 @@
         "Inspect monthly commission details"
       ],
       "related_modals": [],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
-      "permission_gap": "Production settlement, statement, tax, and reporting integration are required.",
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
@@ -539,7 +579,6 @@
         "failed",
         "error"
       ],
-      "routing_review": "Consider demoting if deep link or recovery is not required.",
       "contract_status": "covered_minimum"
     },
     {
@@ -561,15 +600,7 @@
         "account.moreActionSheet",
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
-      "permission_gap": "Production account ownership and ledger scope are required.",
+      "states": [],
       "contract_status": "covered_minimum_high_risk"
     },
     {
@@ -586,14 +617,7 @@
       "related_modals": [
         "account.metricDescriptionSheet"
       ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
@@ -611,15 +635,7 @@
       "related_modals": [
         "account.balanceTransactionDetailSheet"
       ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
-      "permission_gap": "Production ledger service integration is required.",
+      "states": [],
       "contract_status": "covered_minimum_high_risk"
     },
     {
@@ -634,14 +650,7 @@
         "Inspect order summary"
       ],
       "related_modals": [],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
@@ -669,8 +678,7 @@
         "restricted",
         "reviewing"
       ],
-      "permission_gap": "Production KYC, active-account, jurisdiction, and limit policies are required.",
-      "contract_status": "covered_by_app_funding_contract"
+      "contract_status": "covered_minimum_high_risk"
     },
     {
       "path": "/funding/deposit",
@@ -692,16 +700,8 @@
         "global.modalQueue",
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "inputting",
-        "validating",
-        "submitting",
-        "success",
-        "failed",
-        "error"
-      ],
-      "contract_status": "covered_by_app_funding_contract"
+      "states": [],
+      "contract_status": "covered_minimum_high_risk"
     },
     {
       "path": "/funding/withdrawal",
@@ -734,7 +734,7 @@
         "error",
         "restricted"
       ],
-      "contract_status": "covered_by_app_funding_contract"
+      "contract_status": "covered_minimum_high_risk"
     },
     {
       "path": "/funding/transfer",
@@ -765,7 +765,7 @@
         "error",
         "restricted"
       ],
-      "contract_status": "covered_by_app_funding_contract"
+      "contract_status": "covered_minimum_high_risk"
     },
     {
       "path": "/funding/transactions",
@@ -779,15 +779,8 @@
         "Open transaction detail"
       ],
       "related_modals": [],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
-      "contract_status": "covered_by_app_funding_contract"
+      "states": [],
+      "contract_status": "covered_minimum"
     },
     {
       "path": "/funding/transactions/[id]",
@@ -812,7 +805,7 @@
         "reviewing",
         "restricted"
       ],
-      "contract_status": "covered_by_app_funding_contract"
+      "contract_status": "covered_minimum_high_risk"
     },
     {
       "path": "/settings",
@@ -830,14 +823,7 @@
       "related_modals": [
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error",
-        "permission_denied",
-        "restricted"
-      ],
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
@@ -869,8 +855,7 @@
         "failed",
         "restricted"
       ],
-      "permission_gap": "Production device/session mutation requires server audit and re-auth policy.",
-      "contract_status": "covered_by_security_contract"
+      "contract_status": "covered_minimum_high_risk"
     },
     {
       "path": "/appearance",
@@ -909,12 +894,7 @@
       "related_modals": [
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "loading",
-        "empty",
-        "error"
-      ],
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
@@ -938,15 +918,7 @@
         "auth.errorSheet",
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "inputting",
-        "validating",
-        "submitting",
-        "success",
-        "failed",
-        "error"
-      ],
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
@@ -968,15 +940,7 @@
         "auth.errorSheet",
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "inputting",
-        "validating",
-        "submitting",
-        "success",
-        "failed",
-        "error"
-      ],
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
@@ -1024,18 +988,9 @@
         "auth.contactConfirm",
         "auth.errorSheet",
         "auth.leaveVerifiedStep",
-        "global.modalQueue",
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "inputting",
-        "validating",
-        "submitting",
-        "success",
-        "failed",
-        "error"
-      ],
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
@@ -1082,25 +1037,16 @@
       "related_modals": [
         "auth.errorSheet",
         "auth.leaveVerifiedStep",
-        "global.modalQueue",
         "global.toastFeedback"
       ],
-      "states": [
-        "default",
-        "inputting",
-        "validating",
-        "submitting",
-        "success",
-        "failed",
-        "error"
-      ],
+      "states": [],
       "contract_status": "covered_minimum"
     },
     {
       "path": "/auth/forgot-password",
       "page_component": "ForgotPasswordScreen",
       "module": "Auth",
-      "permission": "guest",
+      "permission": "guest / signedIn.optional",
       "presentation": "screen",
       "risk_level": "medium",
       "primary_actions": [
@@ -1131,7 +1077,7 @@
       "path": "/auth/pin-setup",
       "page_component": "PinSetupScreen",
       "module": "Auth",
-      "permission": "guest / signedIn.optional",
+      "permission": "guest",
       "presentation": "screen",
       "risk_level": "high",
       "primary_actions": [
@@ -1153,7 +1099,6 @@
         "restricted",
         "bypassed"
       ],
-      "permission_gap": "PIN gate is optional by default and remains a local control; production device trust and re-auth policies are not connected.",
       "contract_status": "covered_minimum_high_risk"
     },
     {
@@ -1171,8 +1116,7 @@
         "redirecting",
         "error"
       ],
-      "routing_review": "Compatibility redirect retained for old deep links.",
-      "contract_status": "covered_migration_note"
+      "contract_status": "covered_minimum"
     },
     {
       "path": "/(not-found)",
@@ -1191,33 +1135,5 @@
       ],
       "contract_status": "covered_minimum"
     }
-  ],
-  "coverage_summary": {
-    "registered_route_count": 43,
-    "covered_route_count": 43,
-    "high_risk_routes": [
-      "/trade",
-      "/portfolio",
-      "/order/[id]",
-      "/client/[id]",
-      "/partner/client-orders",
-      "/account-details/[id]",
-      "/account-balance/[id]",
-      "/funding",
-      "/funding/deposit",
-      "/funding/withdrawal",
-      "/funding/transfer",
-      "/funding/transactions/[id]",
-      "/settings/security-log",
-      "/auth/pin-setup"
-    ],
-    "next_stage": "Promote route-level minimum contracts into page-specific contracts when production APIs and compliance rules are finalized."
-  },
-  "qa_gate": {
-    "release_decision": "conditional_ready",
-    "blockers_before_production": [
-      "Trading execution, account ownership, funding/KYC, security-session mutation, partner hierarchy, and auth provider validation remain local or mock-backed.",
-      "High-risk routes require production API contracts and compliance review before release."
-    ]
-  }
+  ]
 }

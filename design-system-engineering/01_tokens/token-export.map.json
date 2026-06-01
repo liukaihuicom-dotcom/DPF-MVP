@@ -39,7 +39,7 @@
     "runtimeTokens": "src/theme/tokens.ts",
     "runtimeColors": "src/theme/colors.ts",
     "semanticRadius": "radius.card, radius.sheet, radius.full; card-like surfaces must consume radius.card",
-    "semanticSpacing": "layout.contentCardPaddingX, layout.contentPlainPaddingX, layout.topBarPaddingX, layout.sheetContentPaddingX, layout.moduleGap, layout.sectionGap, layout.cardPaddingX, layout.cardPaddingY, layout.cardPaddingCompactX, layout.cardPaddingCompactY, layout.cardPadding, layout.cardPaddingCompact, layout.listRowPaddingX, layout.formFieldTextInset, layout.formGroupGap",
+    "semanticSpacing": "layout.contentCardPaddingX, layout.contentPlainPaddingX, layout.topBarPaddingX, layout.safeAreaBottom, layout.sheetContentPaddingX, layout.sheetContentPaddingBottom, layout.sheetFooterGap, layout.sheetFooterPaddingBottom, layout.moduleGap, layout.sectionGap, layout.cardPaddingX, layout.cardPaddingY, layout.cardPaddingCompactX, layout.cardPaddingCompactY, layout.cardPadding, layout.cardPaddingCompact, layout.listRowPaddingX, layout.formFieldTextInset, layout.formGroupGap",
     "tabSize": "size.tab.indicatorHeight, size.tab.indicatorWidth, size.tab.pillMinHeight, size.tab.underlineMinHeight",
     "viewport": "layout.appDeviceWidth, layout.appDeviceHeight, layout.appMaxWidth, layout.appPreviewSafeAreaInsets",
     "overlayMotion": "motion.overlay.fastMs, motion.overlay.standardMs, motion.overlay.cleanupDelayMs, motion.overlay.exitTranslateY, motion.overlay.footerExitOpacityPivot",

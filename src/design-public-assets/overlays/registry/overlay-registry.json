@@ -123,7 +123,8 @@
         "fullscreen modal sheet",
         "bottom sheet height governance",
         "card-based account selection sheet",
-        "bottom sheet horizontal spacing governance"
+        "bottom sheet horizontal spacing governance",
+        "bottom sheet safe-area governance"
       ],
       "owner": "design-system-engineering",
       "tokens": [
@@ -131,7 +132,10 @@
         "token.zIndex-overlay",
         "token.motion-overlay",
         "color.overlay.backdrop",
-        "radius.sheet"
+        "radius.sheet",
+        "layout.sheetContentPaddingBottom",
+        "layout.sheetFooterGap",
+        "layout.sheetFooterPaddingBottom"
       ],
       "states": [
         "idle",
@@ -157,7 +161,8 @@
         "keyboard_safe": true,
         "safe_area": true,
         "panel_structure": "Header, Content, and Footer remain in one Panel until dismissal completes",
-        "footer_policy": "Footer is a normal Panel child, not portal, footerComponent, fixed, or absolute"
+        "footer_policy": "Footer is a normal Panel child, not portal, footerComponent, fixed, or absolute",
+        "safe_area_policy": "Footer bottom padding is layout.sheetFooterPaddingBottom plus device bottom inset; ContentInner bottom padding is layout.sheetContentPaddingBottom"
       },
       "platform": [
         "ios",
@@ -191,12 +196,13 @@
       "events": [
         "presentFullScreen",
         "pushFullScreen",
-        "back",
-        "dismiss"
+        "backInModal",
+        "closeRootModal",
+        "dismissModalStack"
       ],
       "a11y": {
         "modal": true,
-        "android_back": "dismisses top stack entry",
+        "android_back": "nested stack entries go back first; root modal closes",
         "safe_area": true
       },
       "platform": [

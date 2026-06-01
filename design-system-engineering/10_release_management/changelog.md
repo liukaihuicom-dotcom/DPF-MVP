@@ -1,5 +1,19 @@
 # Design System Engineering Changelog
 
+## v2.5.1-agentic-workspace-governance
+
+- Renamed Workspace public governance from `WorkspaceDashboard` / `workspaceDashboard` to `AgenticWorkspace` / `agenticWorkspace`.
+- Updated Workspace pattern rules so Trader six-tab boundaries are part of the governed page pattern and Assist stays a quiet non-executing support layer.
+- Restored the governed Trader boundary to `Workspace / Markets / Trade / Accounts / Discover / Dynamic Discover Module` while keeping approved Partner Mode on `Workspace / Clients / Growth / Wallet / Me`.
+- Synced public-resource registry, dependency graph, copy table, business-component manifest, and pattern registry for the Agentic Workspace patch.
+
+## v2.5.0-workspace-bottom-navigation-governance
+
+- Added the governed Workspace component set and registered it in `@dpf/component-library` `2.5.0`.
+- Added `WorkspaceDashboard` to the business-component manifest and `workspaceDashboard` to the pattern registry for role-aware Broker App workbench delivery.
+- Synced public-resource registry, dependency graph, copy table, page readiness matrix, component manifests, token-binding maps, release map, and release notes for all 50 route-registry entries.
+- Preserved icon-library versioning because Workspace uses existing registered semantic icon keys and adds no third-party runtime dependency.
+
 ## v2.4.3-bottom-sheet-horizontal-spacing
 
 - Added the BottomSheet horizontal spacing contract: Header 16px, card content 12px, list/article/detail-introduction content 16px, and Footer 16px.

@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
+import { Card } from '@/src/components/Card';
 import { DetailInline } from '@/src/components/data-display';
 import { GlobalMenuList, type GlobalMenuListItem } from '@/src/components/GlobalMenuList';
 import { KeyValueList, type KeyValueListItem } from '@/src/components/KeyValueList';
@@ -8,7 +9,7 @@ import { TradeDirectionIcon } from '@/src/components/TradeDirectionIcon';
 import { AppText, type AppTextTone } from '@/src/components/Typography';
 import type { Direction } from '@/src/domain/types';
 import { useThemeColors } from '@/src/settings/ProductSettings';
-import { layout, lineWidth, radius, spacing } from '@/src/theme/tokens';
+import { layout, lineWidth, spacing } from '@/src/theme/tokens';
 
 export type DataSummaryHeroProps = {
   emphasis?: 'default' | 'strong';
@@ -63,11 +64,7 @@ type ClosedOrderDetailSheetProps = {
   ticketValue: string;
 };
 
-const rowMinHeight = spacing.xxl - spacing.xs;
-
 export function OrderPositionDetailSheet({ detailItems, summary, title, valueHero }: OrderPositionDetailSheetProps) {
-  const colors = useThemeColors();
-
   return (
     <View style={styles.sheet}>
       {valueHero ? (
@@ -85,9 +82,7 @@ export function OrderPositionDetailSheet({ detailItems, summary, title, valueHer
         </View>
       )}
 
-      <View style={StyleSheet.flatten([styles.detailCard, { backgroundColor: colors.surface.panel }])}>
-        <KeyValueList divided inset="none" items={detailItems} variant="detail" />
-      </View>
+      <OrderDetailCard items={detailItems} />
     </View>
   );
 }
@@ -106,7 +101,7 @@ export function TradingOrderActionSheet({ groups }: TradingOrderActionSheetProps
       {groups.map((group) => (
         <View key={group.id} style={styles.actionModule}>
           <SheetGroupTitle title={group.title} />
-          <GlobalMenuList contained items={group.items} variant="descriptive" />
+          <GlobalMenuList contained containerShape="plain" items={group.items} variant="descriptive" />
         </View>
       ))}
     </View>
@@ -122,7 +117,7 @@ export function ClosedOrderDetailSheet({ dealCountLabel, deals, detailItems, pnl
       <AppText variant="title">
         {ticketLabel} {ticketValue}
       </AppText>
-      <View style={StyleSheet.flatten([styles.closedCard, { backgroundColor: colors.surface.panel }])}>
+      <View style={styles.closedSummary}>
         <View style={styles.closedTop}>
           <View style={styles.closedIdentity}>
             <TradeDirectionIcon direction={summary.direction} sizeVariant="lg" />
@@ -137,17 +132,15 @@ export function ClosedOrderDetailSheet({ dealCountLabel, deals, detailItems, pnl
           </View>
           <PnlBlock delta={pnlDelta} pnlText={pnlText} tone={pnlTone} />
         </View>
-        {detailItems.map((item) => (
-          <View key={item.label} style={styles.closedDetailRow}>
-            <AppText tone="muted" variant="body">
-              {item.label}
-            </AppText>
-            <AppText variant="body">{item.value}</AppText>
-          </View>
-        ))}
+        <OrderDetailCard
+          items={detailItems.map((item) => ({
+            label: item.label,
+            value: item.value,
+          }))}
+        />
       </View>
 
-      <View style={StyleSheet.flatten([styles.closedCard, { backgroundColor: colors.surface.panel }])}>
+      <View style={styles.dealsSection}>
         <AppText style={styles.dealsTitle} variant="subtitle">
           {dealCountLabel}
         </AppText>
@@ -233,25 +226,24 @@ function PnlBlock({ delta, pnlText, tone }: { delta: string; pnlText: string; to
   );
 }
 
+function OrderDetailCard({ items }: { items: KeyValueListItem[] }) {
+  return (
+    <Card surface="list" style={styles.detailCard}>
+      <KeyValueList divided inset="none" items={items} variant="detail" />
+    </Card>
+  );
+}
+
 const styles = StyleSheet.create({
   actionModule: {
     gap: layout.controlGap,
   },
   actionSheet: {
-    gap: layout.sectionGap,
+    gap: layout.sheetContentGap,
     paddingTop: spacing.xxs,
   },
-  closedCard: {
-    borderRadius: radius.card,
-    borderWidth: lineWidth.none,
-    gap: spacing.sm,
-    padding: radius.lg,
-  },
-  closedDetailRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    minHeight: rowMinHeight,
+  closedSummary: {
+    gap: layout.controlGap,
   },
   closedIdentity: {
     alignItems: 'center',
@@ -264,7 +256,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   closedSheet: {
-    gap: spacing.md,
+    gap: layout.sheetContentGap,
   },
   closedTop: {
     alignItems: 'flex-start',
@@ -296,14 +288,14 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     paddingVertical: spacing.md,
   },
+  dealsSection: {
+    gap: spacing.xs,
+  },
   dealsTitle: {
-    paddingBottom: spacing.xs,
+    paddingHorizontal: layout.listRowPaddingX,
   },
   detailCard: {
-    borderRadius: radius.card,
-    borderWidth: lineWidth.none,
-    overflow: 'hidden',
-    paddingHorizontal: layout.cardPaddingX,
+    width: '100%',
   },
   hero: {
     alignItems: 'center',
@@ -317,7 +309,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs + lineWidth.strong,
   },
   sheet: {
-    gap: radius.lg,
+    gap: layout.sheetContentGap,
   },
   tradeMain: {
     flex: 1,

@@ -1,5 +1,54 @@
 # Changelog
 
+## v1.1.6-order-ticket-toast-feedback
+
+- Changed `/order/[id]` successful market order and pending-order feedback from queued result Alert Dialog to the governed global Toast feedback path.
+- Preserved pre-submit high-risk confirmation, invalid-submit blocking alerts, dirty-state leave confirmation, and one-click trading switch confirmation.
+- Kept users on the current order ticket after successful submit instead of replacing the route with `/trade`.
+- Synced route, modal, page contract, and release records for `global.toastFeedback`.
+
+## v1.1.5-trading-account-sheet-bottom-spacing
+
+- Aligned trading account switch sheet content-bottom reserve with the shared BottomSheet specification.
+- Kept `/trade`, `/markets`, and funding account switchers on the governed `sheetSurface='canvas'` plus `contentPadding='card'` path.
+- Added static QA coverage so `TradingAccountSwitchSheet` cannot add local bottom padding or margin beyond `layout.sheetContentPaddingBottom`.
+
+## v1.1.4-bottom-sheet-footer-divider-removal
+
+- Removed the shared BottomSheet Footer action-area divider so bottom actions sit on the same sheet surface without a hairline separator.
+- Preserved BottomSheet API, routes, business flows, copy, icons, safe-area padding, in-Panel Footer layout, and shared close lifecycle.
+- Added static QA coverage to block future footer divider regressions in the global BottomSheet implementation.
+- Restored every non-Partner Trader Workspace segment to the unified bottom navigation `Workspace / Markets / Trade / Accounts / Discover / Dynamic Discover Module`.
+- Reordered Expo Router JavaScript Tabs so Trader visible order is `workspace`, `markets`, `trade`, `accounts`, `discover`, and `quick`.
+- Kept approved Partner Mode on `Workspace / Clients / Growth / Wallet / Me` and preserved `/quick` as the dynamic Discover module carrier with selected-module label and icon.
+- Synced Workspace page contract, route map, routing docs, test mapping, acceptance criteria, public-resource rules, and release decision notes.
+
+## v1.1.3-agentic-workspace-shell
+
+- Introduced the Agentic Workspace shell and a lifecycle-tab experiment that is superseded by the v1.1.4 Trader six-tab navigation patch.
+- Reframed Workspace as an Agentic work area where financial status remains explicit GUI information and Assist only explains, diagnoses, suggests, generates, or summarizes paths.
+- Synced Workspace page contract, route map, routing docs, test mapping, acceptance criteria, public-resource graph, i18n copy, and release records.
+
+## v1.1.2-trader-dynamic-discover-carrier
+
+- Restored Trader Mode's rightmost bottom tab as the dynamic `/quick` Discover module carrier instead of the fixed `/me` route.
+- Kept the rightmost Trader label and icon bound to the selected Discover module short label and registered module icon, including `我的` when the selected module is `profile`.
+- Preserved Partner Mode bottom navigation as `Workspace / Clients / Growth / Wallet / Me`.
+
+## v1.1.1-trader-mode-bottom-navigation-patch
+
+- Updated every Trader Workspace segment to the unified bottom navigation `Workspace / 行情 / 交易 / 账号 / 发现 / 我的`.
+- Clarified that `Trade` is visible in Trader Mode, while high-risk trading and funding actions remain blocked or guided inside destination pages until entitlement checks pass.
+- Updated Workspace header mode copy so Trader shows `交易模式` and approved Partner shows `Partner 模式`.
+- Preserved Partner Mode bottom navigation as `Workspace / Clients / Growth / Wallet / Me` and kept `me` as the final profile/settings/support carrier route.
+
+## v1.1.0-workspace-bottom-navigation
+
+- Added the Broker App Workspace as the first bottom navigation entry and introduced `WorkspaceSegment` states for new Trader, KYC-approved no-deposit Trader, Active Trader, and approved Partner Mode.
+- Updated Trader Mode to use one bottom tab combination for every Trader segment: `Workspace / 行情 / 交易 / 账号 / 发现 / 我的`; Partner Mode remains `Workspace / Clients / Growth / Wallet / Me`.
+- Added Workspace domain aggregation, Workspace route, semantic auxiliary tab routes, Workspace public components, page contract, traceability, test mapping, public-resource graph coverage, i18n copy governance, and version records.
+- Preserved existing Accounts, Markets, Trade, Profile, Partner client list, Partner tools, and commission wallet capabilities; Copy Trading is not added to the default bottom navigation.
+
 ## v1.0.20-instrument-detail-redesign
 
 - Redesigned `/instrument/[id]` into a clearer trading analysis page with Quote Hero, Trade Snapshot, Risk Strip, focused Chart tab, and grouped Contract Specs.

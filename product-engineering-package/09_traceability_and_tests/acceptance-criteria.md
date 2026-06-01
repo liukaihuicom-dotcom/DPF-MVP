@@ -1,6 +1,12 @@
 # Acceptance Criteria
 
 - Funding contract includes kernel, module, RBAC, business rules, state machine, page contracts, API draft, error codes, QA gates, traceability, and test mapping.
+- Workspace contract includes `WorkspaceSegment`, role/KYC/account/partner entitlement rules, dynamic bottom tab combinations, Assist safety boundary, public-resource dependency graph coverage, i18n copy governance, and route registry coverage.
+- All non-Partner Trader states show `Workspace / Markets / Trade / Accounts / Discover / Dynamic Discover Module`.
+- Trader destination pages and production backend entitlement still enforce KYC, account, trading, funding, account-scope, and high-risk action permissions.
+- Active Trader shows account, margin/PnL, risk, funding record path, low-noise markets, and at most three compact actions through governed Workspace components.
+- Approved Partner Mode requires `role === partner` and approved Partner entitlement, shows `Workspace / Clients / Growth / Wallet / Me`, and includes a switch back to Trader Mode.
+- Workspace Assist remains a weak support/education entry and must not recommend buy/sell direction, submit trades, move funds, send client messages, or promise returns.
 - All requested mutation APIs require idempotency and audit metadata.
 - Deposit, withdrawal, and transfer each have success and failure state coverage.
 - Withdrawal and transfer require approved KYC.

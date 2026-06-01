@@ -2,7 +2,14 @@ import { StyleSheet, View } from 'react-native';
 
 import { useToast } from '@/src/feedback/Toast';
 import { impactLight } from '@/src/feedback/haptics';
-import { navigateBackOrReplace, safeRouteTargets, type NavigationTarget } from '@/src/navigation/navigationPolicy';
+import {
+  handleCancelIntent,
+  handleCloseIntent,
+  handleGlobalBack,
+  safeRouteTargets,
+  type LeftAction,
+  type NavigationTarget,
+} from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { layout, lineWidth, spacing } from '@/src/theme/tokens';
 
@@ -21,13 +28,31 @@ type AppTopBarProps = {
   align?: 'left' | 'center';
   back?: boolean;
   backHref?: NavigationTarget;
+  closeHref?: NavigationTarget;
+  leftAccessibilityLabel?: string;
+  leftAction?: LeftAction;
+  onLeftPress?: () => void;
   subtitle?: string;
   title: string;
 };
 
-export function AppTopBar({ actions, align = 'left', back, backHref, subtitle, title }: AppTopBarProps) {
+export function AppTopBar({
+  actions,
+  align = 'left',
+  back: backProp,
+  backHref,
+  closeHref,
+  leftAccessibilityLabel,
+  leftAction,
+  onLeftPress,
+  subtitle,
+  title,
+}: AppTopBarProps) {
   const { colors, t } = useProductSettings();
   const toast = useToast();
+  const resolvedLeftAction: LeftAction = leftAction ?? (backProp ? 'back' : 'none');
+  const hasLeftAction = resolvedLeftAction !== 'none';
+  const back = hasLeftAction;
   const showPlaceholder = (label: string) => {
     void impactLight();
     toast.show({
@@ -37,7 +62,7 @@ export function AppTopBar({ actions, align = 'left', back, backHref, subtitle, t
   };
   const resolvedActions =
     actions ??
-    (back
+    (hasLeftAction
       ? [{ icon: 'icon.system.more', label: t('top.more'), onPress: () => showPlaceholder(t('top.more')) }]
       : [
           { icon: 'icon.system.search', label: t('top.search'), onPress: () => showPlaceholder(t('top.search')) },
@@ -50,25 +75,40 @@ export function AppTopBar({ actions, align = 'left', back, backHref, subtitle, t
       style={StyleSheet.flatten([
         styles.bar,
         { backgroundColor: colors.surface.canvas, borderBottomColor: 'transparent' },
-        back && styles.backBar,
-        !back && styles.rootBar,
+        hasLeftAction && styles.backBar,
+        !hasLeftAction && styles.rootBar,
       ])}>
-      <HeaderIconSlot style={back ? styles.side : styles.rootSide}>
-        {back ? (
+      <HeaderIconSlot style={hasLeftAction ? styles.side : styles.rootSide}>
+        {hasLeftAction ? (
           <HeaderIconButton
-            accessibilityLabel={t('top.back')}
-            icon="icon.system.back"
+            accessibilityLabel={leftAccessibilityLabel ?? resolveLeftActionLabel(resolvedLeftAction, t)}
+            icon={resolvedLeftAction === 'back' ? 'icon.system.back' : 'icon.system.close'}
             onPress={() => {
               void impactLight();
-              navigateBackOrReplace(backHref ?? safeRouteTargets.launch);
+              if (onLeftPress) {
+                onLeftPress();
+                return;
+              }
+
+              if (resolvedLeftAction === 'back') {
+                void handleGlobalBack({ fallback: backHref ?? safeRouteTargets.launch });
+                return;
+              }
+
+              if (resolvedLeftAction === 'cancel') {
+                void handleCancelIntent({ closeTarget: closeHref, fallback: closeHref ?? backHref ?? safeRouteTargets.launch });
+                return;
+              }
+
+              void handleCloseIntent({ closeTarget: closeHref, fallback: closeHref ?? backHref ?? safeRouteTargets.launch });
             }}
             tone="default"
           />
         ) : null}
       </HeaderIconSlot>
 
-      <View style={StyleSheet.flatten([styles.titleWrap, align === 'center' && styles.titleCenter, !back && styles.rootTitleWrap])}>
-        <AppText numberOfLines={back ? 1 : 2} variant={back ? 'title.pageCompact' : 'title.page'}>
+      <View style={StyleSheet.flatten([styles.titleWrap, align === 'center' && styles.titleCenter, !hasLeftAction && styles.rootTitleWrap])}>
+        <AppText numberOfLines={hasLeftAction ? 1 : 2} variant={back ? 'title.pageCompact' : 'title.page'}>
           {title}
         </AppText>
         {subtitle ? (
@@ -78,8 +118,8 @@ export function AppTopBar({ actions, align = 'left', back, backHref, subtitle, t
         ) : null}
       </View>
 
-      <View style={StyleSheet.flatten([styles.actions, back && styles.side, !back && styles.rootActions])}>
-        {resolvedActions.slice(0, back ? 1 : 3).map((action) => (
+      <View style={StyleSheet.flatten([styles.actions, hasLeftAction && styles.side, !hasLeftAction && styles.rootActions])}>
+        {resolvedActions.slice(0, hasLeftAction ? 1 : 3).map((action) => (
           <HeaderIconButton
             accessibilityLabel={action.label}
             icon={action.icon}
@@ -91,6 +131,14 @@ export function AppTopBar({ actions, align = 'left', back, backHref, subtitle, t
       </View>
     </View>
   );
+}
+
+function resolveLeftActionLabel(leftAction: LeftAction, t: (key: 'common.cancel' | 'top.back') => string) {
+  if (leftAction === 'back') {
+    return t('top.back');
+  }
+
+  return t('common.cancel');
 }
 
 const styles = StyleSheet.create({

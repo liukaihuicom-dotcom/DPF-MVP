@@ -21,7 +21,7 @@ import type { Instrument, InstrumentAssetClass } from '@/src/domain/types';
 import { useToast } from '@/src/feedback/Toast';
 import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from '@/src/state/BrokerStore';
-import { layout, lineWidth, radius, size, spacing, typography } from '@/src/design-public-assets/tokens';
+import { labelTypography, layout, lineWidth, radius, size, spacing, typography } from '@/src/design-public-assets/tokens';
 
 type MarketTabKey = 'watchlist' | InstrumentAssetClass;
 
@@ -146,6 +146,7 @@ function AccountMiniCard({
         title: t('funding.account.switchTitle'),
       }),
       contentPadding: 'card',
+      contentSizing: 'auto',
       content: (
         <TradingAccountContextSwitcher
           accounts={accounts}
@@ -157,6 +158,7 @@ function AccountMiniCard({
           selectedId={selectedAccount.id}
         />
       ),
+      heightMode: 'adaptive',
       sheetSurface: 'canvas',
     }));
   };
@@ -171,26 +173,28 @@ function AccountMiniCard({
 
   return (
     <View style={StyleSheet.flatten([styles.accountStrip, { backgroundColor: colors.surface.panel }])}>
-      <NativePressable accessibilityLabel={t('funding.account.accessibilitySwitch')} minTouch={size.iconSurface.xs} onPress={openAccountPicker} style={styles.accountSwitcher}>
-        <AppText numberOfLines={1} style={styles.accountTitle} variant="label.control">
-          {t('markets.account.current', { accountNo: selectedAccount.accountNo })}
-        </AppText>
-        {shouldShowAccountException ? (
-          <View style={StyleSheet.flatten([styles.accountStatusPill, { backgroundColor: colors.status.warning.bg, borderColor: colors.status.warning.border }])}>
-            <AppText numberOfLines={1} tone="amber" variant="caption">
-              {accountStatusLabel}
-            </AppText>
-          </View>
-        ) : null}
-        <AppIcon name="icon.system.chevron_down" sizeVariant="xs" tone="tertiary" />
-      </NativePressable>
-      <NativePressable
-        accessibilityLabel={amountsVisible ? t('markets.account.hideAmounts') : t('markets.account.showAmounts')}
-        minTouch={size.iconSurface.xs}
-        onPress={onToggleAmountsVisible}
-        style={StyleSheet.flatten([styles.accountAmountToggle, { backgroundColor: colors.surface.subtle }])}>
-        <AppIcon name={amountsVisible ? 'icon.account.amount_visible' : 'icon.account.amount_hidden'} sizeVariant="xs" tone="tertiary" />
-      </NativePressable>
+      <View style={styles.accountHeader}>
+        <NativePressable accessibilityLabel={t('funding.account.accessibilitySwitch')} minTouch={size.iconSurface.xs} onPress={openAccountPicker} style={styles.accountSwitcher}>
+          <AppText numberOfLines={1} style={styles.accountTitle} variant="label.control">
+            {t('markets.account.current', { accountNo: selectedAccount.accountNo })}
+          </AppText>
+          {shouldShowAccountException ? (
+            <View style={StyleSheet.flatten([styles.accountStatusPill, { backgroundColor: colors.status.warning.bg, borderColor: colors.status.warning.border }])}>
+              <AppText numberOfLines={1} tone="amber" variant="caption">
+                {accountStatusLabel}
+              </AppText>
+            </View>
+          ) : null}
+          <AppIcon name="icon.system.chevron_down" sizeVariant="xs" tone="tertiary" />
+        </NativePressable>
+        <NativePressable
+          accessibilityLabel={amountsVisible ? t('markets.account.hideAmounts') : t('markets.account.showAmounts')}
+          minTouch={labelTypography.control.lineHeight}
+          onPress={onToggleAmountsVisible}
+          style={styles.accountAmountToggle}>
+          <AppIcon name={amountsVisible ? 'icon.account.amount_visible' : 'icon.account.amount_hidden'} sizeVariant="xs" tone="tertiary" />
+        </NativePressable>
+      </View>
 
       <View style={styles.accountMetrics}>
         {metrics.map((metric, index) => (
@@ -333,7 +337,15 @@ const styles = StyleSheet.create({
     borderWidth: lineWidth.none,
     gap: spacing.xs,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
+    paddingBottom: spacing.md,
+    paddingTop: spacing.xs,
+  },
+  accountHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'space-between',
+    minWidth: 0,
   },
   accountIdentity: {
     flex: 1,
@@ -354,21 +366,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   accountSwitcher: {
-    alignItems: 'flex-start',
-    alignSelf: 'flex-start',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    flex: 1,
     flexDirection: 'row',
     gap: spacing.xs,
+    justifyContent: 'flex-start',
     maxWidth: '100%',
     minWidth: 0,
   },
   accountAmountToggle: {
     alignItems: 'center',
-    borderRadius: radius.full,
-    height: size.iconSurface.xs,
+    alignSelf: 'center',
+    height: labelTypography.control.lineHeight,
     justifyContent: 'center',
-    position: 'absolute',
-    right: spacing.md,
-    top: spacing.md,
     width: size.iconSurface.xs,
   },
   accountTitle: {

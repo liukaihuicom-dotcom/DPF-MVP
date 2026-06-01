@@ -12,8 +12,11 @@ type FullScreenModalOptions = {
 };
 
 type ModalStackContextValue = {
+  backInModal: () => void;
   back: () => void;
+  closeRootModal: () => void;
   dismiss: () => void;
+  dismissModalStack: () => void;
   presentFullScreen: (options: FullScreenModalOptions) => void;
   pushFullScreen: (options: FullScreenModalOptions) => void;
 };
@@ -23,7 +26,7 @@ const ModalStackContext = createContext<ModalStackContextValue | null>(null);
 export function ModalStackProvider({ children }: PropsWithChildren) {
   const [stack, setStack] = useState<FullScreenModalOptions[]>([]);
 
-  const dismiss = useCallback(() => {
+  const dismissModalStack = useCallback(() => {
     setStack((current) => {
       current.at(-1)?.onDismiss?.();
       return [];
@@ -35,18 +38,27 @@ export function ModalStackProvider({ children }: PropsWithChildren) {
   const pushFullScreen = useCallback((options: FullScreenModalOptions) => {
     setStack((current) => [...current, options]);
   }, []);
-  const back = useCallback(() => {
+  const backInModal = useCallback(() => {
     setStack((current) => {
       current.at(-1)?.onDismiss?.();
       return current.length > 1 ? current.slice(0, -1) : [];
     });
   }, []);
-  const value = useMemo(() => ({ back, dismiss, presentFullScreen, pushFullScreen }), [back, dismiss, presentFullScreen, pushFullScreen]);
+  const closeRootModal = dismissModalStack;
+  const back = backInModal;
+  const dismiss = dismissModalStack;
+  const value = useMemo(
+    () => ({ back, backInModal, closeRootModal, dismiss, dismissModalStack, presentFullScreen, pushFullScreen }),
+    [back, backInModal, closeRootModal, dismiss, dismissModalStack, presentFullScreen, pushFullScreen],
+  );
 
   return (
     <ModalStackContext.Provider value={value}>
       {children}
-      <GlobalModalStackHost stack={stack} onRequestClose={back} />
+      <GlobalModalStackHost
+        stack={stack}
+        onRequestClose={stack.length > 1 ? backInModal : closeRootModal}
+      />
     </ModalStackContext.Provider>
   );
 }

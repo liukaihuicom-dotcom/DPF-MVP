@@ -1,23 +1,10 @@
-import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
 import {
-  KeyboardAvoidingView,
-  PanResponder,
-  Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   View,
 } from "react-native";
-import Animated, {
-  Extrapolation,
-  interpolate,
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ActionButton } from "@/src/design-public-assets/components";
 import { AppIcon } from "@/src/design-public-assets/components";
@@ -31,7 +18,6 @@ import {
   SwitchControl,
 } from "@/src/design-public-assets/components";
 import { InstrumentIcon } from "@/src/design-public-assets/components";
-import { useKeyboardVisible } from "@/src/design-public-assets/components";
 import { NativePressable } from "@/src/design-public-assets/components";
 import {
   useDirtyStateGuard,
@@ -60,13 +46,14 @@ import type {
   OrderType,
 } from "@/src/domain/types";
 import type { Locale } from "@/src/design-public-assets/copy";
+import { useToast } from "@/src/feedback/Toast";
 import {
   impactLight,
   notifySuccess,
   notifyWarning,
 } from "@/src/feedback/haptics";
 import {
-  navigateBackOrReplace,
+  handleCloseIntent,
   safeRouteTargets,
 } from "@/src/navigation/navigationPolicy";
 import { useProductSettings } from "@/src/design-public-assets/copy";
@@ -74,19 +61,12 @@ import { useBroker } from "@/src/state/BrokerStore";
 import {
   lineWidth,
   layout,
-  motion,
   radius,
   size,
   spacing,
   typography,
-  zIndex,
 } from "@/src/design-public-assets/tokens";
 
-const ORDER_TICKET_MOTION_MS = motion.overlay.standardMs;
-const ORDER_TICKET_SHEET_OFFSET = layout.topReservedSpace * 3;
-const ORDER_TICKET_DRAG_CLOSE_DISTANCE =
-  layout.headerIconButtonSize + spacing.xxl;
-const ORDER_TICKET_DRAG_CLOSE_VELOCITY = 0.7;
 const DEFAULT_EXPIRY_OFFSET_DAYS = 30;
 
 const orderTypes: OrderType[] = ["market", "limit", "stop"];
@@ -110,8 +90,8 @@ export default function OrderTicketScreen() {
     setOneClickTradingEnabled,
     t,
   } = useProductSettings();
+  const toast = useToast();
   const overlayQueue = useOverlayQueue();
-  const keyboardVisible = useKeyboardVisible();
   const [side, setSide] = useState<Direction>(
     direction === "sell" ? "sell" : "buy",
   );
@@ -127,8 +107,6 @@ export default function OrderTicketScreen() {
     useState<OrderExpirationType>("gtc");
   const [expiresAtText, setExpiresAtText] = useState("");
   const [closing, setClosing] = useState(false);
-  const entranceProgress = useSharedValue(0);
-  const dragY = useSharedValue(0);
   const instrument = findInstrument(id);
 
   const lots = Number(lotsText) > 0 ? Number(lotsText) : 0;
@@ -230,14 +208,8 @@ export default function OrderTicketScreen() {
     expirationType !== "gtc" ||
     expiresAtText.length > 0;
 
-  useEffect(() => {
-    entranceProgress.value = withTiming(1, {
-      duration: ORDER_TICKET_MOTION_MS,
-    });
-  }, [entranceProgress]);
-
   const finishClose = useCallback(() => {
-    navigateBackOrReplace(safeRouteTargets.trade);
+    void handleCloseIntent({ closeTarget: safeRouteTargets.trade });
   }, []);
 
   const closeTicket = useCallback(() => {
@@ -249,26 +221,17 @@ export default function OrderTicketScreen() {
       overlayQueue.enqueueAlert({
         actions: [
           {
-            label: t("overlay.dirty.stay"),
+            label: t("overlay.dirty.continueEditing"),
             onPress: () => undefined,
             tone: "brand",
             variant: "filled",
           },
           {
-            label: t("overlay.dirty.exit"),
+            label: t("overlay.dirty.leave"),
             onPress: () => {
               setClosing(true);
               void impactLight();
-              dragY.value = withTiming(0, { duration: ORDER_TICKET_MOTION_MS });
-              entranceProgress.value = withTiming(
-                0,
-                { duration: ORDER_TICKET_MOTION_MS },
-                (finished) => {
-                  if (finished) {
-                    runOnJS(finishClose)();
-                  }
-                },
-              );
+              finishClose();
             },
             tone: "danger",
             variant: "outline",
@@ -287,75 +250,8 @@ export default function OrderTicketScreen() {
 
     setClosing(true);
     void impactLight();
-    dragY.value = withTiming(0, { duration: ORDER_TICKET_MOTION_MS });
-    entranceProgress.value = withTiming(
-      0,
-      { duration: ORDER_TICKET_MOTION_MS },
-      (finished) => {
-        if (finished) {
-          runOnJS(finishClose)();
-        }
-      },
-    );
-  }, [closing, dirty, dragY, entranceProgress, finishClose, overlayQueue, t]);
-
-  const sheetCloseResponder = useMemo(
-    () =>
-      PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onMoveShouldSetPanResponder: (_event, gestureState) =>
-          gestureState.dy > spacing.sm &&
-          Math.abs(gestureState.dy) > Math.abs(gestureState.dx),
-        onPanResponderMove: (_event, gestureState) => {
-          dragY.value = Math.max(0, gestureState.dy);
-        },
-        onPanResponderRelease: (_event, gestureState) => {
-          const shouldClose =
-            gestureState.dy > ORDER_TICKET_DRAG_CLOSE_DISTANCE ||
-            gestureState.vy > ORDER_TICKET_DRAG_CLOSE_VELOCITY;
-
-          if (shouldClose) {
-            closeTicket();
-            return;
-          }
-
-          dragY.value = withTiming(0, { duration: ORDER_TICKET_MOTION_MS });
-        },
-        onPanResponderTerminate: () => {
-          dragY.value = withTiming(0, { duration: ORDER_TICKET_MOTION_MS });
-        },
-      }),
-    [closeTicket, dragY],
-  );
-
-  const backdropAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(
-      entranceProgress.value,
-      [0, 1],
-      [0, 1],
-      Extrapolation.CLAMP,
-    ),
-  }));
-
-  const sheetAnimatedStyle = useAnimatedStyle(() => {
-    const translateY =
-      interpolate(
-        entranceProgress.value,
-        [0, 1],
-        [ORDER_TICKET_SHEET_OFFSET, 0],
-        Extrapolation.CLAMP,
-      ) + dragY.value;
-
-    return {
-      opacity: interpolate(
-        entranceProgress.value,
-        [0, 1],
-        [0, 1],
-        Extrapolation.CLAMP,
-      ),
-      transform: [{ translateY }],
-    };
-  });
+    finishClose();
+  }, [closing, dirty, finishClose, overlayQueue, t]);
 
   if (!instrument) {
     return (
@@ -390,25 +286,20 @@ export default function OrderTicketScreen() {
 
     if (order) {
       void notifySuccess();
-      overlayQueue.enqueueAlert({
-        body: t(
-          order.status === "pending"
-            ? "order.submittedPendingMessage"
-            : "order.submittedMessage",
-          { symbol: instrument.symbol },
-        ),
-        dedupeKey: `order-submitted-${order.id}`,
-        icon: "icon.trading.order_ticket",
-        priority: "critical",
-        riskLevel: "high",
-        title: t(
-          order.status === "pending"
-            ? "order.submittedPendingTitle"
-            : "order.submittedTitle",
-        ),
+      const submittedTitleKey =
+        order.status === "pending"
+          ? "order.submittedPendingTitle"
+          : "order.submittedTitle";
+      const submittedMessageKey =
+        order.status === "pending"
+          ? "order.submittedPendingMessage"
+          : "order.submittedMessage";
+
+      toast.show({
+        message: t(submittedMessageKey, { symbol: instrument.symbol }),
+        title: t(submittedTitleKey),
         tone: "success",
       });
-      setTimeout(() => router.replace("/trade"), 450);
     }
   };
 
@@ -504,58 +395,43 @@ export default function OrderTicketScreen() {
 
   useDirtyStateGuard({
     body: t("overlay.dirty.order.body"),
-    confirmLabel: t("overlay.dirty.exit"),
+    confirmLabel: t("overlay.dirty.leave"),
     dirty: dirty && !closing,
-    stayLabel: t("overlay.dirty.stay"),
+    stayLabel: t("overlay.dirty.continueEditing"),
     title: t("overlay.dirty.order.title"),
   });
 
   return (
-    <SafeAreaView edges={["top"]} style={styles.modalRoot}>
+    <Screen
+      closeHref="/trade"
+      contentInsetBottom={spacing.lg}
+      keyboardAware
+      leftAction="close"
+      onLeftPress={closeTicket}
+      scroll={false}
+      stickyFooter={
+        <View style={styles.footerStack}>
+          {errorText ? (
+            <AppText numberOfLines={2} tone="danger" variant="caption">
+              {errorText}
+            </AppText>
+          ) : null}
+          <ActionButton
+            accessibilityLabel={submitLabel}
+            label={submitLabel}
+            onPress={submitOrder}
+            tone={tradeTone}
+            variant="filled"
+          />
+        </View>
+      }
+      title={`${instrument.symbol} ${t("order.titleSuffix")}`}
+    >
       <Stack.Screen
         options={{ title: `${instrument.symbol} ${t("order.titleSuffix")}` }}
       />
-      <Animated.View
-        style={[
-          styles.modalBackdrop,
-          { backgroundColor: colors.overlay.scrim },
-          backdropAnimatedStyle,
-        ]}
-      >
-        <Pressable
-          accessibilityLabel={t("common.cancel")}
-          disabled={closing}
-          onPress={closeTicket}
-          style={styles.backdropPressTarget}
-        />
-      </Animated.View>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={styles.keyboardPanel}
-      >
-        <Animated.View style={[styles.sheetMotionLayer, sheetAnimatedStyle]}>
-          <SafeAreaView
-            edges={keyboardVisible ? [] : ["bottom"]}
-            style={StyleSheet.flatten([
-              styles.ticketSheet,
-              {
-                backgroundColor: colors.surface.canvas,
-                borderColor: colors.border.subtle,
-              },
-            ])}
-          >
-            <Animated.View
-              style={styles.handleWrap}
-              {...sheetCloseResponder.panHandlers}
-            >
-              <View
-                style={StyleSheet.flatten([
-                  styles.handle,
-                  { backgroundColor: colors.border.default },
-                ])}
-              />
-            </Animated.View>
-            <View style={styles.sheetHeader}>
+      <View style={styles.ticketPage}>
+        <View style={styles.ticketHeader}>
               <View style={styles.headerAccountBlock}>
                 <AppText numberOfLines={1} tone="dim" variant="caption">
                   {t("order.accountNumber", { accountId: account.accountId })}
@@ -590,10 +466,10 @@ export default function OrderTicketScreen() {
             </View>
 
             <ScrollView
-              contentContainerStyle={styles.sheetContent}
+          contentContainerStyle={styles.ticketContent}
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
-              style={styles.sheetScroller}
+          style={styles.ticketScroller}
             >
               <SegmentedTabs
                 items={orderTypes.map((item) => ({
@@ -1098,35 +974,9 @@ export default function OrderTicketScreen() {
                   {t("risk.order")}
                 </AppText>
               </Card>
-            </ScrollView>
-
-            <View
-              style={StyleSheet.flatten([
-                styles.footerStack,
-                keyboardVisible && styles.footerStackKeyboard,
-                {
-                  backgroundColor: colors.surface.canvas,
-                  borderTopColor: colors.border.subtle,
-                },
-              ])}
-            >
-              {errorText ? (
-                <AppText numberOfLines={2} tone="danger" variant="caption">
-                  {errorText}
-                </AppText>
-              ) : null}
-              <ActionButton
-                accessibilityLabel={submitLabel}
-                label={submitLabel}
-                onPress={submitOrder}
-                tone={tradeTone}
-                variant="filled"
-              />
-            </View>
-          </SafeAreaView>
-        </Animated.View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </ScrollView>
+      </View>
+    </Screen>
   );
 }
 
@@ -1300,30 +1150,8 @@ const styles = StyleSheet.create({
     gap: spacing.xxs,
     minWidth: 0,
   },
-  backdropPressTarget: {
-    flex: 1,
-  },
   footerStack: {
-    borderTopWidth: lineWidth.hairline,
     gap: spacing.sm,
-    paddingBottom: spacing.md,
-    paddingHorizontal: layout.screenPaddingX,
-    paddingTop: spacing.md,
-  },
-  footerStackKeyboard: {
-    paddingBottom: layout.bottomActionArea.keyboardPaddingBottom,
-  },
-  handle: {
-    borderRadius: radius.full,
-    height: size.sheet.handleHeight,
-    width: size.sheet.handleWidth,
-  },
-  handleWrap: {
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: layout.headerIconButtonSize,
-    paddingBottom: spacing.sm,
-    paddingTop: spacing.sm,
   },
   headerAccountBlock: {
     flex: 1,
@@ -1341,21 +1169,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: spacing.sm,
     maxWidth: "100%",
-  },
-  keyboardPanel: {
-    height: "94%",
-    justifyContent: "flex-end",
-    position: "relative",
-    width: "100%",
-    zIndex: zIndex.raised,
-  },
-  modalBackdrop: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: zIndex.base,
-  },
-  modalRoot: {
-    flex: 1,
-    justifyContent: "flex-end",
   },
   preset: {
     borderRadius: radius.full,
@@ -1424,28 +1237,6 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     minWidth: 0,
   },
-  sheetContent: {
-    gap: spacing.md,
-    paddingBottom: spacing.lg,
-    paddingHorizontal: layout.screenPaddingX,
-    paddingTop: spacing.sm,
-  },
-  sheetHeader: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: spacing.md,
-    minHeight: layout.sheetTradeHeaderMinHeight,
-    paddingBottom: spacing.sm,
-    paddingHorizontal: layout.screenPaddingX,
-  },
-  sheetScroller: {
-    flex: 1,
-  },
-  sheetMotionLayer: {
-    flex: 1,
-    justifyContent: "flex-end",
-    width: "100%",
-  },
   sidePill: {
     borderRadius: radius.full,
     borderWidth: lineWidth.hairline,
@@ -1491,15 +1282,24 @@ const styles = StyleSheet.create({
     minHeight: 50,
     paddingHorizontal: spacing.sm,
   },
-  ticketSheet: {
-    borderTopLeftRadius: radius.sheet,
-    borderTopRightRadius: radius.sheet,
-    borderTopWidth: lineWidth.hairline,
+  ticketContent: {
+    gap: spacing.md,
+    paddingBottom: spacing.lg,
+    paddingTop: spacing.sm,
+  },
+  ticketHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: spacing.md,
+    minHeight: layout.sheetTradeHeaderMinHeight,
+    paddingBottom: spacing.sm,
+  },
+  ticketPage: {
     flex: 1,
-    overflow: "hidden",
-    position: "relative",
     width: "100%",
-    zIndex: zIndex.raised,
+  },
+  ticketScroller: {
+    flex: 1,
   },
   valueRows: {
     borderTopWidth: lineWidth.hairline,

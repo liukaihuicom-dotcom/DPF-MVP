@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { layout, lineWidth, radius, size, spacing, typography } from '@/src/theme/tokens';
 import { impactLight } from '@/src/feedback/haptics';
-import { navigateBackOrReplace, navigateReplace, safeRouteTargets, type NavigationTarget } from '@/src/navigation/navigationPolicy';
+import { handleCloseIntent, handleGlobalBack, safeRouteTargets, type NavigationTarget } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 import { localeOptions, type Locale } from '@/src/i18n/translations';
 
@@ -93,11 +93,11 @@ export function AuthShell({
               }
 
               if (resolvedNavMode === 'close') {
-                navigateReplace(closeTarget);
+                void handleCloseIntent({ closeTarget });
                 return;
               }
 
-              navigateBackOrReplace(backTarget ?? safeRouteTargets.launch);
+              void handleGlobalBack({ fallback: backTarget ?? safeRouteTargets.launch });
             }}
             style={StyleSheet.flatten([styles.authNavAction, { backgroundColor: colors.surface.subtle }])}
             tone="default"
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.md,
     minHeight: size.input.countryRowMinHeight,
-    paddingHorizontal: spacing.none,
+    paddingHorizontal: layout.listRowPaddingX,
   },
   progressRow: {
     flexDirection: 'row',

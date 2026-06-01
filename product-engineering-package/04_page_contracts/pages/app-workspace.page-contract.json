@@ -1,0 +1,109 @@
+{
+  "$schema": "../page-contract.schema.json",
+  "page_id": "app_workspace",
+  "version": "1.1.4",
+  "platform": "app_h5",
+  "runtime_mode": "expo-router-js-tabs",
+  "roles": [
+    "guest",
+    "trader",
+    "partner"
+  ],
+  "purpose": "Role-aware Broker App Agentic Workspace bottom-navigation entry that resolves WorkspaceSegment, uses a unified Trader tab boundary, keeps financial status visible in GUI, and exposes Assist only as low-interruption explain, diagnose, suggest, generate, and summarize support.",
+  "source_of_truth": [
+    "src/domain/workspace.ts",
+    "src/screens/workspace/WorkspaceScreen.tsx",
+    "src/screens/navigation/TabLayout.tsx"
+  ],
+  "segments": {
+    "new_trader": {
+      "rule": "guest or KYC not approved",
+      "tabs": [
+        "Workspace",
+        "Markets",
+        "Trade",
+        "Accounts",
+        "Discover",
+        "Dynamic Discover Module"
+      ]
+    },
+    "kyc_approved_no_deposit": {
+      "rule": "KYC approved without active live trading account or activity",
+      "tabs": [
+        "Workspace",
+        "Markets",
+        "Trade",
+        "Accounts",
+        "Discover",
+        "Dynamic Discover Module"
+      ]
+    },
+    "active_trader": {
+      "rule": "active live account, position, pending/sample activity, or usage override exists",
+      "tabs": [
+        "Workspace",
+        "Markets",
+        "Trade",
+        "Accounts",
+        "Discover",
+        "Dynamic Discover Module"
+      ]
+    },
+    "partner_mode": {
+      "rule": "role === 'partner' and Partner permission/upgrade is approved",
+      "tabs": [
+        "Workspace",
+        "Clients",
+        "Growth",
+        "Wallet",
+        "Me"
+      ]
+    }
+  },
+  "states": [
+    "default",
+    "loading",
+    "empty",
+    "error",
+    "permission_denied",
+    "restricted",
+    "reviewing"
+  ],
+  "sections": [
+    "WorkspaceHeader",
+    "WorkspaceSummaryCard",
+    "StatusMetricTile",
+    "PriorityFocusCard",
+    "CompactActionRow",
+    "MarketMiniCard",
+    "PartnerMetricCard",
+    "ModeSwitchEntry",
+    "QuietAssistBar",
+    "risk note"
+  ],
+  "interactions": [
+    "Open primary CTA through explicit GUI route",
+    "Open compact action route for the current Trader or Partner segment",
+    "Open quiet Assist only as support/explanation route",
+    "Switch approved Partner back to Trader mode",
+    "Hide disallowed tabs through href null"
+  ],
+  "risk_rules": [
+    "Assist must not auto-trade, recommend buy/sell direction, submit funding, transfer funds, or send client messages.",
+    "All non-Partner Trader segments show Workspace, Markets, Trade, Accounts, Discover, and Dynamic Discover Module as primary bottom tabs.",
+    "Trader destination pages and production backend entitlement must still enforce KYC, trading, funding, account-scope, and high-risk action permissions.",
+    "Active Trader shows account, margin, position, funding record, and market status visible in GUI before any Assist entry.",
+    "Partner Mode requires approved Partner entitlement; potential Partner only receives application, invite, or explanation entries inside Trader workspace.",
+    "Commission Wallet must remain separate from Trader trading accounts."
+  ],
+  "apis": [
+    "Local ProductSettings and BrokerStore mock state only for MVP.",
+    "Production requires identity, KYC, trading account, position, funding, and Partner entitlement services."
+  ],
+  "rules": [
+    "Workspace page must consume domain view model and avoid page-local business segmentation logic.",
+    "All visible copy must use i18n keys.",
+    "All icons must use registered local AppIcon semantic keys.",
+    "UI must use registered Screen, Card, StatusPill, ActionButton, AppIcon, Metric-like, and business components with design tokens."
+  ]
+}

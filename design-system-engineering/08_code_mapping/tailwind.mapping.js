@@ -132,6 +132,10 @@ const semanticSpacing = {
   "content-plain-padding-x": "var(--layout-content-plain-padding-x)",
   "form-field-text-inset": "var(--layout-form-field-text-inset)",
   "list-row-padding-x": "var(--layout-list-row-padding-x)",
+  "safe-area-bottom": "var(--layout-safe-area-bottom)",
+  "sheet-content-padding-bottom": "var(--layout-sheet-content-padding-bottom)",
+  "sheet-footer-gap": "var(--layout-sheet-footer-gap)",
+  "sheet-footer-padding-bottom": "var(--layout-sheet-footer-padding-bottom)",
   "top-bar-padding-x": "var(--layout-top-bar-padding-x)",
 };
 

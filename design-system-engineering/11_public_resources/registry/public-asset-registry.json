@@ -1,6 +1,6 @@
 {
-  "version": "0.2.0",
-  "generated_at": "2026-05-28",
+  "version": "0.3.0",
+  "generated_at": "2026-06-01",
   "governance_skill": "design-public-resource-package-governance v1.1.0-L5",
   "source_of_truth": "workspace-packages with src runtime compatibility surfaces",
   "assets": [
@@ -87,7 +87,7 @@
       "asset_id": "component.base.component-library",
       "asset_type": "base_component",
       "name": "Component Library Manifest",
-      "version": "2.4.3",
+      "version": "2.5.0",
       "source_path": "packages/component-library/registry/component-manifest.json",
       "doc_path": "packages/component-library/registry/component-manifest.json",
       "usage_scope": [
@@ -112,7 +112,7 @@
       ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-29"
+      "last_updated": "2026-06-01"
     },
     {
       "asset_id": "component.base.Screen",
@@ -572,7 +572,7 @@
       "asset_id": "business.registry",
       "asset_type": "business_component",
       "name": "Business Component Manifest",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
       "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
       "usage_scope": [
@@ -592,7 +592,7 @@
       "dependents": [],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-28"
+      "last_updated": "2026-06-01"
     },
     {
       "asset_id": "business.FundingOperationWorkspace",
@@ -1067,7 +1067,7 @@
       "asset_id": "pattern.registry",
       "asset_type": "page_pattern",
       "name": "Pattern Registry",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
       "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
       "usage_scope": [
@@ -1086,7 +1086,7 @@
       "dependents": [],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-28"
+      "last_updated": "2026-06-01"
     },
     {
       "asset_id": "pattern.page.dashboard",
@@ -1480,7 +1480,7 @@
       "asset_id": "copy.copy-table",
       "asset_type": "copy_asset",
       "name": "Public Copy Table",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "source_path": "design-system-engineering/11_public_resources/copy/copy-table.json",
       "doc_path": "design-system-engineering/11_public_resources/copy/copy-table.json",
       "usage_scope": [
@@ -1499,8 +1499,8 @@
       "dependents": [],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-28",
-      "notes": "First-batch high-risk page copy is keyed in src/i18n/translations.ts and mirrored in copy-table; Indonesian entries use current runtime strings where available and remain marked for native review where applicable."
+      "last_updated": "2026-06-01",
+      "notes": "Workspace bottom navigation and role-aware workbench copy is keyed in src/i18n/translations.ts and mirrored in copy-table; high-risk Assist boundary copy remains financial-copy and UX gate reviewed."
     },
     {
       "asset_id": "illustration.registry",
@@ -1618,7 +1618,7 @@
       "asset_id": "graph.asset-dependency",
       "asset_type": "qa_asset",
       "name": "Asset Dependency Graph",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "source_path": "design-system-engineering/11_public_resources/registry/asset-dependency-graph.json",
       "doc_path": "design-system-engineering/11_public_resources/registry/asset-dependency-graph.json",
       "usage_scope": [
@@ -1637,7 +1637,7 @@
       "dependents": [],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-28"
+      "last_updated": "2026-06-01"
     },
     {
       "asset_id": "business.LocalPinSecurityFlow",
@@ -2099,6 +2099,100 @@
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
       "last_updated": "2026-05-29"
+    },
+    {
+      "asset_id": "business.AgenticWorkspace",
+      "asset_type": "business_component",
+      "name": "AgenticWorkspace",
+      "version": "1.1.0",
+      "source_path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "usage_scope": [
+        "workspace_pages",
+        "bottom_navigation"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-01",
+      "dependencies": [
+        "business.registry",
+        "component.base.component-library",
+        "pattern.page.agenticWorkspace",
+        "copy.copy-table",
+        "icon.icon-library"
+      ],
+      "dependents": [
+        "page.workspace"
+      ]
+    },
+    {
+      "asset_id": "pattern.page.agenticWorkspace",
+      "asset_type": "page_pattern",
+      "name": "Agentic Workspace Pattern",
+      "version": "1.1.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "product-engineering-package/04_page_contracts/pages/app-workspace.page-contract.json",
+      "usage_scope": [
+        "workspace_pages",
+        "broker_app_primary_tab"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-01",
+      "dependencies": [
+        "pattern.registry",
+        "business.AgenticWorkspace",
+        "component.base.component-library",
+        "copy.copy-table"
+      ],
+      "dependents": [
+        "page.workspace"
+      ]
+    },
+    {
+      "asset_id": "component.business.WorkspaceComponents",
+      "asset_type": "business_component",
+      "name": "Workspace public component set",
+      "version": "2.5.0",
+      "source_path": "src/components/business/workspace/WorkspaceComponents.tsx",
+      "doc_path": "packages/component-library/registry/component-manifest.json",
+      "usage_scope": [
+        "workspace_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-01",
+      "dependencies": [
+        "component.base.component-library",
+        "token.design-tokens",
+        "icon.icon-library",
+        "copy.copy-table"
+      ],
+      "dependents": [
+        "business.AgenticWorkspace",
+        "page.workspace"
+      ]
     }
   ]
 }

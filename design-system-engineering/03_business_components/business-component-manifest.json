@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "source": "src/components/business and src/screens",
   "components": {
     "FundActionGrid": {
@@ -860,6 +860,61 @@
         "Mobile width keeps chart toolbar horizontally scrollable without overflow"
       ],
       "sourcePath": "src/components/business/TradingTerminalChart.tsx"
+    },
+    "AgenticWorkspace": {
+      "component": "AgenticWorkspace public composition",
+      "businessDomain": "role-aware-agentic-workspace-navigation",
+      "states": [
+        "new_trader",
+        "kyc_approved_no_deposit",
+        "active_trader",
+        "partner_mode",
+        "reviewing",
+        "restricted"
+      ],
+      "riskRules": [
+        "All non-Partner Trader segments show Workspace, Markets, Trade, Accounts, Discover, and Dynamic Discover Module as primary bottom tabs.",
+        "Trader destination pages and production backend entitlement must still enforce KYC, account, trading, funding, account-scope, and high-risk action permissions.",
+        "Active Trader users keep account, margin, position, funding-record, and market status as explicit GUI information.",
+        "Partner Mode requires role=partner and approved partner entitlement; potential partners stay in Trader Workspace with application, invite, or information entries only.",
+        "Workspace Assist is a quiet explain, diagnose, suggest, generate, and summarize entry only; it must not recommend buy/sell direction, automate orders, submit funding/transfer actions, or send client messages."
+      ],
+      "permissions": [
+        "Guest or signed-in optional for Workspace shell; production identity, KYC, account, trading, funding, and partner entitlement services must enforce server-side access before live actions."
+      ],
+      "dataInputs": [
+        "WorkspaceSegment",
+        "account profile",
+        "KYC status",
+        "trading account profiles",
+        "positions",
+        "pending orders preset",
+        "instrument quotes",
+        "partner clients",
+        "upgradeRequest status",
+        "locale",
+        "translation keys"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "currentSources": [
+        "src/domain/workspace.ts",
+        "src/components/business/workspace/WorkspaceComponents.tsx",
+        "src/screens/workspace/WorkspaceScreen.tsx",
+        "src/screens/navigation/TabLayout.tsx"
+      ],
+      "extractionStatus": "implemented_active",
+      "qaGate": [
+        "WorkspaceSegment must be resolved in domain/workspace.ts, not page-level conditionals",
+        "Bottom tabs must be built from the domain workspace view model and hidden with href:null when not applicable",
+        "Workspace components use registered Card, StatusPill, ActionButton, AppIcon, IconSurface, HeaderIconButton, NativePressable, and token-bound layout only",
+        "All visible Workspace copy uses i18n keys and public copy-table governance",
+        "No large chat UI, high-risk direct execution, profit promise, recommendation language, or feature-grid fallback"
+      ],
+      "sourcePath": "src/components/business/workspace/WorkspaceComponents.tsx"
     }
   }
 }

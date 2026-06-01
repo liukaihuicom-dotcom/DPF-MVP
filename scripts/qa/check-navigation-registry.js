@@ -257,7 +257,9 @@ function resolveRoutePolicySpread(body) {
     backToMarkets: { backTarget: '/markets', topNavBehavior: 'back' },
     backToSettings: { backTarget: '/settings', topNavBehavior: 'back' },
     backToTrade: { backTarget: '/trade', topNavBehavior: 'back' },
+    closeToDiscover: { closeTarget: '/discover', topNavBehavior: 'close' },
     closeToLaunch: { closeTarget: '/launch', topNavBehavior: 'close' },
+    closeToTrade: { closeTarget: '/trade', topNavBehavior: 'close' },
     noTopNav: { topNavBehavior: 'none' },
     systemTopNav: { topNavBehavior: 'system' },
   };

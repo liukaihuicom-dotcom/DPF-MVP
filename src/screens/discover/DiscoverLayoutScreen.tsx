@@ -1,4 +1,3 @@
-import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -16,7 +15,8 @@ import {
 } from '@/src/domain/discoverLayout';
 import { localizeText } from '@/src/domain/format';
 import { impactLight } from '@/src/feedback/haptics';
-import { navigateBackOrReplace, safeRouteTargets } from '@/src/navigation/navigationPolicy';
+import { handleCloseIntent, safeRouteTargets } from '@/src/navigation/navigationPolicy';
+import { useOverlayQueue } from '@/src/design-public-assets/components';
 import { useProductSettings } from '@/src/design-public-assets/copy';
 import { layout, lineWidth, radius, size, spacing } from '@/src/design-public-assets/tokens';
 
@@ -24,20 +24,49 @@ const viewModes: DiscoverLayoutViewMode[] = ['large', 'medium', 'list'];
 
 export default function DiscoverLayoutScreen() {
   const { discoverLayoutItems, colors, locale, setDiscoverLayoutItems, t } = useProductSettings();
+  const overlayQueue = useOverlayQueue();
   const [draftItems, setDraftItems] = useState<DiscoverLayoutItem[]>(discoverLayoutItems);
+  const dirty = !areDiscoverLayoutItemsEqual(draftItems, discoverLayoutItems);
   const modeLabels: Record<DiscoverLayoutViewMode, string> = {
     large: t('discover.layout.mode.large'),
     list: t('discover.layout.mode.list'),
     medium: t('discover.layout.mode.medium'),
   };
   const title = t('discover.layout.title');
-  const close = () => {
-    navigateBackOrReplace(safeRouteTargets.discover);
+  const close = ({ force = false }: { force?: boolean } = {}) => {
+    if (!force && dirty) {
+      overlayQueue.enqueueAlert({
+        actions: [
+          {
+            label: t('overlay.dirty.continueEditing'),
+            onPress: () => undefined,
+            tone: 'brand',
+            variant: 'filled',
+          },
+          {
+            label: t('overlay.dirty.leave'),
+            onPress: () => close({ force: true }),
+            tone: 'danger',
+            variant: 'outline',
+          },
+        ],
+        body: t('overlay.dirty.generic.body'),
+        dedupeKey: 'discover-layout-dirty-close',
+        icon: 'icon.risk.info',
+        priority: 'blocking',
+        riskLevel: 'medium',
+        title: t('overlay.dirty.generic.title'),
+        tone: 'warning',
+      });
+      return;
+    }
+
+    void handleCloseIntent({ closeTarget: safeRouteTargets.discover });
   };
   const save = () => {
     setDiscoverLayoutItems(draftItems);
     void impactLight();
-    close();
+    close({ force: true });
   };
   const moveItem = (fromIndex: number, toIndex: number) => {
     if (fromIndex === toIndex || toIndex < 0 || toIndex >= draftItems.length) {
@@ -59,12 +88,13 @@ export default function DiscoverLayoutScreen() {
 
   return (
     <Screen
-      back
-      backHref="/discover"
+      closeHref="/discover"
       contentInsetBottom={spacing.lg + spacing.xxs}
+      leftAction="close"
+      onLeftPress={() => close()}
       stickyFooter={
         <View style={styles.footerActions}>
-          <ActionButton label={t('common.cancel')} onPress={close} style={styles.footerButton} tone="neutral" variant="outline" />
+          <ActionButton label={t('common.cancel')} onPress={() => close()} style={styles.footerButton} tone="neutral" variant="outline" />
           <ActionButton label={t('common.save')} onPress={save} style={styles.footerButton} tone="neutral" variant="filled" />
         </View>
       }
@@ -104,6 +134,17 @@ export default function DiscoverLayoutScreen() {
       </View>
     </Screen>
   );
+}
+
+function areDiscoverLayoutItemsEqual(left: DiscoverLayoutItem[], right: DiscoverLayoutItem[]) {
+  if (left.length !== right.length) {
+    return false;
+  }
+
+  return left.every((item, index) => {
+    const other = right[index];
+    return other?.id === item.id && other.viewMode === item.viewMode;
+  });
 }
 
 function LayoutEditorRow({

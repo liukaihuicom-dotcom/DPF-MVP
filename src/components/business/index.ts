@@ -19,3 +19,4 @@ export * from './ThemePreviewSelector';
 export * from './TradingTerminalChart';
 export * from './TradingAccountContextSwitcher';
 export * from './TransactionRow';
+export * from './workspace';

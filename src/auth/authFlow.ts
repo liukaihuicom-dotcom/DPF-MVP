@@ -190,7 +190,7 @@ export function formatPhoneAccount(value: string, country: CountryOption) {
 
 export function safeRedirect(value: string | undefined): AuthRouteTarget {
   if (!value || !value.startsWith('/') || value.startsWith('//')) {
-    return '/markets' as AuthRouteTarget;
+    return '/workspace' as AuthRouteTarget;
   }
 
   return value as AuthRouteTarget;

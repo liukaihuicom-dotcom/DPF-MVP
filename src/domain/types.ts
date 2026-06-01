@@ -18,6 +18,12 @@ export type TradingAccountUsageStatus = "normal" | "warning" | "abnormal";
 
 export type TradeWorkspaceDataPreset = "empty" | "sample";
 
+export type WorkspaceSegment =
+  | "new_trader"
+  | "kyc_approved_no_deposit"
+  | "active_trader"
+  | "partner_mode";
+
 export type DiscoverModuleId =
   | "challenge"
   | "education"

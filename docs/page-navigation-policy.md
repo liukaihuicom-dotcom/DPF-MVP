@@ -19,12 +19,13 @@ Source of truth: `src/navigation/routeRegistry.ts`, `src/navigation/modalRegistr
 | Group | Routes | Top navigation policy |
 |---|---|---|
 | Launch and splash | `/`, `/brand-splash`, `/launch` | `none` |
-| Primary tabs | `/markets`, `/trade`, `/accounts`, `/discover`, `/quick` | `none` |
+| Primary tabs | `/workspace`, `/markets`, `/trade`, `/accounts`, `/discover`, `/quick`, `/learn`, `/demo`, `/clients`, `/growth`, `/wallet`, `/me` | `none` |
 | Hidden tab aliases | `/portfolio`, `/account`, `/partner-tools` | `none` |
 | Market detail | `/instrument/[id]` | `back` to `/markets` |
-| Trading routeable modal | `/order/[id]` | `back` to `/trade`, `confirm-leave` for input progress |
+| Trading routeable modal | `/order/[id]` | `close` to `/trade`, `confirm-leave` for input progress |
 | Partner detail | `/client/[id]` | `back` to `/trade` |
-| Discover detail/modal | `/discover-entry/[id]`, `/discover-layout` | `back` to `/discover` |
+| Discover detail | `/discover-entry/[id]` | `back` to `/discover` |
+| Discover modal | `/discover-layout` | `close` / `cancel` to `/discover`, `save` then close |
 | Account details | `/account-details/[id]`, `/account-basic/[id]`, `/account-balance/[id]`, `/account-orders/[id]` | `back` to `/accounts` |
 | Funding | `/funding` | `back` to `/trade` |
 | Funding forms | `/funding/deposit`, `/funding/withdrawal`, `/funding/transfer` | `back` to `/funding`, `confirm-leave` |
@@ -44,3 +45,7 @@ Source of truth: `src/navigation/routeRegistry.ts`, `src/navigation/modalRegistr
 - `AUTH_CLOSE_BACK_MISMATCH`: auth root and auth step routes must use the expected close/back behavior.
 - `ROUTEABLE_MODAL_MISSING_CLOSE_FALLBACK`: routeable modals must have `modalCloseBehavior: "backOrFallback"` and `closeFallback`.
 - `UNSAFE_ROUTER_BACK`: page and component code must use `navigationPolicy` helpers instead of direct `router.back()` or `router.canGoBack()`.
+- `PRIMARY_TAB_LEFT_ACTION`: primary Tab entries must not render Back or Close.
+- `DISCOVER_LAYOUT_BACK_ICON`: routeable modal roots must use Close / Cancel / Save, not page Back.
+- `ORDER_TICKET_MISSING_CLOSE`: high-risk full-screen Modal Page roots must use Close and dirty-state confirmation.
+- `PRIVATE_PAN_RESPONDER_SHEET`: pages must not implement private sheet drag/backdrop shells outside registered public overlay hosts.

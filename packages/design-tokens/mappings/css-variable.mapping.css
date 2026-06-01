@@ -5,6 +5,12 @@
   --layout-content-plain-padding-x: 16px;
   --layout-form-field-text-inset: 12px;
   --layout-list-row-padding-x: 12px;
+  --layout-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --layout-sheet-content-padding-bottom: 24px;
+  --layout-sheet-footer-gap: 12px;
+  --layout-sheet-footer-padding-bottom: 16px;
+  --safe-area-bottom: var(--layout-safe-area-bottom);
+  --sheet-footer-padding-bottom: var(--layout-sheet-footer-padding-bottom);
   --layout-top-bar-padding-x: 16px;
   --radius-card: 12px;
   --radius-sheet: 24px;

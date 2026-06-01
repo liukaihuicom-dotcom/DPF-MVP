@@ -1,5 +1,5 @@
 {
-  "version": "2.3.3",
+  "version": "2.5.0",
   "allowedTokenSources": [
     "src/theme/tokens.ts",
     "src/theme/colors.ts",
@@ -42,6 +42,10 @@
     {
       "id": "screen-safe-bottom-bound",
       "description": "Screen scroll content must combine layout.screenBottomPadding with the device bottom safe-area inset; page implementations must not remove the global bottom safety gap."
+    },
+    {
+      "id": "bottom-sheet-safe-area-bound",
+      "description": "BottomSheet ContentInner must use layout.sheetContentPaddingBottom and Footer must use layout.sheetFooterPaddingBottom plus the device bottom safe-area inset inside the shared Panel."
     }
   ],
   "componentBindings": {
@@ -98,6 +102,21 @@
     ]
   },
   "componentTokenBindings": {
+    "BottomSheet": [
+      "layout.sheetHeaderHeight",
+      "layout.contentCardPaddingX",
+      "layout.sheetContentPaddingX",
+      "layout.sheetContentPaddingBottom",
+      "layout.bottomActionArea.paddingX",
+      "layout.bottomActionArea.paddingTop",
+      "layout.sheetFooterGap",
+      "layout.sheetFooterPaddingBottom",
+      "color.surface.canvas",
+      "color.surface.panel",
+      "color.border.subtle",
+      "motion.overlay.*",
+      "zIndex.bottomSheet"
+    ],
     "Card": [
       "layout.cardPaddingX",
       "layout.cardPaddingY",
@@ -247,6 +266,46 @@
       "palette.*",
       "color.overlay.*",
       "size.iconSurface.*",
+      "iconRegistry.*"
+    ],
+    "WorkspaceHeader": [
+      "layout.topBarPaddingX",
+      "size.sheet.headerHeight",
+      "spacing.*",
+      "color.surface.canvas",
+      "iconRegistry.*"
+    ],
+    "WorkspaceSummaryCard": [
+      "layout.cardPaddingX",
+      "layout.cardPaddingY",
+      "lineWidth.hairline",
+      "spacing.*",
+      "radius.card",
+      "palette.*",
+      "iconRegistry.*"
+    ],
+    "StatusMetricTile": [
+      "layout.cardPaddingX",
+      "layout.menuDescriptiveRowMinHeight",
+      "size.viewport.detailSideMinWidth",
+      "spacing.*",
+      "radius.card",
+      "typography.*",
+      "palette.*"
+    ],
+    "CompactActionRow": [
+      "layout.menuRowMinHeight",
+      "layout.menuDisclosureIconSize",
+      "layout.cardPaddingX",
+      "spacing.*",
+      "radius.card",
+      "iconRegistry.*"
+    ],
+    "QuietAssistBar": [
+      "layout.cardPaddingX",
+      "layout.cardPaddingY",
+      "spacing.*",
+      "radius.card",
       "iconRegistry.*"
     ]
   }

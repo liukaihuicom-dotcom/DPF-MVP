@@ -2,6 +2,15 @@
 
 | Test ID | Scenario | Expected Result | Severity |
 |---|---|---|---|
+| `TC-WORKSPACE-001` | Guest, KYC not started, or KYC reviewing opens `/workspace`. | Segment resolves to `new_trader`; visible bottom tabs are `Workspace / Markets / Trade / Accounts / Discover / Dynamic Discover Module`; high-risk actions remain guarded by destination pages and production backend entitlement. | Blocker |
+| `TC-WORKSPACE-002` | KYC approved user has no active live trading account and no trading activity. | Segment resolves to `kyc_approved_no_deposit`; visible bottom tabs are `Workspace / Markets / Trade / Accounts / Discover / Dynamic Discover Module`; Workspace keeps account readiness and funding-risk status explicit in GUI. | Blocker |
+| `TC-WORKSPACE-003` | User has an active live account, open positions, sample trading activity, or explicit trading usage override. | Segment resolves to `active_trader`; visible bottom tabs are `Workspace / Markets / Trade / Accounts / Discover / Dynamic Discover Module`; Workspace shows account, margin/PnL, risk, funding record path, low-noise markets, and at most three compact actions. | Critical |
+| `TC-WORKSPACE-004` | User role is `partner` and partner upgrade request is approved. | Segment resolves to `partner_mode`; visible bottom tabs are `Workspace / Clients / Growth / Wallet / Me`; Partner Workspace shows client funnel, commission, conversion focus, and Trader-mode switch entry. | Critical |
+| `TC-WORKSPACE-005` | Any non-Partner Trader segment opens Workspace and checks bottom navigation or attempts a high-risk deep route. | Trader bottom tabs show `Workspace / Markets / Trade / Accounts / Discover / Dynamic Discover Module`; full Partner tabs remain hidden unless Partner entitlement is approved. Any high-risk deep-route access remains subject to destination guards and production backend entitlement checks. | Blocker |
+| `TC-WORKSPACE-006` | Potential Partner or pending/rejected Partner user opens Workspace. | User remains in Trader Workspace; full Partner Mode tabs are not shown. | Blocker |
+| `TC-WORKSPACE-007` | User taps Ask / Assist from any Workspace segment. | User is routed to support/education GUI only; no trade, funding, transfer, buy/sell recommendation, profit promise, or client-message action is executed. | Blocker |
+| `TC-WORKSPACE-008` | Workspace route and auxiliary tabs are checked against route registry and public-resource graph. | All 50 route-registry entries have dependency graph pages and readiness rows; Workspace uses registered public resources. | Major |
+| `TC-WORKSPACE-009` | Workspace copy and icons are checked by QA. | All visible Workspace strings are i18n keyed across `zh-CN`, `en-US`, and `id-ID`; icons use existing semantic registry keys with no new runtime icon dependency. | Major |
 | `TC-PERM-001` | Guest opens funding page or calls funding API. | Redirect/reject with `FUNDING_PERMISSION_DENIED`. | Blocker |
 | `TC-PERM-002` | Trader tries to fund another user's account. | Reject with permission error. | Critical |
 | `TC-PERM-003` | Partner attempts client withdrawal or transfer. | Reject; partner can view only authorized summary. | Critical |

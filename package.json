@@ -1,7 +1,7 @@
 {
   "name": "dupoin-mvp",
   "main": "expo-router/entry",
-  "version": "1.0.0",
+  "version": "1.1.7",
   "packageManager": "pnpm@10.25.0",
   "scripts": {
     "start": "npx expo start --go --port 8081",
@@ -29,6 +29,7 @@
     "qa:version": "node scripts/qa/check-version-record.js",
     "qa:icons": "node scripts/qa/check-icons.js",
     "qa:navigation": "node scripts/qa/check-navigation-registry.js",
+    "qa:back-close": "node scripts/qa/check-back-close-governance.js",
     "qa:components": "node scripts/qa/check-component-boundary.js && node scripts/qa/check-component-manifest.js",
     "qa:all": "node scripts/qa/qa-all.js",
     "qa:tokens": "node scripts/qa/check-tokens.js",

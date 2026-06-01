@@ -1,6 +1,6 @@
 # Bottom Sheet Design Principles
 
-Version: `1.1.4`
+Version: `1.1.5`
 Owner: `design-system-engineering`
 Status: `approved`
 Scope: App, H5, WebView, Codex preview
@@ -41,6 +41,7 @@ Every bottom sheet must use the public `BottomSheetProvider`, `GlobalBottomSheet
 - `Footer` is a direct Panel child with `flex: 0 0 auto`.
 - `Footer` must not use `footerComponent`, portal placement, `position: fixed`, `position: absolute`, independent animation, delayed render, or separate `AnimatePresence`.
 - `Content` must include `min-height: 0` and `overflow-y: auto` equivalent behavior.
+- `ContentInner` keeps `layout.sheetContentPaddingBottom` breathing space so the last scroll item does not sit against the in-flow Footer.
 
 ## Surface / Background
 
@@ -69,6 +70,18 @@ Bottom Sheet background color is governed by `sheetSurface`; pages must not simu
 | Footer | `layout.bottomActionArea.paddingX` | 16px | Footer actions and bottom modules keep 16px left/right inset |
 
 Do not add page-local padding to override these structural insets.
+
+## Safe-Area Rules
+
+| Panel zone | Token / source | Value | Rule |
+|---|---|---:|---|
+| ContentInner bottom | `layout.sheetContentPaddingBottom` | 24px | Last scroll item keeps breathing room before Footer |
+| Footer bottom | `layout.sheetFooterPaddingBottom + useSafeAreaInsets().bottom` | 16px + device inset | Buttons never sit on the iOS Home Indicator or Android gesture area |
+| Footer action gap | `layout.sheetFooterGap` | 12px | Two stacked Footer actions keep a fixed governed gap |
+
+- Footer background must cover its safe-area padding because Footer owns the full bottom slot inside the Panel.
+- Pages must not repeat `env(safe-area-inset-bottom)` or add page-local Footer reserve padding. Native code reads the device inset from the root `SafeAreaProvider` through `useSafeAreaInsets()`.
+- On Android or devices where bottom inset is 0, `layout.sheetFooterPaddingBottom` still provides the base bottom gap.
 
 ## Scenario Matrix
 
@@ -138,6 +151,7 @@ Use Modal Page or Full-screen Modal instead of ordinary Bottom Sheet when any of
 | Fullscreen layout | Panel `100dvh`, Content `flex: 1 1 auto`, safe-area aware Footer |
 | Overflow | Over-height content scrolls inside Content without Panel scroll |
 | Footer | Footer is in normal Panel flow and never overlays Content |
+| Safe area | Footer bottom padding is `layout.sheetFooterPaddingBottom + device bottom inset`; ContentInner bottom padding is `layout.sheetContentPaddingBottom` |
 | Lifecycle | Backdrop, close button, pan-down, Android back, cancel, and completion close share one cleanup path |
 | Platform | Android back, pan-down, backdrop tap, keyboard, and safe area are covered |
 | Risk | High-risk financial/security/compliance tasks are not carried by ordinary Bottom Sheet |

@@ -113,7 +113,7 @@ export function TradingTerminalChart({ density = 'terminal', initialTimeframe = 
           fullscreen
           initialTimeframe={initialTimeframe}
           instrument={instrument}
-          onRequestClose={modalStack.dismiss}
+          onRequestClose={modalStack.closeRootModal}
           state={state}
         />
       ),

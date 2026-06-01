@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "source": "design-system/05-patterns",
   "patterns": {
     "dashboard": {
@@ -659,6 +659,58 @@
       "forbidden": [
         "Do not duplicate hero, risk banner, selector, amount stage, method row, or transaction row styles in pages.",
         "Do not bypass layout.financialPattern tokens."
+      ]
+    },
+    "agenticWorkspace": {
+      "documentation": "product-engineering-package/04_page_contracts/pages/app-workspace.page-contract.json",
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "patternType": "page_pattern",
+      "densityMode": "density.app.comfortable",
+      "requiredStructure": [
+        "modeHeader",
+        "segmentSummary",
+        "threeStatusMetrics",
+        "onePriorityFocus",
+        "upToThreeCompactActions",
+        "roleRelevantEcosystemStatus",
+        "quietAssistEntry",
+        "riskNote"
+      ],
+      "recommendedComponents": [
+        "Screen",
+        "WorkspaceHeader",
+        "WorkspaceSummaryCard",
+        "StatusMetricTile",
+        "PriorityFocusCard",
+        "CompactActionRow",
+        "MarketMiniCard",
+        "PartnerMetricCard",
+        "ModeSwitchEntry",
+        "QuietAssistBar",
+        "StatusPill",
+        "ActionButton",
+        "AppIcon",
+        "IconSurface"
+      ],
+      "requiredStates": [
+        "new_trader",
+        "kyc_approved_no_deposit",
+        "active_trader",
+        "partner_mode",
+        "reviewing",
+        "restricted"
+      ],
+      "forbidden": [
+        "Do not build a function grid for Workspace",
+        "Do not render a large AI chat box",
+        "Do not use neon, glassmorphism, or heavy marketing hero styling",
+        "All non-Partner Trader segments must expose Workspace, Markets, Trade, Accounts, Discover, and Dynamic Discover Module as the governed bottom tabs",
+        "Trader destination pages and production backend entitlement must still enforce KYC, account, trading, funding, account-scope, and high-risk action permissions",
+        "Do not carry funding, trading, transfer, or client-message submission inside Ask/Assist"
       ]
     }
   }

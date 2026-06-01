@@ -528,6 +528,7 @@ const semanticSpacingRoles = [
   'contentCardPaddingX',
   'contentPlainPaddingX',
   'topBarPaddingX',
+  'safeAreaBottom',
   'moduleGap',
   'sectionGap',
   'sectionGapLarge',
@@ -545,14 +546,19 @@ const semanticSpacingRoles = [
   'controlGap',
   'sheetContentGap',
   'sheetContentPaddingX',
+  'sheetContentPaddingBottom',
   'sheetFooterGap',
+  'sheetFooterPaddingBottom',
   'quoteGroupGap',
   'dataRowGap',
 ];
 if (!/contentCardPaddingX: spacing\.md/.test(runtimeTokenText)
   || !/contentPlainPaddingX: spacing\.lg/.test(runtimeTokenText)
   || !/topBarPaddingX: spacing\.lg/.test(runtimeTokenText)
+  || !/safeAreaBottom: spacing\.none/.test(runtimeTokenText)
   || !/sheetContentPaddingX: spacing\.lg/.test(runtimeTokenText)
+  || !/sheetContentPaddingBottom: spacing\.xl/.test(runtimeTokenText)
+  || !/sheetFooterPaddingBottom: spacing\.lg/.test(runtimeTokenText)
   || !/listRowPaddingX: spacing\.md/.test(runtimeTokenText)
   || !/bottomActionArea:\s*\{[\s\S]*?paddingX: spacing\.lg/.test(runtimeTokenText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_LAYOUT_SPACING', 'Full-site spacing must define page card/list insets and 16px BottomSheet header/content/footer horizontal insets through semantic layout tokens', 'src/theme/tokens.ts'));
@@ -707,6 +713,11 @@ if (!/const sheetBackgroundColor = options\?\.sheetSurface === 'panel' \? colors
     bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_TRADING_ACCOUNT_SURFACE', 'TradingAccountContextSwitcher is card-based selection content and must use contentPadding="card" with sheetSurface="canvas".', file));
   }
 });
+const tradingAccountSwitchSheetText = read('src/components/TradingAccountSwitchSheet.tsx');
+if (/sheet:\s*\{[\s\S]*?(paddingBottom|marginBottom)/.test(tradingAccountSwitchSheetText)
+  || /groups:\s*\{[\s\S]*?(paddingBottom|marginBottom)/.test(tradingAccountSwitchSheetText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_TRADING_ACCOUNT_CONTENT_BOTTOM', 'TradingAccountSwitchSheet must not add local bottom reserve; the shared BottomSheet ContentInner owns layout.sheetContentPaddingBottom.', 'src/components/TradingAccountSwitchSheet.tsx'));
+}
 if (!/enablePanDownToClose/.test(bottomSheetRuntimeText)
   || !/onPress=\{hide\}/.test(bottomSheetRuntimeText)
   || !/onAnimate=\{handleSheetAnimate\}/.test(bottomSheetRuntimeText)
@@ -786,8 +797,10 @@ if (!/export \* from '@\/src\/components\/GlobalDialog'/.test(read('src/design-p
   bottomSheetFooterIssues.push(fail('QA_STYLE_GLOBAL_DIALOG_GOVERNANCE', 'GlobalDialog must be exported through design-public-assets components for governed page consumption', 'src/design-public-assets/components/index.ts'));
 }
 if (!/contentInner:\s*\{[\s\S]*?paddingHorizontal: layout\.contentCardPaddingX/.test(bottomSheetRuntimeText)
+  || !/contentInner:\s*\{[\s\S]*?paddingBottom: layout\.sheetContentPaddingBottom/.test(bottomSheetRuntimeText)
   || !/contentPlain:\s*\{[\s\S]*?paddingHorizontal: layout\.sheetContentPaddingX/.test(bottomSheetRuntimeText)
   || !/footer:\s*\{[\s\S]*?paddingHorizontal: layout\.bottomActionArea\.paddingX/.test(bottomSheetRuntimeText)
+  || !/footer:\s*\{[\s\S]*?gap: layout\.sheetFooterGap/.test(bottomSheetRuntimeText)
   || !/header:\s*\{[\s\S]*?paddingHorizontal: layout\.topBarPaddingX/.test(bottomSheetRuntimeText)
   || !/Header[\s\S]*layout\.topBarPaddingX[\s\S]*16px[\s\S]*Content: card[\s\S]*layout\.contentCardPaddingX[\s\S]*12px[\s\S]*Content: list \/ article detail introduction[\s\S]*layout\.sheetContentPaddingX[\s\S]*16px[\s\S]*Footer[\s\S]*layout\.bottomActionArea\.paddingX[\s\S]*16px/.test(bottomSheetSpecText)
   || !/Header[\s\S]*layout\.topBarPaddingX[\s\S]*16px[\s\S]*Content: card[\s\S]*layout\.contentCardPaddingX[\s\S]*12px[\s\S]*Content: list \/ article detail introduction[\s\S]*layout\.sheetContentPaddingX[\s\S]*16px[\s\S]*Footer[\s\S]*layout\.bottomActionArea\.paddingX[\s\S]*16px/.test(bottomSheetPrinciplesText)
@@ -797,9 +810,38 @@ if (!/contentInner:\s*\{[\s\S]*?paddingHorizontal: layout\.contentCardPaddingX/.
 if (!/contentFrame:\s*\{[\s\S]*?minHeight: 0/.test(bottomSheetRuntimeText)
   || !/contentFrameAdaptive:\s*\{[\s\S]*?flexGrow: 0,[\s\S]*?flexShrink: 1/.test(bottomSheetRuntimeText)
   || !/contentFrameFixed:\s*\{[\s\S]*?flex: 1/.test(bottomSheetRuntimeText)
-  || !/footer:\s*\{[\s\S]*?flexGrow: 0,[\s\S]*?flexShrink: 0/.test(bottomSheetRuntimeText)
+  || !/footer:\s*\{[\s\S]*?flexBasis: 'auto',[\s\S]*?flexGrow: 0,[\s\S]*?flexShrink: 0/.test(bottomSheetRuntimeText)
   || !/panel:\s*\{[\s\S]*?flexDirection: 'column'[\s\S]*?overflow: 'hidden'/.test(bottomSheetRuntimeText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_FLEX_CONTRACT', 'Global BottomSheet Panel/Content/Footer must use governed flex-column layout: adaptive content does not force-fill, fixed/fullscreen content fills, footer stays in flow.', 'src/components/BottomSheet.tsx'));
+}
+if (!/useSafeAreaInsets/.test(bottomSheetRuntimeText)
+  || !/paddingBottom: layout\.sheetFooterPaddingBottom \+ insets\.bottom/.test(bottomSheetRuntimeText)
+  || !/layout\.sheetContentPaddingBottom/.test(bottomSheetPrinciplesText)
+  || !/layout\.sheetFooterPaddingBottom \+ useSafeAreaInsets\(\)\.bottom/.test(componentManifestText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_SAFE_AREA', 'Global BottomSheet Footer must centralize safe-area padding and ContentInner breathing space through governed BottomSheet tokens.', 'src/components/BottomSheet.tsx'));
+}
+if (/function AppBottomSheetFooter[\s\S]*?borderTopColor/.test(bottomSheetRuntimeText)
+  || /footer:\s*\{[\s\S]*?borderTopWidth[\s\S]*?\},\s*footerAction/.test(bottomSheetRuntimeText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_FOOTER_DIVIDER', 'Global BottomSheet Footer actions must share the sheet surface without a top divider line.', 'src/components/BottomSheet.tsx'));
+}
+if (/footerReserveHeight|measured footer-reserve|measuredFooterHeight|hardcoded 148px inset|first-frame fallback/.test(pageOverlayMatrixText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_SCROLL', 'BottomSheet governance docs must not retain the retired footer-reserve model; Footer must occupy a real Panel slot.', 'src/design-public-assets/overlays/registry/page-overlay-matrix.md'));
+}
+const pageLocalSheetSafeAreaIssues = allSourceFiles
+  .filter((file) => file !== 'src/components/BottomSheet.tsx')
+  .flatMap((file) => {
+    const text = read(file);
+    const issues = [];
+    if (/env\(safe-area-inset-bottom/.test(text) && /BottomSheet|bottomSheet|sheet/i.test(text)) {
+      issues.push(fail('QA_STYLE_BOTTOM_SHEET_SAFE_AREA', 'BottomSheet safe-area math must stay in the shared BottomSheet component, not page-level sheet content.', file));
+    }
+    if (/sheetContent|BottomSheet|bottomSheet/i.test(text) && /paddingBottom:\s*(?:layout\.bottomActionArea\.contentInset|layout\.bottomActionArea\.paddingBottom|[0-9]{2,})/.test(text)) {
+      issues.push(fail('QA_STYLE_BOTTOM_SHEET_SCROLL', 'Page-level sheet content must not add bottom reserves to compensate for Footer actions.', file));
+    }
+    return issues;
+  });
+if (pageLocalSheetSafeAreaIssues.length > 0) {
+  bottomSheetFooterIssues.push(...pageLocalSheetSafeAreaIssues);
 }
 if (!/<BottomSheetScrollView[\s\S]*?style=\{contentFrameStyle\}[\s\S]*?>/.test(bottomSheetRuntimeText)
   || !/contentContainerStyle=\{contentInnerStyle\}/.test(bottomSheetRuntimeText)

@@ -257,6 +257,8 @@ export const layout = {
   screenGap: spacing.md,
   /** Minimum visual page-end gap; Screen adds the device bottom safe-area inset. */
   screenBottomPadding: spacing.xxl,
+  /** Runtime fallback for platforms without a bottom safe-area inset; real device inset comes from SafeAreaProvider. */
+  safeAreaBottom: spacing.none,
   moduleGap: spacing.md,
   sectionGap: spacing.xl,
   sectionGapLarge: spacing.xxl,
@@ -296,7 +298,9 @@ export const layout = {
   sheetContentGap: spacing.md,
   /** BottomSheet plain/list/article-detail content inset; card content uses contentCardPaddingX. */
   sheetContentPaddingX: spacing.lg,
+  sheetContentPaddingBottom: spacing.xl,
   sheetFooterGap: spacing.md,
+  sheetFooterPaddingBottom: spacing.lg,
   sheetHandlePaddingBottom: spacing.xs + lineWidth.strong,
   sheetHandlePaddingTop: spacing.sm,
   quoteGroupGap: spacing.sm,

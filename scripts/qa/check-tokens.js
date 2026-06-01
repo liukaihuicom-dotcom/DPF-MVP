@@ -91,6 +91,7 @@ if (exists(runtimeTokenPath) && exists(compatibilityRuntimeTokenPath) && exists(
     'contentPlainPaddingX',
     'topBarPaddingX',
     'screenBottomPadding',
+    'safeAreaBottom',
     'moduleGap',
     'sectionGap',
     'sectionGapLarge',
@@ -108,7 +109,10 @@ if (exists(runtimeTokenPath) && exists(compatibilityRuntimeTokenPath) && exists(
     'inlineGap',
     'controlGap',
     'sheetContentGap',
+    'sheetContentPaddingX',
+    'sheetContentPaddingBottom',
     'sheetFooterGap',
+    'sheetFooterPaddingBottom',
     'quoteGroupGap',
     'dataRowGap',
   ];
@@ -132,12 +136,18 @@ if (exists(runtimeTokenPath) && exists(compatibilityRuntimeTokenPath) && exists(
     /contentCardPaddingX:\s*spacing\.md/.test(runtimeText)
       && /contentPlainPaddingX:\s*spacing\.lg/.test(runtimeText)
       && /topBarPaddingX:\s*spacing\.lg/.test(runtimeText)
+      && /safeAreaBottom:\s*spacing\.none/.test(runtimeText)
       && /sheetContentPaddingX:\s*spacing\.lg/.test(runtimeText)
+      && /sheetContentPaddingBottom:\s*spacing\.xl/.test(runtimeText)
+      && /sheetFooterPaddingBottom:\s*spacing\.lg/.test(runtimeText)
       && /listRowPaddingX:\s*spacing\.md/.test(runtimeText)
       && /contentCardPaddingX:\s*spacing\.md/.test(compatibilityRuntimeText)
       && /contentPlainPaddingX:\s*spacing\.lg/.test(compatibilityRuntimeText)
       && /topBarPaddingX:\s*spacing\.lg/.test(compatibilityRuntimeText)
+      && /safeAreaBottom:\s*spacing\.none/.test(compatibilityRuntimeText)
       && /sheetContentPaddingX:\s*spacing\.lg/.test(compatibilityRuntimeText)
+      && /sheetContentPaddingBottom:\s*spacing\.xl/.test(compatibilityRuntimeText)
+      && /sheetFooterPaddingBottom:\s*spacing\.lg/.test(compatibilityRuntimeText)
       && /listRowPaddingX:\s*spacing\.md/.test(compatibilityRuntimeText)
       ? pass('QA_TOKENS_CONTENT_INSET_RUNTIME', 'Full-site content inset tokens export 12px page card/list and 16px plain/header/BottomSheet content contracts', runtimeTokenPath)
       : fail('QA_TOKENS_CONTENT_INSET_RUNTIME', 'Content inset tokens must map page card/list to spacing.md and plain/header/BottomSheet content to spacing.lg in both runtime token layers', runtimeTokenPath),
@@ -147,6 +157,8 @@ if (exists(runtimeTokenPath) && exists(compatibilityRuntimeTokenPath) && exists(
       && tokenIndexText.includes('contentPlainPaddingX')
       && tokenIndexText.includes('topBarPaddingX')
       && tokenIndexText.includes('sheetContentPaddingX / 16')
+      && tokenIndexText.includes('sheetContentPaddingBottom / 24')
+      && tokenIndexText.includes('sheetFooterPaddingBottom / 16')
       && tokenIndexText.includes('listRowPaddingX / 12')
       ? pass('QA_TOKENS_CONTENT_INSET_REGISTRY', 'Full-site and BottomSheet content inset token contracts are registered', tokenIndexPath)
       : fail('QA_TOKENS_CONTENT_INSET_REGISTRY', 'Token registry must document card/plain/top-bar/sheet-content/list-row horizontal inset contracts', tokenIndexPath),
@@ -160,22 +172,38 @@ if (exists(runtimeTokenPath) && exists(compatibilityRuntimeTokenPath) && exists(
     /--layout-content-card-padding-x:\s*12px/.test(cssMappingText)
       && /--layout-content-plain-padding-x:\s*16px/.test(cssMappingText)
       && /--layout-list-row-padding-x:\s*12px/.test(cssMappingText)
+      && /--layout-safe-area-bottom:\s*env\(safe-area-inset-bottom, 0px\)/.test(cssMappingText)
+      && /--layout-sheet-content-padding-bottom:\s*24px/.test(cssMappingText)
+      && /--layout-sheet-footer-padding-bottom:\s*16px/.test(cssMappingText)
+      && /--safe-area-bottom:\s*var\(--layout-safe-area-bottom\)/.test(cssMappingText)
+      && /--sheet-footer-padding-bottom:\s*var\(--layout-sheet-footer-padding-bottom\)/.test(cssMappingText)
       && /--layout-bottom-action-area-padding-x:\s*16px/.test(cssMappingText)
       && /--layout-content-card-padding-x:\s*12px/.test(engineeringCssMappingText)
       && /--layout-content-plain-padding-x:\s*16px/.test(engineeringCssMappingText)
       && /--layout-list-row-padding-x:\s*12px/.test(engineeringCssMappingText)
+      && /--layout-safe-area-bottom:\s*env\(safe-area-inset-bottom, 0px\)/.test(engineeringCssMappingText)
+      && /--layout-sheet-content-padding-bottom:\s*24px/.test(engineeringCssMappingText)
+      && /--layout-sheet-footer-padding-bottom:\s*16px/.test(engineeringCssMappingText)
+      && /--safe-area-bottom:\s*var\(--layout-safe-area-bottom\)/.test(engineeringCssMappingText)
+      && /--sheet-footer-padding-bottom:\s*var\(--layout-sheet-footer-padding-bottom\)/.test(engineeringCssMappingText)
       && /--layout-bottom-action-area-padding-x:\s*16px/.test(engineeringCssMappingText)
-      ? pass('QA_TOKENS_SEMANTIC_SPACING_CSS_MAPPING', 'CSS mappings expose governed 12px/16px horizontal spacing roles', 'packages/design-tokens/mappings/css-variable.mapping.css')
-      : fail('QA_TOKENS_SEMANTIC_SPACING_CSS_MAPPING', 'CSS mappings must expose contentCard, contentPlain, listRow, and bottomAction horizontal spacing roles', 'packages/design-tokens/mappings/css-variable.mapping.css'),
+      ? pass('QA_TOKENS_SEMANTIC_SPACING_CSS_MAPPING', 'CSS mappings expose governed 12px/16px horizontal spacing and BottomSheet safe-area aliases', 'packages/design-tokens/mappings/css-variable.mapping.css')
+      : fail('QA_TOKENS_SEMANTIC_SPACING_CSS_MAPPING', 'CSS mappings must expose contentCard, contentPlain, listRow, bottomAction, and BottomSheet safe-area roles', 'packages/design-tokens/mappings/css-variable.mapping.css'),
   );
   checks.push(
     /"content-card-padding-x":\s*"var\(--layout-content-card-padding-x\)"/.test(tailwindMappingText)
       && /"content-plain-padding-x":\s*"var\(--layout-content-plain-padding-x\)"/.test(tailwindMappingText)
       && /"list-row-padding-x":\s*"var\(--layout-list-row-padding-x\)"/.test(tailwindMappingText)
+      && /"safe-area-bottom":\s*"var\(--layout-safe-area-bottom\)"/.test(tailwindMappingText)
+      && /"sheet-content-padding-bottom":\s*"var\(--layout-sheet-content-padding-bottom\)"/.test(tailwindMappingText)
+      && /"sheet-footer-padding-bottom":\s*"var\(--layout-sheet-footer-padding-bottom\)"/.test(tailwindMappingText)
       && /"bottom-action-area-padding-x":\s*"var\(--layout-bottom-action-area-padding-x\)"/.test(tailwindMappingText)
       && /"content-card-padding-x":\s*"var\(--layout-content-card-padding-x\)"/.test(engineeringTailwindMappingText)
       && /"content-plain-padding-x":\s*"var\(--layout-content-plain-padding-x\)"/.test(engineeringTailwindMappingText)
       && /"list-row-padding-x":\s*"var\(--layout-list-row-padding-x\)"/.test(engineeringTailwindMappingText)
+      && /"safe-area-bottom":\s*"var\(--layout-safe-area-bottom\)"/.test(engineeringTailwindMappingText)
+      && /"sheet-content-padding-bottom":\s*"var\(--layout-sheet-content-padding-bottom\)"/.test(engineeringTailwindMappingText)
+      && /"sheet-footer-padding-bottom":\s*"var\(--layout-sheet-footer-padding-bottom\)"/.test(engineeringTailwindMappingText)
       && /"bottom-action-area-padding-x":\s*"var\(--layout-bottom-action-area-padding-x\)"/.test(engineeringTailwindMappingText)
       ? pass('QA_TOKENS_SEMANTIC_SPACING_TAILWIND_MAPPING', 'Tailwind mappings expose governed 12px/16px horizontal spacing roles', 'packages/design-tokens/mappings/tailwind.mapping.js')
       : fail('QA_TOKENS_SEMANTIC_SPACING_TAILWIND_MAPPING', 'Tailwind mappings must expose contentCard, contentPlain, listRow, and bottomAction horizontal spacing roles', 'packages/design-tokens/mappings/tailwind.mapping.js'),
