@@ -1,5 +1,28 @@
 # Impact Report
 
+## v2.5.6-bottom-sheet-public-resource-migration
+
+Impact: non-breaking BottomSheet public resource governance migration.
+
+- Runtime app behavior: product routes, business workflows, copy semantics, icon semantics, and risk levels remain unchanged.
+- Component/source scope: pages now open complex sheets through `BottomSheetActions`; public sheet bodies live in `src/components/business`.
+- Overlay scope: backdrop tap, pan-down, Android Back, nested Back, footer action close, fixed-height scroll, sheet surface, content padding, and safe-area footer behavior remain owned by the shared `BottomSheet` host.
+- Regression focus: `/funding/deposit`, `/funding/withdrawal`, `/settings/security-log`, `/account-balance/[id]`, `/portfolio`, `/trade`, `/discover`, and Auth country/language/error sheets.
+
+Decision: `controlled_patch_ready` after TypeScript, component, public-resource, navigation, back-close, style, version, and full QA pass.
+
+## v2.5.2-instrument-detail-public-workspace
+
+Impact: non-breaking instrument detail UI governance correction.
+
+- Runtime app behavior: route params, instrument lookup, buy/sell order ticket routing, toast placeholder actions, quote data, chart fullscreen behavior, and risk copy remain unchanged.
+- Component/source scope: `/instrument/[id]` now delegates the page skeleton to `InstrumentDetailWorkspace`; `TradingTerminalChart` supports compact embedded toolbar mode while fullscreen keeps the full terminal toolbar.
+- Pattern scope: `instrumentDetailTrading` replaces the generic page-level financial visualization pattern for instrument detail so identity, quote decision data, embedded chart, auxiliary tabs, risk context, and fixed trade actions have a governed order.
+- Visual scope: first viewport moves from competing quote metrics, chart tools, tabs, and CTA stacking to a chart-first trading workspace aligned with international quote-page conventions.
+- Regression focus: `/instrument/eur-usd`, chart fullscreen open/close, auxiliary tabs, fixed buy/sell bar, stale/closed/restricted quote states, and `/order/[id]` direction routing.
+
+Decision: `controlled_patch_ready` after component, public-resource, style, i18n, icon, navigation, back-close, full QA, TypeScript, and browser preview verification pass.
+
 ## v2.4.3-bottom-sheet-horizontal-spacing
 
 Impact: non-breaking BottomSheet spacing governance correction.

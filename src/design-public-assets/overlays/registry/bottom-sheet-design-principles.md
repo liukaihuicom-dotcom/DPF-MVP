@@ -1,6 +1,6 @@
 # Bottom Sheet Design Principles
 
-Version: `1.1.5`
+Version: `1.1.6`
 Owner: `design-system-engineering`
 Status: `approved`
 Scope: App, H5, WebView, Codex preview
@@ -11,6 +11,8 @@ Source of truth: `component.base.BottomSheet`, `registry.overlay-system`
 Bottom Sheet is the shared mobile overlay container for short, local, non-routeable tasks. It is not a replacement for page-level financial flows.
 
 Every bottom sheet must use the public `BottomSheetProvider`, `GlobalBottomSheetHost`, `useBottomSheet`, and `bottomSheetPresets` contract. Pages must not create private sheet shells, scrims, handles, safe-area wrappers, local modal containers, or page-owned fixed footers.
+
+Exception: route-backed Modal Page Sheets may use the shared BottomSheet host when the route is retained for recovery, deep links, or task-center entry. These flows must remain registered in `modalRegistry`, use `heightMode="fixed"` or `heightMode="fullscreen"` according to the page contract, and provide `onRequestClose` when dirty-state, processing, or route-close guards are required.
 
 ## Height Modes
 
@@ -80,6 +82,7 @@ Do not add page-local padding to override these structural insets.
 | Footer action gap | `layout.sheetFooterGap` | 12px | Two stacked Footer actions keep a fixed governed gap |
 
 - Footer background must cover its safe-area padding because Footer owns the full bottom slot inside the Panel.
+- Bottom actions for governed confirmation and acknowledgement sheets must be passed through the `footer` slot, not rendered at the end of scroll content.
 - Pages must not repeat `env(safe-area-inset-bottom)` or add page-local Footer reserve padding. Native code reads the device inset from the root `SafeAreaProvider` through `useSafeAreaInsets()`.
 - On Android or devices where bottom inset is 0, `layout.sheetFooterPaddingBottom` still provides the base bottom gap.
 
@@ -104,6 +107,7 @@ Do not add page-local padding to override these structural insets.
 - Fullscreen content occupies the space between Header and Footer inside `100dvh`; only `Content` scrolls.
 - `Panel` itself must not scroll in any mode.
 - Do not add page-local or content-local bottom padding to reserve Footer space. Footer owns its layout slot inside Panel.
+- Do not place fixed action buttons inside sheet content to simulate a Footer. Confirmation and acknowledgement actions must use the shared Footer safe-area slot.
 
 ## Close Lifecycle
 
@@ -117,6 +121,8 @@ All close triggers must enter the same `closeModal` lifecycle:
 - Business completion close.
 
 Close sequence: trigger `closeModal`, keep Header / Content / Footer mounted inside Panel, fade Overlay, slide Panel down, then dismiss and clean up the entire overlay after the Panel finishes.
+
+Route-backed or dirty-state sheets may provide `onRequestClose`. If it returns `false`, the shared host must not dismiss the sheet; the caller must resolve the guard through the registered queue or close pipeline before route cleanup.
 
 ## Escalation To Modal Page
 

@@ -8,16 +8,24 @@
       "exports": [
         "ActionButton",
         "ActionButtonTone",
-        "ActionButtonVariant"
+        "ActionButtonVariant",
+        "ActionButtonSizePreset"
       ],
       "props": [
         "label",
         "onPress",
         "tone",
         "variant",
+        "sizePreset",
         "icon",
+        "leadingIcon",
+        "trailingIcon",
+        "reserveLeadingIcon",
+        "reserveTrailingIcon",
         "disabled",
+        "disabledReason",
         "loading",
+        "loadingLabel",
         "accessibilityLabel"
       ],
       "variants": [
@@ -27,13 +35,16 @@
       "states": [
         "default",
         "pressed",
+        "hover",
+        "focus",
         "disabled",
         "loading"
       ],
       "a11y": [
         "accessibilityRole=button",
         "accessibilityState exposes disabled and busy",
-        "accessibilityLabel falls back to label"
+        "accessibilityLabel falls back to the visible label or original label during loading",
+        "disabledReason maps to accessibilityHint when disabled"
       ],
       "platforms": [
         "app",
@@ -45,13 +56,17 @@
         "spacing.*",
         "radius.*",
         "lineWidth.*",
-        "size.button.*"
+        "size.button.*",
+        "size.icon.*",
+        "typography.button*"
       ],
-      "usage": "Primary command button for app screens and sheets. Supports exactly two visual variants: filled renders a semantic background with no border, outline renders a transparent background with a semantic border. Text-only actions must use a text action pattern instead of ActionButton.",
+      "usage": "Primary command button for app screens and sheets. Supports exactly two visual variants: filled renders a semantic background with no border, outline renders a transparent background with a semantic border. Size presets are sm, md/default, lg, and xl. The legacy icon prop remains a leadingIcon alias; leadingIcon, trailingIcon, reserveLeadingIcon, and reserveTrailingIcon govern icon slots without page-local spacer views. Loading blocks repeated press and may show loadingLabel; disabledReason supplies accessible disabled context. Text-only actions must use a text action pattern instead of ActionButton.",
       "forbidden": [
         "Do not create page-local button styles",
         "Do not hardcode icon names outside AppIcon registry",
-        "Do not add background-free or mixed background plus outline variants"
+        "Do not add background-free or mixed background plus outline variants",
+        "Do not use ActionButton for icon-only buttons; use HeaderIconButton, StepperButton, or a governed icon action pattern",
+        "Do not use ActionButton for selected or toggle controls"
       ],
       "status": "active"
     },
@@ -413,7 +428,9 @@
         "snapPoints",
         "contentSizing",
         "sheetSurface",
-        "onDismiss"
+        "onDismiss",
+        "onRequestClose",
+        "allowPanDownDismiss"
       ],
       "variants": [
         "actionMenu",
@@ -427,7 +444,8 @@
         "closed",
         "open",
         "stacked",
-        "dismissed"
+        "dismissed",
+        "guarded"
       ],
       "a11y": [
         "Backdrop blocks background interaction",
@@ -438,7 +456,9 @@
         "Header actions require accessibility labels",
         "Adaptive short content keeps natural height and does not expose unnecessary scroll behavior",
         "Fixed and fullscreen content fills the middle panel area and scrolls internally when over height",
-        "Footer actions keep safe-area spacing without visual separation from the sheet surface"
+        "Footer actions keep safe-area spacing without visual separation from the sheet surface",
+        "Route-backed sheets may block shared dismissal through onRequestClose when dirty-state or close guards are active",
+        "Pan-down can be disabled per sheet when native gesture dismissal would bypass a guard"
       ],
       "platforms": [
         "app",
@@ -461,7 +481,7 @@
         "palette.*",
         "spacing.*"
       ],
-      "usage": "Global bottom sheet system. Use presets for every page-triggered mobile sheet. Height decisions must follow src/design-public-assets/overlays/registry/bottom-sheet-design-principles.md and choose heightMode='adaptive', 'fixed', or 'fullscreen'. Adaptive is for action menus, short forms, short confirmations, and detail sheets: the Panel grows from Header + Content + Footer, maxes at 90dvh, and only Content scrolls when over height. Fixed is for page-like sheets, long selections, complex local flows, and explicit legacy snapPoints/contentSizing='fill': Panel height is 90dvh and Content uses the remaining middle space. Fullscreen is for full-screen modal-equivalent flows: Panel height is 100dvh, radius is removed, and Content fills the middle area with safe-area aware Footer. Header, Content, and Footer must render as direct children inside one Panel; Footer is in normal layout flow with flex: 0 0 auto, not footerComponent, portal, fixed, or absolute. Footer bottom padding is `layout.sheetFooterPaddingBottom + useSafeAreaInsets().bottom`, so the Footer background covers the system safe area and buttons do not sit on the iOS Home Indicator or Android gesture area. ContentInner bottom padding uses `layout.sheetContentPaddingBottom` so the final scroll item keeps breathing space before the in-flow Footer. Opening or stacking a sheet dismisses the active keyboard and releases input focus before presentation. Backdrop tap, close button, pan-down, Android back, cancel action, and business-completion close all use the shared closeModal lifecycle, and cleanup happens only after the Panel dismisses. Header left/right inset uses `layout.topBarPaddingX` at 16px. Card content uses `layout.contentCardPaddingX` at 12px. List content, article/detail introduction content, and normal descriptive content use `layout.sheetContentPaddingX` at 16px. Footer left/right inset uses `layout.bottomActionArea.paddingX` at 16px and stacked Footer actions use `layout.sheetFooterGap` at 12px. Card content keeps the gray `sheetSurface='canvas'` bed (`color.surface.canvas`) with white `color.surface.panel` card bodies; plain/list content uses `sheetSurface='panel'` so picker, selection, and list sheets sit on a white bed. The selection preset defaults to this panel surface. Card-based selection sheets such as TradingAccountContextSwitcher explicitly use `sheetSurface='canvas'` and `contentPadding='card'` because account options are selectable cards on a gray bed. Flush content is reserved for public business components that own their full internal surface and spacing. Every page-level bottom sheet must be opened through useBottomSheet with bottomSheetPresets.selection/detail/actionMenu or a registered business sheet wrapper exported from design-public-assets.",
+      "usage": "Global bottom sheet system. Use presets for every page-triggered mobile sheet. Height decisions must follow src/design-public-assets/overlays/registry/bottom-sheet-design-principles.md and choose heightMode='adaptive', 'fixed', or 'fullscreen'. Adaptive is for action menus, short forms, short confirmations, and detail sheets: the Panel grows from Header + Content + Footer, maxes at 90dvh, and only Content scrolls when over height. Fixed is for page-like sheets, long selections, complex local flows, and explicit legacy snapPoints/contentSizing='fill': Panel height is 90dvh and Content uses the remaining middle space. Fullscreen is for full-screen modal-equivalent flows: Panel height is 100dvh, radius is removed, and Content fills the middle area with safe-area aware Footer. Header, Content, and Footer must render as direct children inside one Panel; Footer is in normal layout flow with flex: 0 0 auto, not footerComponent, portal, fixed, or absolute. Footer bottom padding is `layout.sheetFooterPaddingBottom + useSafeAreaInsets().bottom`, so the Footer background covers the system safe area and buttons do not sit on the iOS Home Indicator or Android gesture area. ContentInner bottom padding uses `layout.sheetContentPaddingBottom` so the final scroll item keeps breathing space before the in-flow Footer. Opening or stacking a sheet dismisses the active keyboard and releases input focus before presentation. Backdrop tap, close button, optional pan-down, Android back, cancel action, and business-completion close all use the shared closeModal lifecycle, and cleanup happens only after the Panel dismisses. Route-backed or dirty-state sheets may supply onRequestClose to block dismissal until a registered guard or route close pipeline resolves; callers may update the active sheet with the public update method instead of re-presenting it on every state change. Header left/right inset uses `layout.topBarPaddingX` at 16px. Card content uses `layout.contentCardPaddingX` at 12px. List content, article/detail introduction content, and normal descriptive content use `layout.sheetContentPaddingX` at 16px. Footer left/right inset uses `layout.bottomActionArea.paddingX` at 16px and stacked Footer actions use `layout.sheetFooterGap` at 12px. Card content keeps the gray `sheetSurface='canvas'` bed (`color.surface.canvas`) with white `color.surface.panel` card bodies; plain/list content uses `sheetSurface='panel'` so picker, selection, and list sheets sit on a white bed. The selection preset defaults to this panel surface. Card-based selection sheets such as TradingAccountContextSwitcher explicitly use `sheetSurface='canvas'` and `contentPadding='card'` because account options are selectable cards on a gray bed. Flush content is reserved for public business components that own their full internal surface and spacing. Every page-level bottom sheet must be opened through useBottomSheet with bottomSheetPresets.selection/detail/actionMenu or a registered business sheet wrapper exported from design-public-assets. Route-backed Modal Page Sheets such as the order ticket may keep the route for recovery while rendering the visible operation surface through GlobalBottomSheetHost.",
       "forbidden": [
         "Do not call bottomSheet.show or bottomSheet.push with ad hoc options; use bottomSheetPresets",
         "Do not add page-local Keyboard.dismiss calls before bottomSheet.show or bottomSheet.push; the shared provider owns keyboard dismissal",
@@ -480,6 +500,8 @@
         "Do not animate Header, Content, or Footer on separate entrance or dismissal timelines; only the Panel may slide while the Overlay fades",
         "Do not conditionally mount, hide, delay, or unmount Footer separately from Panel content",
         "Do not import useBottomSheet or bottomSheetPresets in pages from runtime-private component paths; use src/design-public-assets/components.",
+        "Do not bypass onRequestClose for dirty-state, processing, route-backed, or guarded BottomSheet close paths",
+        "Do not keep pan-down enabled when a native gesture could dismiss a dirty-state sheet before the guard resolves",
         "Do not use React Native Modal to simulate a bottom sheet."
       ],
       "status": "active"
@@ -494,12 +516,7 @@
         "title",
         "body",
         "icon",
-        "cancelLabel",
-        "confirmLabel",
-        "confirmTone",
-        "confirmDisabled",
-        "onCancel",
-        "onConfirm"
+        "confirmTone"
       ],
       "variants": [
         "danger",
@@ -510,7 +527,7 @@
         "disabled-confirm"
       ],
       "a11y": [
-        "Visible title, body, cancel, and confirm labels are required",
+        "Visible title and body are required; cancel and confirm labels are supplied by the shared BottomSheet Footer actions.",
         "High-risk confirmations must be launched from a registered modalRegistry entry"
       ],
       "platforms": [
@@ -525,9 +542,10 @@
         "color.icon.*",
         "palette.*"
       ],
-      "usage": "Shared confirmation sheet content for high-risk or reversible actions inside the governed BottomSheet host.",
+      "usage": "Shared confirmation sheet content for high-risk or reversible actions inside the governed BottomSheet host. The content component renders icon, title, and body only; cancel and confirm actions must be passed through the BottomSheet footer slot so the shared Footer owns bottom safe-area spacing.",
       "forbidden": [
         "Do not use Alert.alert or window.confirm for production confirmations",
+        "Do not render ActionButton inside ConfirmActionSheet content",
         "Do not hardcode destructive colors or icon sizes",
         "Do not omit cancel and recovery behavior"
       ],
@@ -1391,6 +1409,7 @@
       ],
       "props": [
         "accessibilityLabel",
+        "backgroundContext",
         "disabled",
         "icon",
         "onPress",
@@ -1402,6 +1421,7 @@
       "variants": [
         "filled-panel",
         "filled-neutral",
+        "filled-auto",
         "ghost"
       ],
       "states": [
@@ -1429,12 +1449,14 @@
         "layout.*",
         "iconRegistry.*"
       ],
-      "usage": "Icon button and slot for top bars and headers. Filled header/icon action containers default to the white panel surface token when placed over gray page, sheet, or canvas backgrounds. When a header icon sits on a white panel surface, pass surface=neutral so the background is resolved from the governed IconSurface neutral background while the default glyph keeps the neutral primary icon token. Pass an explicit semantic tone only for selected, destructive, status, inverse, or deliberately low-emphasis tertiary header actions.",
+      "usage": "Icon button and slot for top bars and headers. Filled header/icon action containers default to the white panel surface token when placed over gray page, sheet, or canvas backgrounds. With surface=auto, backgroundContext=canvas/subtle resolves to color.surface.panel and backgroundContext=panel/raised resolves to the governed IconSurface neutral background; surface=neutral remains the explicit neutral equivalent for compatibility. The default glyph keeps the neutral primary icon token. Pass an explicit semantic tone only for selected, destructive, status, inverse, or deliberately low-emphasis tertiary header actions.",
       "forbidden": [
         "Do not recreate this pattern inside app route files",
         "Do not bypass token or icon registry bindings",
         "Do not hardcode white or use page-local background containers for header icon actions",
-        "Do not use surface=neutral on gray page, sheet, or canvas backgrounds where panel contrast is required"
+        "Do not use surface=neutral on gray page, sheet, or canvas backgrounds where panel contrast is required",
+        "Do not hardcode page-specific header icon backgrounds when surface=auto can resolve the background from the containing surface context",
+        "Do not use surface=auto without declaring the header icon backgroundContext when the containing surface is not the default panel context"
       ],
       "status": "active"
     },
@@ -1589,11 +1611,14 @@
         "layout.*",
         "iconRegistry.*"
       ],
-      "usage": "Web-only floating developer console. It is an independent debug module rendered outside AppViewport so it remains draggable, expandable, clickable, and uncropped by the 390 x 844 product preview canvas.",
+      "usage": "Scenario-driven web-only developer console. It starts from simulated user journeys where each persona/state/route card applies local mock state, shows Toast feedback, and opens the real route, while page map and fine-tune state controls remain secondary diagnostics. It is an independent debug module rendered outside AppViewport so it remains draggable, expandable, clickable, outside-blank dismissible, and uncropped by the 390 x 844 product preview canvas. Header Close, open FAB Close, and blank-area dismiss share the same close lifecycle.",
       "forbidden": [
         "Do not render ProductControlPanel inside AppViewport",
+        "Do not promote route-only page navigation above scenario-driven user journeys",
+        "Do not apply developer scenarios through new business rules; compose existing local setters and registered mock presets only",
         "Do not remove PanResponder drag handling",
         "Do not clamp developer tooling to the phone canvas; drag bounds use the browser window",
+        "Do not let blank-area dismissal close when users interact inside the developer console panel or open FAB",
         "Do not let the developer console block product page scroll or route clicks when closed"
       ],
       "status": "active"
@@ -3155,7 +3180,9 @@
         "copy",
         "registry"
       ],
-      "props": [],
+      "props": [
+        "contextState"
+      ],
       "variants": [
         "page-facing-bridge"
       ],
@@ -3190,13 +3217,15 @@
       "props": [
         "instrument",
         "initialTimeframe",
-        "state"
+        "state",
+        "toolbarMode"
       ],
       "variants": [
         "candlestick-terminal",
         "line-terminal",
         "area-terminal",
-        "fullscreen-terminal"
+        "fullscreen-terminal",
+        "embedded-compact"
       ],
       "states": [
         "default",
@@ -3227,11 +3256,12 @@
         "color.status.*",
         "color.surface.*"
       ],
-      "usage": "Governed SVG-backed mobile trading terminal chart for instrument detail pages. Owns candlestick/line/area rendering, timeframe switching, pan/zoom/crosshair, indicators, drawing tools, fullscreen, and quote exception states inside the registered business component.",
+      "usage": "Governed SVG-backed mobile trading terminal chart for instrument detail pages. Owns candlestick/line/area rendering, timeframe switching, pan/zoom/crosshair, indicators, drawing tools, fullscreen, and quote exception states inside the registered business component. Supports compact embedded toolbar mode for chart-first instrument detail pages while preserving full terminal tools in fullscreen. Embedded density uses a flush outer surface with spacing.none padding so instrument detail charts align to the workspace content width; terminal and fullscreen densities keep their own spacing contracts.",
       "forbidden": [
         "Do not import react-native-svg from route screens for trading-terminal charts",
         "Do not add unregistered toolbar icons",
-        "Do not communicate quote freshness, trend, or risk by color only"
+        "Do not communicate quote freshness, trend, or risk by color only",
+        "Do not add outer padding to embedded density; spacing belongs to the parent workspace or internal chart controls"
       ],
       "status": "active"
     },
@@ -4155,6 +4185,474 @@
       "usage": "Approved Partner Mode entry for switching back to Trader context.",
       "forbidden": [
         "Do not expose Partner Mode to unapproved potential partners"
+      ],
+      "status": "active"
+    },
+    "TransactionDetailSheet": {
+      "category": "business-account",
+      "path": "src/components/business/AccountSheets.tsx",
+      "exports": [
+        "TransactionDetailSheet"
+      ],
+      "props": [
+        "currency",
+        "profile",
+        "transaction"
+      ],
+      "variants": [
+        "balance-transaction-detail"
+      ],
+      "states": [
+        "completed",
+        "reviewing",
+        "rejected"
+      ],
+      "a11y": [
+        "Transaction status, amount, account, reference, method, and review/completion time remain visible text.",
+        "Primary close action is supplied by the shared BottomSheet Footer with a standard button label.",
+        "Amount may use registered auto-fit because it is a constrained numeric financial value surface."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.*",
+        "spacing.*",
+        "radius.*",
+        "lineWidth.*",
+        "color.surface.*",
+        "color.status.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed account balance transaction detail sheet body for route-backed and global BottomSheet detail flows. Use inside shared bottom sheet openers; pages pass resolved profile, transaction, and currency instead of recreating the detail rows locally. The acknowledgement action must be supplied through the BottomSheet footer slot so the shared Footer owns bottom safe-area spacing.",
+      "forbidden": [
+        "Do not recreate transaction detail rows inside route screens.",
+        "Do not render the OK or close ActionButton inside TransactionDetailSheet scroll content.",
+        "Do not hardcode transaction status, method, reference, or risk copy outside i18n/domain formatters.",
+        "Do not use this sheet as high-risk transaction approval or compliance confirmation."
+      ],
+      "status": "active"
+    },
+    "AccountMoreSheet": {
+      "category": "business-account",
+      "path": "src/components/business/AccountSheets.tsx",
+      "exports": [
+        "AccountMoreSheet"
+      ],
+      "props": [
+        "onSelect"
+      ],
+      "variants": [
+        "account-more-menu"
+      ],
+      "states": [
+        "default",
+        "danger-action"
+      ],
+      "a11y": [
+        "Menu rows expose accessible labels through GlobalMenuList.",
+        "Destructive action is visually and semantically marked as danger."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.*",
+        "spacing.*",
+        "radius.*",
+        "lineWidth.*",
+        "color.surface.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed account more-actions sheet body using GlobalMenuList for account settings, trading journal, archive, and delete entries.",
+      "forbidden": [
+        "Do not duplicate account more-action menu rows in pages.",
+        "Do not execute destructive account actions without a separate registered confirmation flow."
+      ],
+      "status": "active"
+    },
+    "PaymentMethodSheet": {
+      "category": "business-funding",
+      "path": "src/components/business/FundingSheets.tsx",
+      "exports": [
+        "PaymentMethodSheet"
+      ],
+      "props": [
+        "methods",
+        "onSelect",
+        "selectedId"
+      ],
+      "variants": [
+        "payment-method-picker",
+        "grouped-method-list"
+      ],
+      "states": [
+        "default",
+        "selected",
+        "unavailable",
+        "empty-group-skipped"
+      ],
+      "a11y": [
+        "Payment rows inherit button and selected/disabled state from FinancialMethodRow.",
+        "Unavailable methods keep status and helper text visible."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "spacing.*",
+        "radius.*",
+        "color.surface.*",
+        "color.status.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed funding payment-method selection sheet body grouped by virtual account, bank transfer, and e-wallet method types. Use FinancialMethodRow for every selectable payment method.",
+      "forbidden": [
+        "Do not recreate payment method rows in funding pages.",
+        "Do not hide unavailable or maintenance method state for visual simplicity.",
+        "Do not hardcode funding method labels outside localized domain data."
+      ],
+      "status": "active"
+    },
+    "DeviceDetailSheet": {
+      "category": "business-security",
+      "path": "src/components/business/SecuritySheets.tsx",
+      "exports": [
+        "DeviceDetailSheet"
+      ],
+      "props": [
+        "device",
+        "formatDate",
+        "onOpenConfirmReport",
+        "onOpenConfirmRevoke"
+      ],
+      "variants": [
+        "security-device-detail",
+        "session-list",
+        "event-list"
+      ],
+      "states": [
+        "low-risk",
+        "medium-risk",
+        "high-risk",
+        "current-device",
+        "revoked-session",
+        "open-risk-event"
+      ],
+      "a11y": [
+        "Risk, current-device, session, and event statuses remain visible text.",
+        "Report and revoke actions expose button roles and disabled state where applicable."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.*",
+        "spacing.*",
+        "radius.*",
+        "lineWidth.*",
+        "size.*",
+        "color.surface.*",
+        "color.status.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed security login-log device detail sheet body for shared BottomSheet detail flows. Pages provide formatted date and registered confirmation callbacks for report/revoke actions.",
+      "forbidden": [
+        "Do not perform session revoke or risk report without a registered confirmation flow.",
+        "Do not hide security risk or recovery copy for visual simplicity.",
+        "Do not recreate security device detail rows inside route screens."
+      ],
+      "status": "active"
+    },
+    "ProfileEditSheetContent": {
+      "category": "business-profile",
+      "path": "src/components/business/ProfileSheets.tsx",
+      "exports": [
+        "ProfileEditSheetContent"
+      ],
+      "props": [
+        "none"
+      ],
+      "variants": [
+        "profile-edit-sheet",
+        "avatar-rail"
+      ],
+      "states": [
+        "default",
+        "avatar-selected",
+        "nickname-empty"
+      ],
+      "a11y": [
+        "Avatar choices expose button role and selected state.",
+        "Nickname input uses the shared TextField component and localized labels.",
+        "Profile identity copy remains visible above the edit controls."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.*",
+        "spacing.*",
+        "radius.*",
+        "lineWidth.*",
+        "size.*",
+        "color.surface.*"
+      ],
+      "usage": "Governed profile edit sheet content for Discover/Profile flows. It owns nickname editing and avatar selection while the caller owns the shared BottomSheet opener and route context.",
+      "forbidden": [
+        "Do not recreate profile edit inputs or avatar rails inside route screens.",
+        "Do not bypass shared TextField or ProfileAvatar assets.",
+        "Do not add unregistered avatar assets without profile avatar registry updates."
+      ],
+      "status": "active"
+    },
+    "ManagerChatSheet": {
+      "category": "business-profile",
+      "path": "src/components/business/ProfileSheets.tsx",
+      "exports": [
+        "ManagerChatSheet"
+      ],
+      "props": [
+        "none"
+      ],
+      "variants": [
+        "manager-chat-preview"
+      ],
+      "states": [
+        "default",
+        "manager-message",
+        "user-message",
+        "composer-disabled"
+      ],
+      "a11y": [
+        "Manager identity and status remain visible text.",
+        "Conversation preview copy uses localized i18n strings.",
+        "Composer disabled state is represented as visible text rather than an active input."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.*",
+        "spacing.*",
+        "radius.*",
+        "size.*",
+        "color.surface.*",
+        "color.brand.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed manager chat preview sheet content for Discover/Profile support flows. It is an informational preview and does not create an active chat transport.",
+      "forbidden": [
+        "Do not present the preview as a live advisor or trading recommendation channel.",
+        "Do not hardcode manager conversation copy outside i18n.",
+        "Do not add unregistered chat or notification icons."
+      ],
+      "status": "active"
+    },
+    "InstrumentDetailWorkspace": {
+      "category": "business-trading",
+      "path": "src/components/business/InstrumentDetailWorkspace.tsx",
+      "exports": [
+        "InstrumentDetailWorkspace"
+      ],
+      "props": [
+        "colors",
+        "instrument",
+        "locale",
+        "onBack",
+        "onBuy",
+        "onSell",
+        "onSecondaryAction",
+        "t"
+      ],
+      "variants": [
+        "market-detail-workspace",
+        "collapsed-header-summary",
+        "fixed-trade-action-bar"
+      ],
+      "states": [
+        "default",
+        "quote_stale",
+        "market_closed",
+        "restricted",
+        "not_found"
+      ],
+      "a11y": [
+        "Buy and sell actions expose direction plus current quote price in accessibilityLabel",
+        "Quote freshness, market status, and risk context are visible text",
+        "Chart decision data is paired with textual Bid/Ask/Spread/Leverage values",
+        "Collapsed header summary appears only after scroll and repeats quote data already visible in the page body"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.*",
+        "spacing.*",
+        "radius.*",
+        "lineWidth.*",
+        "size.*",
+        "typography.*",
+        "color.surface.*",
+        "color.market.*",
+        "color.status.*"
+      ],
+      "usage": "Governed public business workspace for /instrument/[id]. It owns the market detail page skeleton: default header actions without instrument fields, scroll-revealed instrument summary with symbol, current price, percentage change and price change, primary quote area, decision metrics, embedded TradingTerminalChart, tabbed auxiliary panels, risk copy, and sticky buy/sell quote actions. route containers must pass resolved instrument data and callbacks instead of rebuilding the page skeleton locally.",
+      "forbidden": [
+        "Do not recreate instrument detail layout inside route screens",
+        "Do not bypass the governed order ticket route for buy or sell actions",
+        "Do not hide quote freshness or FX/CFD risk context for visual simplicity",
+        "Do not use unregistered icons or page-local SVG for instrument detail actions"
+      ],
+      "status": "active"
+    },
+    "CountryPickerSheetContent": {
+      "category": "business-auth",
+      "path": "src/components/business/AuthSheets.tsx",
+      "exports": [
+        "CountryPickerSheetContent"
+      ],
+      "props": [
+        "onSelect",
+        "selected"
+      ],
+      "variants": [
+        "country-picker-list",
+        "searchable-list"
+      ],
+      "states": [
+        "default",
+        "filtered",
+        "empty",
+        "selected"
+      ],
+      "a11y": [
+        "Country rows expose radio state.",
+        "Search field has a localized accessibility label.",
+        "Empty state is visible localized text."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.*",
+        "spacing.*",
+        "radius.*",
+        "lineWidth.*",
+        "size.*",
+        "color.surface.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed auth country/region picker sheet content for shared BottomSheet selection flows. Consume countryOptions from the auth domain source and keep filtering inside the sheet body.",
+      "forbidden": [
+        "Do not import country data from UI controls.",
+        "Do not recreate country picker rows in auth screens.",
+        "Do not hardcode country search or empty-state copy."
+      ],
+      "status": "active"
+    },
+    "AuthLanguageSheetContent": {
+      "category": "business-auth",
+      "path": "src/components/business/AuthSheets.tsx",
+      "exports": [
+        "AuthLanguageSheetContent"
+      ],
+      "props": [
+        "onSelect",
+        "selectedLocale"
+      ],
+      "variants": [
+        "language-picker-list"
+      ],
+      "states": [
+        "default",
+        "selected"
+      ],
+      "a11y": [
+        "Language rows expose selected state.",
+        "Visible labels remain localized/native language names."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.*",
+        "spacing.*",
+        "radius.*",
+        "size.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed auth language sheet content for selecting supported app locales in the shared BottomSheet system.",
+      "forbidden": [
+        "Do not create page-local language rows or unregistered flag/icon assets.",
+        "Do not add locales without updating i18n locale support and copy coverage."
+      ],
+      "status": "active"
+    },
+    "AccountMenuSheet": {
+      "category": "business-account",
+      "path": "src/components/business/AccountSheets.tsx",
+      "exports": [
+        "AccountMenuSheet"
+      ],
+      "props": [
+        "account",
+        "onViewBasicInfo",
+        "onViewBalance",
+        "onViewDetails"
+      ],
+      "variants": [
+        "account-menu-sheet",
+        "account-header-summary",
+        "funding-action-grid",
+        "detail-link"
+      ],
+      "states": [
+        "active-account",
+        "demo-account",
+        "read-only-account"
+      ],
+      "a11y": [
+        "Account number, margin currency, and status remain visible text.",
+        "Funding actions inherit accessible labels from FundActionGrid.",
+        "Details entry exposes a button label."
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "tokenBindings": [
+        "layout.*",
+        "spacing.*",
+        "radius.*",
+        "lineWidth.*",
+        "color.surface.*",
+        "iconRegistry.*"
+      ],
+      "usage": "Governed account menu sheet body for account detail and trade account shortcut menus. It combines account status, funding quick actions, common account destinations, and a detail entry while callers own route navigation callbacks.",
+      "forbidden": [
+        "Do not recreate account menu sheet bodies inside route screens.",
+        "Do not perform destructive account actions from this menu without a registered confirmation flow.",
+        "Do not bypass FundActionGrid or GlobalMenuList for account menu actions."
       ],
       "status": "active"
     }

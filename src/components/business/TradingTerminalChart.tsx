@@ -34,6 +34,7 @@ type TradingTerminalChartProps = {
   instrument: Instrument;
   initialTimeframe?: InstrumentChartTimeframe;
   state?: TradingTerminalChartState;
+  toolbarMode?: 'compact' | 'full';
 };
 
 const chartTypeOptions: { labelKey: 'chart.type.candles' | 'chart.type.line' | 'chart.type.area'; value: ChartType }[] = [
@@ -103,7 +104,7 @@ type TranslationChartKey =
   | 'chart.type.candles'
   | 'chart.type.line';
 
-export function TradingTerminalChart({ density = 'terminal', initialTimeframe = '1m', instrument, state }: TradingTerminalChartProps) {
+export function TradingTerminalChart({ density = 'terminal', initialTimeframe = '1m', instrument, state, toolbarMode = 'full' }: TradingTerminalChartProps) {
   const modalStack = useModalStack();
   const openFullscreen = () => {
     modalStack.presentFullScreen({
@@ -115,6 +116,7 @@ export function TradingTerminalChart({ density = 'terminal', initialTimeframe = 
           instrument={instrument}
           onRequestClose={modalStack.closeRootModal}
           state={state}
+          toolbarMode="full"
         />
       ),
       title: instrument.symbol,
@@ -122,7 +124,7 @@ export function TradingTerminalChart({ density = 'terminal', initialTimeframe = 
   };
 
   return (
-    <TradingTerminalSurface density={density} fullscreen={false} initialTimeframe={initialTimeframe} instrument={instrument} onRequestFullscreen={openFullscreen} state={state} />
+    <TradingTerminalSurface density={density} fullscreen={false} initialTimeframe={initialTimeframe} instrument={instrument} onRequestFullscreen={openFullscreen} state={state} toolbarMode={toolbarMode} />
   );
 }
 
@@ -134,6 +136,7 @@ function TradingTerminalSurface({
   onRequestClose,
   onRequestFullscreen,
   state,
+  toolbarMode,
 }: {
   density: 'embedded' | 'terminal';
   fullscreen: boolean;
@@ -142,6 +145,7 @@ function TradingTerminalSurface({
   onRequestClose?: () => void;
   onRequestFullscreen?: () => void;
   state?: TradingTerminalChartState;
+  toolbarMode: 'compact' | 'full';
 }) {
   const { colors, locale, t } = useProductSettings();
   const { width } = useWindowDimensions();
@@ -277,6 +281,7 @@ function TradingTerminalSurface({
   const selectedCandle = crosshairIndex === null ? visibleCandles[visibleCandles.length - 1] : candles[crosshairIndex] ?? visibleCandles[visibleCandles.length - 1];
   const statusMessage = resolvedState === 'default' ? null : resolveStateCopy(resolvedState);
   const isEmbedded = density === 'embedded' && !fullscreen;
+  const showAdvancedToolbar = toolbarMode === 'full' || fullscreen;
 
   return (
     <View style={StyleSheet.flatten([styles.surface, isEmbedded && styles.embeddedSurface, fullscreen && styles.fullscreenSurface, { backgroundColor: colors.surface.panel }])}>
@@ -368,59 +373,63 @@ function TradingTerminalSurface({
 
           {selectedCandle ? <OhlcvPanel candle={selectedCandle} instrument={instrument} /> : null}
 
-          <View style={StyleSheet.flatten([styles.toolbarHeader, isEmbedded && styles.embeddedToolbarHeader])}>
-            <AppText tone="dim" variant="eyebrow">
-              {t('chart.section.indicators')}
-            </AppText>
-            <View style={styles.toolbarActions}>
-              <ToolChip active compact={isEmbedded} icon="icon.wallet.withdrawal" label={t('chart.action.reset')} onPress={() => resetView(candles, setVisibleStart, setVisibleCount, setCrosshairIndex)} />
-            </View>
-          </View>
-          <ScrollView contentContainerStyle={StyleSheet.flatten([styles.chipRow, isEmbedded && styles.embeddedChipRow])} horizontal showsHorizontalScrollIndicator={false}>
-            {indicatorOptions.map((item) => (
-              <ToolChip
-                active={indicators[item.key]}
-                compact={isEmbedded}
-                icon={item.icon}
-                key={item.key}
-                label={t(item.labelKey)}
-                onPress={() => setIndicators((current) => ({ ...current, [item.key]: !current[item.key] }))}
-              />
-            ))}
-          </ScrollView>
+          {showAdvancedToolbar ? (
+            <>
+              <View style={StyleSheet.flatten([styles.toolbarHeader, isEmbedded && styles.embeddedToolbarHeader])}>
+                <AppText tone="dim" variant="eyebrow">
+                  {t('chart.section.indicators')}
+                </AppText>
+                <View style={styles.toolbarActions}>
+                  <ToolChip active compact={isEmbedded} icon="icon.wallet.withdrawal" label={t('chart.action.reset')} onPress={() => resetView(candles, setVisibleStart, setVisibleCount, setCrosshairIndex)} />
+                </View>
+              </View>
+              <ScrollView contentContainerStyle={StyleSheet.flatten([styles.chipRow, isEmbedded && styles.embeddedChipRow])} horizontal showsHorizontalScrollIndicator={false}>
+                {indicatorOptions.map((item) => (
+                  <ToolChip
+                    active={indicators[item.key]}
+                    compact={isEmbedded}
+                    icon={item.icon}
+                    key={item.key}
+                    label={t(item.labelKey)}
+                    onPress={() => setIndicators((current) => ({ ...current, [item.key]: !current[item.key] }))}
+                  />
+                ))}
+              </ScrollView>
 
-          <View style={StyleSheet.flatten([styles.toolbarHeader, isEmbedded && styles.embeddedToolbarHeader])}>
-            <AppText tone="dim" variant="eyebrow">
-              {t('chart.section.drawings')}
-            </AppText>
-            <View style={styles.toolbarActions}>
-              <ToolChip active={Boolean(selectedDrawingId)} compact={isEmbedded} icon="icon.system.delete" label={t('chart.action.delete')} onPress={() => deleteSelectedDrawing(selectedDrawingId, setDrawings, setSelectedDrawingId)} />
-              <ToolChip active={drawings.length > 0} compact={isEmbedded} icon="icon.system.close" label={t('chart.action.clear')} onPress={() => clearDrawings(setDrawings, setSelectedDrawingId)} />
-            </View>
-          </View>
-          <ScrollView contentContainerStyle={StyleSheet.flatten([styles.chipRow, isEmbedded && styles.embeddedChipRow])} horizontal showsHorizontalScrollIndicator={false}>
-            {drawingToolOptions.map((item) => (
-              <ToolChip active={activeTool === item.key} compact={isEmbedded} icon={item.icon} key={item.key} label={t(item.labelKey)} onPress={() => setActiveTool(item.key)} />
-            ))}
-          </ScrollView>
-          <ScrollView contentContainerStyle={StyleSheet.flatten([styles.drawingRow, isEmbedded && styles.embeddedDrawingRow])} horizontal showsHorizontalScrollIndicator={false}>
-            {drawings.length === 0 ? (
-              <AppText tone="muted" variant="caption">
-                {t('chart.drawing.none')}
-              </AppText>
-            ) : (
-              drawings.map((item, index) => (
-                <ToolChip
-                  active={selectedDrawingId === item.id}
-                  compact={isEmbedded}
-                  icon={drawingToolOptions.find((tool) => tool.key === item.tool)?.icon ?? 'icon.trading.market'}
-                  key={item.id}
-                  label={t('chart.drawing.selected', { index: index + 1 })}
-                  onPress={() => setSelectedDrawingId(item.id)}
-                />
-              ))
-            )}
-          </ScrollView>
+              <View style={StyleSheet.flatten([styles.toolbarHeader, isEmbedded && styles.embeddedToolbarHeader])}>
+                <AppText tone="dim" variant="eyebrow">
+                  {t('chart.section.drawings')}
+                </AppText>
+                <View style={styles.toolbarActions}>
+                  <ToolChip active={Boolean(selectedDrawingId)} compact={isEmbedded} icon="icon.system.delete" label={t('chart.action.delete')} onPress={() => deleteSelectedDrawing(selectedDrawingId, setDrawings, setSelectedDrawingId)} />
+                  <ToolChip active={drawings.length > 0} compact={isEmbedded} icon="icon.system.close" label={t('chart.action.clear')} onPress={() => clearDrawings(setDrawings, setSelectedDrawingId)} />
+                </View>
+              </View>
+              <ScrollView contentContainerStyle={StyleSheet.flatten([styles.chipRow, isEmbedded && styles.embeddedChipRow])} horizontal showsHorizontalScrollIndicator={false}>
+                {drawingToolOptions.map((item) => (
+                  <ToolChip active={activeTool === item.key} compact={isEmbedded} icon={item.icon} key={item.key} label={t(item.labelKey)} onPress={() => setActiveTool(item.key)} />
+                ))}
+              </ScrollView>
+              <ScrollView contentContainerStyle={StyleSheet.flatten([styles.drawingRow, isEmbedded && styles.embeddedDrawingRow])} horizontal showsHorizontalScrollIndicator={false}>
+                {drawings.length === 0 ? (
+                  <AppText tone="muted" variant="caption">
+                    {t('chart.drawing.none')}
+                  </AppText>
+                ) : (
+                  drawings.map((item, index) => (
+                    <ToolChip
+                      active={selectedDrawingId === item.id}
+                      compact={isEmbedded}
+                      icon={drawingToolOptions.find((tool) => tool.key === item.tool)?.icon ?? 'icon.trading.market'}
+                      key={item.id}
+                      label={t('chart.drawing.selected', { index: index + 1 })}
+                      onPress={() => setSelectedDrawingId(item.id)}
+                    />
+                  ))
+                )}
+              </ScrollView>
+            </>
+          ) : null}
         </>
       )}
     </View>
@@ -1023,7 +1032,7 @@ const styles = StyleSheet.create({
   embeddedSurface: {
     gap: spacing.sm + spacing.xxs,
     marginTop: spacing.md,
-    padding: spacing.sm + spacing.xxs,
+    padding: spacing.none,
   },
   embeddedToolbarHeader: {
     marginTop: spacing.xs,

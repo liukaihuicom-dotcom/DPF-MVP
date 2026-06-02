@@ -270,11 +270,12 @@
       ]
     },
     "InstrumentDetailWorkspace": {
-      "component": "InstrumentDetailScreen market-detail composition",
+      "component": "InstrumentDetailWorkspace public market-detail skeleton",
       "businessDomain": "markets-trading-entry",
       "states": [
         "default",
-        "loading",
+        "market_closed",
+        "quote_stale",
         "not_found",
         "restricted"
       ],
@@ -285,10 +286,11 @@
         "Trader role plus production quote entitlement and trading account checks."
       ],
       "dataInputs": [
-        "instrument quote",
-        "chart summary",
+        "resolved instrument quote",
+        "chart candles by timeframe",
         "market stats",
-        "order ticket route params"
+        "route container callbacks",
+        "i18n copy resolver"
       ],
       "platforms": [
         "app",
@@ -296,8 +298,17 @@
         "web"
       ],
       "qaGate": [
-        "Uses registered InstrumentIcon, HeaderIconButton, AppIcon, and order ticket route modal"
-      ]
+        "Route screen consumes InstrumentDetailWorkspace instead of rebuilding the skeleton locally",
+        "HeaderIconButton uses surface=auto on white/panel header contexts and registered icons only",
+        "Buy and sell actions route through the order ticket and do not bypass quote/account entitlement checks",
+        "Workspace uses token-bound layout, i18n keys, InstrumentIcon, SegmentedTabs, NativePressable, and TradingTerminalChart"
+      ],
+      "currentSources": [
+        "src/components/business/InstrumentDetailWorkspace.tsx",
+        "src/screens/markets/InstrumentDetailScreen.tsx"
+      ],
+      "extractionStatus": "implemented_active",
+      "sourcePath": "src/components/business/InstrumentDetailWorkspace.tsx"
     },
     "UpgradeChatCard": {
       "component": "UpgradeChatCard",
@@ -841,7 +852,8 @@
         "Bid/Ask/current price",
         "quote status",
         "market status",
-        "toolbar i18n labels"
+        "toolbar i18n labels",
+        "toolbarMode compact | full"
       ],
       "platforms": [
         "app",
@@ -857,6 +869,7 @@
         "All react-native-svg rendering is inside this business component",
         "Toolbar icons come from the local registered AppIcon registry",
         "OHLCV, Bid/Ask, current price, and stale/closed/restricted states are text-labeled",
+        "Embedded instrument detail usage may set toolbarMode=compact to keep advanced indicators and drawing tools out of the first screen",
         "Mobile width keeps chart toolbar horizontally scrollable without overflow"
       ],
       "sourcePath": "src/components/business/TradingTerminalChart.tsx"

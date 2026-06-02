@@ -37,7 +37,7 @@ import { layout, lineWidth, radius, spacing, size, typography, zIndex } from '@/
 
 import { AppIcon, type AppIconName, type IconTone } from './AppIcon';
 import { HeaderIconButton } from './HeaderIconButton';
-import { IconSurface } from './IconSurface';
+import { IconSurface, type IconSurfaceTone } from './IconSurface';
 import { NativePressable } from './NativePressable';
 import { SelectField } from './TextField';
 import { AppText } from './Typography';
@@ -46,9 +46,30 @@ type ConsoleScreen = 'home' | 'pages' | 'state';
 type PageConsoleGroup = 'markets' | 'trading' | 'accounts' | 'funding' | 'growth' | 'auth';
 type PageConsoleLevel = 'detail' | 'modal' | 'primary';
 type ScenarioTone = 'amber' | 'blue' | 'brand' | 'danger' | 'down' | 'up';
-type DevScenarioId = 'guest' | 'login' | 'markets' | 'trade' | 'order' | 'accounts' | 'funding' | 'partner' | 'discover';
+type DevScenarioGroup = 'activeTrader' | 'edgeCases' | 'fundingAccount' | 'guestOnboarding' | 'newTrader' | 'partnerGrowth';
+type DevScenarioRiskLevel = 'blocked' | 'gap' | 'normal' | 'review';
+type DevUserScenarioId =
+  | 'funding_deposit_entry'
+  | 'funding_reviewing'
+  | 'guest_forgot_password'
+  | 'guest_onboarding_start'
+  | 'guest_register_risk_ack'
+  | 'new_trader_kyc_approved'
+  | 'new_trader_kyc_not_started'
+  | 'new_trader_kyc_reviewing'
+  | 'partner_approved_workspace'
+  | 'partner_client_profile'
+  | 'partner_pending'
+  | 'quote_failed_state'
+  | 'returning_login_pin_required'
+  | 'risk_warning_state'
+  | 'trader_account_stress'
+  | 'trader_markets_ready'
+  | 'trader_order_ticket'
+  | 'trader_trade_workspace';
 
 type PageConsoleEntry = {
+  fitKey: TranslationKey;
   group: PageConsoleGroup;
   icon: AppIconName;
   level: PageConsoleLevel;
@@ -59,12 +80,16 @@ type PageConsoleEntry = {
   tone: ScenarioTone;
 };
 
-type QuickScenario = {
-  id: DevScenarioId;
+type DevUserScenario = {
+  apply?: () => void;
+  group: DevScenarioGroup;
   icon: AppIconName;
-  metaKey: TranslationKey;
+  id: DevUserScenarioId;
+  intentKey: TranslationKey;
+  personaKey: TranslationKey;
+  riskLevel: DevScenarioRiskLevel;
   route: Href;
-  titleKey: TranslationKey;
+  stateSummaryKey: TranslationKey;
   tone: ScenarioTone;
 };
 
@@ -89,15 +114,16 @@ const pageLevelLabels: Record<Exclude<PageConsoleLevel, 'primary'>, TranslationK
   detail: 'control.pageConsole.level.detail',
   modal: 'control.pageConsole.level.modal',
 };
-const maxVisibleScenarios = 6;
+const scenarioGroups: DevScenarioGroup[] = ['guestOnboarding', 'newTrader', 'activeTrader', 'fundingAccount', 'partnerGrowth', 'edgeCases'];
+const defaultVisibleScenarioCount = 2;
 const devConsoleFabDragThreshold = spacing.xs;
 const devConsoleFabEdgeInset = spacing.sm;
 const devConsoleFabInitialOffset: DevConsoleFabOffset = { bottom: 82, right: spacing.lg };
 const devConsoleFabSize = size.control.md;
 
-const scenarioToneKeys: Record<ScenarioTone, IconTone> = {
-  amber: 'amber',
-  blue: 'blue',
+const scenarioSurfaceToneKeys: Record<ScenarioTone, IconSurfaceTone> = {
+  amber: 'warning',
+  blue: 'info',
   brand: 'brand',
   danger: 'danger',
   down: 'down',
@@ -130,10 +156,9 @@ const tradeWorkspaceDataPresetLabels: Record<TradeWorkspaceDataPreset, Translati
   empty: 'control.tradeWorkspace.dataPreset.empty',
   sample: 'control.tradeWorkspace.dataPreset.sample',
 };
-const primaryScenarioIds: DevScenarioId[] = ['login', 'markets', 'trade', 'order', 'accounts', 'funding', 'partner', 'discover'];
 
 export function ProductControlPanel() {
-  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [expandedScenarioGroups, setExpandedScenarioGroups] = useState<Partial<Record<DevScenarioGroup, boolean>>>({});
   const [fabOffset, setFabOffset] = useState<DevConsoleFabOffset>(devConsoleFabInitialOffset);
   const [open, setOpen] = useState(false);
   const [resetArmed, setResetArmed] = useState(false);
@@ -206,7 +231,6 @@ export function ProductControlPanel() {
   const toast = useToast();
   const anchor = instruments.find((instrument) => instrument.symbol === 'EUR/USD') ?? instruments[0];
   const pageEntries = useMemo(() => buildPageEntries(anchor?.id ?? 'eur-usd'), [anchor?.id]);
-  const quickScenarios = useMemo(() => buildQuickScenarios(anchor?.id ?? 'eur-usd'), [anchor?.id]);
   const maxFabBottom = Math.max(devConsoleFabEdgeInset, windowHeight - devConsoleFabSize - devConsoleFabEdgeInset);
   const maxFabRight = Math.max(devConsoleFabEdgeInset, windowWidth - devConsoleFabSize - devConsoleFabEdgeInset);
   fabMaxBottomRef.current = maxFabBottom;
@@ -216,7 +240,6 @@ export function ProductControlPanel() {
     dataPreset: tradingAccountDataPreset,
     statusPreset: tradingAccountStatusPreset,
   });
-  const visibleScenarios = quickScenarios.filter((scenario) => primaryScenarioIds.includes(scenario.id)).slice(0, maxVisibleScenarios);
 
   const updateFabOffset = useCallback((nextOffset: DevConsoleFabOffset) => {
     const clampedOffset = clampDevConsoleFabOffset(nextOffset, fabMaxRightRef.current, fabMaxBottomRef.current);
@@ -312,6 +335,67 @@ export function ProductControlPanel() {
     setPinStatus('unset');
   };
 
+  const applyReturningLogin = () => {
+    setAuthStatus('guest');
+    setLastLoginAccount('client@dupoin.demo');
+    setLastLoginChannel('email');
+    setLastLoginAvatarId('frank');
+    setLocalPinCode('');
+    setPinGateStatus('unlocked');
+    setPinStatus('unset');
+  };
+
+  const applyTraderBase = () => {
+    applySignedIn();
+    setRole('trader');
+    setTradingAccountUsageOverride('auto');
+  };
+
+  const applyTraderKyc = (status: KycStatus) => {
+    applyTraderBase();
+    setKycStatus(status);
+    setTradingAccountScenario('default');
+    setTradingAccountCountPreset('single');
+    setTradingAccountDataPreset('balanced');
+    setTradingAccountStatusPreset('demo');
+    setSelectedTradingAccountId('demo-main');
+  };
+
+  const applyTradingReady = () => {
+    applyTraderBase();
+    setKycStatus('approved');
+    setPositionDataPreset('sample');
+    setPendingOrderDataPreset('sample');
+    setTradingAccountScenario('default');
+    setTradingAccountCountPreset('three');
+    setTradingAccountDataPreset('balanced');
+    setTradingAccountStatusPreset('active');
+    setTradingAccountUsageOverride('normal');
+  };
+
+  const applyAccountStress = () => {
+    applyTraderBase();
+    setKycStatus('approved');
+    setTradingAccountScenario('stateAnalysis');
+    setTradingAccountCountPreset('seven');
+    setTradingAccountDataPreset('marginStress');
+    setTradingAccountStatusPreset('mixed');
+    setTradingAccountUsageOverride('warning');
+    setSelectedTradingAccountId('account-900054');
+  };
+
+  const applyFundingReview = () => {
+    applyTraderBase();
+    setKycStatus('approved');
+    setTradingAccountScenario('stateAnalysis');
+    setTradingAccountCountPreset('three');
+    setTradingAccountDataPreset('balanced');
+    setTradingAccountStatusPreset('mixed');
+    setTradingAccountUsageOverride('warning');
+    setSelectedTradingAccountId('account-900054');
+    applyMockFundingPreset('reviewing');
+  };
+
   const applyUpgradeStatus = (status: UpgradeStatus) => {
     if (status === 'pending') {
       submitUpgradeRequest(t('upgrade.defaultReason'));
@@ -334,73 +418,21 @@ export function ProductControlPanel() {
     }
   };
 
-  const applyScenario = (scenario: QuickScenario) => {
+  const applyScenario = (scenario: DevUserScenario) => {
+    if (!scenario.apply) {
+      void notifyWarning();
+      toast.show({
+        message: t(scenario.stateSummaryKey),
+        title: t('control.scenario.status.gap'),
+        tone: 'warning',
+      });
+      closePanel();
+      router.replace(scenario.route);
+      return;
+    }
+
     void impactLight();
-
-    if (scenario.id === 'guest') {
-      applyGuest();
-    }
-
-    if (scenario.id === 'login') {
-      setAuthStatus('guest');
-      setLastLoginAccount('client@dupoin.demo');
-      setLastLoginChannel('email');
-      setLastLoginAvatarId('frank');
-      setLocalPinCode('');
-      setPinGateStatus('unlocked');
-      setPinStatus('unset');
-    }
-
-    if (scenario.id === 'markets') {
-      applySignedIn();
-      setRole('trader');
-      setTradingAccountUsageOverride('auto');
-    }
-
-    if (scenario.id === 'trade') {
-      applySignedIn();
-      setRole('trader');
-      setPositionDataPreset('sample');
-      setPendingOrderDataPreset('sample');
-      setTradingAccountUsageOverride('normal');
-    }
-
-    if (scenario.id === 'order') {
-      applySignedIn();
-      setRole('trader');
-      setTradingAccountUsageOverride('normal');
-    }
-
-    if (scenario.id === 'accounts') {
-      applySignedIn();
-      setRole('trader');
-      setTradingAccountScenario('stateAnalysis');
-      setTradingAccountCountPreset('seven');
-      setTradingAccountDataPreset('marginStress');
-      setTradingAccountStatusPreset('mixed');
-      setSelectedTradingAccountId('account-900054');
-    }
-
-    if (scenario.id === 'funding') {
-      applySignedIn();
-      setRole('trader');
-      setTradingAccountScenario('stateAnalysis');
-      setTradingAccountCountPreset('three');
-      setTradingAccountStatusPreset('mixed');
-      applyMockFundingPreset('reviewing');
-    }
-
-    if (scenario.id === 'partner') {
-      applySignedIn();
-      setRole('partner');
-      applyUpgradeStatus('approved');
-    }
-
-    if (scenario.id === 'discover') {
-      applySignedIn();
-      setRole('trader');
-      setSelectedDiscoverModule('education');
-    }
+    scenario.apply();
 
     toast.show({
       message: t('control.devConsole.toastScenarioBody'),
@@ -432,7 +464,6 @@ export function ProductControlPanel() {
     resetProductSettings();
     resetBrokerDemoState();
     resetMockFundingTransactions();
-    setAdvancedOpen(false);
     setResetArmed(false);
     void notifySuccess();
     toast.show({ message: t('control.devConsole.resetDoneBody'), title: t('control.devConsole.resetDone'), tone: 'success' });
@@ -493,6 +524,265 @@ export function ProductControlPanel() {
     setLocale(next);
     showControlToast(localeOptions.find((item) => item.value === next)?.label ?? next);
   };
+
+  const devScenarios = useMemo<DevUserScenario[]>(
+    () => [
+      {
+        apply: applyGuest,
+        group: 'guestOnboarding',
+        icon: 'icon.market.global',
+        id: 'guest_onboarding_start',
+        intentKey: 'control.scenario.guestOnboarding.start.intent',
+        personaKey: 'control.scenario.persona.guest',
+        riskLevel: 'normal',
+        route: '/brand-splash',
+        stateSummaryKey: 'control.scenario.guestOnboarding.start.state',
+        tone: 'brand',
+      },
+      {
+        apply: applyGuest,
+        group: 'guestOnboarding',
+        icon: 'icon.account.add_user',
+        id: 'guest_register_risk_ack',
+        intentKey: 'control.scenario.guestOnboarding.register.intent',
+        personaKey: 'control.scenario.persona.guest',
+        riskLevel: 'review',
+        route: '/auth/register',
+        stateSummaryKey: 'control.scenario.guestOnboarding.register.state',
+        tone: 'danger',
+      },
+      {
+        apply: applyReturningLogin,
+        group: 'guestOnboarding',
+        icon: 'icon.security.lock',
+        id: 'returning_login_pin_required',
+        intentKey: 'control.scenario.guestOnboarding.returning.intent',
+        personaKey: 'control.scenario.persona.returningGuest',
+        riskLevel: 'normal',
+        route: '/auth',
+        stateSummaryKey: 'control.scenario.guestOnboarding.returning.state',
+        tone: 'danger',
+      },
+      {
+        apply: applyGuest,
+        group: 'guestOnboarding',
+        icon: 'icon.notification.email',
+        id: 'guest_forgot_password',
+        intentKey: 'control.scenario.guestOnboarding.forgot.intent',
+        personaKey: 'control.scenario.persona.guest',
+        riskLevel: 'normal',
+        route: '/auth/forgot-password',
+        stateSummaryKey: 'control.scenario.guestOnboarding.forgot.state',
+        tone: 'blue',
+      },
+      {
+        apply: () => applyTraderKyc('notStarted'),
+        group: 'newTrader',
+        icon: 'icon.kyc.identity',
+        id: 'new_trader_kyc_not_started',
+        intentKey: 'control.scenario.newTrader.notStarted.intent',
+        personaKey: 'control.scenario.persona.newTrader',
+        riskLevel: 'review',
+        route: '/workspace',
+        stateSummaryKey: 'control.scenario.newTrader.notStarted.state',
+        tone: 'amber',
+      },
+      {
+        apply: () => applyTraderKyc('reviewing'),
+        group: 'newTrader',
+        icon: 'icon.security.risk_shield',
+        id: 'new_trader_kyc_reviewing',
+        intentKey: 'control.scenario.newTrader.reviewing.intent',
+        personaKey: 'control.scenario.persona.newTrader',
+        riskLevel: 'review',
+        route: '/workspace',
+        stateSummaryKey: 'control.scenario.newTrader.reviewing.state',
+        tone: 'amber',
+      },
+      {
+        apply: () => applyTraderKyc('approved'),
+        group: 'newTrader',
+        icon: 'icon.status.verified',
+        id: 'new_trader_kyc_approved',
+        intentKey: 'control.scenario.newTrader.approved.intent',
+        personaKey: 'control.scenario.persona.readyTrader',
+        riskLevel: 'normal',
+        route: '/workspace',
+        stateSummaryKey: 'control.scenario.newTrader.approved.state',
+        tone: 'brand',
+      },
+      {
+        apply: () => {
+          applyTradingReady();
+          setPositionDataPreset('empty');
+          setPendingOrderDataPreset('empty');
+        },
+        group: 'activeTrader',
+        icon: 'icon.trading.market',
+        id: 'trader_markets_ready',
+        intentKey: 'control.scenario.activeTrader.markets.intent',
+        personaKey: 'control.scenario.persona.activeTrader',
+        riskLevel: 'normal',
+        route: '/markets',
+        stateSummaryKey: 'control.scenario.activeTrader.markets.state',
+        tone: 'brand',
+      },
+      {
+        apply: applyTradingReady,
+        group: 'activeTrader',
+        icon: 'icon.trading.order_ticket',
+        id: 'trader_order_ticket',
+        intentKey: 'control.scenario.activeTrader.order.intent',
+        personaKey: 'control.scenario.persona.activeTrader',
+        riskLevel: 'review',
+        route: `/order/${anchor?.id ?? 'eur-usd'}?direction=buy` as Href,
+        stateSummaryKey: 'control.scenario.activeTrader.order.state',
+        tone: 'up',
+      },
+      {
+        apply: applyTradingReady,
+        group: 'activeTrader',
+        icon: 'icon.trading.volume',
+        id: 'trader_trade_workspace',
+        intentKey: 'control.scenario.activeTrader.workspace.intent',
+        personaKey: 'control.scenario.persona.activeTrader',
+        riskLevel: 'normal',
+        route: '/trade',
+        stateSummaryKey: 'control.scenario.activeTrader.workspace.state',
+        tone: 'up',
+      },
+      {
+        apply: applyAccountStress,
+        group: 'fundingAccount',
+        icon: 'icon.account.trading',
+        id: 'trader_account_stress',
+        intentKey: 'control.scenario.fundingAccount.accountStress.intent',
+        personaKey: 'control.scenario.persona.stressTrader',
+        riskLevel: 'review',
+        route: '/accounts',
+        stateSummaryKey: 'control.scenario.fundingAccount.accountStress.state',
+        tone: 'blue',
+      },
+      {
+        apply: applyFundingReview,
+        group: 'fundingAccount',
+        icon: 'icon.wallet.balance',
+        id: 'funding_reviewing',
+        intentKey: 'control.scenario.fundingAccount.reviewing.intent',
+        personaKey: 'control.scenario.persona.fundingTrader',
+        riskLevel: 'review',
+        route: '/funding/transactions',
+        stateSummaryKey: 'control.scenario.fundingAccount.reviewing.state',
+        tone: 'blue',
+      },
+      {
+        apply: () => {
+          applyFundingReview();
+          applyMockFundingPreset('awaitingPayment');
+        },
+        group: 'fundingAccount',
+        icon: 'icon.wallet.deposit',
+        id: 'funding_deposit_entry',
+        intentKey: 'control.scenario.fundingAccount.deposit.intent',
+        personaKey: 'control.scenario.persona.fundingTrader',
+        riskLevel: 'normal',
+        route: '/funding/deposit',
+        stateSummaryKey: 'control.scenario.fundingAccount.deposit.state',
+        tone: 'brand',
+      },
+      {
+        apply: () => {
+          applySignedIn();
+          setRole('trader');
+          applyUpgradeStatus('pending');
+          setSelectedDiscoverModule('partner');
+        },
+        group: 'partnerGrowth',
+        icon: 'icon.ib.network',
+        id: 'partner_pending',
+        intentKey: 'control.scenario.partnerGrowth.pending.intent',
+        personaKey: 'control.scenario.persona.partnerApplicant',
+        riskLevel: 'review',
+        route: '/partner-tools',
+        stateSummaryKey: 'control.scenario.partnerGrowth.pending.state',
+        tone: 'amber',
+      },
+      {
+        apply: () => {
+          applySignedIn();
+          setRole('partner');
+          applyUpgradeStatus('approved');
+          setSelectedDiscoverModule('partner');
+        },
+        group: 'partnerGrowth',
+        icon: 'icon.ib.network',
+        id: 'partner_approved_workspace',
+        intentKey: 'control.scenario.partnerGrowth.approved.intent',
+        personaKey: 'control.scenario.persona.partnerApproved',
+        riskLevel: 'normal',
+        route: '/partner-tools',
+        stateSummaryKey: 'control.scenario.partnerGrowth.approved.state',
+        tone: 'amber',
+      },
+      {
+        apply: () => {
+          applySignedIn();
+          setRole('partner');
+          applyUpgradeStatus('approved');
+        },
+        group: 'partnerGrowth',
+        icon: 'icon.account.avatar',
+        id: 'partner_client_profile',
+        intentKey: 'control.scenario.partnerGrowth.client.intent',
+        personaKey: 'control.scenario.persona.partnerApproved',
+        riskLevel: 'normal',
+        route: '/client/client-001',
+        stateSummaryKey: 'control.scenario.partnerGrowth.client.state',
+        tone: 'blue',
+      },
+      {
+        apply: applyAccountStress,
+        group: 'edgeCases',
+        icon: 'icon.security.risk_shield',
+        id: 'risk_warning_state',
+        intentKey: 'control.scenario.edgeCases.risk.intent',
+        personaKey: 'control.scenario.persona.stressTrader',
+        riskLevel: 'review',
+        route: '/workspace',
+        stateSummaryKey: 'control.scenario.edgeCases.risk.state',
+        tone: 'danger',
+      },
+      {
+        group: 'edgeCases',
+        icon: 'icon.trading.market',
+        id: 'quote_failed_state',
+        intentKey: 'control.scenario.edgeCases.quote.intent',
+        personaKey: 'control.scenario.persona.activeTrader',
+        riskLevel: 'gap',
+        route: '/markets',
+        stateSummaryKey: 'control.scenario.edgeCases.quote.state',
+        tone: 'down',
+      },
+    ],
+    [anchor?.id, upgradeRequest.status],
+  );
+  const currentUsageStatus =
+    tradingAccountUsageOverride === 'auto'
+      ? getAutomaticTradingUsageStatus({ authStatus, quoteStatus })
+      : (tradingAccountUsageOverride as TradingAccountUsageStatus);
+  const selectedAccountLabel = tradingAccounts.find((item) => item.id === settings.selectedTradingAccountId)?.accountNo ?? settings.selectedTradingAccountId;
+  const runtimeMetrics = [
+    { label: t('control.pageConsole.quickState.auth'), value: t(`auth.status.${authStatus}`) },
+    { label: t('control.role'), value: role === 'partner' ? t('role.partner') : t('role.trader') },
+    { label: t('control.kycStatus'), value: t(`kyc.status.${kycStatus}` as TranslationKey) },
+    { label: t('control.tradingUsage.selectLabel'), value: t(`control.tradingUsage.status.${currentUsageStatus}`) },
+    { label: t('control.devConsole.fundingPreset'), value: t('control.scenario.snapshot.fundingLocal') },
+    { label: t('control.pageConsole.partnerState'), value: t(`upgrade.status.${upgradeRequest.status}`) },
+    { label: t('control.pageConsole.quoteState'), value: t(`control.scenario.quoteStatus.${quoteStatus}`) },
+    { label: t('control.scenario.snapshot.account'), value: selectedAccountLabel },
+    { label: t('control.tradingUsage.positions'), value: formatNumber(positions.length, 0, locale) },
+    { label: t('control.tradingUsage.orders'), value: formatNumber(orders.length, 0, locale) },
+  ];
   const contextControls = (
     <View style={styles.contextGrid}>
       <TopSelectControl
@@ -673,9 +963,22 @@ export function ProductControlPanel() {
     ) : null;
 
   return (
-    <View style={StyleSheet.flatten([styles.host, { bottom: visibleFabOffset.bottom, right: visibleFabOffset.right }])}>
+    <>
       {open ? (
-        <View style={StyleSheet.flatten([styles.panel, panelFrameStyle, shadows.dialog, { backgroundColor: colors.surface.canvas, borderColor: colors.border.default }])}>
+        <NativePressable
+          accessibilityElementsHidden
+          accessible={false}
+          importantForAccessibility="no-hide-descendants"
+          minTouch={0}
+          onPress={closePanel}
+          pressedStyle={styles.blankDismissLayer}
+          style={styles.blankDismissLayer}
+        />
+      ) : null}
+
+      <View style={StyleSheet.flatten([styles.host, { bottom: visibleFabOffset.bottom, right: visibleFabOffset.right }])}>
+        {open ? (
+          <View style={StyleSheet.flatten([styles.panel, panelFrameStyle, shadows.dialog, { backgroundColor: colors.surface.canvas, borderColor: colors.border.default }])}>
           <View style={StyleSheet.flatten([styles.panelTop, { borderBottomColor: colors.border.subtle }])}>
             {screen !== 'home' ? (
               <HeaderIconButton accessibilityLabel={t('top.back')} icon="icon.system.back" onPress={() => setScreen('home')} variant="ghost" />
@@ -698,15 +1001,54 @@ export function ProductControlPanel() {
           <ScrollView contentContainerStyle={styles.panelContent} showsVerticalScrollIndicator={false} style={styles.panelScroller}>
             {screen === 'home' ? (
               <>
-                {contextControls}
+                <View style={StyleSheet.flatten([styles.homeHero, { backgroundColor: colors.surface.panel }])}>
+                  <AppText tone="dim" variant="eyebrow">
+                    {t('control.scenario.heroEyebrow')}
+                  </AppText>
+                  <AppText variant="subtitle">{t('control.scenario.heroTitle')}</AppText>
+                  <AppText tone="muted" variant="caption">
+                    {t('control.scenario.heroBody')}
+                  </AppText>
+                </View>
 
-                <SectionTitle title={t('control.pageConsole.menu.pages')} />
+                <SectionTitle title={t('control.scenario.userJourneys')} />
+                <View style={styles.scenarioGroupStack}>
+                  {scenarioGroups.map((group) => {
+                    const groupScenarios = devScenarios.filter((scenario) => scenario.group === group);
+                    const expanded = expandedScenarioGroups[group] ?? false;
+                    const visibleGroupScenarios = expanded ? groupScenarios : groupScenarios.slice(0, defaultVisibleScenarioCount);
+
+                    return (
+                      <ScenarioGroup
+                        expanded={expanded}
+                        group={group}
+                        key={group}
+                        onToggle={() => setExpandedScenarioGroups((current) => ({ ...current, [group]: !expanded }))}
+                        scenarios={visibleGroupScenarios}
+                        totalCount={groupScenarios.length}
+                        onPressScenario={applyScenario}
+                      />
+                    );
+                  })}
+                </View>
+
+                <SectionTitle title={t('control.scenario.currentIdentity')} />
+                <View style={StyleSheet.flatten([styles.identitySurface, { backgroundColor: colors.surface.panel }])}>
+                  {contextControls}
+                  <View style={styles.statusLine}>
+                    {runtimeMetrics.map((metric) => (
+                      <CompactMetric key={metric.label} label={metric.label} value={metric.value} />
+                    ))}
+                  </View>
+                </View>
+
+                <SectionTitle title={t('control.scenario.diagnosticsReset')} />
                 <View style={StyleSheet.flatten([styles.formSurface, { backgroundColor: colors.surface.panel }])}>
                   <ModuleAction
                     body={t('control.pageConsole.menu.pagesBody')}
                     icon="icon.navigation.function_center"
                     label={t('control.pageConsole.menu.pages')}
-                    meta={t('control.pageConsole.menu.pagesMeta')}
+                    meta={t('control.scenario.pageMapMeta')}
                     onPress={() => setScreen('pages')}
                     tone="brand"
                   />
@@ -714,43 +1056,10 @@ export function ProductControlPanel() {
                     body={t('control.pageConsole.menu.stateBody')}
                     icon="icon.security.risk_shield"
                     label={t('control.pageConsole.menu.state')}
-                    meta={t('control.devConsole.advanced')}
+                    meta={t('control.scenario.fineTuneMeta')}
                     onPress={() => setScreen('state')}
                     tone="amber"
                   />
-                </View>
-
-                <NativePressable
-                  accessibilityRole="button"
-                  minTouch={40}
-                  onPress={() => setAdvancedOpen((value) => !value)}
-                  style={StyleSheet.flatten([styles.foldButton, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-                  <View style={styles.foldTitle}>
-                    <AppIcon name="icon.system.settings" sizeVariant="sm" tone="tertiary" />
-                    <AppText variant="caption">{t('control.devConsole.advanced')}</AppText>
-                  </View>
-                  <AppIcon name={advancedOpen ? 'icon.system.chevron_down' : 'icon.system.chevron_right'} sizeVariant="sm" tone="tertiary" />
-                </NativePressable>
-
-                {advancedOpen ? (
-                  statePresetControls
-                ) : null}
-
-                <SectionTitle title={t('control.devConsole.quickScenarios')} />
-                <View style={StyleSheet.flatten([styles.formSurface, { backgroundColor: colors.surface.panel }])}>
-                  <View style={styles.scenarioGrid}>
-                    {visibleScenarios.map((scenario) => (
-                      <ScenarioTile key={scenario.id} onPress={() => applyScenario(scenario)} scenario={scenario} />
-                    ))}
-                  </View>
-                </View>
-
-                <SectionTitle title={t('control.pageConsole.menu.runtime')} />
-                <View style={StyleSheet.flatten([styles.statusLine, { backgroundColor: colors.surface.panel }])}>
-                  <CompactMetric label={t('control.pageConsole.quoteState')} value={quoteStatus} />
-                  <CompactMetric label={t('control.tradingUsage.positions')} value={formatNumber(positions.length, 0, locale)} />
-                  <CompactMetric label={t('control.tradingUsage.orders')} value={formatNumber(orders.length, 0, locale)} />
-                  <CompactMetric label={t('control.pageConsole.partnerState')} value={t(`upgrade.status.${upgradeRequest.status}`)} />
                 </View>
               </>
             ) : screen === 'pages' ? (
@@ -787,31 +1096,32 @@ export function ProductControlPanel() {
             )}
           </ScrollView>
           {panelFooter}
-        </View>
-      ) : null}
+          </View>
+        ) : null}
 
-      <View {...fabPanResponder.panHandlers} style={styles.fabDragHandle}>
-        <NativePressable
-          accessibilityLabel={open ? t('common.cancel') : t('control.devConsole.title')}
-          accessibilityRole="button"
-          minTouch={layout.touchTargetMin}
-          onPress={togglePanelFromFab}
-          onPressIn={() => {
-            if (fabDragMovedRef.current) {
-              fabDragMovedRef.current = false;
-            }
-          }}
-          style={StyleSheet.flatten([
-            styles.fab,
-            shadows.toast,
-            {
-              backgroundColor: open ? colors.surface.panel : colors.surface.raised,
-            },
-          ])}>
-          <AppIcon name={open ? 'icon.system.close' : 'icon.system.settings'} sizeVariant="lg" tone={open ? 'tertiary' : 'brand'} />
-        </NativePressable>
+        <View {...fabPanResponder.panHandlers} style={styles.fabDragHandle}>
+          <NativePressable
+            accessibilityLabel={open ? t('common.cancel') : t('control.devConsole.title')}
+            accessibilityRole="button"
+            minTouch={layout.touchTargetMin}
+            onPress={togglePanelFromFab}
+            onPressIn={() => {
+              if (fabDragMovedRef.current) {
+                fabDragMovedRef.current = false;
+              }
+            }}
+            style={StyleSheet.flatten([
+              styles.fab,
+              shadows.toast,
+              {
+                backgroundColor: open ? colors.surface.panel : colors.surface.raised,
+              },
+            ])}>
+            <AppIcon name={open ? 'icon.system.close' : 'icon.system.settings'} sizeVariant="lg" tone={open ? 'tertiary' : 'brand'} />
+          </NativePressable>
+        </View>
       </View>
-    </View>
+    </>
   );
 }
 
@@ -822,106 +1132,29 @@ function clampDevConsoleFabOffset(offset: DevConsoleFabOffset, maxRight: number,
   };
 }
 
-function buildQuickScenarios(anchorId: string): QuickScenario[] {
-  return [
-    {
-      id: 'guest',
-      icon: 'icon.market.global',
-      metaKey: 'control.devConsole.scenario.guest.meta',
-      route: '/brand-splash',
-      titleKey: 'control.devConsole.scenario.guest',
-      tone: 'brand',
-    },
-    {
-      id: 'login',
-      icon: 'icon.security.lock',
-      metaKey: 'control.devConsole.scenario.login.meta',
-      route: '/auth',
-      titleKey: 'control.devConsole.scenario.login',
-      tone: 'danger',
-    },
-    {
-      id: 'markets',
-      icon: 'icon.trading.market',
-      metaKey: 'control.devConsole.scenario.markets.meta',
-      route: '/markets',
-      titleKey: 'control.devConsole.scenario.markets',
-      tone: 'brand',
-    },
-    {
-      id: 'trade',
-      icon: 'icon.trading.order_ticket',
-      metaKey: 'control.devConsole.scenario.trade.meta',
-      route: '/trade',
-      titleKey: 'control.devConsole.scenario.trade',
-      tone: 'up',
-    },
-    {
-      id: 'order',
-      icon: 'icon.trading.order_ticket',
-      metaKey: 'control.devConsole.scenario.order.meta',
-      route: `/order/${anchorId}?direction=buy` as Href,
-      titleKey: 'control.devConsole.scenario.order',
-      tone: 'up',
-    },
-    {
-      id: 'accounts',
-      icon: 'icon.account.trading',
-      metaKey: 'control.devConsole.scenario.accounts.meta',
-      route: '/accounts',
-      titleKey: 'control.devConsole.scenario.accounts',
-      tone: 'blue',
-    },
-    {
-      id: 'funding',
-      icon: 'icon.wallet.balance',
-      metaKey: 'control.devConsole.scenario.funding.meta',
-      route: '/funding/transactions',
-      titleKey: 'control.devConsole.scenario.funding',
-      tone: 'blue',
-    },
-    {
-      id: 'partner',
-      icon: 'icon.ib.network',
-      metaKey: 'control.devConsole.scenario.partner.meta',
-      route: '/partner-tools',
-      titleKey: 'control.devConsole.scenario.partner',
-      tone: 'amber',
-    },
-    {
-      id: 'discover',
-      icon: 'icon.navigation.discover',
-      metaKey: 'control.devConsole.scenario.discover.meta',
-      route: '/discover',
-      titleKey: 'control.devConsole.scenario.discover',
-      tone: 'brand',
-    },
-  ];
-}
-
 function buildPageEntries(anchorId: string): PageConsoleEntry[] {
   return [
-    pageEntry('markets', 'icon.trading.market', 'control.pageConsole.module.markets', '/markets', '/markets', 'control.pageConsole.page.home.title', 'brand'),
-    pageEntry('markets', 'icon.trading.market', 'control.pageConsole.module.markets', `/instrument/${anchorId}` as Href, '/instrument/[id]', 'control.pageConsole.page.instrument.title', 'blue', 'detail'),
-    pageEntry('trading', 'icon.trading.order_ticket', 'control.pageConsole.module.trading', '/trade', '/trade', 'control.pageConsole.page.trade.title', 'up'),
-    pageEntry('trading', 'icon.trading.order_ticket', 'control.pageConsole.module.trading', `/order/${anchorId}?direction=buy` as Href, '/order/[id]', 'control.pageConsole.page.order.title', 'up'),
-    pageEntry('accounts', 'icon.account.trading', 'control.pageConsole.module.accounts', '/accounts', '/accounts', 'control.pageConsole.page.accounts.title', 'blue'),
-    pageEntry('accounts', 'icon.account.avatar', 'control.pageConsole.module.accounts', '/account-details/demo-main', '/account-details/[id]', 'control.pageConsole.page.accountDetails.title', 'blue'),
-    pageEntry('accounts', 'icon.account.avatar', 'control.pageConsole.module.accounts', '/account-basic/demo-main', '/account-basic/[id]', 'accountDetails.menuBasicInfo', 'blue'),
-    pageEntry('accounts', 'icon.wallet.balance', 'control.pageConsole.module.accounts', '/account-balance/demo-main', '/account-balance/[id]', 'balance.title', 'blue'),
+    pageEntry('markets', 'icon.trading.market', 'control.pageConsole.module.markets', '/markets', '/markets', 'control.pageConsole.page.home.title', 'control.pageConsole.fit.markets', 'brand'),
+    pageEntry('markets', 'icon.trading.market', 'control.pageConsole.module.markets', `/instrument/${anchorId}` as Href, '/instrument/[id]', 'control.pageConsole.page.instrument.title', 'control.pageConsole.fit.instrument', 'blue', 'detail'),
+    pageEntry('trading', 'icon.trading.order_ticket', 'control.pageConsole.module.trading', '/trade', '/trade', 'control.pageConsole.page.trade.title', 'control.pageConsole.fit.trade', 'up'),
+    pageEntry('trading', 'icon.trading.order_ticket', 'control.pageConsole.module.trading', `/order/${anchorId}?direction=buy` as Href, '/order/[id]', 'control.pageConsole.page.order.title', 'control.pageConsole.fit.order', 'up'),
+    pageEntry('accounts', 'icon.account.trading', 'control.pageConsole.module.accounts', '/accounts', '/accounts', 'control.pageConsole.page.accounts.title', 'control.pageConsole.fit.accounts', 'blue'),
+    pageEntry('accounts', 'icon.account.avatar', 'control.pageConsole.module.accounts', '/account-details/demo-main', '/account-details/[id]', 'control.pageConsole.page.accountDetails.title', 'control.pageConsole.fit.accountDetail', 'blue'),
+    pageEntry('accounts', 'icon.account.avatar', 'control.pageConsole.module.accounts', '/account-basic/demo-main', '/account-basic/[id]', 'accountDetails.menuBasicInfo', 'control.pageConsole.fit.accountDetail', 'blue'),
+    pageEntry('accounts', 'icon.wallet.balance', 'control.pageConsole.module.accounts', '/account-balance/demo-main', '/account-balance/[id]', 'balance.title', 'control.pageConsole.fit.accountDetail', 'blue'),
     ...fundingOperationEntries.map((entry) =>
-      pageEntry('funding', entry.icon, 'control.pageConsole.module.funding', entry.route, entry.routeLabel, `funding.operation.${entry.operation}` as TranslationKey, 'blue'),
+      pageEntry('funding', entry.icon, 'control.pageConsole.module.funding', entry.route, entry.routeLabel, `funding.operation.${entry.operation}` as TranslationKey, 'control.pageConsole.fit.funding', 'blue'),
     ),
-    pageEntry('funding', 'icon.trading.history', 'control.pageConsole.module.funding', '/funding/transactions', '/funding/transactions', 'funding.transactions.title', 'blue'),
-    pageEntry('growth', 'icon.navigation.discover', 'control.pageConsole.module.discover', '/discover', '/discover', 'control.pageConsole.page.discover.title', 'brand'),
-    pageEntry('growth', 'icon.ib.network', 'control.pageConsole.module.partner', '/partner-tools', '/partner-tools', 'control.pageConsole.page.partnerTools.title', 'amber'),
-    pageEntry('growth', 'icon.kyc.identity', 'control.pageConsole.module.partner', '/client/client-001', '/client/[id]', 'control.pageConsole.page.clientProfile.title', 'amber'),
-    pageEntry('growth', 'icon.support.headset', 'control.pageConsole.module.discover', '/quick', '/quick', 'discover.module.support.title', 'brand'),
-    pageEntry('auth', 'icon.market.global', 'control.pageConsole.module.auth', '/brand-splash', '/brand-splash', 'control.pageConsole.page.launch.title', 'brand'),
-    pageEntry('auth', 'icon.market.global', 'control.pageConsole.module.auth', '/auth/onboarding', '/auth/onboarding', 'control.pageConsole.page.onboarding.title', 'blue'),
-    pageEntry('auth', 'icon.security.lock', 'control.pageConsole.module.auth', '/auth', '/auth', 'control.pageConsole.page.login.title', 'danger'),
-    pageEntry('auth', 'icon.account.add_user', 'control.pageConsole.module.auth', '/auth/register', '/auth/register', 'control.pageConsole.page.register.title', 'danger'),
-    pageEntry('auth', 'icon.notification.email', 'control.pageConsole.module.auth', '/auth/forgot-password', '/auth/forgot-password', 'control.pageConsole.page.forgot.title', 'danger'),
+    pageEntry('funding', 'icon.trading.history', 'control.pageConsole.module.funding', '/funding/transactions', '/funding/transactions', 'funding.transactions.title', 'control.pageConsole.fit.fundingReview', 'blue'),
+    pageEntry('growth', 'icon.navigation.discover', 'control.pageConsole.module.discover', '/discover', '/discover', 'control.pageConsole.page.discover.title', 'control.pageConsole.fit.discover', 'brand'),
+    pageEntry('growth', 'icon.ib.network', 'control.pageConsole.module.partner', '/partner-tools', '/partner-tools', 'control.pageConsole.page.partnerTools.title', 'control.pageConsole.fit.partner', 'amber'),
+    pageEntry('growth', 'icon.kyc.identity', 'control.pageConsole.module.partner', '/client/client-001', '/client/[id]', 'control.pageConsole.page.clientProfile.title', 'control.pageConsole.fit.client', 'amber'),
+    pageEntry('growth', 'icon.support.headset', 'control.pageConsole.module.discover', '/quick', '/quick', 'discover.module.support.title', 'control.pageConsole.fit.discover', 'brand'),
+    pageEntry('auth', 'icon.market.global', 'control.pageConsole.module.auth', '/brand-splash', '/brand-splash', 'control.pageConsole.page.launch.title', 'control.pageConsole.fit.launch', 'brand'),
+    pageEntry('auth', 'icon.market.global', 'control.pageConsole.module.auth', '/auth/onboarding', '/auth/onboarding', 'control.pageConsole.page.onboarding.title', 'control.pageConsole.fit.onboarding', 'blue'),
+    pageEntry('auth', 'icon.security.lock', 'control.pageConsole.module.auth', '/auth', '/auth', 'control.pageConsole.page.login.title', 'control.pageConsole.fit.login', 'danger'),
+    pageEntry('auth', 'icon.account.add_user', 'control.pageConsole.module.auth', '/auth/register', '/auth/register', 'control.pageConsole.page.register.title', 'control.pageConsole.fit.register', 'danger'),
+    pageEntry('auth', 'icon.notification.email', 'control.pageConsole.module.auth', '/auth/forgot-password', '/auth/forgot-password', 'control.pageConsole.page.forgot.title', 'control.pageConsole.fit.forgot', 'danger'),
   ];
 }
 
@@ -932,10 +1165,11 @@ function pageEntry(
   route: Href,
   routeLabel: string,
   titleKey: TranslationKey,
+  fitKey: TranslationKey,
   tone: ScenarioTone,
   level: PageConsoleLevel = 'primary',
 ): PageConsoleEntry {
-  return { group, icon, level, moduleKey, route, routeLabel, titleKey, tone };
+  return { fitKey, group, icon, level, moduleKey, route, routeLabel, titleKey, tone };
 }
 
 function TopSelectControl({
@@ -968,24 +1202,85 @@ function TopSelectControl({
   );
 }
 
-function ScenarioTile({ onPress, scenario }: { onPress: () => void; scenario: QuickScenario }) {
+function ScenarioGroup({
+  expanded,
+  group,
+  onPressScenario,
+  onToggle,
+  scenarios,
+  totalCount,
+}: {
+  expanded: boolean;
+  group: DevScenarioGroup;
+  onPressScenario: (scenario: DevUserScenario) => void;
+  onToggle: () => void;
+  scenarios: DevUserScenario[];
+  totalCount: number;
+}) {
   const { colors, t } = useProductSettings();
+  const hiddenCount = Math.max(0, totalCount - defaultVisibleScenarioCount);
+
+  return (
+    <View style={StyleSheet.flatten([styles.scenarioGroup, { backgroundColor: colors.surface.panel }])}>
+      <View style={styles.scenarioGroupHeader}>
+        <View style={styles.rowText}>
+          <AppText variant="caption">{t(`control.scenario.group.${group}`)}</AppText>
+          <AppText numberOfLines={2} tone="muted" variant="caption">
+            {t(`control.scenario.group.${group}.hint`)}
+          </AppText>
+        </View>
+        {hiddenCount > 0 ? (
+          <NativePressable accessibilityRole="button" minTouch={40} onPress={onToggle} style={styles.groupToggle}>
+            <AppText tone="brand" variant="caption">
+              {expanded ? t('control.scenario.collapse') : t('control.scenario.expand')}
+            </AppText>
+            <AppIcon name={expanded ? 'icon.system.chevron_down' : 'icon.system.chevron_right'} sizeVariant="sm" tone="tertiary" />
+          </NativePressable>
+        ) : null}
+      </View>
+
+      <View style={styles.scenarioCardStack}>
+        {scenarios.map((scenario) => (
+          <ScenarioCard key={scenario.id} onPress={() => onPressScenario(scenario)} scenario={scenario} />
+        ))}
+      </View>
+    </View>
+  );
+}
+
+function ScenarioCard({ onPress, scenario }: { onPress: () => void; scenario: DevUserScenario }) {
+  const { colors, t } = useProductSettings();
+  const surfaceTone = scenarioSurfaceToneKeys[scenario.tone] ?? 'neutral';
+  const accessibilityLabel = `${t(scenario.intentKey)}. ${t('control.scenario.personaPrefix')} ${t(scenario.personaKey)}. ${t('control.scenario.statePrefix')} ${t(scenario.stateSummaryKey)}.`;
 
   return (
     <NativePressable
+      accessibilityLabel={accessibilityLabel}
       accessibilityRole="button"
-      minTouch={40}
+      minTouch={44}
       onPress={onPress}
-      style={styles.scenarioTile}>
-      <IconSurface background="hidden" icon={scenario.icon} sizeVariant="xs" tone="neutral" />
+      style={StyleSheet.flatten([styles.scenarioCard, { backgroundColor: colors.surface.subtle }])}>
+      <IconSurface background="hidden" icon={scenario.icon} sizeVariant="sm" tone={surfaceTone} />
       <View style={styles.rowText}>
-        <AppText numberOfLines={1} variant="caption">
-          {t(scenario.titleKey)}
+        <View style={styles.scenarioCardHeader}>
+          <AppText numberOfLines={1} variant="caption">
+            {t(scenario.intentKey)}
+          </AppText>
+          <AppText numberOfLines={1} tone={scenario.riskLevel === 'gap' || scenario.riskLevel === 'blocked' ? 'danger' : 'dim'} variant="eyebrow">
+            {t(`control.scenario.status.${scenario.riskLevel}`)}
+          </AppText>
+        </View>
+        <AppText numberOfLines={1} tone="muted" variant="caption">
+          {t('control.scenario.personaPrefix')} {t(scenario.personaKey)}
+        </AppText>
+        <AppText numberOfLines={2} tone="muted" variant="caption">
+          {t('control.scenario.statePrefix')} {t(scenario.stateSummaryKey)}
         </AppText>
         <AppText numberOfLines={1} tone="dim" variant="eyebrow">
-          {t(scenario.metaKey)}
+          {t('control.scenario.routePrefix')} {String(scenario.route)}
         </AppText>
       </View>
+      <AppIcon name="icon.system.chevron_right" size={layout.menuDisclosureIconSize} tone="tertiary" />
     </NativePressable>
   );
 }
@@ -1006,7 +1301,7 @@ function ModuleAction({
   tone: IconTone;
 }) {
   const { colors } = useProductSettings();
-  const surfaceTone = tone === 'brand' ? 'brand' : 'neutral';
+  const surfaceTone = tone === 'brand' ? 'brand' : tone === 'amber' || tone === 'warning' ? 'warning' : 'neutral';
 
   return (
     <NativePressable
@@ -1051,6 +1346,9 @@ function PageRow({ entry, onClose }: { entry: PageConsoleEntry; onClose: () => v
       <View style={styles.rowText}>
         <AppText numberOfLines={1} variant="caption">
           {t(entry.titleKey)}
+        </AppText>
+        <AppText numberOfLines={1} tone="muted" variant="caption">
+          {t('control.pageConsole.bestFor')} {t(entry.fitKey)}
         </AppText>
         <AppText numberOfLines={1} tone="dim" variant="eyebrow">
           {entry.routeLabel}
@@ -1142,6 +1440,15 @@ function ControlSelect({
 }
 
 const styles = StyleSheet.create({
+  blankDismissLayer: {
+    backgroundColor: 'transparent',
+    bottom: 0,
+    left: 0,
+    position: 'fixed' as unknown as 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: zIndex.devOverlay,
+  },
   compactMetric: {
     borderRadius: radius.sm,
     borderWidth: lineWidth.none,
@@ -1210,6 +1517,12 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     padding: spacing.xs,
   },
+  groupToggle: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.xxs,
+    minWidth: 0,
+  },
   groupBlock: {
     gap: spacing.sm - spacing.xxs,
   },
@@ -1226,6 +1539,12 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
+  homeHero: {
+    borderRadius: radius.card,
+    borderWidth: lineWidth.none,
+    gap: spacing.xs,
+    padding: spacing.sm,
+  },
   host: {
     alignItems: 'flex-end',
     gap: spacing.sm,
@@ -1235,6 +1554,12 @@ const styles = StyleSheet.create({
   },
   list: {
     gap: spacing.sm - spacing.xxs,
+  },
+  identitySurface: {
+    borderRadius: radius.card,
+    borderWidth: lineWidth.none,
+    gap: spacing.xs,
+    padding: spacing.sm,
   },
   moduleAction: {
     alignItems: 'center',
@@ -1316,29 +1641,40 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     gap: spacing.xxs,
   },
-  scenarioGrid: {
-    columnGap: spacing.sm,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    rowGap: spacing.sm,
-  },
-  scenarioPanel: {
+  scenarioCard: {
+    alignItems: 'flex-start',
     borderRadius: radius.card,
     borderWidth: lineWidth.none,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    minHeight: size.menu.rowMinHeight,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.sm,
+  },
+  scenarioCardHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'space-between',
+    minWidth: 0,
+  },
+  scenarioCardStack: {
+    gap: spacing.xs,
+  },
+  scenarioGroup: {
+    borderRadius: radius.card,
+    borderWidth: lineWidth.none,
+    gap: spacing.xs,
     padding: spacing.sm,
   },
-  scenarioTile: {
+  scenarioGroupHeader: {
     alignItems: 'center',
-    borderRadius: radius.card,
-    borderWidth: lineWidth.none,
-    flexBasis: '48%',
     flexDirection: 'row',
-    flexGrow: 1,
-    gap: spacing.sm - spacing.xxs,
-    minHeight: size.control.sm,
-    minWidth: 0,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
+    gap: spacing.sm,
+    justifyContent: 'space-between',
+  },
+  scenarioGroupStack: {
+    gap: spacing.sm,
   },
   secondaryButton: {
     alignItems: 'center',

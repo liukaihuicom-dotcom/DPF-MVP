@@ -1,5 +1,5 @@
 import { createContext, PropsWithChildren, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Keyboard, Platform, BackHandler, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Keyboard, Platform, BackHandler, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, {
   Easing,
   Extrapolation,
@@ -9,6 +9,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {
+  BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetScrollView,
@@ -61,6 +62,7 @@ export type BottomSheetHeaderOptions = {
 export type BottomSheetHeightMode = 'adaptive' | 'fixed' | 'fullscreen';
 
 export type BottomSheetOptions = {
+  allowPanDownDismiss?: boolean;
   content: ReactNode;
   contentPadding?: 'card' | 'flush' | 'plain';
   /** @deprecated Use `heightMode` for new sheet layout decisions. `fill` is treated as fixed-height compatibility. */
@@ -69,6 +71,7 @@ export type BottomSheetOptions = {
   header?: false | BottomSheetHeaderOptions;
   heightMode?: BottomSheetHeightMode;
   onDismiss?: () => void;
+  onRequestClose?: () => false | void;
   sheetSurface?: 'canvas' | 'panel';
   /** @deprecated Explicit snap points are treated as fixed-height compatibility. Prefer `heightMode`. */
   snapPoints?: Array<string | number>;
@@ -78,7 +81,7 @@ export type BottomSheetOptions = {
   title?: string;
 };
 
-type BottomSheetPresetBaseOptions = Pick<BottomSheetOptions, 'content' | 'contentPadding' | 'contentSizing' | 'footer' | 'heightMode' | 'onDismiss' | 'sheetSurface' | 'snapPoints'>;
+type BottomSheetPresetBaseOptions = Pick<BottomSheetOptions, 'allowPanDownDismiss' | 'content' | 'contentPadding' | 'contentSizing' | 'footer' | 'heightMode' | 'onDismiss' | 'onRequestClose' | 'sheetSurface' | 'snapPoints'>;
 type BottomSheetHeaderPresetOptions = BottomSheetPresetBaseOptions & BottomSheetHeaderOptions;
 
 export const bottomSheetPresets = {
@@ -90,29 +93,33 @@ export const bottomSheetPresets = {
     };
   },
   detail(options: BottomSheetHeaderPresetOptions): BottomSheetOptions {
-    const { content, contentSizing, footer, heightMode, onDismiss, sheetSurface, snapPoints, ...header } = options;
+    const { allowPanDownDismiss, content, contentSizing, footer, heightMode, onDismiss, onRequestClose, sheetSurface, snapPoints, ...header } = options;
 
     return {
+      allowPanDownDismiss,
       content,
       contentSizing,
       footer,
       header,
       heightMode: heightMode ?? resolvePresetHeightMode(options),
       onDismiss,
+      onRequestClose,
       sheetSurface,
       snapPoints,
     };
   },
   selection(options: BottomSheetHeaderPresetOptions): BottomSheetOptions {
-    const { content, contentSizing, footer, heightMode, onDismiss, sheetSurface, snapPoints, ...header } = options;
+    const { allowPanDownDismiss, content, contentSizing, footer, heightMode, onDismiss, onRequestClose, sheetSurface, snapPoints, ...header } = options;
 
     return {
+      allowPanDownDismiss,
       content,
       contentSizing: contentSizing ?? 'fill',
       footer,
       header,
       heightMode: heightMode ?? 'fixed',
       onDismiss,
+      onRequestClose,
       sheetSurface: sheetSurface ?? 'panel',
       snapPoints,
     };
@@ -134,9 +141,13 @@ function resolvePresetHeightMode(options: Pick<BottomSheetOptions, 'contentSizin
 type BottomSheetContextValue = {
   back: () => void;
   hide: () => void;
+  hideForce: () => void;
   push: (options: BottomSheetOptions) => void;
   show: (options: BottomSheetOptions) => void;
+  update: (options: BottomSheetOptions) => void;
 };
+
+type BottomSheetHideOptions = { force?: boolean };
 
 const TOP_RESERVED_SPACE = layout.topReservedSpace;
 const MAX_PAGE_SHEET_WIDTH = layout.appMaxWidth;
@@ -153,7 +164,6 @@ const BottomSheetOptionsContext = createContext<BottomSheetOptions | null>(null)
 const BottomSheetStackDepthContext = createContext(0);
 const BottomSheetClosingContext = createContext(false);
 const BottomSheetNativeDismissContext = createContext<(() => void) | null>(null);
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function BottomSheetProvider({ children }: PropsWithChildren) {
   const [stack, setStack] = useState<BottomSheetOptions[]>([]);
@@ -208,9 +218,13 @@ export function BottomSheetProvider({ children }: PropsWithChildren) {
     }
   }, []);
 
-  const closeModal = useCallback((nextStack: BottomSheetOptions[] = []) => {
+  const closeModal = useCallback((nextStack: BottomSheetOptions[] = [], options: BottomSheetHideOptions = {}) => {
     const current = stackRef.current;
     if (!current.length) {
+      return;
+    }
+
+    if (!options.force && current.at(-1)?.onRequestClose?.() === false) {
       return;
     }
 
@@ -219,6 +233,9 @@ export function BottomSheetProvider({ children }: PropsWithChildren) {
   }, [scheduleClose]);
   const hide = useCallback(() => {
     closeModal();
+  }, [closeModal]);
+  const hideForce = useCallback(() => {
+    closeModal([], { force: true });
   }, [closeModal]);
   const show = useCallback((nextOptions: BottomSheetOptions) => {
     dismissActiveKeyboard();
@@ -231,6 +248,18 @@ export function BottomSheetProvider({ children }: PropsWithChildren) {
     stackRef.current = [...stackRef.current, nextOptions];
     setStack((current) => [...current, nextOptions]);
   }, []);
+  const update = useCallback((nextOptions: BottomSheetOptions) => {
+    const current = stackRef.current;
+
+    if (!current.length) {
+      show(nextOptions);
+      return;
+    }
+
+    const nextStack = [...current.slice(0, -1), nextOptions];
+    stackRef.current = nextStack;
+    setStack(nextStack);
+  }, [show]);
   const back = useCallback(() => {
     const current = stackRef.current;
     if (!current.length) {
@@ -239,7 +268,7 @@ export function BottomSheetProvider({ children }: PropsWithChildren) {
 
     closeModal(current.length > 1 ? current.slice(0, -1) : []);
   }, [closeModal]);
-  const value = useMemo(() => ({ back, hide, push, show }), [back, hide, push, show]);
+  const value = useMemo(() => ({ back, hide, hideForce, push, show, update }), [back, hide, hideForce, push, show, update]);
   const visibleStack = closingStack ?? stack;
   const options = visibleStack.at(-1) ?? null;
 
@@ -350,6 +379,12 @@ export function GlobalBottomSheetHost() {
     optionsRef.current = options;
 
     if (options && !isClosing) {
+      if (wasOpen) {
+        setBackdropInteractive(true);
+        backdropProgress.value = 1;
+        return undefined;
+      }
+
       setBackdropInteractive(false);
       backdropProgress.value = 0;
       modalRef.current?.present();
@@ -366,7 +401,17 @@ export function GlobalBottomSheetHost() {
     }
   }, [backdropProgress, dismissModal, isClosing, options]);
 
-  const renderBackdrop = useCallback((props: BottomSheetBackdropProps) => <AppBottomSheetBackdrop {...props} backgroundColor={backdropColor} />, [backdropColor]);
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <AppBottomSheetBackdrop
+        {...props}
+        backgroundColor={backdropColor}
+        disabled={!backdropInteractive}
+        onPress={hide}
+      />
+    ),
+    [backdropColor, backdropInteractive, hide],
+  );
   const handleSheetAnimate = useCallback((_fromIndex: number, toIndex: number) => {
     if (toIndex < 0 && options && !isClosing) {
       hide();
@@ -388,12 +433,11 @@ export function GlobalBottomSheetHost() {
 
   return (
     <>
-      <AnimatedPressable
+      <Animated.View
         accessibilityElementsHidden
         accessible={false}
-        disabled={!backdropInteractive}
         importantForAccessibility="no-hide-descendants"
-        onPress={hide}
+        pointerEvents="none"
         style={[styles.hostBackdrop, { backgroundColor: backdropColor, height, width }, hostBackdropStyle]}
       />
       <BottomSheetModal
@@ -404,7 +448,7 @@ export function GlobalBottomSheetHost() {
         detached={false}
         enableContentPanningGesture
         enableDynamicSizing={heightMode === 'adaptive'}
-        enablePanDownToClose
+        enablePanDownToClose={options.allowPanDownDismiss ?? true}
         handleComponent={heightMode === 'fullscreen' ? null : undefined}
         handleIndicatorStyle={{ backgroundColor: colors.border.default, width: size.sheet.handleWidth }}
         handleStyle={styles.handle}
@@ -659,24 +703,23 @@ function AppBottomSheetFooter({
   );
 }
 
-function AppBottomSheetBackdrop({ animatedIndex, backgroundColor }: BottomSheetBackdropProps & {
+function AppBottomSheetBackdrop({ animatedIndex, animatedPosition, backgroundColor, disabled, onPress }: BottomSheetBackdropProps & {
   backgroundColor: string;
+  disabled: boolean;
+  onPress: () => void;
 }) {
-  const animatedStyle = useAnimatedStyle(
-    () => ({
-      opacity: interpolate(animatedIndex.value, [-1, 0], [0, 1], Extrapolation.CLAMP),
-    }),
-    [animatedIndex],
-  );
-
   return (
-    <Animated.View
-      accessibilityElementsHidden
-      accessibilityRole="none"
+    <BottomSheetBackdrop
       accessible={false}
-      importantForAccessibility="no-hide-descendants"
-      pointerEvents="none"
-      style={StyleSheet.flatten([styles.backdrop, { backgroundColor }, animatedStyle])}
+      animatedIndex={animatedIndex}
+      animatedPosition={animatedPosition}
+      appearsOnIndex={0}
+      disappearsOnIndex={-1}
+      enableTouchThrough={disabled}
+      onPress={onPress}
+      opacity={1}
+      pressBehavior={0}
+      style={StyleSheet.flatten([styles.backdrop, { backgroundColor }])}
     />
   );
 }

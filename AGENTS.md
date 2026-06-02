@@ -36,7 +36,7 @@ Skill layer map:
 
 | Layer | Category | Documents |
 |---|---|---|
-| L0 | Utility Startup | `.codex/skills/l0-utility-startup/quick-local-expo-demo-startup-skill-v1.3.0.md` |
+| L0 | Utility Startup | `.codex/skills/l0-utility-startup/quick-local-expo-demo-startup-skill-v1.4.0.md` |
 | L1 | Core Product Engineering | `.codex/skills/l1-core/product-engineering/ai-product-production-delivery-skill-v3.0.0-l5.md` |
 | L1 | Core Design System Engineering | `.codex/skills/l1-core/design-system-engineering/design-system-engineering-skill-v3.0.0-l5.md` |
 | L1 | Core UI Build Production | `.codex/skills/l1-core/ui-build-production/ui-build-production-skill-v3.0.0-l5.md` |
@@ -56,7 +56,7 @@ Codex 创建、更新或提议任何自动化、周期任务、提醒、监控�
 
 Use:
 
-`.codex/skills/l0-utility-startup/quick-local-expo-demo-startup-skill-v1.3.0.md`
+`.codex/skills/l0-utility-startup/quick-local-expo-demo-startup-skill-v1.4.0.md`
 
 Priority:
 
@@ -101,6 +101,20 @@ Trigger when the task involves:
 - phone preview
 - scan QR
 - start local service
+- 外部网络扫码
+- 外网访问 demo
+- 手机外网访问
+- 手机不和电脑同 Wi-Fi
+- 不同 Wi-Fi 扫码
+- 远程扫码体验
+- tunnel 扫码
+- 终端二维码外网访问
+- 真实 Terminal 启动 Expo
+- external network QR
+- tunnel QR
+- remote Expo Go preview
+- different Wi-Fi preview
+- real Terminal Expo
 
 Required outputs:
 
@@ -110,6 +124,8 @@ Required outputs:
 - Startup script audit and required package.json updates
 - Default command: `npm run dev:app`
 - Default mode: LAN for phone demo support
+- External-network phone demo command, when explicitly requested: `npx expo start --tunnel --go --clear`
+- Real computer Terminal QR Code, when explicitly requested for external-network Expo Go scan
 - Local Metro address: `http://localhost:8081`
 - Phone demo instructions: same Wi-Fi and scan terminal Expo QR Code with Expo Go or the project Dev Build
 - Current mode, port, tunnel status, blockers, and next-stage decision
@@ -120,10 +136,15 @@ Hard rules:
 - Reuse an existing Expo / Metro service instead of starting a duplicate.
 - If no Expo / Metro service is running, use `npm run dev:app`.
 - `npm run dev:app` must default to LAN mode.
+- If the user explicitly asks for external-network scan, different-Wi-Fi scan, remote Expo Go preview, tunnel QR, or real Terminal QR, open the user's real computer Terminal and run exactly `npx expo start --tunnel --go --clear` in the project root.
+- For external-network Expo Go scan, keep the real Terminal process running and preserve the terminal Expo QR Code for phone scanning.
+- For external-network Expo Go scan, confirm Tunnel mode by terminal output such as `Tunnel connected`, `Tunnel ready`, or an `exp.direct` URL.
+- If tunnel startup fails, report the complete error and do not downgrade to Web Preview, LAN, localhost, or browser-only preview.
 - Do not allow automatic port drift from `8081`.
 - Do not default to tunnel.
 - Do not silently kill port-owning processes.
 - Do not treat LAN IP or tunnel URLs as stable fixed links.
+- Do not use Codex Web Preview, browser preview, `npm run web`, `npx expo start --web`, or `expo start --web` as a substitute for Expo Go tunnel QR scanning.
 
 ## 1. Product Engineering Skill
 

@@ -47,8 +47,11 @@ export type RelatedModalId =
   | 'auth.countryPicker'
   | 'auth.errorDialog'
   | 'auth.errorSheet'
+  | 'auth.languageSheet'
   | 'auth.leaveVerifiedStep'
   | 'discover.layout.route'
+  | 'discover.managerChatSheet'
+  | 'discover.profileEditSheet'
   | 'funding.paymentMethodSheet'
   | 'funding.submitFeedbackAlert'
   | 'global.bottomSheet'
@@ -62,7 +65,6 @@ export type RelatedModalId =
   | 'portfolio.closePositionConfirm'
   | 'portfolio.orderMutationAlert'
   | 'portfolio.pendingOrderDetailSheet'
-  | 'portfolio.pendingOrderFeedbackToast'
   | 'portfolio.positionDetailSheet'
   | 'quick.actionSheet'
   | 'security.deviceDetailSheet'
@@ -180,7 +182,7 @@ export const routeRegistry = [
     navigationLevel: 'primaryTab',
     ...noTopNav,
     primaryActions: ['Open paper-trading challenge', 'Review virtual ROI and drawdown context'],
-    relatedModals: ['order.ticket.route', 'global.toastFeedback'],
+    relatedModals: ['order.ticket.route', 'global.bottomSheet', 'global.toastFeedback'],
     states: basicStates,
     routePresentation: 'tab',
     riskLevel: 'medium',
@@ -226,7 +228,6 @@ export const routeRegistry = [
       'portfolio.accountMenuSheet',
       'portfolio.closePositionConfirm',
       'portfolio.pendingOrderDetailSheet',
-      'portfolio.pendingOrderFeedbackToast',
       'portfolio.positionDetailSheet',
       'portfolio.orderMutationAlert',
       'tradingAccount.switchSheet',
@@ -260,7 +261,7 @@ export const routeRegistry = [
     navigationLevel: 'primaryTab',
     ...noTopNav,
     primaryActions: ['Browse discovery modules', 'Open function entry', 'Open layout settings'],
-    relatedModals: ['discover.layout.route', 'global.toastFeedback'],
+    relatedModals: ['discover.layout.route', 'discover.profileEditSheet', 'discover.managerChatSheet', 'global.bottomSheet', 'global.toastFeedback'],
     states: basicStates,
     routePresentation: 'tab',
     riskLevel: 'low',
@@ -273,7 +274,7 @@ export const routeRegistry = [
     navigationLevel: 'primaryTab',
     ...noTopNav,
     primaryActions: ['Show selected function module', 'Open order ticket', 'Open partner tools', 'Submit partner application demo'],
-    relatedModals: ['order.ticket.route', 'partner.upgradeFeedbackAlert', 'global.modalQueue', 'global.toastFeedback'],
+    relatedModals: ['order.ticket.route', 'global.bottomSheet', 'discover.profileEditSheet', 'discover.managerChatSheet', 'partner.upgradeFeedbackAlert', 'global.modalQueue', 'global.toastFeedback'],
     states: protectedStates,
     routePresentation: 'tab',
     riskLevel: 'medium',
@@ -346,7 +347,6 @@ export const routeRegistry = [
       'portfolio.accountMenuSheet',
       'portfolio.closePositionConfirm',
       'portfolio.pendingOrderDetailSheet',
-      'portfolio.pendingOrderFeedbackToast',
       'portfolio.positionDetailSheet',
       'portfolio.orderMutationAlert',
       'tradingAccount.switchSheet',
@@ -378,7 +378,7 @@ export const routeRegistry = [
     navigationLevel: 'detail',
     ...backToMarkets,
     primaryActions: ['Review quote detail', 'Switch detail tab', 'Open buy ticket', 'Open sell ticket'],
-    relatedModals: ['order.ticket.route', 'global.toastFeedback'],
+    relatedModals: ['order.ticket.route', 'global.bottomSheet', 'global.toastFeedback'],
     states: ['default', 'loading', 'error', 'not_found', 'restricted'],
     routePresentation: 'screen',
     riskLevel: 'medium',
@@ -392,7 +392,7 @@ export const routeRegistry = [
     ...closeToTrade,
     leaveGuard: 'confirm-leave',
     primaryActions: ['Select side', 'Select order type', 'Edit lots', 'Toggle risk controls', 'Submit order'],
-    relatedModals: ['order.ticket.route', 'global.modalQueue', 'global.toastFeedback'],
+    relatedModals: ['order.ticket.route', 'global.bottomSheet', 'global.modalQueue', 'global.toastFeedback'],
     states: ['default', 'inputting', 'validating', 'submitting', 'success', 'failed', 'error', 'not_found', 'restricted'],
     routePresentation: 'transparentModal',
     riskLevel: 'high',
@@ -684,7 +684,7 @@ export const routeRegistry = [
     navigationLevel: 'root',
     ...closeToLaunch,
     primaryActions: ['Choose email or phone login', 'Select country for phone login', 'Enter account', 'Enter password', 'Submit login', 'Use remembered account', 'Open forgot password'],
-    relatedModals: ['auth.countryPicker', 'auth.errorSheet', 'global.toastFeedback'],
+    relatedModals: ['auth.countryPicker', 'auth.languageSheet', 'auth.errorSheet', 'global.toastFeedback'],
     states: formStates,
     routePresentation: 'screen',
     riskLevel: 'medium',
@@ -697,7 +697,7 @@ export const routeRegistry = [
     navigationLevel: 'root',
     ...closeToLaunch,
     primaryActions: ['Select country', 'Enter phone', 'Confirm contact', 'Continue to phone code'],
-    relatedModals: ['auth.countryPicker', 'auth.contactConfirm', 'auth.errorSheet', 'global.toastFeedback'],
+    relatedModals: ['auth.countryPicker', 'auth.languageSheet', 'auth.contactConfirm', 'auth.errorSheet', 'global.toastFeedback'],
     states: formStates,
     routePresentation: 'screen',
     riskLevel: 'medium',
@@ -726,7 +726,7 @@ export const routeRegistry = [
     leaveGuard: 'confirm-leave',
     topNavBehavior: 'back',
     primaryActions: ['Enter email after phone verification', 'Confirm contact', 'Continue to email code', 'Leave verified phone step'],
-    relatedModals: ['auth.contactConfirm', 'auth.errorSheet', 'auth.leaveVerifiedStep', 'global.toastFeedback'],
+    relatedModals: ['auth.languageSheet', 'auth.contactConfirm', 'auth.errorSheet', 'auth.leaveVerifiedStep', 'global.toastFeedback'],
     states: formStates,
     routePresentation: 'screen',
     riskLevel: 'medium',
@@ -755,7 +755,7 @@ export const routeRegistry = [
     leaveGuard: 'confirm-leave',
     topNavBehavior: 'back',
     primaryActions: ['Enter password', 'Confirm password', 'Continue to optional PIN setup', 'Leave verified email step'],
-    relatedModals: ['auth.errorSheet', 'auth.leaveVerifiedStep', 'global.toastFeedback'],
+    relatedModals: ['auth.languageSheet', 'auth.errorSheet', 'auth.leaveVerifiedStep', 'global.toastFeedback'],
     states: formStates,
     routePresentation: 'screen',
     riskLevel: 'medium',
@@ -768,7 +768,7 @@ export const routeRegistry = [
     navigationLevel: 'root',
     ...closeToLaunch,
     primaryActions: ['Choose reset channel', 'Enter reset account', 'Verify code', 'Set new password'],
-    relatedModals: ['auth.countryPicker', 'auth.errorSheet', 'global.toastFeedback'],
+    relatedModals: ['auth.countryPicker', 'auth.languageSheet', 'auth.errorSheet', 'global.toastFeedback'],
     states: ['default', 'inputting', 'validating', 'submitting', 'success', 'failed', 'expired', 'timeout', 'error'],
     routePresentation: 'screen',
     riskLevel: 'medium',

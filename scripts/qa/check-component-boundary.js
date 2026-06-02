@@ -98,8 +98,76 @@ function inspectFile(file) {
   return checks;
 }
 
+const directBottomSheetCallPattern = /\bbottomSheet\.(?:show|push|update)\s*\(/;
+const bottomSheetPresetPattern = /\bbottomSheetPresets\./;
+const publicBottomSheetEntrypoints = new Set([
+  'src/components/BottomSheet.tsx',
+  'src/components/BottomSheetActions.tsx',
+]);
+const privatePageSheetNames = new Set([
+  'PaymentMethodSheet',
+  'DeviceDetailSheet',
+  'TransactionDetailSheet',
+  'AccountMenuSheet',
+  'AccountMoreSheet',
+  'ManagerChatSheet',
+  'ProfileEditSheetContent',
+  'AuthLanguageSheetContent',
+  'CountryPickerSheetContent',
+]);
+
+function inspectBottomSheetGovernance() {
+  const files = walk('src')
+    .filter((file) => file.endsWith('.tsx') || file.endsWith('.ts'))
+    .filter((file) => !publicBottomSheetEntrypoints.has(file));
+  const checks = [];
+
+  for (const file of files) {
+    const text = read(file);
+    const isPublicBusinessComponent = file.startsWith('src/components/business/');
+
+    if (directBottomSheetCallPattern.test(text) || bottomSheetPresetPattern.test(text)) {
+      checks.push(
+        fail(
+          'QA_BOTTOM_SHEET_PUBLIC_OPENERS_ONLY',
+          `${file} must use openActionSheet/openDetailSheet/openSelectionSheet/openConfirmSheet/openFixedListSheet/openScrollableDetailSheet instead of direct bottomSheet.show/push/update or bottomSheetPresets.`,
+          file,
+        ),
+      );
+    }
+
+    if (!isPublicBusinessComponent) {
+      for (const sheetName of privatePageSheetNames) {
+        const declarationPattern = new RegExp(`\\b(?:function|const)\\s+${sheetName}\\b`);
+        if (declarationPattern.test(text)) {
+          checks.push(
+            fail(
+              'QA_PRIVATE_BOTTOM_SHEET_CONTENT_BODY',
+              `${file} must not redeclare ${sheetName}; use the governed public business sheet component from src/components/business.`,
+              file,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  return checks.length
+    ? checks
+    : [
+        pass(
+          'QA_BOTTOM_SHEET_PUBLIC_OPENERS_ONLY',
+          'Pages and non-public components do not bypass shared BottomSheet scene openers or redeclare governed sheet content bodies.',
+          'src/components/BottomSheetActions.tsx',
+        ),
+      ];
+}
+
 const files = walk('app').filter((file) => file.endsWith('.tsx'));
-const issues = files.flatMap(inspectFile);
+const issues = [
+  ...files.flatMap(inspectFile),
+  ...inspectBottomSheetGovernance(),
+];
 complete('check-component-boundary', [
   pass('QA_COMPONENT_BOUNDARY_SCAN', `Scanned ${files.length} app route files`, 'app'),
   ...issues,

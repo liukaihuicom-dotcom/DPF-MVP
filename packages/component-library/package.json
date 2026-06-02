@@ -1,6 +1,6 @@
 {
   "name": "@dpf/component-library",
-  "version": "2.5.2",
+  "version": "2.5.10",
   "private": true,
   "type": "module",
   "main": "./src/index.ts",

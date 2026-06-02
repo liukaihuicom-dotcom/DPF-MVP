@@ -2,7 +2,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { MetricDescriptionSheet } from '@/src/design-public-assets/business-components';
-import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { openDetailSheet, useBottomSheet } from '@/src/design-public-assets/components';
 import { Card } from '@/src/design-public-assets/components';
 import { NativePressable } from '@/src/design-public-assets/components';
 import { Screen } from '@/src/design-public-assets/components';
@@ -74,10 +74,10 @@ export default function AccountBasicScreen() {
       return;
     }
 
-    bottomSheet.show(bottomSheetPresets.detail({
+    openDetailSheet(bottomSheet, {
       content: <MetricDescriptionSheet description={t(row.descriptionKey)} label={row.label} value={row.value} />,
       title: row.label,
-    }));
+    });
   };
 
   return (

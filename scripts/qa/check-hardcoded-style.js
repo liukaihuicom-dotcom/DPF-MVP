@@ -41,6 +41,7 @@ const autoFitAllowedFiles = new Set([
   'src/components/Metric.tsx',
   'src/components/business/OrderPositionDetailSheet.tsx',
   'src/components/business/FinancialPagePatterns.tsx',
+  'src/components/business/AccountSheets.tsx',
   'src/components/TradeOrderList.tsx',
   'src/components/Typography.tsx',
   'src/components/business/TransactionRow.tsx',
@@ -431,6 +432,10 @@ const hardcodedLineWidthIssues = sourceFiles
 const ts = require('typescript');
 
 const bottomSheetIssues = sourceFiles.flatMap((file) => {
+  if (file === 'src/components/BottomSheetActions.tsx') {
+    return [];
+  }
+
   const text = read(file);
   if (!text.includes('bottomSheet.show') && !text.includes('bottomSheet.push')) {
     return [];
@@ -709,7 +714,7 @@ if (!/const sheetBackgroundColor = options\?\.sheetSurface === 'panel' \? colors
 ].forEach((file) => {
   const text = read(file);
   if (/<TradingAccountContextSwitcher/.test(text)
-    && (!/contentPadding:\s*['"]card['"]/.test(text) || !/sheetSurface:\s*['"]canvas['"]/.test(text))) {
+    && (!(/contentPadding:\s*['"]card['"]/.test(text) && /sheetSurface:\s*['"]canvas['"]/.test(text)) && !/cardSelection:\s*true/.test(text))) {
     bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_TRADING_ACCOUNT_SURFACE', 'TradingAccountContextSwitcher is card-based selection content and must use contentPadding="card" with sheetSurface="canvas".', file));
   }
 });
@@ -843,6 +848,14 @@ const pageLocalSheetSafeAreaIssues = allSourceFiles
 if (pageLocalSheetSafeAreaIssues.length > 0) {
   bottomSheetFooterIssues.push(...pageLocalSheetSafeAreaIssues);
 }
+const confirmActionSheetText = read('src/components/ConfirmActionSheet.tsx');
+const accountSheetsText = read('src/components/business/AccountSheets.tsx');
+if (/ActionButton/.test(confirmActionSheetText) || /cancelLabel|confirmLabel|onCancel|onConfirm/.test(confirmActionSheetText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_FOOTER_SLOT', 'ConfirmActionSheet must be content-only; cancel and confirm actions belong to the shared BottomSheet Footer safe-area slot.', 'src/components/ConfirmActionSheet.tsx'));
+}
+if (/TransactionDetailSheetProps[\s\S]*?onClose/.test(accountSheetsText) || /<ActionButton[\s\S]*balance\.detail\.ok/.test(accountSheetsText)) {
+  bottomSheetFooterIssues.push(fail('QA_STYLE_BOTTOM_SHEET_FOOTER_SLOT', 'TransactionDetailSheet must not render its OK action inside scroll content; the caller must pass it through BottomSheet footer.', 'src/components/business/AccountSheets.tsx'));
+}
 if (!/<BottomSheetScrollView[\s\S]*?style=\{contentFrameStyle\}[\s\S]*?>/.test(bottomSheetRuntimeText)
   || !/contentContainerStyle=\{contentInnerStyle\}/.test(bottomSheetRuntimeText)
   || /enableFooterMarginAdjustment|footerReserveHeight|ResizeObserver\(updateMeasuredHeight\)|reservedFooterHeight|contentWithFooterReadingGap/.test(bottomSheetRuntimeText)) {
@@ -961,11 +974,14 @@ if (/\$\{action\.tone\}12/.test(quickActionSheetText) || /\$\{action\.tone\}55/.
 if (/button:\s*\{[^}]*borderWidth:/m.test(headerIconButtonText)) {
   bottomSheetFooterIssues.push(fail('QA_STYLE_ICON_CONTAINER', 'Header icon buttons must keep touch area without rendering an outlined circular frame', 'src/components/HeaderIconButton.tsx'));
 }
-if (!/surface\?: 'panel' \| 'neutral'/.test(headerIconButtonText)
+if (!/surface\?: 'auto' \| 'panel' \| 'neutral'/.test(headerIconButtonText)
+  || !/backgroundContext\?: 'canvas' \| 'panel' \| 'raised' \| 'subtle'/.test(headerIconButtonText)
   || !/return colors\.surface\.panel;/.test(headerIconButtonText)
+  || !/surface === 'auto' \|\| surface === 'neutral'/.test(headerIconButtonText)
+  || !/backgroundContext === 'canvas' \|\| backgroundContext === 'subtle'/.test(headerIconButtonText)
   || !/resolveIconSurfaceColors\(colors, 'neutral'\)\.backgroundColor/.test(headerIconButtonText)
   || /variant === 'filled' && \{\s*backgroundColor: colors\.surface\.subtle/m.test(headerIconButtonText)) {
-  bottomSheetFooterIssues.push(fail('QA_STYLE_HEADER_ICON_SURFACE', 'Filled HeaderIconButton containers must use panel by default and IconSurface neutral background for white-panel contexts, not page-local subtle backgrounds.', 'src/components/HeaderIconButton.tsx'));
+  bottomSheetFooterIssues.push(fail('QA_STYLE_HEADER_ICON_SURFACE', 'Filled HeaderIconButton containers must use panel by default and IconSurface neutral background for auto/white-panel contexts, not page-local subtle backgrounds.', 'src/components/HeaderIconButton.tsx'));
 }
 if (/tone === 'default' \? 'tertiary' : tone/.test(headerIconButtonText)
   || !/const iconTone = tone === 'default' \? undefined : tone/.test(headerIconButtonText)

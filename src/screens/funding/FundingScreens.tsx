@@ -4,8 +4,8 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { ActionButton } from '@/src/design-public-assets/components';
 import { AppIcon, type AppIconName } from '@/src/design-public-assets/components';
-import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
-import { createTradingAccountContextSwitcherHeader, TradingAccountContextSwitcher } from '@/src/design-public-assets/business-components';
+import { openFixedListSheet, openSelectionSheet, useBottomSheet } from '@/src/design-public-assets/components';
+import { createTradingAccountContextSwitcherHeader, PaymentMethodSheet, TradingAccountContextSwitcher } from '@/src/design-public-assets/business-components';
 import {
   FinancialAmountStage,
   FinancialFormFlow,
@@ -291,14 +291,12 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
   });
 
   const openAccountSheet = (mode: 'source' | 'target') => {
-    bottomSheet.show(bottomSheetPresets.selection({
+    openSelectionSheet(bottomSheet, {
       ...createTradingAccountContextSwitcherHeader({
         locale,
         onAddAccount: showAddAccountFeedback,
         title: t('funding.account.switchTitle'),
       }),
-      contentPadding: 'card',
-      contentSizing: 'auto',
       content: (
         <TradingAccountContextSwitcher
           accounts={profiles}
@@ -324,16 +322,16 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
           selectedId={mode === 'source' ? sourceAccountId : targetAccountId}
         />
       ),
-      heightMode: 'adaptive',
-      sheetSurface: 'canvas',
-    }));
+      cardSelection: true,
+      fixed: false,
+    });
   };
   const openMethodSheet = () => {
     if (operation === 'internal_transfer') {
       return;
     }
 
-    bottomSheet.show(bottomSheetPresets.selection({
+    openFixedListSheet(bottomSheet, {
       title: t(operation === 'deposit' ? 'funding.method.selectDeposit' : 'funding.method.selectWithdrawal'),
       content: (
         <PaymentMethodSheet
@@ -345,7 +343,7 @@ function FundingFormScreen({ operation }: { operation: FundingOperation }) {
           selectedId={methodId}
         />
       ),
-    }));
+    });
   };
   const selectMaxAmount = () => {
     if (!sourceAccount) {
@@ -731,71 +729,6 @@ function PaymentMethodField({
       onPress={onPress}
       rightSlot={method ? <StatusPill compact label={methodTypeText(method.type, t)} tone="neutral" /> : null}
       value={method ? localizeText(method.label, locale) : label}
-    />
-  );
-}
-
-function PaymentMethodSheet({
-  methods,
-  onSelect,
-  selectedId,
-}: {
-  methods: FundingPaymentMethod[];
-  onSelect: (id: string) => void;
-  selectedId: string;
-}) {
-  const { t } = useProductSettings();
-  const groups: FundingMethodType[] = ['virtual_account', 'bank_transfer', 'e_wallet'];
-
-  return (
-    <View style={styles.methodSheet}>
-      {groups.map((type) => {
-        const rows = methods.filter((method) => method.type === type);
-
-        if (rows.length === 0) {
-          return null;
-        }
-
-        return (
-          <View key={type} style={styles.methodGroup}>
-            <AppText tone="muted" variant="subtitle">{methodTypeText(type, t)} ({rows.length})</AppText>
-            {rows.map((method) => (
-              <PaymentMethodRow
-                key={method.id}
-                method={method}
-                onPress={() => onSelect(method.id)}
-                selected={method.id === selectedId}
-              />
-            ))}
-          </View>
-        );
-      })}
-    </View>
-  );
-}
-
-function PaymentMethodRow({
-  method,
-  onPress,
-  selected,
-}: {
-  method: FundingPaymentMethod;
-  onPress: () => void;
-  selected: boolean;
-}) {
-  const { locale, t } = useProductSettings();
-  const disabled = !method.available;
-  const helper = disabled && method.maintenanceNote ? localizeText(method.maintenanceNote, locale) : t('funding.method.estimated', { minutes: method.estimatedMinutes });
-  return (
-    <FinancialMethodRow
-      disabled={disabled}
-      helper={helper}
-      icon={method.icon}
-      label={localizeText(method.label, locale)}
-      onPress={onPress}
-      selected={selected}
-      statusLabel={disabled ? t('funding.method.unavailable') : t('status.active')}
-      statusTone={disabled ? 'warning' : 'success'}
     />
   );
 }
@@ -1297,12 +1230,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.card,
     borderWidth: lineWidth.none,
     overflow: 'hidden',
-  },
-  methodGroup: {
-    gap: spacing.sm,
-  },
-  methodSheet: {
-    gap: spacing.lg,
   },
   quickAmountChip: {
     alignItems: 'center',

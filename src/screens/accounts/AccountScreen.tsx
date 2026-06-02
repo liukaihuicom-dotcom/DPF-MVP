@@ -5,7 +5,7 @@ import { Card } from '@/src/design-public-assets/components';
 import { DescribedLabel } from '@/src/design-public-assets/components';
 import { FundActionGrid } from '@/src/design-public-assets/components';
 import { Metric } from '@/src/design-public-assets/components';
-import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { openDetailSheet, useBottomSheet } from '@/src/design-public-assets/components';
 import { MetricDescriptionSheet } from '@/src/design-public-assets/business-components';
 import { Screen } from '@/src/design-public-assets/components';
 import { Sparkline } from '@/src/design-public-assets/components';
@@ -109,7 +109,7 @@ function AccountOverviewCard({ overview }: { overview: AccountOverview }) {
   const totalEquityLabel = t('accounts.overview.totalEquity');
   const totalEquityValue = formatMoney(overview.totalEquity, 'USD', 2, locale);
   const openTotalEquityDescription = () => {
-    bottomSheet.show(bottomSheetPresets.detail({
+    openDetailSheet(bottomSheet, {
       content: (
         <MetricDescriptionSheet
           description={t('accounts.overview.description.totalEquity')}
@@ -118,7 +118,7 @@ function AccountOverviewCard({ overview }: { overview: AccountOverview }) {
         />
       ),
       title: totalEquityLabel,
-    }));
+    });
   };
 
   return (

@@ -1,5 +1,36 @@
 # Release Notes
 
+## 2026-06-02
+
+### Changed
+
+- Bumped the root app version to `1.1.15` and `@dpf/component-library` to `2.5.10` for the global BottomSheet Footer safe-area action-slot correction.
+- Moved confirmation sheet cancel/confirm actions and account transaction detail acknowledgement actions into the shared BottomSheet Footer, preserving existing behavior while ensuring Footer background and bottom padding reserve the device safe-area inset.
+- Added QA coverage so governed BottomSheet content bodies cannot reintroduce content-owned fixed action buttons that bypass the shared safe-area Footer.
+- Bumped the root app version to `1.1.14` and `@dpf/component-library` to `2.5.9` for the global BottomSheet backdrop and pan-down dismissal lifecycle fix.
+- Changed the shared `BottomSheet` backdrop to use the governed Gorhom backdrop press contract while routing backdrop taps through `hide()`, preserving `onRequestClose` guards, Android Back, Header Close, Footer action, and pan-down dismissal semantics.
+- Bumped the root app version to `1.1.13` and `@dpf/component-library` to `2.5.8` for the BottomSheet public resource migration and scenario-driven developer console refactor.
+- Added `BottomSheetActions` public scene openers and migrated funding, security, account, Discover, and Auth sheet content into governed public business components.
+- Strengthened QA so pages cannot bypass public BottomSheet openers with direct `bottomSheet.show/push/update`, direct `bottomSheetPresets`, or redeclared governed sheet content bodies.
+- Refactored `ProductControlPanel` into a scenario-driven developer console: the home view now starts from simulated user journeys, each scenario card declares persona, applied state, and target route, then applies local mock state, shows Toast feedback, closes the panel, and opens the real page.
+- Moved route-only navigation into the secondary Page Map and renamed manual presets to fine-tune state, while preserving AppViewport-outside placement, draggable FAB behavior, blank-area dismissal, token binding, registered icons, i18n copy, and local mock data boundaries.
+- Bumped the root app version to `1.1.12` and `@dpf/component-library` to `2.5.7` for the embedded instrument chart flush-surface correction.
+- Upgraded `@dpf/design-tokens` to `3.4.1` and expanded `ActionButton` governance with sm/md/default/lg/xl sizes, leading/trailing icon slots, reserved icon alignment slots, loading labels, disabled reasons, and hover/focus feedback while keeping only `filled` and `outline`.
+- Changed embedded `TradingTerminalChart` spacing so the chart block no longer adds an extra 10px outer surface padding inside the instrument detail workspace.
+- Bumped the root app version to `1.1.11` and `@dpf/component-library` to `2.5.6` for the Instrument Detail header disclosure and canvas icon background correction.
+- Changed `/instrument/[id]` so the default top header only shows navigation/actions; the compact symbol, current price, percentage change, and price change summary appears after scroll.
+- Registered the `instrumentDetailTrading` page pattern so the instrument detail screen follows a chart-first international quote-page structure: identity, quote status, Bid/Ask/Spread/Leverage decision data, embedded compact chart, auxiliary tabs, and fixed buy/sell actions.
+- Added `TradingTerminalChart toolbarMode="compact"` for embedded detail usage so indicator and drawing tools no longer crowd the first viewport while fullscreen keeps the full terminal toolbar.
+- Updated instrument detail header icons to rely on `HeaderIconButton surface=auto` with `backgroundContext=canvas`, keeping gray header backgrounds paired with panel-contrast icon containers.
+- Bumped the root app version to `1.1.10` and `@dpf/component-library` to `2.5.5` for the Instrument Detail public workspace and adaptive header icon surface governance.
+- Changed `/instrument/[id]` to consume the governed `InstrumentDetailWorkspace` public business skeleton while preserving route params, buy/sell order routing, risk copy, and chart behavior.
+- Added `HeaderIconButton surface=auto` so header icon backgrounds adapt to panel/raised page contexts without page-local color rules.
+- Bumped the root app version to `1.1.9` and `@dpf/component-library` to `2.5.4` for route-backed order ticket BottomSheet governance.
+- Changed `/order/[id]` from a full-screen Modal Page visual shell to a route-backed global BottomSheet modal page while preserving direct entry, refresh recovery, high-risk submit confirmation, dirty-state leave confirmation, and toast submit feedback.
+- Added guarded BottomSheet close support through `onRequestClose`, `allowPanDownDismiss`, and active-sheet `update`, so backdrop tap, Header Close, Android Back, and enabled pan-down can enter the same close guard before dismissal.
+- Bumped the root app version to `1.1.8` and `@dpf/component-library` to `2.5.3` for developer console outside-blank dismissal governance.
+- Added a transparent blank-area dismiss layer to the web-only `ProductControlPanel` developer console while preserving panel interactions, draggable FAB behavior, AppViewport-outside placement, and closed-state product page passthrough.
+
 ## 2026-06-01
 
 ### Added

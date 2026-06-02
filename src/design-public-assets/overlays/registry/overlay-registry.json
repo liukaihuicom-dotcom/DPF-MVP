@@ -121,10 +121,13 @@
         "adaptive height sheet",
         "fixed height modal sheet",
         "fullscreen modal sheet",
+        "route-backed modal page sheet",
         "bottom sheet height governance",
         "card-based account selection sheet",
         "bottom sheet horizontal spacing governance",
-        "bottom sheet safe-area governance"
+        "bottom sheet safe-area governance",
+        "scene opener governance",
+        "public sheet content body governance"
       ],
       "owner": "design-system-engineering",
       "tokens": [
@@ -145,14 +148,22 @@
       ],
       "events": [
         "show",
+        "update",
         "push",
         "back",
         "closeModal",
         "hide",
+        "onRequestClose",
         "panDown",
         "backdropTap",
         "androidBack",
-        "onDismiss"
+        "onDismiss",
+        "openActionSheet",
+        "openDetailSheet",
+        "openSelectionSheet",
+        "openConfirmSheet",
+        "openFixedListSheet",
+        "openScrollableDetailSheet"
       ],
       "a11y": {
         "modal": true,
@@ -162,7 +173,10 @@
         "safe_area": true,
         "panel_structure": "Header, Content, and Footer remain in one Panel until dismissal completes",
         "footer_policy": "Footer is a normal Panel child, not portal, footerComponent, fixed, or absolute",
-        "safe_area_policy": "Footer bottom padding is layout.sheetFooterPaddingBottom plus device bottom inset; ContentInner bottom padding is layout.sheetContentPaddingBottom"
+        "safe_area_policy": "Footer bottom padding is layout.sheetFooterPaddingBottom plus device bottom inset; ContentInner bottom padding is layout.sheetContentPaddingBottom",
+        "guarded_close_policy": "Route-backed or dirty-state sheets may provide onRequestClose to block backdrop, Header Close, pan-down, and Android back until the shared guard allows closure.",
+        "scene_opener_policy": "Page and feature callers must open complex bottom sheets through BottomSheetActions scene openers, not direct bottomSheet.show/push/update or bottomSheetPresets calls.",
+        "public_content_policy": "Governed sheet bodies live in src/components/business and are exported through design-public-assets/business-components."
       },
       "platform": [
         "ios",

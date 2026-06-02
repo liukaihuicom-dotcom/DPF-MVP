@@ -363,6 +363,46 @@
         "Do not keep reusable SVG data visualization inside pages after migration."
       ]
     },
+    "instrumentDetailTrading": {
+      "documentation": "design-system-engineering/11_public_resources/registry/migration-plan.md#instrument-detail-trading-workspace",
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "patternType": "page_pattern",
+      "requiredStructure": [
+        "instrumentIdentityHeader",
+        "primaryQuoteAndStatus",
+        "bidAskSpreadLeverageDecisionStrip",
+        "chartFirstEmbeddedTerminal",
+        "auxiliaryOverviewSpecsNewsSignalsTabs",
+        "fixedBuySellQuoteActionBar",
+        "riskAndQuoteFreshnessCopy"
+      ],
+      "recommendedComponents": [
+        "InstrumentDetailWorkspace",
+        "TradingTerminalChart",
+        "HeaderIconButton",
+        "InstrumentIcon",
+        "SegmentedTabs",
+        "NativePressable",
+        "AppText"
+      ],
+      "requiredStates": [
+        "default",
+        "quote_stale",
+        "market_closed",
+        "restricted",
+        "not_found"
+      ],
+      "forbidden": [
+        "Do not rebuild instrument detail layout inside route screens.",
+        "Do not place advanced chart drawing or indicator tools above the first embedded chart viewport.",
+        "Do not hide quote freshness, Bid/Ask, spread, leverage, or risk context for visual simplicity.",
+        "Do not bypass the governed order ticket route for buy or sell actions."
+      ]
+    },
     "discoverProfileCommerce": {
       "documentation": "design-system-engineering/11_public_resources/registry/migration-plan.md#discover-profile-and-partner-cards",
       "platforms": [

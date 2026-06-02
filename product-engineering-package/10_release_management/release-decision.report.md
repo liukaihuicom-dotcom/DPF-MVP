@@ -4,6 +4,7 @@ Decision: `conditional_allow_for_contract_review`
 
 ## Allowed Next Stage
 
+- BottomSheet public opener migration can enter targeted implementation validation after TypeScript, component, public-resource, navigation, back-close, style, version, and full QA pass.
 - Product review.
 - Backend/API architecture review.
 - Risk and compliance review.
@@ -28,6 +29,7 @@ Decision: `conditional_allow_for_contract_review`
 - Production release of BottomSheet dismissal governance until iOS and Android close-path smoke checks confirm footer/content sync, measured footer reserve, and no residual backdrop after cleanup.
 - Production release of Workspace remains blocked until backend identity, KYC, trading-account, funding, trading, and Partner entitlement services enforce destination permissions and high-risk action boundaries server-side.
 - Any Workspace Assist behavior that recommends buy/sell direction, submits orders, moves funds, sends client messages, or promises returns is blocked.
+- Any new page-owned BottomSheet shell, direct `bottomSheet.show/push/update`, direct `bottomSheetPresets`, local Modal backdrop, private fixed footer, private sheet safe-area calculation, or redeclared governed sheet body is blocked.
 
 ## Required Human Review
 
@@ -44,4 +46,5 @@ Decision: `conditional_allow_for_contract_review`
 - Standard command: `corepack enable && pnpm qa:all`
 - Direct fallback: `node scripts/qa/qa-all.js`
 - TypeScript gate: `pnpm exec tsc --noEmit` or `./node_modules/.bin/tsc --noEmit`
+- BottomSheet migration gate: `pnpm qa:components && pnpm qa:public-resources && pnpm qa:navigation && pnpm qa:back-close && pnpm qa:style && pnpm qa:version`
 - Validation ownership map: `product-engineering-package/11_validation_scripts/README.md`

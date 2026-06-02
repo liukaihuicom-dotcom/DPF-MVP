@@ -13,8 +13,7 @@
 
 | Component | A11y Rule |
 |---|---|
-| `ActionButton` | Role button, label fallback, busy and disabled state |
+| `ActionButton` | Role button, label fallback, busy and disabled state, optional disabled reason, and loading label support |
 | `Screen` | Keyboard dismissal must not trap focus |
 | `AppTopBar` | Back action must be labeled and reachable |
 | `BottomSheet` | Must provide title, dismiss path, and focus-safe interactions before live workflows |
-

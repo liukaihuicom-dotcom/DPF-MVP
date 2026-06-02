@@ -89,6 +89,7 @@ type BrokerStore = {
   deleteOrder: (orderId: string) => void;
   closePosition: (positionId: string) => void;
   findInstrument: (id: string) => Instrument | undefined;
+  toggleInstrumentFavorite: (instrumentId: string) => void;
 };
 
 const BrokerContext = createContext<BrokerStore | null>(null);
@@ -587,6 +588,16 @@ export function BrokerProvider({ children }: PropsWithChildren) {
     setOrders((current) => current.filter((order) => order.id !== orderId));
   };
 
+  const toggleInstrumentFavorite = (instrumentId: string) => {
+    setInstruments((current) =>
+      current.map((instrument) =>
+        instrument.id === instrumentId
+          ? { ...instrument, favorite: !instrument.favorite }
+          : instrument,
+      ),
+    );
+  };
+
   const submitUpgradeRequest = (reason: string) => {
     if (upgradeRequest.status === "pending") {
       return;
@@ -732,6 +743,7 @@ export function BrokerProvider({ children }: PropsWithChildren) {
       closePosition,
       findInstrument: (id: string) =>
         instruments.find((instrument) => instrument.id === id),
+      toggleInstrumentFavorite,
     }),
     [
       account,

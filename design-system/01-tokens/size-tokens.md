@@ -9,6 +9,10 @@ Size tokens define component dimensions and layout constraints. They are separat
 | control.height.sm | 40 | Compact buttons and icon rows |
 | control.height.md | 48 | Default CTA height |
 | control.height.lg | 56 | Input and large CTA height |
+| button.sm | 40 | Compact card, list, and dense secondary action buttons |
+| button.md | 48 | Standard form footer, sheet footer, card, and dense action buttons |
+| button.lg | 56 | Login, funding submit, and fixed bottom primary CTA buttons |
+| button.xl | 64 | Launch and onboarding first-screen primary CTA buttons |
 | header.icon-button | 40 | Reserved header icon-button area for level-1 pages, level-2 pages, and sheet title bars |
 | fund-action.icon-box | 40 | Reserved visual box for deposit, withdraw, transfer, and account funding action glyphs |
 | touch.min | 44 | Minimum touch target |
@@ -31,7 +35,11 @@ Size tokens define component dimensions and layout constraints. They are separat
 | `size.control.sm` | 40 | Compact controls and dense icon rows |
 | `size.control.md` | 48 | Default controls and CTA baseline |
 | `size.control.lg` | 56 | Large controls and input baseline |
-| `size.button.minHeight` | 48 | Shared action button minimum height |
+| `size.button.sm` | 40 | Compact card, list, and dense secondary action buttons |
+| `size.button.md` | 48 | Standard form footer, sheet footer, card, and dense action buttons |
+| `size.button.lg` | 56 | Login, funding submit, and fixed bottom primary CTA buttons |
+| `size.button.xl` | 64 | Launch and onboarding first-screen primary CTA buttons |
+| `size.button.minHeight` | 48 | Compatibility alias for the shared medium action button minimum height |
 | `size.button.icon` | 40 | Header or icon-only button reserved area |
 | `size.input.singleLineMinHeight` | 52 | Single-line text field shell |
 | `size.input.floatingMinHeight` | 58 | Floating-label text field shell |
@@ -70,7 +78,7 @@ Size tokens define component dimensions and layout constraints. They are separat
 
 | Component or Pattern | Required Size Source |
 |---|---|
-| Button | `size.button.minHeight`, `size.button.icon`, `size.touch.min` |
+| Button | `size.button.sm/md/lg/xl`, `size.button.minHeight`, `size.button.icon`, `size.touch.min`, `size.icon.xs/sm/md` |
 | Text field / select | `size.input.*`, `size.control.*` |
 | Status pill / chip / badge | `size.tag.*` |
 | Tabs | `size.tab.barHeight`, `size.tab.itemMinHeight`, `size.tab.pillMinHeight`, `size.tab.underlineMinHeight`, `size.tab.indicatorHeight`, `size.tab.indicatorWidth`, `size.tab.icon` |

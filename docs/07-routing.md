@@ -51,14 +51,14 @@ Do not route every modal. A modal is allowed to be routeable only when it is a m
 
 | Route path | Modal id | Component | Presentation | Risk | Reason | Review note |
 |---|---|---|---|---|---|---|
-| `/order/[id]` | `order.ticket.route` | `OrderTicketScreen` | `transparentModal` | high | Trading ticket is a transaction flow that benefits from refresh recovery, deep links, and external task entry. | Keep routeable. Requires server-side pre-trade validation before production. |
+| `/order/[id]` | `order.ticket.route` | `OrderTicketScreen route host + GlobalBottomSheetHost` | `transparentModal` route host with global BottomSheet modal page surface | high | Trading ticket is a transaction flow that benefits from refresh recovery, deep links, and external task entry. | Keep routeable. Visible operation page must render through the shared BottomSheet host and requires server-side pre-trade validation before production. |
 | `/discover-layout` | `discover.layout.route` | `DiscoverLayoutScreen` | `transparentModal` | low | Current implementation is a route-backed configuration layer. | Consider demoting if deep link or refresh recovery is not required. |
 
 ## Route Groups
 
 | Group | Routes | Purpose |
 |---|---|---|
-| Root stack | `/`, `/brand-splash`, `/launch`, `/auth/*`, `/instrument/[id]`, `/order/[id]`, `/client/[id]`, `/partner-tools`, `/partner/*`, `/account-*`, `/funding/*`, `/settings/*`, `/appearance`, `/discover-layout` | Page-level screens outside persistent tab navigation plus routeable transparent modal flows. |
+| Root stack | `/`, `/brand-splash`, `/launch`, `/auth/*`, `/instrument/[id]`, `/order/[id]`, `/client/[id]`, `/partner-tools`, `/partner/*`, `/account-*`, `/funding/*`, `/settings/*`, `/appearance`, `/discover-layout` | Page-level screens outside persistent tab navigation plus routeable modal flows; `/order/[id]` is a route-backed global BottomSheet modal page. |
 | Segment visible tabs | Trader segments: `/workspace`, `/markets`, `/trade`, `/accounts`, `/discover`, `/quick`; Partner: `/workspace`, `/clients`, `/growth`, `/wallet`, `/me` | Workspace-governed bottom navigation. `/quick` is the dynamic Discover module carrier and its label/icon depend on the selected module. |
 | Hidden tab routes | `/portfolio`, `/account` | Compatibility aliases and legacy implementation entries hidden from default bottom navigation. |
 | System | `/(not-found)` | Expo Router not-found handling. |

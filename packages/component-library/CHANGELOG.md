@@ -1,5 +1,54 @@
 # @dpf/component-library Changelog
 
+## 2.5.10 - 2026-06-02
+
+- Moved confirmation sheet cancel/confirm actions and account transaction acknowledgement actions into the shared BottomSheet Footer slot.
+- Kept the Footer safe-area contract centralized as `layout.sheetFooterPaddingBottom + useSafeAreaInsets().bottom`, so fixed sheet actions do not sit on the iOS Home Indicator or Android gesture area.
+- Added QA coverage to block content-owned BottomSheet action buttons for governed confirmation and transaction detail sheet bodies.
+
+## 2.5.9 - 2026-06-02
+
+- Fixed the shared `BottomSheet` backdrop so backdrop taps use the governed `hide()` close lifecycle instead of an inert custom Pressable layer.
+- Kept pan-down, Header Close, Android Back, Footer action dismissal, and guarded `onRequestClose` paths aligned through the same shared BottomSheet close pipeline.
+
+## 2.5.8 - 2026-06-02
+
+- Added the governed `BottomSheetActions` scene opener layer for action, detail, selection, confirm, fixed-list, and scrollable-detail bottom sheets.
+- Migrated scattered page-owned sheet bodies to public business components for funding payment methods, security device detail, account transaction/menu sheets, Discover profile sheets, and Auth country/language pickers.
+- Strengthened component QA so pages cannot directly call `bottomSheet.show/push/update`, use `bottomSheetPresets`, or redeclare governed sheet content bodies.
+- Refactored `ProductControlPanel` into a scenario-driven developer console with grouped simulated user journeys, persona/state/route scenario cards, secondary Page Map diagnostics, fine-tune state controls, runtime identity metrics, Toast feedback, and real-route navigation.
+- Updated ProductControlPanel manifests and public-resource records so the developer console remains outside `AppViewport`, draggable, blank-area dismissible, token-bound, i18n-bound, and limited to existing local setters plus mock funding presets.
+
+## 2.5.7 - 2026-06-02
+
+- Extended `ActionButton` with sm/md/default/lg/xl size presets, leading/trailing icon slots, reserved icon slots, loading labels, disabled reasons, and hover/focus state feedback while preserving the two-variant filled/outline contract.
+- Kept the legacy `icon` prop as a leading-icon alias and blocked icon-only, selected, and toggle usage from the global button API.
+- Removed the embedded `TradingTerminalChart` outer surface padding so instrument detail charts sit flush with the governed workspace width.
+- Kept terminal/fullscreen chart density spacing unchanged while preserving compact embedded toolbar behavior.
+- Synced manifest and release records for the embedded chart flush-surface contract.
+
+## 2.5.6 - 2026-06-02
+
+- Refined `InstrumentDetailWorkspace` so the default instrument header shows actions only and reveals symbol, current price, percentage change, and price change after scroll.
+- Updated instrument detail header actions to rely on `HeaderIconButton surface=auto` with `backgroundContext=canvas`, removing page-local icon background wrappers.
+- Synced QA and manifest guards for the adaptive header icon background contract.
+
+## 2.5.5 - 2026-06-02
+
+- Added the governed `InstrumentDetailWorkspace` public business skeleton for `/instrument/[id]`.
+- Extended `HeaderIconButton` with `surface=auto` so filled header icon backgrounds adapt to white panel/raised contexts through the governed neutral `IconSurface` background.
+- Synced component manifest and QA guards for the public instrument detail workspace and adaptive header icon surface contract.
+
+## 2.5.4 - 2026-06-02
+
+- Added guarded route-backed BottomSheet support through `onRequestClose`, `allowPanDownDismiss`, and active-sheet `update` so dirty-state sheets can block backdrop, Header Close, pan-down, and Android Back before dismissal.
+- Registered the order ticket as a route-backed global BottomSheet modal page while preserving the shared Panel Header / Content / Footer lifecycle.
+
+## 2.5.3 - 2026-06-02
+
+- Added outside-blank dismissal to the web-only `ProductControlPanel` developer console while preserving its AppViewport-outside placement, draggable FAB, panel interactions, and closed-state product page passthrough.
+- Updated the ProductControlPanel manifest contract so Header Close, open FAB Close, and blank-area dismiss share the same close lifecycle.
+
 ## 2.5.2 - 2026-06-01
 
 - Clarified trading account switch sheet bottom spacing governance so content bottom reserve is owned by shared `BottomSheet` `layout.sheetContentPaddingBottom`.

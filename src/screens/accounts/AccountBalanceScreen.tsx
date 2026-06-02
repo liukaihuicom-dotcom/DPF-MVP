@@ -3,18 +3,16 @@ import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppIcon, type AppIconName, type IconTone } from '@/src/design-public-assets/components';
-import { ActionButton } from '@/src/design-public-assets/components';
-import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
-import { FilterPillGroup, FundingTrendBars, TransactionRow } from '@/src/design-public-assets/business-components';
+import { openScrollableDetailSheet, useBottomSheet } from '@/src/design-public-assets/components';
+import { FilterPillGroup, FundingTrendBars, TransactionDetailSheet, TransactionRow } from '@/src/design-public-assets/business-components';
 import { Card } from '@/src/design-public-assets/components';
-import { DetailRow, LegendDot, MiniMetric } from '@/src/design-public-assets/components';
+import { LegendDot, MiniMetric } from '@/src/design-public-assets/components';
 import { EmptyState } from '@/src/design-public-assets/components';
-import { IconSurface, type IconSurfaceTone } from '@/src/design-public-assets/components';
 import { NativePressable } from '@/src/design-public-assets/components';
 import { Screen } from '@/src/design-public-assets/components';
 import { StatusPill, type StatusPillTone } from '@/src/design-public-assets/components';
 import { AppText } from '@/src/design-public-assets/components';
-import { buildTradingAccountProfiles, type TradingAccountProfile } from '@/src/domain/accountProfiles';
+import { buildTradingAccountProfiles } from '@/src/domain/accountProfiles';
 import { formatMoney } from '@/src/domain/format';
 import type { Locale } from '@/src/design-public-assets/copy';
 import { useProductSettings } from '@/src/design-public-assets/copy';
@@ -68,11 +66,19 @@ export default function AccountBalanceScreen() {
   const netCashFlow = depositTotal - withdrawalTotal;
   const nextFilter = () => setFilter((current) => filterOrder[(filterOrder.indexOf(current) + 1) % filterOrder.length]);
   const openTransactionDetail = (transaction: BalanceTransaction) => {
-    bottomSheet.show(bottomSheetPresets.detail({
-      content: <TransactionDetailSheet currency={profile.currency} onClose={bottomSheet.hide} profile={profile} transaction={transaction} />,
+    openScrollableDetailSheet(bottomSheet, {
+      content: <TransactionDetailSheet currency={profile.currency} profile={profile} transaction={transaction} />,
+      footer: [
+        {
+          label: t('balance.detail.ok'),
+          onPress: bottomSheet.hide,
+          tone: 'brand',
+          variant: 'filled',
+        },
+      ],
       leftIcon: getTransactionIcon(transaction),
       title: t('balance.detail.title'),
-    }));
+    });
   };
 
   return (
@@ -196,61 +202,6 @@ function FundingTotal({ label, tone, value }: { label: string; tone: Extract<Ico
   );
 }
 
-function TransactionDetailSheet({
-  currency,
-  onClose,
-  profile,
-  transaction,
-}: {
-  currency: string;
-  onClose: () => void;
-  profile: TradingAccountProfile;
-  transaction: BalanceTransaction;
-}) {
-  const { locale, colors, t } = useProductSettings();
-  const statusTone = getTransactionTone(transaction);
-  const statusOverlay = resolveStatusOverlay(transaction.status, colors);
-  const completedValue = resolveCompletedAmount(transaction, currency, locale, t('balance.detail.pending'), t('balance.detail.notAvailable'));
-  const reviewTimeLabel = transaction.status === 'completed' ? t('balance.detail.completeTime') : t('balance.detail.reviewTime');
-  const reviewTimeValue =
-    transaction.status === 'reviewing' ? t('balance.detail.pending') : formatTransactionTime(addMinutes(transaction.createdAt, transaction.status === 'rejected' ? 23 : 12), locale);
-  const detailRows = [
-    { label: t('balance.detail.requestTime'), value: formatTransactionTime(transaction.createdAt, locale) },
-    { label: t('balance.detail.account'), value: profile.accountNo },
-    { label: t('balance.detail.server'), value: profile.server },
-    { label: t('balance.detail.reference'), value: formatTransactionReference(transaction) },
-    { label: t('balance.detail.type'), value: getTransactionTypeLabel(transaction.type, t) },
-    { label: t('balance.detail.method'), value: getTransactionMethodLabel(transaction.type, t) },
-    { label: reviewTimeLabel, value: reviewTimeValue },
-    { label: t('balance.detail.requestAmount'), value: formatSignedMoney(transaction.amount, currency, locale) },
-    { label: t('balance.detail.completedAmount'), value: completedValue },
-    ...(transaction.status === 'rejected' ? [{ label: t('balance.detail.failedReason'), value: t('balance.detail.failedReasonCopy') }] : []),
-    { label: t('balance.detail.voucher'), value: t('balance.detail.view'), trailingIcon: true },
-  ];
-
-  return (
-    <View style={styles.detailSheet}>
-      <View style={StyleSheet.flatten([styles.detailHero, { backgroundColor: statusOverlay.muted }])}>
-        <IconSurface icon={getDetailStatusIcon(transaction.status)} sizeVariant="lg" tone={resolveStatusSurfaceTone(transaction.status)} />
-        <StatusPill icon={getDetailStatusIcon(transaction.status)} label={t(`balance.detail.status.${transaction.status}`)} tone={statusTone} />
-        <AppText adjustsFontSizeToFit numberOfLines={1} style={styles.detailAmount} tone={transaction.amount >= 0 ? 'up' : 'down'} variant="displayXl">
-          {formatSignedMoney(transaction.amount, currency, locale)}
-        </AppText>
-        <AppText numberOfLines={1} tone="muted" variant="caption">
-          {getTransactionTypeLabel(transaction.type, t)}
-        </AppText>
-      </View>
-
-      <View style={StyleSheet.flatten([styles.detailRows, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-        {detailRows.map((row, index) => (
-          <DetailRow key={`${row.label}-${row.value}`} row={row} showDivider={index < detailRows.length - 1} />
-        ))}
-      </View>
-      <ActionButton label={t('balance.detail.ok')} onPress={onClose} tone="brand" variant="filled" />
-    </View>
-  );
-}
-
 function buildBalanceTransactions(transactions: Transaction[], credit: number, creditLabel: string, rejectedWithdrawalLabel: string): BalanceTransaction[] {
   const syntheticCredit: BalanceTransaction = {
     amount: credit,
@@ -337,35 +288,6 @@ function getTransactionTone(transaction: Transaction): StatusPillTone {
   return toneByStatus[transaction.status];
 }
 
-function getDetailStatusIcon(status: TransactionStatus): AppIconName {
-  if (status === 'completed') {
-    return 'icon.status.verified';
-  }
-
-  if (status === 'rejected') {
-    return 'icon.status.rejected';
-  }
-
-  return 'icon.trading.history';
-}
-
-function resolveStatusOverlay(status: TransactionStatus, colors: ReturnType<typeof useProductSettings>['colors']) {
-  if (status === 'completed') {
-    return {
-      muted: `${colors.status.success.fg}18`,
-      scrim: `${colors.status.success.fg}66`,
-      strong: `${colors.status.success.fg}55`,
-      subtle: `${colors.status.success.fg}12`,
-    };
-  }
-
-  if (status === 'rejected') {
-    return colors.overlay.danger;
-  }
-
-  return colors.overlay.warning;
-}
-
 function resolveStatusIconTone(status: TransactionStatus): IconTone {
   if (status === 'completed') {
     return 'success';
@@ -376,18 +298,6 @@ function resolveStatusIconTone(status: TransactionStatus): IconTone {
   }
 
   return 'amber';
-}
-
-function resolveStatusSurfaceTone(status: TransactionStatus): IconSurfaceTone {
-  if (status === 'completed') {
-    return 'success';
-  }
-
-  if (status === 'rejected') {
-    return 'danger';
-  }
-
-  return 'warning';
 }
 
 function resolveTransactionColor(transaction: Transaction, colors: ReturnType<typeof useProductSettings>['colors']) {
@@ -414,49 +324,6 @@ function resolveTransactionIconTone(transaction: Transaction): IconTone {
   return 'success';
 }
 
-function getTransactionTypeLabel(type: Transaction['type'], t: ReturnType<typeof useProductSettings>['t']) {
-  return t(`balance.type.${type}`);
-}
-
-function getTransactionMethodLabel(type: Transaction['type'], t: ReturnType<typeof useProductSettings>['t']) {
-  if (type === 'withdrawal') {
-    return t('balance.method.demoWithdrawal');
-  }
-
-  if (type === 'adjustment') {
-    return t('balance.method.creditAdjustment');
-  }
-
-  return t('balance.method.bankTransfer');
-}
-
-function resolveCompletedAmount(transaction: Transaction, currency: string, locale: Locale, pendingLabel: string, emptyLabel: string) {
-  if (transaction.status === 'reviewing') {
-    return pendingLabel;
-  }
-
-  if (transaction.status === 'rejected') {
-    return emptyLabel;
-  }
-
-  return formatSignedMoney(transaction.amount, currency, locale);
-}
-
-function formatTransactionReference(transaction: Transaction) {
-  const normalizedId = transaction.id.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-  const dateStamp = transaction.createdAt.slice(5, 10).replace('-', '');
-
-  return `REF-${dateStamp}-${normalizedId.slice(-6)}`;
-}
-
-function addMinutes(createdAt: string, minutes: number) {
-  const date = new Date(createdAt.replace(' ', 'T'));
-  date.setMinutes(date.getMinutes() + minutes);
-
-  const pad = (value: number) => String(value).padStart(2, '0');
-
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
 
 function formatSignedMoney(value: number, currency: string, locale: Locale, digits = 2) {
   const sign = value >= 0 ? '+' : '-';
@@ -489,26 +356,6 @@ function parseTransactionTime(createdAt: string) {
 }
 
 const styles = StyleSheet.create({
-  detailAmount: {
-    marginTop: spacing.xs,
-  },
-  detailHero: {
-    alignItems: 'center',
-    borderRadius: radius.card,
-    borderWidth: lineWidth.none,
-    gap: spacing.sm,
-    paddingHorizontal: layout.cardPaddingX,
-    paddingVertical: layout.cardPaddingY,
-  },
-  detailRows: {
-    borderRadius: radius.card,
-    borderWidth: lineWidth.none,
-    overflow: 'hidden',
-  },
-  detailSheet: {
-    gap: spacing.md,
-    paddingBottom: spacing.sm,
-  },
   flexBlock: {
     flex: 1,
     gap: spacing.xs,

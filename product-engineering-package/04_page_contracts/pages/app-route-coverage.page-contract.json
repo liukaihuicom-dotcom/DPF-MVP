@@ -153,6 +153,7 @@
       ],
       "related_modals": [
         "order.ticket.route",
+        "global.bottomSheet",
         "global.toastFeedback"
       ],
       "states": [],
@@ -210,7 +211,6 @@
         "portfolio.accountMenuSheet",
         "portfolio.closePositionConfirm",
         "portfolio.pendingOrderDetailSheet",
-        "portfolio.pendingOrderFeedbackToast",
         "portfolio.positionDetailSheet",
         "portfolio.orderMutationAlert",
         "tradingAccount.switchSheet",
@@ -274,6 +274,7 @@
       ],
       "related_modals": [
         "order.ticket.route",
+        "global.bottomSheet",
         "partner.upgradeFeedbackAlert",
         "global.modalQueue",
         "global.toastFeedback"
@@ -365,7 +366,6 @@
         "portfolio.accountMenuSheet",
         "portfolio.closePositionConfirm",
         "portfolio.pendingOrderDetailSheet",
-        "portfolio.pendingOrderFeedbackToast",
         "portfolio.positionDetailSheet",
         "portfolio.orderMutationAlert",
         "tradingAccount.switchSheet",
@@ -409,6 +409,7 @@
       ],
       "related_modals": [
         "order.ticket.route",
+        "global.bottomSheet",
         "global.toastFeedback"
       ],
       "states": [
@@ -422,7 +423,7 @@
     },
     {
       "path": "/order/[id]",
-      "page_component": "OrderTicketScreen",
+      "page_component": "OrderTicketScreen route host + GlobalBottomSheetHost",
       "module": "Trading",
       "permission": "signedIn.trader",
       "presentation": "transparentModal",
@@ -436,6 +437,7 @@
       ],
       "related_modals": [
         "order.ticket.route",
+        "global.bottomSheet",
         "global.modalQueue",
         "global.toastFeedback"
       ],

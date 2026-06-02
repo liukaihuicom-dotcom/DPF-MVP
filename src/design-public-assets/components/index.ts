@@ -6,6 +6,7 @@ export * from '@/src/components/AuthFlowControls';
 export * from '@/src/components/AuthShell';
 export * from '@/src/components/BackBar';
 export * from '@/src/components/BottomSheet';
+export * from '@/src/components/BottomSheetActions';
 export * from '@/src/components/Card';
 export * from '@/src/components/ConfirmActionSheet';
 export * from '@/src/components/CurrencyFlag';

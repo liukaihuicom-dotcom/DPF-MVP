@@ -145,7 +145,7 @@ The base scale is intentionally small and stable. It should not grow during page
 - `Card` uses 12 px horizontal padding through `layout.cardPaddingX` and 16 px vertical padding through `layout.cardPaddingY`.
 - `Card compact` uses 12 px horizontal padding through `layout.cardPaddingCompactX` and 12 px vertical padding through `layout.cardPaddingCompactY`.
 - `Card surface="list"` uses `layout.cardListPaddingY` and delegates list rhythm to row components.
-- `ActionButton` uses 18 px horizontal and 12 px vertical padding.
+- `ActionButton` uses size-owned horizontal padding by preset: small uses 12 px, medium/default uses the governed 18 px compatibility inset, and large/xl use 24 px; all presets keep 12 px vertical padding.
 - `TextField`, `SelectField`, and `RichTextField` use `layout.formFieldTextInset` / 12 px for shell horizontal content inset and semantic floating input top inset tokens for label rhythm.
 - Funding and wallet patterns use `layout.financialPattern.*` so amount, status, risk, method, and transaction hierarchy stay consistent across Deposit, Withdrawal, Transfer, Wallet Home, KYC gate, and Partner finance surfaces.
 

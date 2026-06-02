@@ -11,7 +11,8 @@ import { useBroker } from '@/src/state/BrokerStore';
 
 import { NativePressable } from './NativePressable';
 import { AppIcon, type AppIconName, type IconTone } from './AppIcon';
-import { bottomSheetPresets, useBottomSheet } from './BottomSheet';
+import { useBottomSheet } from './BottomSheet';
+import { openActionSheet } from './BottomSheetActions';
 import { useOverlayQueue } from './OverlayQueue';
 import { AppText } from './Typography';
 
@@ -40,10 +41,11 @@ export function QuickActionSheet({ onClose, open }: QuickActionSheetProps) {
     }
 
     ownsSheetRef.current = true;
-    bottomSheet.show(bottomSheetPresets.actionMenu({
+    openActionSheet(bottomSheet, {
       content: <QuickActionSheetContent onClose={handleClose} />,
       onDismiss: handleDismiss,
-    }));
+      sheetSurface: 'canvas',
+    });
   }, [bottomSheet, handleClose, handleDismiss, open]);
 
   return null;

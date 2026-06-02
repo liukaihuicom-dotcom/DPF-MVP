@@ -98,9 +98,9 @@
   "routeable_modals": {
     "order_ticket": {
       "path": "/order/[id]",
-      "presentation": "transparentModal",
+      "presentation": "transparentModal route host with global BottomSheet modal page surface",
       "risk_level": "high",
-      "reason": "Trading ticket is a transaction flow that benefits from refresh recovery, deep links, and external task entry."
+      "reason": "Trading ticket is a transaction flow that benefits from refresh recovery, deep links, and external task entry while rendering the visible operation page through the global BottomSheet host."
     },
     "discover_layout": {
       "path": "/discover-layout",

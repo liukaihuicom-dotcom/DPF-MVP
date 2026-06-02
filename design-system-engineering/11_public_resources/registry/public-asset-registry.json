@@ -8,7 +8,7 @@
       "asset_id": "token.design-tokens",
       "asset_type": "token",
       "name": "Design Tokens Package",
-      "version": "3.3.0",
+      "version": "3.4.1",
       "source_path": "packages/design-tokens/registry/tokens.json",
       "doc_path": "packages/design-tokens/registry/tokens.json",
       "usage_scope": [
@@ -31,7 +31,7 @@
       ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-29"
+      "last_updated": "2026-06-02"
     },
     {
       "asset_id": "token.color",
@@ -174,7 +174,7 @@
       "asset_id": "component.base.ActionButton",
       "asset_type": "base_component",
       "name": "ActionButton",
-      "version": "2.0.0",
+      "version": "2.5.7",
       "source_path": "packages/component-library/registry/component-manifest.json",
       "doc_path": "packages/component-library/registry/component-manifest.json",
       "usage_scope": [
@@ -194,7 +194,8 @@
       "dependents": [],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-28"
+      "last_updated": "2026-06-02",
+      "notes": "ActionButton keeps the locked filled/outline visual contract while adding sm/md/default/lg/xl size presets, leading/trailing icon slots, reserved icon alignment slots, loading labels, disabled reasons, and hover/focus state feedback."
     },
     {
       "asset_id": "component.base.TextField",
@@ -229,8 +230,8 @@
       "asset_id": "component.base.BottomSheet",
       "asset_type": "base_component",
       "name": "BottomSheet",
-      "version": "1.3.3",
-      "source_path": "packages/component-library/registry/component-manifest.json",
+      "version": "1.4.0",
+      "source_path": "src/components/BottomSheet.tsx",
       "doc_path": "packages/component-library/registry/component-manifest.json",
       "usage_scope": [
         "app_pages"
@@ -247,11 +248,70 @@
         "token.design-tokens"
       ],
       "dependents": [
+        "component.overlay.BottomSheetActions",
         "registry.overlay-system"
       ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-29"
+      "last_updated": "2026-06-02"
+    },
+    {
+      "asset_id": "component.overlay.BottomSheetActions",
+      "asset_type": "overlay_openers",
+      "name": "BottomSheet Scene Openers",
+      "version": "1.0.0",
+      "source_path": "src/components/BottomSheetActions.tsx",
+      "doc_path": "src/design-public-assets/overlays/registry/page-overlay-matrix.md",
+      "usage_scope": [
+        "bottom_sheet_overlays",
+        "action_sheet",
+        "detail_sheet",
+        "selection_sheet",
+        "confirmation_sheet",
+        "fixed_list_sheet",
+        "scrollable_detail_sheet"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "component.base.BottomSheet",
+        "component.base.ConfirmActionSheet",
+        "token.design-tokens",
+        "token.semantic-layout",
+        "principle.bottomSheet.heightSystem"
+      ],
+      "dependents": [
+        "page.deposit_form",
+        "page.withdrawal_form",
+        "page.portfolio_alias",
+        "page.trade",
+        "page.security_login_log",
+        "page.account_balance",
+        "page.account_details",
+        "page.accounts",
+        "page.quick",
+        "page.auth_login",
+        "page.register_phone",
+        "page.forgot_password",
+        "business.PaymentMethodSheet",
+        "business.DeviceDetailSheet",
+        "business.TransactionDetailSheet",
+        "business.AccountMenuSheet",
+        "business.AccountMoreSheet",
+        "business.ProfileEditSheetContent",
+        "business.ManagerChatSheet",
+        "business.CountryPickerSheetContent",
+        "business.AuthLanguageSheetContent"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-02",
+      "notes": "Public scene opener layer for openActionSheet, openDetailSheet, openSelectionSheet, openConfirmSheet, openFixedListSheet, and openScrollableDetailSheet. Pages may pass business data and callbacks, but must not directly call bottomSheet.show/push/update or bottomSheetPresets for complex sheet assembly."
     },
     {
       "asset_id": "component.base.ConfirmActionSheet",
@@ -761,8 +821,8 @@
       "asset_id": "business.InstrumentDetailWorkspace",
       "asset_type": "business_component",
       "name": "InstrumentDetailWorkspace",
-      "version": "1.1.0",
-      "source_path": "design-system-engineering/03_business_components/business-component-manifest.json",
+      "version": "1.2.0",
+      "source_path": "src/components/business/InstrumentDetailWorkspace.tsx",
       "doc_path": "design-system-engineering/03_business_components/business-component-manifest.json",
       "usage_scope": [
         "financial_pages"
@@ -775,12 +835,21 @@
       "status": "approved",
       "owner": "design-system-engineering",
       "dependencies": [
-        "business.registry"
+        "component.base.HeaderIconButton",
+        "component.base.InstrumentIcon",
+        "component.base.NativePressable",
+        "component.base.SegmentedTabs",
+        "business.TradingTerminalChart",
+        "token.design-tokens",
+        "copy.copy-table",
+        "icon.icon-library"
       ],
-      "dependents": [],
+      "dependents": [
+        "page.instrument_detail"
+      ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-28"
+      "last_updated": "2026-06-02"
     },
     {
       "asset_id": "business.TradingAccountContextSwitcher",
@@ -1289,6 +1358,39 @@
       "last_updated": "2026-05-28"
     },
     {
+      "asset_id": "pattern.page.instrumentDetailTrading",
+      "asset_type": "page_pattern",
+      "name": "Instrument Detail Trading Workspace Pattern",
+      "version": "1.0.0",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "doc_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "usage_scope": [
+        "instrument_detail",
+        "financial_pages"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "pattern.registry",
+        "business.InstrumentDetailWorkspace",
+        "business.TradingTerminalChart",
+        "component.base.component-library",
+        "copy.copy-table",
+        "icon.icon-library"
+      ],
+      "dependents": [
+        "page.instrument_detail"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-02"
+    },
+    {
       "asset_id": "pattern.dialog.accountContextSwitcher",
       "asset_type": "dialog_pattern",
       "name": "accountContextSwitcher",
@@ -1738,8 +1840,8 @@
     {
       "asset_id": "tool.dev.ProductControlPanel",
       "asset_type": "qa_asset",
-      "name": "ProductControlPanel developer tool",
-      "version": "1.7.0",
+      "name": "ProductControlPanel scenario-driven developer console",
+      "version": "1.8.0",
       "source_path": "src/components/ProductControlPanel.tsx",
       "doc_path": "packages/component-library/registry/component-manifest.json",
       "usage_scope": [
@@ -1753,6 +1855,8 @@
       "owner": "design-system-engineering",
       "dependencies": [
         "component.base.component-library",
+        "copy.copy-table",
+        "pattern.registry",
         "token.design-tokens",
         "icon.icon-library"
       ],
@@ -1761,8 +1865,8 @@
       ],
       "sync_policy": "controlled_sync",
       "qa_status": "passed",
-      "last_updated": "2026-05-28",
-      "notes": "Independent draggable debug module outside AppViewport; it must not be clipped by the product app canvas."
+      "last_updated": "2026-06-02",
+      "notes": "Scenario-driven developer console for simulated user journeys. Each scenario card declares persona, applied local mock state, and target route before applying existing setters/mock funding presets, showing Toast feedback, closing the panel, and opening the real page. Page map and fine-tune state controls are secondary diagnostics. The console remains an independent draggable module outside AppViewport and must not be clipped by the product app canvas."
     },
     {
       "asset_id": "product.security-center-contract",
@@ -2193,6 +2297,304 @@
         "business.AgenticWorkspace",
         "page.workspace"
       ]
+    },
+    {
+      "asset_id": "business.PaymentMethodSheet",
+      "asset_type": "business_component",
+      "name": "PaymentMethodSheet",
+      "version": "1.0.0",
+      "source_path": "src/components/business/FundingSheets.tsx",
+      "doc_path": "src/design-public-assets/overlays/registry/page-overlay-matrix.md",
+      "usage_scope": [
+        "deposit_payment_method_sheet",
+        "withdrawal_payment_method_sheet"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry",
+        "component.overlay.BottomSheetActions",
+        "component.base.BottomSheet",
+        "token.design-tokens",
+        "token.semantic-layout"
+      ],
+      "dependents": [
+        "page.deposit_form",
+        "page.withdrawal_form"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-02",
+      "notes": "Public payment method selection content for governed selection/fixed-list BottomSheet openers."
+    },
+    {
+      "asset_id": "business.DeviceDetailSheet",
+      "asset_type": "business_component",
+      "name": "DeviceDetailSheet",
+      "version": "1.0.0",
+      "source_path": "src/components/business/SecuritySheets.tsx",
+      "doc_path": "src/design-public-assets/overlays/registry/page-overlay-matrix.md",
+      "usage_scope": [
+        "security_device_detail_sheet"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry",
+        "component.overlay.BottomSheetActions",
+        "component.base.BottomSheet",
+        "token.design-tokens",
+        "token.semantic-layout"
+      ],
+      "dependents": [
+        "page.security_login_log"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-02",
+      "notes": "Public long-detail security device content with scrollable detail behavior delegated to BottomSheetActions."
+    },
+    {
+      "asset_id": "business.TransactionDetailSheet",
+      "asset_type": "business_component",
+      "name": "TransactionDetailSheet",
+      "version": "1.0.0",
+      "source_path": "src/components/business/AccountSheets.tsx",
+      "doc_path": "src/design-public-assets/overlays/registry/page-overlay-matrix.md",
+      "usage_scope": [
+        "account_transaction_detail_sheet"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry",
+        "component.overlay.BottomSheetActions",
+        "component.base.BottomSheet",
+        "token.design-tokens",
+        "token.semantic-layout"
+      ],
+      "dependents": [
+        "page.account_balance"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-02",
+      "notes": "Public transaction detail content for long account ledger details."
+    },
+    {
+      "asset_id": "business.AccountMenuSheet",
+      "asset_type": "business_component",
+      "name": "AccountMenuSheet",
+      "version": "1.0.0",
+      "source_path": "src/components/business/AccountSheets.tsx",
+      "doc_path": "src/design-public-assets/overlays/registry/page-overlay-matrix.md",
+      "usage_scope": [
+        "account_action_menu_sheet"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry",
+        "component.overlay.BottomSheetActions",
+        "component.base.BottomSheet",
+        "token.design-tokens",
+        "token.semantic-layout"
+      ],
+      "dependents": [
+        "page.account_details",
+        "page.accounts"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-02",
+      "notes": "Public account action menu content for adaptive action-menu BottomSheet usage."
+    },
+    {
+      "asset_id": "business.AccountMoreSheet",
+      "asset_type": "business_component",
+      "name": "AccountMoreSheet",
+      "version": "1.0.0",
+      "source_path": "src/components/business/AccountSheets.tsx",
+      "doc_path": "src/design-public-assets/overlays/registry/page-overlay-matrix.md",
+      "usage_scope": [
+        "account_more_menu_sheet"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry",
+        "component.overlay.BottomSheetActions",
+        "component.base.BottomSheet",
+        "token.design-tokens",
+        "token.semantic-layout"
+      ],
+      "dependents": [
+        "page.account_details",
+        "page.accounts"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-02",
+      "notes": "Public account more-menu content for governed action sheet entry points."
+    },
+    {
+      "asset_id": "business.ProfileEditSheetContent",
+      "asset_type": "business_component",
+      "name": "ProfileEditSheetContent",
+      "version": "1.0.0",
+      "source_path": "src/components/business/ProfileSheets.tsx",
+      "doc_path": "src/design-public-assets/overlays/registry/page-overlay-matrix.md",
+      "usage_scope": [
+        "discover_profile_edit_sheet"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry",
+        "component.overlay.BottomSheetActions",
+        "component.base.BottomSheet",
+        "token.design-tokens",
+        "token.semantic-layout"
+      ],
+      "dependents": [
+        "page.quick",
+        "page.discover"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-02",
+      "notes": "Public Discover profile edit content body; pages pass profile data and callbacks only."
+    },
+    {
+      "asset_id": "business.ManagerChatSheet",
+      "asset_type": "business_component",
+      "name": "ManagerChatSheet",
+      "version": "1.0.0",
+      "source_path": "src/components/business/ProfileSheets.tsx",
+      "doc_path": "src/design-public-assets/overlays/registry/page-overlay-matrix.md",
+      "usage_scope": [
+        "discover_manager_chat_sheet"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry",
+        "component.overlay.BottomSheetActions",
+        "component.base.BottomSheet",
+        "token.design-tokens",
+        "token.semantic-layout"
+      ],
+      "dependents": [
+        "page.quick",
+        "page.discover"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-02",
+      "notes": "Public manager chat preview content body using governed detail sheet opening."
+    },
+    {
+      "asset_id": "business.CountryPickerSheetContent",
+      "asset_type": "business_component",
+      "name": "CountryPickerSheetContent",
+      "version": "1.0.0",
+      "source_path": "src/components/business/AuthSheets.tsx",
+      "doc_path": "src/design-public-assets/overlays/registry/page-overlay-matrix.md",
+      "usage_scope": [
+        "auth_country_picker_sheet"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry",
+        "component.overlay.BottomSheetActions",
+        "component.base.BottomSheet",
+        "token.design-tokens",
+        "token.semantic-layout"
+      ],
+      "dependents": [
+        "page.register_phone",
+        "page.auth_login",
+        "page.forgot_password"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-02",
+      "notes": "Public country picker content for searchable selection/fixed-list BottomSheet usage."
+    },
+    {
+      "asset_id": "business.AuthLanguageSheetContent",
+      "asset_type": "business_component",
+      "name": "AuthLanguageSheetContent",
+      "version": "1.0.0",
+      "source_path": "src/components/business/AuthSheets.tsx",
+      "doc_path": "src/design-public-assets/overlays/registry/page-overlay-matrix.md",
+      "usage_scope": [
+        "auth_language_selection_sheet"
+      ],
+      "platforms": [
+        "app",
+        "h5",
+        "web"
+      ],
+      "status": "approved",
+      "owner": "design-system-engineering",
+      "dependencies": [
+        "business.registry",
+        "component.overlay.BottomSheetActions",
+        "component.base.BottomSheet",
+        "token.design-tokens",
+        "token.semantic-layout"
+      ],
+      "dependents": [
+        "page.auth_login",
+        "page.register_phone",
+        "page.forgot_password"
+      ],
+      "sync_policy": "controlled_sync",
+      "qa_status": "passed",
+      "last_updated": "2026-06-02",
+      "notes": "Public auth language selection content for selection BottomSheet usage."
     }
   ]
 }

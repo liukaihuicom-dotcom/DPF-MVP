@@ -28,6 +28,46 @@
       "type": "component"
     },
     {
+      "id": "component.BottomSheetActions",
+      "type": "overlay_openers"
+    },
+    {
+      "id": "business.PaymentMethodSheet",
+      "type": "business_sheet_content"
+    },
+    {
+      "id": "business.DeviceDetailSheet",
+      "type": "business_sheet_content"
+    },
+    {
+      "id": "business.TransactionDetailSheet",
+      "type": "business_sheet_content"
+    },
+    {
+      "id": "business.AccountMenuSheet",
+      "type": "business_sheet_content"
+    },
+    {
+      "id": "business.AccountMoreSheet",
+      "type": "business_sheet_content"
+    },
+    {
+      "id": "business.ProfileEditSheetContent",
+      "type": "business_sheet_content"
+    },
+    {
+      "id": "business.ManagerChatSheet",
+      "type": "business_sheet_content"
+    },
+    {
+      "id": "business.CountryPickerSheetContent",
+      "type": "business_sheet_content"
+    },
+    {
+      "id": "business.AuthLanguageSheetContent",
+      "type": "business_sheet_content"
+    },
+    {
       "id": "principle.bottomSheet.heightSystem",
       "type": "governance_principle"
     },
@@ -112,6 +152,66 @@
     },
     {
       "from": "overlay.global.bottomSheet",
+      "to": "component.BottomSheetActions",
+      "relation": "opened_by"
+    },
+    {
+      "from": "component.BottomSheetActions",
+      "to": "component.BottomSheetProvider",
+      "relation": "dispatches_to"
+    },
+    {
+      "from": "component.BottomSheetActions",
+      "to": "principle.bottomSheet.heightSystem",
+      "relation": "applies"
+    },
+    {
+      "from": "component.BottomSheetActions",
+      "to": "business.PaymentMethodSheet",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.BottomSheetActions",
+      "to": "business.DeviceDetailSheet",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.BottomSheetActions",
+      "to": "business.TransactionDetailSheet",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.BottomSheetActions",
+      "to": "business.AccountMenuSheet",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.BottomSheetActions",
+      "to": "business.AccountMoreSheet",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.BottomSheetActions",
+      "to": "business.ProfileEditSheetContent",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.BottomSheetActions",
+      "to": "business.ManagerChatSheet",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.BottomSheetActions",
+      "to": "business.CountryPickerSheetContent",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.BottomSheetActions",
+      "to": "business.AuthLanguageSheetContent",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "overlay.global.bottomSheet",
       "to": "principle.bottomSheet.heightSystem",
       "relation": "governed_by"
     },
@@ -189,6 +289,8 @@
   "illegal_nesting_policy": [
     "Bottom Sheet must not push another Bottom Sheet shell; nested confirmation must use the existing shared stack or Alert Dialog.",
     "Alert Dialog must not stack another Alert Dialog directly; global alerts are serialized by OverlayQueueProvider.",
-    "High-risk funding, KYC, security, compliance, and trading confirmations must not use Toast."
+    "High-risk funding, KYC, security, compliance, and trading confirmations must not use Toast.",
+    "Pages must not call bottomSheet.show, bottomSheet.push, bottomSheet.update, or bottomSheetPresets directly for complex sheet content; they must use BottomSheetActions scene openers.",
+    "Pages must not redeclare governed sheet content bodies such as PaymentMethodSheet, DeviceDetailSheet, TransactionDetailSheet, AccountMenuSheet, AccountMoreSheet, ManagerChatSheet, ProfileEditSheetContent, AuthLanguageSheetContent, or CountryPickerSheetContent."
   ]
 }

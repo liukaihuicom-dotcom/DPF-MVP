@@ -1,5 +1,11 @@
 # Token Changelog
 
+## 3.4.1 - 2026-06-02
+
+- Added governed `size.button.sm`, `size.button.md`, `size.button.lg`, and `size.button.xl` roles for compact, standard, large, and launch/onboarding ActionButton heights.
+- Added `typography.buttonSm` for compact 14px button labels while keeping medium buttons on `typography.buttonMd` and large/xl buttons on `typography.buttonLg`.
+- Synchronized package runtime tokens, compatibility runtime tokens, token registry metadata, and design-system docs for the expanded ActionButton size contract.
+
 ## 3.4.0 - 2026-06-01
 
 - Added BottomSheet safe-area spacing roles: `layout.safeAreaBottom`, `layout.sheetContentPaddingBottom`, and `layout.sheetFooterPaddingBottom`.

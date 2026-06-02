@@ -214,6 +214,25 @@ if (exists(runtimeTokenPath) && exists(compatibilityRuntimeTokenPath) && exists(
       : fail('QA_TOKENS_SCREEN_SAFE_BOTTOM_RUNTIME', 'layout.screenBottomPadding must stay in package and compatibility runtime tokens', runtimeTokenPath),
   );
   checks.push(
+    /button:\s*\{[\s\S]*?sm:\s*40[\s\S]*?md:\s*48[\s\S]*?lg:\s*56[\s\S]*?xl:\s*64[\s\S]*?minHeight:\s*48/m.test(runtimeText)
+      && /button:\s*\{[\s\S]*?sm:\s*40[\s\S]*?md:\s*48[\s\S]*?lg:\s*56[\s\S]*?xl:\s*64[\s\S]*?minHeight:\s*48/m.test(compatibilityRuntimeText)
+      && /buttonSm:\s*\{[\s\S]*?fontSize:\s*14[\s\S]*?fontWeight:\s*'600'[\s\S]*?lineHeight:\s*18/m.test(runtimeText)
+      && /buttonSm:\s*\{[\s\S]*?fontSize:\s*14[\s\S]*?fontWeight:\s*'600'[\s\S]*?lineHeight:\s*18/m.test(compatibilityRuntimeText)
+      ? pass('QA_TOKENS_BUTTON_SIZE_RUNTIME', 'ActionButton sm/md/lg/xl size roles and buttonSm typography are exported in package and compatibility runtime tokens', runtimeTokenPath)
+      : fail('QA_TOKENS_BUTTON_SIZE_RUNTIME', 'ActionButton size roles and buttonSm typography must exist in package and compatibility runtime tokens', runtimeTokenPath),
+  );
+  checks.push(
+    tokenIndexText.includes('buttonSizeRoleMap')
+      && tokenIndexText.includes('size.button.sm / 40')
+      && tokenIndexText.includes('size.button.md / 48')
+      && tokenIndexText.includes('size.button.lg / 56')
+      && tokenIndexText.includes('size.button.xl / 64')
+      && tokenIndexText.includes('buttonTypographyRoleMap')
+      && tokenIndexText.includes('typography.buttonSm / 14px')
+      ? pass('QA_TOKENS_BUTTON_SIZE_REGISTRY', 'ActionButton size and typography roles are registered', tokenIndexPath)
+      : fail('QA_TOKENS_BUTTON_SIZE_REGISTRY', 'Token registry must document ActionButton size and typography role maps', tokenIndexPath),
+  );
+  checks.push(
     tokenIndexText.includes('screenBottomPadding') && tokenIndexText.includes('device bottom safe-area inset in Screen')
       ? pass('QA_TOKENS_SCREEN_SAFE_BOTTOM_REGISTRY', 'layout.screenBottomPadding documents Screen safe-area composition', tokenIndexPath)
       : fail('QA_TOKENS_SCREEN_SAFE_BOTTOM_REGISTRY', 'layout.screenBottomPadding must document Screen safe-area composition', tokenIndexPath),

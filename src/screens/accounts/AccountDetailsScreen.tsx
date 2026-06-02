@@ -2,17 +2,17 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { lineWidth, layout, radius, size, spacing } from '@/src/design-public-assets/tokens';
-import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { openActionSheet, useBottomSheet } from '@/src/design-public-assets/components';
 import { Card } from '@/src/design-public-assets/components';
 import { FundActionGrid, type FundActionGridItem } from '@/src/design-public-assets/components';
-import { GlobalMenuList } from '@/src/design-public-assets/components';
 import { AppIcon } from '@/src/design-public-assets/components';
+import { GlobalMenuList } from '@/src/design-public-assets/components';
 import { IconSurface } from '@/src/design-public-assets/components';
 import { Screen } from '@/src/design-public-assets/components';
 import { StatusPill, type StatusPillTone } from '@/src/design-public-assets/components';
 import { TradeDirectionIcon } from '@/src/design-public-assets/components';
 import { AppText } from '@/src/design-public-assets/components';
-import { AccountClosedPnlTrendChart, MetricCluster, RiskGauge } from '@/src/design-public-assets/business-components';
+import { AccountClosedPnlTrendChart, AccountMoreSheet, MetricCluster, RiskGauge } from '@/src/design-public-assets/business-components';
 import { buildTradingAccountProfiles, getAccountStatusLabel } from '@/src/domain/accountProfiles';
 import { directionLabel, formatMoney, formatNumber } from '@/src/domain/format';
 import { getFundingOperationActions } from '@/src/domain/funding';
@@ -46,9 +46,14 @@ export default function AccountDetailsScreen() {
       }))
     : getDetailDemoPositions(locale);
   const openMoreMenu = () => {
-    bottomSheet.show(bottomSheetPresets.actionMenu({
+    openActionSheet(bottomSheet, {
       content: (
         <AccountMoreSheet
+          items={[
+            { icon: 'icon.trading.order', label: t('accountDetails.tradingJournal'), tone: 'default' },
+            { icon: 'icon.account.archive', label: t('accountDetails.archiveAccount'), tone: 'default' },
+            { icon: 'icon.system.delete', label: t('accountDetails.deleteAccount'), tone: 'danger' },
+          ]}
           onSelect={(label, tone) => {
             bottomSheet.hide();
             toast.show({
@@ -59,7 +64,7 @@ export default function AccountDetailsScreen() {
           }}
         />
       ),
-    }));
+    });
   };
 
   return (
@@ -244,30 +249,6 @@ export default function AccountDetailsScreen() {
   );
 }
 
-function AccountMoreSheet({ onSelect }: { onSelect: (label: string, tone?: 'danger' | 'default') => void }) {
-  const { colors, t } = useProductSettings();
-  const items = [
-    { icon: 'icon.trading.order' as const, label: t('accountDetails.tradingJournal'), tone: 'default' as const },
-    { icon: 'icon.account.archive' as const, label: t('accountDetails.archiveAccount'), tone: 'default' as const },
-    { icon: 'icon.system.delete' as const, label: t('accountDetails.deleteAccount'), tone: 'danger' as const },
-  ];
-
-  return (
-    <View style={styles.moreSheet}>
-      <View style={StyleSheet.flatten([styles.menuListInset, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-        <GlobalMenuList
-          contained
-          items={items.map((item) => ({
-            ...item,
-            onPress: () => onSelect(item.label, item.tone),
-          }))}
-          showChevron={false}
-        />
-      </View>
-    </View>
-  );
-}
-
 function buildClosedPnlPeriods(realizedPnl: number) {
   return [
     { period: '1W', value: realizedPnl * 0.22 },
@@ -347,15 +328,10 @@ const styles = StyleSheet.create({
   marginStatus: {
     alignItems: 'center',
   },
-  moreSheet: {
-    marginHorizontal: radius.lg,
-    marginTop: radius.lg,
-  },
   menuListInset: {
     borderRadius: radius.card,
     borderWidth: lineWidth.none,
     overflow: 'hidden',
-    paddingHorizontal: layout.cardPaddingX,
   },
   periodPill: {
     flex: 1,

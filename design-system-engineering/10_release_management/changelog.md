@@ -1,5 +1,39 @@
 # Design System Engineering Changelog
 
+## v2.5.6-bottom-sheet-public-resource-migration-and-scenario-dev-console
+
+- Added `BottomSheetActions` as the governed public scene opener layer for action, detail, selection, confirmation, fixed-list, and scrollable-detail BottomSheet scenarios.
+- Registered the Stage 7 BottomSheet migration across overlay registry, page overlay matrix, public-resource registry, dependency graph, modal registry, and QA rules.
+- Migrated scattered page-owned sheet bodies into public business components while preserving product routes, copy semantics, risk level, and high-risk Modal Queue behavior.
+- Reclassified `ProductControlPanel` as a scenario-driven developer console in component manifests and public-resource records, with scenario launcher copy, pattern, token, icon, and AppViewport-outside dependencies governed explicitly.
+- Preserved the developer console boundary as a draggable web-only QA asset outside the 390 x 844 AppViewport while moving route-only page navigation into secondary diagnostics.
+
+## v2.5.5-action-button-size-and-icon-slots
+
+- Extended `ActionButton` with sm/md/default/lg/xl size presets, leading/trailing icon slots, reserved alignment slots, loading labels, disabled reasons, and hover/focus feedback while preserving the two-variant filled/outline contract.
+- Added `@dpf/design-tokens` `3.4.1` button size roles and `typography.buttonSm`, mirrored through runtime compatibility tokens and token registry metadata.
+- Synced Button docs, component manifests, token-binding maps, release map, accessibility notes, and release notes for the expanded Button governance contract.
+
+## v2.5.4-instrument-chart-embedded-flush-surface
+
+- Updated `TradingTerminalChart` embedded density so its outer surface uses `spacing.none` padding and aligns flush in `InstrumentDetailWorkspace`.
+- Kept terminal/fullscreen chart density spacing unchanged; the change is scoped to the embedded instrument detail chart variant.
+- Synced component-library `2.5.7`, component manifests, release notes, and public-resource impact records.
+
+## v2.5.3-instrument-detail-header-disclosure
+
+- Refined `InstrumentDetailWorkspace` header disclosure so instrument identity and quote summary render only after scroll while the default header keeps action-only navigation.
+- Added the `instrumentDetailTrading` page pattern so market detail screens use the chart-first trading workspace structure instead of a generic financial-visualization pattern.
+- Extended `TradingTerminalChart` governance with compact embedded toolbar usage while preserving the full toolbar in fullscreen terminal mode.
+- Moved instrument detail header action backgrounds fully onto `HeaderIconButton surface=auto` with `backgroundContext=canvas`, preserving panel contrast on gray canvas headers without page-local wrappers.
+- Updated component-library `2.5.6`, component/style QA guards, release notes, and public-resource impact records.
+
+## v2.5.2-instrument-detail-public-workspace
+
+- Added `InstrumentDetailWorkspace` as the governed public business skeleton for `/instrument/[id]`.
+- Extended `HeaderIconButton` with `surface=auto` so header icons can adapt their filled background to white panel/raised contexts without page-local color rules.
+- Synced component manifests, public-resource registry, dependency graph, business-component manifest, style/component QA guards, and release records.
+
 ## v2.5.1-agentic-workspace-governance
 
 - Renamed Workspace public governance from `WorkspaceDashboard` / `workspaceDashboard` to `AgenticWorkspace` / `agenticWorkspace`.

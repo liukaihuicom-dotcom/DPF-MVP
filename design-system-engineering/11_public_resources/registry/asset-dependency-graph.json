@@ -1057,37 +1057,23 @@
       "platform": "app",
       "riskLevel": "medium",
       "patterns": [
-        "financialVisualization"
+        "instrumentDetailTrading"
       ],
       "businessComponents": [
         "InstrumentDetailWorkspace",
-        "TradingAccountContextSwitcher",
-        "FinancialTrendChart",
-        "TradingTerminalChart",
-        "RiskGauge"
+        "TradingTerminalChart"
       ],
       "baseComponents": [
-        "Screen",
-        "Card",
         "AppText",
-        "ActionButton",
-        "FeaturedInstrumentCard",
-        "InstrumentRow",
+        "HeaderIconButton",
         "InstrumentIcon",
-        "TradingAccountSwitchSheet",
-        "TextField",
-        "SegmentedTabs",
-        "AppIcon",
-        "Sparkline",
-        "ModalStack"
+        "NativePressable",
+        "SegmentedTabs"
       ],
       "tokens": [
         "token.design-tokens",
         "token.color",
-        "token.semantic-layout",
-        "runtime.design-public-assets.facade",
-        "token.zIndex-overlay",
-        "token.motion-overlay"
+        "token.semantic-layout"
       ],
       "icons": [
         "icon.icon-library"
@@ -1109,7 +1095,12 @@
         "pnpm qa:public-resources",
         "npx tsc --noEmit",
         "strict source scans"
-      ]
+      ],
+      "copyAssets": [
+        "copy.copy-table"
+      ],
+      "publicResourceSource": "src/components/business/InstrumentDetailWorkspace.tsx",
+      "publicWorkspaceStatus": "public_workspace_component_complete"
     },
     {
       "page_id": "order_ticket",
@@ -2826,7 +2817,8 @@
       "name": "ActionButton",
       "source_path": "packages/component-library/registry/component-manifest.json",
       "status": "approved",
-      "qa_status": "passed"
+      "qa_status": "passed",
+      "version": "2.5.7"
     },
     {
       "asset_id": "component.base.TextField",
@@ -2843,6 +2835,15 @@
       "source_path": "packages/component-library/registry/component-manifest.json",
       "status": "approved",
       "qa_status": "passed"
+    },
+    {
+      "asset_id": "component.overlay.BottomSheetActions",
+      "asset_type": "overlay_openers",
+      "name": "BottomSheet Scene Openers",
+      "source_path": "src/components/BottomSheetActions.tsx",
+      "status": "approved",
+      "qa_status": "passed",
+      "version": "1.0.0"
     },
     {
       "asset_id": "component.base.ConfirmActionSheet",
@@ -3161,6 +3162,15 @@
       "qa_status": "passed"
     },
     {
+      "asset_id": "pattern.page.instrumentDetailTrading",
+      "asset_type": "page_pattern",
+      "name": "Instrument Detail Trading Workspace Pattern",
+      "source_path": "design-system-engineering/05_patterns/pattern-registry.json",
+      "status": "approved",
+      "qa_status": "passed",
+      "version": "1.0.0"
+    },
+    {
       "asset_id": "pattern.dialog.accountContextSwitcher",
       "asset_type": "dialog_pattern",
       "name": "accountContextSwitcher",
@@ -3285,7 +3295,7 @@
     {
       "asset_id": "tool.dev.ProductControlPanel",
       "asset_type": "qa_asset",
-      "name": "ProductControlPanel developer tool",
+      "name": "ProductControlPanel scenario-driven developer console",
       "source_path": "src/components/ProductControlPanel.tsx",
       "status": "approved",
       "qa_status": "passed"
@@ -3401,6 +3411,78 @@
       "source_path": "src/components/business/workspace/WorkspaceComponents.tsx",
       "version": "2.5.0",
       "status": "approved"
+    },
+    {
+      "asset_id": "business.PaymentMethodSheet",
+      "asset_type": "business_component",
+      "name": "PaymentMethodSheet",
+      "source_path": "src/components/business/FundingSheets.tsx",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "business.DeviceDetailSheet",
+      "asset_type": "business_component",
+      "name": "DeviceDetailSheet",
+      "source_path": "src/components/business/SecuritySheets.tsx",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "business.TransactionDetailSheet",
+      "asset_type": "business_component",
+      "name": "TransactionDetailSheet",
+      "source_path": "src/components/business/AccountSheets.tsx",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "business.AccountMenuSheet",
+      "asset_type": "business_component",
+      "name": "AccountMenuSheet",
+      "source_path": "src/components/business/AccountSheets.tsx",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "business.AccountMoreSheet",
+      "asset_type": "business_component",
+      "name": "AccountMoreSheet",
+      "source_path": "src/components/business/AccountSheets.tsx",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "business.ProfileEditSheetContent",
+      "asset_type": "business_component",
+      "name": "ProfileEditSheetContent",
+      "source_path": "src/components/business/ProfileSheets.tsx",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "business.ManagerChatSheet",
+      "asset_type": "business_component",
+      "name": "ManagerChatSheet",
+      "source_path": "src/components/business/ProfileSheets.tsx",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "business.CountryPickerSheetContent",
+      "asset_type": "business_component",
+      "name": "CountryPickerSheetContent",
+      "source_path": "src/components/business/AuthSheets.tsx",
+      "status": "approved",
+      "qa_status": "passed"
+    },
+    {
+      "asset_id": "business.AuthLanguageSheetContent",
+      "asset_type": "business_component",
+      "name": "AuthLanguageSheetContent",
+      "source_path": "src/components/business/AuthSheets.tsx",
+      "status": "approved",
+      "qa_status": "passed"
     }
   ],
   "edges": [
@@ -4497,7 +4579,7 @@
     },
     {
       "from": "page.instrument_detail",
-      "to": "pattern.page.financialVisualization",
+      "to": "pattern.page.instrumentDetailTrading",
       "relation": "uses_pattern"
     },
     {
@@ -4507,47 +4589,7 @@
     },
     {
       "from": "page.instrument_detail",
-      "to": "business.TradingAccountContextSwitcher",
-      "relation": "uses_business_component"
-    },
-    {
-      "from": "page.instrument_detail",
-      "to": "business.FinancialTrendChart",
-      "relation": "uses_business_component"
-    },
-    {
-      "from": "page.instrument_detail",
-      "to": "business.RiskGauge",
-      "relation": "uses_business_component"
-    },
-    {
-      "from": "page.instrument_detail",
-      "to": "component.base.Screen",
-      "relation": "uses_base_component"
-    },
-    {
-      "from": "page.instrument_detail",
-      "to": "component.base.Card",
-      "relation": "uses_base_component"
-    },
-    {
-      "from": "page.instrument_detail",
       "to": "component.base.AppText",
-      "relation": "uses_base_component"
-    },
-    {
-      "from": "page.instrument_detail",
-      "to": "component.base.ActionButton",
-      "relation": "uses_base_component"
-    },
-    {
-      "from": "page.instrument_detail",
-      "to": "component.base.FeaturedInstrumentCard",
-      "relation": "uses_base_component"
-    },
-    {
-      "from": "page.instrument_detail",
-      "to": "component.base.InstrumentRow",
       "relation": "uses_base_component"
     },
     {
@@ -4557,27 +4599,7 @@
     },
     {
       "from": "page.instrument_detail",
-      "to": "component.base.TradingAccountSwitchSheet",
-      "relation": "uses_base_component"
-    },
-    {
-      "from": "page.instrument_detail",
-      "to": "component.base.TextField",
-      "relation": "uses_base_component"
-    },
-    {
-      "from": "page.instrument_detail",
       "to": "component.base.SegmentedTabs",
-      "relation": "uses_base_component"
-    },
-    {
-      "from": "page.instrument_detail",
-      "to": "component.base.AppIcon",
-      "relation": "uses_base_component"
-    },
-    {
-      "from": "page.instrument_detail",
-      "to": "component.base.Sparkline",
       "relation": "uses_base_component"
     },
     {
@@ -4607,7 +4629,8 @@
       "namespaces": [
         "markets",
         "instrument",
-        "account",
+        "risk",
+        "top",
         "common"
       ]
     },
@@ -7557,6 +7580,26 @@
     },
     {
       "from": "tool.dev.ProductControlPanel",
+      "to": "copy.copy-table",
+      "relation": "uses_i18n_copy"
+    },
+    {
+      "from": "tool.dev.ProductControlPanel",
+      "to": "pattern.registry",
+      "relation": "uses_scenario_launcher_pattern"
+    },
+    {
+      "from": "tool.dev.ProductControlPanel",
+      "to": "token.design-tokens",
+      "relation": "uses_tokens"
+    },
+    {
+      "from": "tool.dev.ProductControlPanel",
+      "to": "icon.icon-library",
+      "relation": "uses_registered_icons"
+    },
+    {
+      "from": "tool.dev.ProductControlPanel",
       "to": "component.layout.AppViewport",
       "relation": "must_remain_outside"
     },
@@ -8207,11 +8250,6 @@
       "from": "registry.overlay-system",
       "to": "component.base.GlobalDialog",
       "relation": "registers"
-    },
-    {
-      "from": "page.instrument_detail",
-      "to": "component.base.ModalStack",
-      "relation": "uses_base_component"
     },
     {
       "from": "page.instrument_detail",
@@ -9318,6 +9356,161 @@
       "from": "pattern.page.agenticWorkspace",
       "to": "component.base.component-library",
       "relation": "requires_component_manifest"
+    },
+    {
+      "from": "pattern.page.instrumentDetailTrading",
+      "to": "business.InstrumentDetailWorkspace",
+      "relation": "requires_business_component"
+    },
+    {
+      "from": "pattern.page.instrumentDetailTrading",
+      "to": "business.TradingTerminalChart",
+      "relation": "requires_business_component"
+    },
+    {
+      "from": "pattern.page.instrumentDetailTrading",
+      "to": "component.base.component-library",
+      "relation": "requires_component_manifest"
+    },
+    {
+      "from": "pattern.page.instrumentDetailTrading",
+      "to": "copy.copy-table",
+      "relation": "requires_copy_asset"
+    },
+    {
+      "from": "pattern.page.instrumentDetailTrading",
+      "to": "icon.icon-library",
+      "relation": "requires_icon_registry"
+    },
+    {
+      "from": "page.instrument_detail",
+      "to": "component.base.HeaderIconButton",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "page.instrument_detail",
+      "to": "component.base.NativePressable",
+      "relation": "uses_base_component"
+    },
+    {
+      "from": "component.overlay.BottomSheetActions",
+      "to": "business.PaymentMethodSheet",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.overlay.BottomSheetActions",
+      "to": "business.DeviceDetailSheet",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.overlay.BottomSheetActions",
+      "to": "business.TransactionDetailSheet",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.overlay.BottomSheetActions",
+      "to": "business.AccountMenuSheet",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.overlay.BottomSheetActions",
+      "to": "business.AccountMoreSheet",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.overlay.BottomSheetActions",
+      "to": "business.ProfileEditSheetContent",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.overlay.BottomSheetActions",
+      "to": "business.ManagerChatSheet",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.overlay.BottomSheetActions",
+      "to": "business.CountryPickerSheetContent",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "component.overlay.BottomSheetActions",
+      "to": "business.AuthLanguageSheetContent",
+      "relation": "hosts_content"
+    },
+    {
+      "from": "page.deposit_form",
+      "to": "component.overlay.BottomSheetActions",
+      "relation": "uses_overlay_opener"
+    },
+    {
+      "from": "page.withdrawal_form",
+      "to": "component.overlay.BottomSheetActions",
+      "relation": "uses_overlay_opener"
+    },
+    {
+      "from": "page.portfolio_alias",
+      "to": "component.overlay.BottomSheetActions",
+      "relation": "uses_overlay_opener"
+    },
+    {
+      "from": "page.trade",
+      "to": "component.overlay.BottomSheetActions",
+      "relation": "uses_overlay_opener"
+    },
+    {
+      "from": "page.security_login_log",
+      "to": "component.overlay.BottomSheetActions",
+      "relation": "uses_overlay_opener"
+    },
+    {
+      "from": "page.account_balance",
+      "to": "component.overlay.BottomSheetActions",
+      "relation": "uses_overlay_opener"
+    },
+    {
+      "from": "page.account_details",
+      "to": "component.overlay.BottomSheetActions",
+      "relation": "uses_overlay_opener"
+    },
+    {
+      "from": "page.accounts",
+      "to": "component.overlay.BottomSheetActions",
+      "relation": "uses_overlay_opener"
+    },
+    {
+      "from": "page.quick",
+      "to": "component.overlay.BottomSheetActions",
+      "relation": "uses_overlay_opener"
+    },
+    {
+      "from": "page.auth_login",
+      "to": "component.overlay.BottomSheetActions",
+      "relation": "uses_overlay_opener"
+    },
+    {
+      "from": "page.register_phone",
+      "to": "component.overlay.BottomSheetActions",
+      "relation": "uses_overlay_opener"
+    },
+    {
+      "from": "page.forgot_password",
+      "to": "component.overlay.BottomSheetActions",
+      "relation": "uses_overlay_opener"
+    },
+    {
+      "from": "registry.overlay-system",
+      "to": "component.overlay.BottomSheetActions",
+      "relation": "registers"
+    },
+    {
+      "from": "component.overlay.BottomSheetActions",
+      "to": "component.base.BottomSheet",
+      "relation": "dispatches_to"
+    },
+    {
+      "from": "component.overlay.BottomSheetActions",
+      "to": "principle.bottomSheet.heightSystem",
+      "relation": "applies_governance"
     }
   ],
   "pageReadinessMatrix": [
@@ -9579,7 +9772,8 @@
       "icon": "registered_component_svg",
       "copy": "i18n_keyed_copy_table_synced",
       "dependencyGraph": "synced",
-      "migrationStatus": "reference_migration_complete"
+      "migrationStatus": "reference_migration_complete",
+      "publicWorkspaceStatus": "public_workspace_component_complete"
     },
     {
       "page_id": "order_ticket",
@@ -10011,8 +10205,8 @@
   "releaseDecision": {
     "decision": "conditional_allow_next_stage",
     "canEnterNextStage": true,
-    "reason": "Workspace bottom navigation and all 50 route-registry entries are covered by the dependency graph and readiness rows; Workspace uses governed business components, i18n copy, registered icons, and token-bound layout. Production backend entitlement, KYC, funding, trading, and partner services remain required before live release.",
-    "nextStage": "full QA and targeted UX regression evidence for Workspace segments, bottom tab visibility, trading/funding/partner entitlement boundaries, and compliance copy review"
+    "reason": "BottomSheet public opener migration keeps page routes covered by public resource graph and moves governed sheet bodies into src/components/business; production backend and compliance reviews remain separate release constraints.",
+    "nextStage": "run TypeScript, component, public-resource, navigation, back-close, style, version, and all QA gates plus device smoke checks for bottom sheet close and scroll paths"
   },
   "assets": [
     {

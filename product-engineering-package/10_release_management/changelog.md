@@ -1,5 +1,41 @@
 # Changelog
 
+## v1.1.13-bottom-sheet-public-resource-migration-and-scenario-dev-console
+
+- Added public BottomSheet scene openers: `openActionSheet`, `openDetailSheet`, `openSelectionSheet`, `openConfirmSheet`, `openFixedListSheet`, and `openScrollableDetailSheet`.
+- Migrated page-scattered BottomSheet calls and private sheet bodies to governed public business components for funding methods, security device detail, account transaction/menu sheets, Discover profile sheets, and Auth country/language pickers.
+- Preserved business flows, routes, copy semantics, icon semantics, and risk levels while unifying backdrop dismiss, pan-down, Android Back, fixed-height scrolling, surface, content padding, and footer safe-area behavior through the shared BottomSheet lifecycle.
+- Synced overlay registry, page overlay matrix, public resource graph, modal registry, QA guards, and component-library `2.5.8` version records.
+- Refactored the web-only `ProductControlPanel` developer tool into a scenario-driven console with six user-journey groups, persona/state/route scenario cards, runtime simulated identity metrics, secondary Page Map diagnostics, and fine-tune state controls.
+- Scenario application remains limited to existing local product settings, Broker demo state setters, and `applyMockFundingPreset`; `quote_failed_state` is recorded as a scenario gap because quote status has no public scenario setter.
+
+## v1.1.12-instrument-chart-embedded-flush-surface
+
+- Removed the extra embedded chart outer padding from `/instrument/[id]` so the chart block aligns flush inside the governed instrument detail workspace.
+- Kept quote header, scroll-revealed header summary, buy/sell routing, chart fullscreen behavior, and risk copy unchanged.
+- Synced component-library `2.5.7`, release notes, design-system records, and component manifest wording for the embedded chart flush-surface contract.
+
+## v1.1.11-instrument-detail-header-disclosure
+
+- Changed `/instrument/[id]` header behavior so the default header does not expose instrument fields and the compact symbol, current price, percentage change, and price change summary appears only after scroll.
+- Registered the instrument detail page contract against the `instrumentDetailTrading` pattern: identity header, quote/status context, Bid/Ask/Spread/Leverage decision strip, chart-first embedded workspace, auxiliary tabs, compact risk copy, and fixed buy/sell quote action bar.
+- Kept embedded chart tools compact while preserving fullscreen terminal access for indicators and drawing tools.
+- Kept buy/sell routing, unified back handling, quote data, chart behavior, risk copy, and order-ticket route shape unchanged.
+- Synced component-library `2.5.6`, release notes, public-resource impact record, and QA guards for the adaptive header icon background correction.
+
+## v1.1.10-instrument-detail-public-workspace
+
+- Changed `/instrument/[id]` to consume the governed `InstrumentDetailWorkspace` public business skeleton instead of owning the full page structure locally.
+- Added adaptive `HeaderIconButton` surface governance so white panel/raised header contexts can use the governed neutral icon background while gray canvas contexts keep panel contrast.
+- Synced component manifests, public-resource dependency graph, business-component governance, QA guards, release records, and TypeScript cleanup for the order-ticket bottom sheet close path.
+
+## v1.1.9-order-ticket-global-bottom-sheet
+
+- Changed `/order/[id]` to render the order operation page through `GlobalBottomSheetHost` as a route-backed fixed BottomSheet modal page.
+- Preserved route recovery, direct entry, high-risk submit confirmation, invalid-submit blocking alerts, dirty-state leave confirmation, one-click trading confirmation, and toast submit feedback.
+- Added guarded BottomSheet close support so backdrop tap, Header Close, Android Back, and enabled pan-down enter the shared close guard before dismissal.
+- Synced route, modal, overlay matrix, component manifest, page contract, and release records.
+
 ## v1.1.6-order-ticket-toast-feedback
 
 - Changed `/order/[id]` successful market order and pending-order feedback from queued result Alert Dialog to the governed global Toast feedback path.

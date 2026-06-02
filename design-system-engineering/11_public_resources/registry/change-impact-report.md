@@ -4,6 +4,61 @@ Version: `1.2.3`
 Date: `2026-05-29`
 Decision scope: token public resource semantic migration.
 
+## 2026-06-02 BottomSheet Public Resource Migration
+
+- Added `component.overlay.BottomSheetActions` as the public scene opener layer for `openActionSheet`, `openDetailSheet`, `openSelectionSheet`, `openConfirmSheet`, `openFixedListSheet`, and `openScrollableDetailSheet`.
+- Migrated scattered page-owned sheet bodies into public business components: `PaymentMethodSheet`, `DeviceDetailSheet`, `TransactionDetailSheet`, `AccountMenuSheet`, `AccountMoreSheet`, `ManagerChatSheet`, `ProfileEditSheetContent`, `AuthLanguageSheetContent`, and `CountryPickerSheetContent`.
+- Impacted dependents: funding payment method sheets, security login-log device sheets, account balance/details sheets, portfolio/trade account and order sheets, Discover profile sheets, Auth country/language/error sheets, overlay registry, modal registry, dependency graph, and component QA.
+- No route, product workflow, user-facing copy semantic, icon semantic, funding/trading/security risk level, or high-risk Modal Queue policy changed.
+
+Decision: `controlled_patch_ready` after TypeScript, component/public-resource/navigation/back-close/style/version/full QA and manual close/scroll smoke verification pass.
+
+---
+
+## 2026-06-02 Instrument Detail Embedded Chart Flush Surface
+
+- Updated `business.TradingTerminalChart` embedded density so the outer surface padding is `spacing.none`, removing the 10px inset seen around the chart block in `/instrument/[id]`.
+- Impacted dependents: `/instrument/[id]`, `business.InstrumentDetailWorkspace`, `business.TradingTerminalChart`, component manifests, release records, and visual QA for the instrument detail chart block.
+- Terminal and fullscreen chart densities keep their existing spacing and fullscreen layout behavior.
+- No route, buy/sell operation, quote data model, chart interaction, icon source, copy promise, API, account-scope rule, or risk rule changed.
+
+Decision: `controlled_patch_ready` after component/style/public-resource/version/type QA and browser visual verification pass.
+
+---
+
+## 2026-06-02 ActionButton Size, State, And Icon Slot Governance
+
+- Extended `component.base.ActionButton` with sm/md/default/lg/xl size presets, leading/trailing icon slots, reserved icon alignment slots, loading labels, disabled reasons, and hover/focus feedback while preserving the locked `filled` / `outline` visual contract.
+- Added `token.design-tokens` `3.4.1` button size roles and `typography.buttonSm` so compact and large button labels are token-bound instead of page-local.
+- Impacted dependents: all ActionButton consumers through a backward-compatible API; existing `icon` remains a leading-icon alias and existing loading without `loadingLabel` remains spinner-only.
+- No route, copy key, product flow, risk rule, icon asset, third-party icon runtime, selected/toggle behavior, or text/ghost/soft variant was added.
+
+Decision: `controlled_patch_ready` after token/component/icon/version/type QA pass.
+
+---
+
+## 2026-06-02 Instrument Detail Header Disclosure And Canvas Icon Background
+
+- Refined `business.InstrumentDetailWorkspace` so `/instrument/[id]` default header renders navigation/actions only; the compact instrument symbol, current price, percentage change, and price change summary appears after scroll.
+- Removed page-local header action background wrappers in favor of `component.base.HeaderIconButton` resolving `surface=auto` with `backgroundContext=canvas`.
+- Impacted dependents: `/instrument/[id]`, `business.InstrumentDetailWorkspace`, `component.base.HeaderIconButton`, component manifests, component/style QA guards, and release records.
+- No route, buy/sell operation, order ticket URL shape, quote data model, icon source, copy promise, API, account-scope rule, or risk rule changed.
+
+Decision: `controlled_patch_ready` after component/style/public-resource/i18n/icon/navigation/back-close/version/type QA and browser visual verification pass.
+
+---
+
+## 2026-06-02 Instrument Detail Public Workspace Governance
+
+- Added `InstrumentDetailWorkspace` as the runtime public business skeleton for `/instrument/[id]`, moving the page frame, quote hero, decision strip, chart, tabs, risk note, and buy/sell footer out of the route container.
+- Extended `component.base.HeaderIconButton` with `surface=auto` so filled icon actions on white panel/raised contexts resolve to the governed neutral `IconSurface` background while gray canvas contexts continue to use the panel default.
+- Impacted dependents: `/instrument/[id]`, `component.base.HeaderIconButton`, `business.InstrumentDetailWorkspace`, public-resource dependency graph, component manifests, and static QA guards.
+- No route, trading action, order ticket URL shape, quote data model, icon source, copy promise, API, account-scope rule, or risk rule changed.
+
+Decision: `controlled_patch_ready` after component/style/public-resource/i18n/icon/navigation/back-close/type QA pass.
+
+---
+
 ## 2026-05-29 BottomSheet Horizontal Spacing Governance
 
 - Clarified BottomSheet structural spacing: Header 16px, card content 12px, list/article/detail-introduction content 16px, and Footer 16px.

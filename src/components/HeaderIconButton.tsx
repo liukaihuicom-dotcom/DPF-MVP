@@ -9,10 +9,11 @@ import { NativePressable } from './NativePressable';
 
 type HeaderIconButtonProps = {
   accessibilityLabel: string;
+  backgroundContext?: 'canvas' | 'panel' | 'raised' | 'subtle';
   disabled?: boolean;
   icon: AppIconName;
   onPress?: () => void;
-  surface?: 'panel' | 'neutral';
+  surface?: 'auto' | 'panel' | 'neutral';
   style?: StyleProp<ViewStyle>;
   tone?: 'default' | IconTone;
   variant?: 'filled' | 'ghost';
@@ -20,6 +21,7 @@ type HeaderIconButtonProps = {
 
 export function HeaderIconButton({
   accessibilityLabel,
+  backgroundContext = 'panel',
   disabled,
   icon,
   onPress,
@@ -30,7 +32,7 @@ export function HeaderIconButton({
 }: HeaderIconButtonProps) {
   const colors = useThemeColors();
   const iconTone = tone === 'default' ? undefined : tone;
-  const filledBackgroundColor = resolveHeaderIconButtonBackground(colors, surface);
+  const filledBackgroundColor = resolveHeaderIconButtonBackground(colors, surface, backgroundContext);
   const buttonStyle = StyleSheet.flatten([
     styles.button,
     variant === 'filled' && {
@@ -53,8 +55,12 @@ export function HeaderIconButton({
   );
 }
 
-function resolveHeaderIconButtonBackground(colors: ReturnType<typeof useThemeColors>, surface: HeaderIconButtonProps['surface']) {
-  if (surface === 'neutral') {
+function resolveHeaderIconButtonBackground(colors: ReturnType<typeof useThemeColors>, surface: HeaderIconButtonProps['surface'], backgroundContext: HeaderIconButtonProps['backgroundContext']) {
+  if (surface === 'auto' && (backgroundContext === 'canvas' || backgroundContext === 'subtle')) {
+    return colors.surface.panel;
+  }
+
+  if (surface === 'auto' || surface === 'neutral') {
     return resolveIconSurfaceColors(colors, 'neutral').backgroundColor;
   }
 

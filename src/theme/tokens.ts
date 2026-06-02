@@ -62,6 +62,10 @@ export const motion = {
 export const size = {
   button: {
     icon: 40,
+    sm: 40,
+    md: 48,
+    lg: 56,
+    xl: 64,
     minHeight: 48,
     textMinTouch: 44,
   },
@@ -427,6 +431,11 @@ export const typography = {
     fontSize: 12,
     fontWeight: '700',
     lineHeight: 16,
+  },
+  buttonSm: {
+    fontSize: 14,
+    fontWeight: '600',
+    lineHeight: 18,
   },
   buttonMd: {
     fontSize: 16,

@@ -5,18 +5,34 @@ type NativePressableProps = PropsWithChildren<
   PressableProps & {
     disabled?: boolean;
     disableDefaultDisabledStyle?: boolean;
+    focusedStyle?: ViewStyle;
+    hoveredStyle?: ViewStyle;
     minTouch?: number;
     pressedStyle?: ViewStyle;
     style?: PressableProps['style'];
   }
 >;
 
-export function NativePressable({ children, disabled, disableDefaultDisabledStyle, minTouch = 44, pressedStyle, style, ...props }: NativePressableProps) {
+export function NativePressable({
+  children,
+  disabled,
+  disableDefaultDisabledStyle,
+  focusedStyle,
+  hoveredStyle,
+  minTouch = 44,
+  pressedStyle,
+  style,
+  ...props
+}: NativePressableProps) {
+  const [focused, setFocused] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const [pressed, setPressed] = useState(false);
   const baseStyle: StyleProp<ViewStyle> = StyleSheet.flatten([
     styles.base,
     { minHeight: minTouch, minWidth: minTouch },
     typeof style === 'function' ? undefined : style,
+    hovered && !disabled && hoveredStyle,
+    focused && !disabled && focusedStyle,
     pressed && !disabled && (pressedStyle ?? styles.pressed),
     disabled && !disableDefaultDisabledStyle && styles.disabled,
   ]);
@@ -27,6 +43,22 @@ export function NativePressable({ children, disabled, disableDefaultDisabledStyl
       disabled={disabled}
       hitSlop={props.hitSlop ?? 6}
       {...props}
+      onBlur={(event) => {
+        setFocused(false);
+        props.onBlur?.(event);
+      }}
+      onFocus={(event) => {
+        setFocused(true);
+        props.onFocus?.(event);
+      }}
+      onHoverIn={(event) => {
+        setHovered(true);
+        props.onHoverIn?.(event);
+      }}
+      onHoverOut={(event) => {
+        setHovered(false);
+        props.onHoverOut?.(event);
+      }}
       onPressIn={(event) => {
         setPressed(true);
         props.onPressIn?.(event);

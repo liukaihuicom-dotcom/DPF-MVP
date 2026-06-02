@@ -3,10 +3,10 @@
   "source_of_truth": "src/navigation/modalRegistry.ts",
   "routeable_modals": {
     "order.ticket.route": {
-      "component": "OrderTicketScreen",
+      "component": "OrderTicketScreen route host + GlobalBottomSheetHost",
       "route_path": "/order/[id]",
       "risk_level": "high",
-      "routing_reason": "Trading ticket is a transaction flow that benefits from refresh recovery, deep links, and external task entry."
+      "routing_reason": "Trading ticket is a transaction flow that benefits from refresh recovery, deep links, and external task entry while rendering the visible operation page through the global BottomSheet host."
     },
     "discover.layout.route": {
       "component": "DiscoverLayoutScreen",
@@ -17,6 +17,7 @@
   },
   "non_routeable_modals": {
     "auth.countryPicker": "Country picker sheet for phone flows.",
+    "auth.languageSheet": "Language picker sheet for Auth header actions.",
     "auth.contactConfirm": "Contact confirmation dialog for registration.",
     "auth.leaveVerifiedStep": "Leave verified registration step confirmation.",
     "auth.errorSheet": "Validation error bottom sheet.",
@@ -30,6 +31,8 @@
     "tradingAccount.switchSheet": "Trading account selection sheet.",
     "funding.paymentMethodSheet": "Funding payment or payout method selection sheet.",
     "funding.submitFeedbackAlert": "Funding submit reference feedback through queued Alert Dialog.",
+    "discover.profileEditSheet": "Profile edit sheet rendered through public BottomSheet opener.",
+    "discover.managerChatSheet": "Manager chat preview sheet rendered through public BottomSheet opener.",
     "security.deviceDetailSheet": "Security device detail sheet.",
     "security.revokeConfirmSheet": "Session revoke confirmation.",
     "security.reportConfirmSheet": "Suspicious event report confirmation.",
@@ -37,7 +40,6 @@
     "portfolio.positionDetailSheet": "Position detail sheet.",
     "portfolio.pendingOrderDetailSheet": "Pending order detail sheet.",
     "portfolio.closePositionConfirm": "Close position confirmation through shared ConfirmActionSheet.",
-    "portfolio.pendingOrderFeedbackToast": "Pending order action feedback.",
     "account.moreActionSheet": "Account detail more action sheet.",
     "account.metricDescriptionSheet": "Metric description sheet.",
     "account.balanceTransactionDetailSheet": "Balance transaction detail sheet.",

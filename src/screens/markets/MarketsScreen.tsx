@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { openSelectionSheet, useBottomSheet } from '@/src/design-public-assets/components';
 import { Card } from '@/src/design-public-assets/components';
 import { FeaturedInstrumentCard } from '@/src/design-public-assets/components';
 import { InstrumentRow } from '@/src/design-public-assets/components';
@@ -139,14 +139,12 @@ function AccountMiniCard({
     });
   };
   const openAccountPicker = () => {
-    bottomSheet.show(bottomSheetPresets.selection({
+    openSelectionSheet(bottomSheet, {
       ...createTradingAccountContextSwitcherHeader({
         locale,
         onAddAccount: showAddAccountFeedback,
         title: t('funding.account.switchTitle'),
       }),
-      contentPadding: 'card',
-      contentSizing: 'auto',
       content: (
         <TradingAccountContextSwitcher
           accounts={accounts}
@@ -158,9 +156,9 @@ function AccountMiniCard({
           selectedId={selectedAccount.id}
         />
       ),
-      heightMode: 'adaptive',
-      sheetSurface: 'canvas',
-    }));
+      cardSelection: true,
+      fixed: false,
+    });
   };
   const metrics = [
     { label: t('account.equity'), value: amountsVisible ? formatMoney(selectedAccount.equity, selectedAccount.currency, 0, locale) : '••••••' },

@@ -1,5 +1,45 @@
 # Changelog
 
+## 1.0.14 - 2026-06-02
+
+### Changed
+
+- Tightened BottomSheet Footer safe-area governance so confirmation and transaction-detail bottom actions must use the shared Footer slot instead of content-owned buttons.
+- Added QA coverage to block governed BottomSheet content bodies from bypassing `layout.sheetFooterPaddingBottom + useSafeAreaInsets().bottom`.
+
+## 1.0.13 - 2026-06-02
+
+### Changed
+
+- Added the BottomSheet public scene opener contract through `BottomSheetActions`.
+- Migrated funding, security, account, Discover, and Auth sheet bodies into governed public business components.
+- Added QA coverage to block page-level direct BottomSheet assembly and redeclared governed sheet content bodies.
+- Refactored `ProductControlPanel` governance into a scenario-driven developer console with user-journey launcher structure, persona/state/route scenario cards, secondary Page Map diagnostics, fine-tune state controls, i18n-bound copy, and explicit AppViewport-outside constraints.
+
+## 1.0.12 - 2026-06-02
+
+### Changed
+
+- Updated embedded `TradingTerminalChart` spacing so the instrument detail chart surface uses no outer padding.
+- Kept terminal and fullscreen chart density spacing unchanged while preserving compact embedded toolbar behavior.
+- Updated release and component governance for the embedded chart flush-surface contract.
+
+## 1.0.11 - 2026-06-02
+
+### Changed
+
+- Refined the public `InstrumentDetailWorkspace` header contract so instrument fields are hidden by default and shown only in the scroll-revealed compact summary.
+- Updated instrument detail header actions to use `HeaderIconButton surface=auto` with `backgroundContext=canvas`, so gray canvas headers resolve to panel-contrast icon backgrounds through the shared component.
+- Updated release and QA governance for the adaptive header icon background contract.
+
+## 1.0.10 - 2026-06-02
+
+### Changed
+
+- Added `InstrumentDetailWorkspace` as the public business skeleton for `/instrument/[id]`.
+- Added `HeaderIconButton surface=auto` for adaptive icon background contrast on panel/raised header contexts.
+- Updated component and style QA coverage for the public instrument detail skeleton and adaptive header icon surface contract.
+
 ## 1.0.9 - 2026-05-29
 
 ### Changed

@@ -1,14 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
 
-import { countryOptions, getPasswordChecks, sanitizeOtp, type CountryOption } from '@/src/auth/authFlow';
+import { getPasswordChecks, sanitizeOtp, type CountryOption } from '@/src/auth/authFlow';
 import { layout, lineWidth, radius, size, spacing, typography } from '@/src/theme/tokens';
 import { useProductSettings } from '@/src/settings/ProductSettings';
 
 import { ActionButton } from './ActionButton';
 import { AppIcon } from './AppIcon';
 import { AuthTextField } from './AuthShell';
-import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { openActionSheet, openFixedListSheet, useBottomSheet } from '@/src/design-public-assets/components';
+import { CountryPickerSheetContent } from '@/src/design-public-assets/business-components';
 import { FlagIcon } from './FlagIcon';
 import { GlobalDialog } from './GlobalDialog';
 import { IconSurface } from './IconSurface';
@@ -16,7 +17,6 @@ import { NativePressable } from './NativePressable';
 import { AppText } from './Typography';
 
 const phoneFieldVisibleHeight = size.input.floatingMinHeight + lineWidth.selected * 2;
-const countryPickerSnapPoint = layout.appDeviceHeight - layout.topReservedSpace;
 
 export function CountryPhoneField({
   autoFocus,
@@ -119,7 +119,7 @@ export function CountryPickerModal({
       return undefined;
     }
 
-    bottomSheet.show(bottomSheetPresets.selection({
+    openFixedListSheet(bottomSheet, {
       content: (
         <CountryPickerSheetContent
           onSelect={(country) => {
@@ -129,92 +129,14 @@ export function CountryPickerModal({
           selected={selectedRef.current}
         />
       ),
-      contentPadding: 'plain',
-      heightMode: 'fixed',
       onDismiss: () => onCloseRef.current(),
-      sheetSurface: 'panel',
-      snapPoints: [countryPickerSnapPoint],
       title: t('auth.country.select'),
-    }));
+    });
 
     return undefined;
   }, [bottomSheet, open, t]);
 
   return null;
-}
-
-function CountryPickerSheetContent({
-  onSelect,
-  selected,
-}: {
-  onSelect: (country: CountryOption) => void;
-  selected: CountryOption;
-}) {
-  const { colors, t } = useProductSettings();
-  const [query, setQuery] = useState('');
-  const filtered = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    if (!normalized) {
-      return countryOptions;
-    }
-
-    return countryOptions.filter((item) => `${item.name} ${item.dialCode} ${item.code}`.toLowerCase().includes(normalized));
-  }, [query]);
-
-  return (
-    <View style={styles.countryPickerContent}>
-      <AuthTextField
-        accessibilityLabel={t('auth.country.search')}
-        icon="icon.system.search"
-        label={t('auth.country.search')}
-        labelHidden
-        onChangeText={setQuery}
-        placeholder={t('auth.country.search')}
-        returnKeyType="search"
-        shape="pill"
-        sizePreset="sm"
-        value={query}
-      />
-      <View style={styles.countryList}>
-        {filtered.length ? filtered.map((country) => {
-          const active = country.code === selected.code;
-
-          return (
-            <NativePressable
-              accessibilityLabel={`${country.name} ${country.dialCode}`}
-              accessibilityRole="radio"
-              accessibilityState={{ checked: active, selected: active }}
-              key={country.code}
-              minTouch={44}
-              onPress={() => onSelect(country)}
-              style={styles.countryRow}>
-              <FlagBadge code={country.flag} />
-              <View style={styles.countryCopyStack}>
-                <AppText numberOfLines={1} style={styles.countryDial} variant="titleSm">
-                  {country.dialCode}
-                </AppText>
-                <AppText numberOfLines={1} style={styles.countryName} tone="muted" variant="caption">
-                  {country.name}
-                </AppText>
-              </View>
-              <View style={styles.countrySelectSlot}>
-                {active ? <AppIcon name="icon.status.check" /> : null}
-              </View>
-            </NativePressable>
-          );
-        }) : (
-          <View
-            accessibilityLabel={t('auth.country.noResults')}
-            accessibilityRole="text"
-            style={styles.countryEmptyState}>
-            <AppText style={styles.centerText} tone="muted" variant="caption">
-              {t('auth.country.noResults')}
-            </AppText>
-          </View>
-        )}
-      </View>
-    </View>
-  );
 }
 
 export function OtpInput({
@@ -497,7 +419,7 @@ export function AuthErrorSheet({
       return undefined;
     }
 
-    bottomSheet.show(bottomSheetPresets.actionMenu({
+    openActionSheet(bottomSheet, {
       content: (
         <View style={styles.errorFeedbackContent}>
           <IconSurface icon="icon.system.close" sizeVariant="md" tone="danger" />
@@ -520,7 +442,8 @@ export function AuthErrorSheet({
         },
       ],
       onDismiss: onClose,
-    }));
+      sheetSurface: 'canvas',
+    });
 
     return undefined;
   }, [body, bottomSheet, onClose, open, t, title]);
@@ -616,42 +539,6 @@ const styles = StyleSheet.create({
   },
   countryChipDial: {
     flexShrink: 0,
-  },
-  countryCopyStack: {
-    flex: 1,
-    gap: spacing.xxs,
-    minWidth: 0,
-  },
-  countryDial: {
-    minWidth: 0,
-  },
-  countryEmptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: size.input.countryRowMinHeight,
-    paddingHorizontal: spacing.md,
-  },
-  countryList: {
-    gap: spacing.xs,
-  },
-  countryName: {
-    minWidth: 0,
-  },
-  countryPickerContent: {
-    gap: spacing.md,
-  },
-  countryRow: {
-    alignItems: 'center',
-    borderRadius: radius.md,
-    flexDirection: 'row',
-    gap: spacing.md,
-    minHeight: size.input.countryRowMinHeight,
-    paddingHorizontal: spacing.md,
-  },
-  countrySelectSlot: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: size.icon.md,
   },
   confirmCopyStack: {
     alignItems: 'center',

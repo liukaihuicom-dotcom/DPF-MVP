@@ -14,6 +14,7 @@
 | caption.sm | 12 | 400 | Helper and metadata copy |
 | micro.meta | 10 | 700 | Ultra-compact metadata only |
 | micro.label | 12 | 700 | Status tags |
+| button.sm | 14 | 600 | Compact card, list, and dense secondary action button labels |
 | button.md | 16 | 600 | Primary and secondary button labels |
 | button.lg | 20 | 600 | Large entry CTA button labels |
 | number | 16 | 500 | Quote and compact metric values |

@@ -1,13 +1,16 @@
 import { Stack, useLocalSearchParams } from "expo-router";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  ScrollView,
   StyleSheet,
   View,
 } from "react-native";
 
 import { ActionButton } from "@/src/design-public-assets/components";
 import { AppIcon } from "@/src/design-public-assets/components";
+import {
+  openScrollableDetailSheet,
+  useBottomSheet,
+} from "@/src/design-public-assets/components";
 import {
   OrderInfoRow,
   RiskPriceRow,
@@ -92,6 +95,8 @@ export default function OrderTicketScreen() {
   } = useProductSettings();
   const toast = useToast();
   const overlayQueue = useOverlayQueue();
+  const bottomSheet = useBottomSheet();
+  const ownsSheetRef = useRef(false);
   const [side, setSide] = useState<Direction>(
     direction === "sell" ? "sell" : "buy",
   );
@@ -214,7 +219,7 @@ export default function OrderTicketScreen() {
 
   const closeTicket = useCallback(() => {
     if (closing) {
-      return;
+      return false;
     }
 
     if (dirty) {
@@ -245,28 +250,25 @@ export default function OrderTicketScreen() {
         title: t("overlay.dirty.order.title"),
         tone: "warning",
       });
-      return;
+      return false;
     }
 
     setClosing(true);
     void impactLight();
     finishClose();
+    return false;
   }, [closing, dirty, finishClose, overlayQueue, t]);
 
-  if (!instrument) {
-    return (
-      <Screen back backHref="/trade" title={t("common.invalidInstrument")}>
-        <AppText variant="title">{t("common.invalidInstrument")}</AppText>
-      </Screen>
-    );
-  }
-
-  const setLots = (nextLots: number) => {
+  const setLots = useCallback((nextLots: number) => {
     const normalized = Math.max(0.01, Number(nextLots.toFixed(2)));
     setLotsText(normalized.toFixed(2));
-  };
+  }, []);
 
-  const executeOrder = () => {
+  const executeOrder = useCallback(() => {
+    if (!instrument) {
+      return;
+    }
+
     const order = placeOrder({
       direction: side,
       expirationType: orderType === "market" ? undefined : expirationType,
@@ -301,9 +303,29 @@ export default function OrderTicketScreen() {
         tone: "success",
       });
     }
-  };
+  }, [
+    expirationType,
+    instrument,
+    locale,
+    lots,
+    oneClickTradingEnabled,
+    orderType,
+    pendingPrice,
+    placeOrder,
+    riskEnabled,
+    shownExpiresAtText,
+    side,
+    stopLossPrice,
+    takeProfitPrice,
+    t,
+    toast,
+  ]);
 
-  const submitOrder = () => {
+  const submitOrder = useCallback(() => {
+    if (!instrument) {
+      return;
+    }
+
     if (!canSubmit) {
       void notifyWarning();
       overlayQueue.enqueueAlert({
@@ -352,9 +374,22 @@ export default function OrderTicketScreen() {
       title: t("order.confirmSubmitTitle"),
       tone: "danger",
     });
-  };
+  }, [
+    canSubmit,
+    errorText,
+    executeOrder,
+    instrument,
+    locale,
+    lots,
+    oneClickTradingEnabled,
+    orderPrice,
+    orderType,
+    overlayQueue,
+    side,
+    t,
+  ]);
 
-  const confirmOneClickTradingChange = (nextValue: boolean) => {
+  const confirmOneClickTradingChange = useCallback((nextValue: boolean) => {
     overlayQueue.enqueueAlert({
       actions: [
         {
@@ -391,7 +426,7 @@ export default function OrderTicketScreen() {
       ),
       tone: nextValue ? "warning" : "danger",
     });
-  };
+  }, [overlayQueue, setOneClickTradingEnabled, t]);
 
   useDirtyStateGuard({
     body: t("overlay.dirty.order.body"),
@@ -401,76 +436,70 @@ export default function OrderTicketScreen() {
     title: t("overlay.dirty.order.title"),
   });
 
-  return (
-    <Screen
-      closeHref="/trade"
-      contentInsetBottom={spacing.lg}
-      keyboardAware
-      leftAction="close"
-      onLeftPress={closeTicket}
-      scroll={false}
-      stickyFooter={
-        <View style={styles.footerStack}>
-          {errorText ? (
-            <AppText numberOfLines={2} tone="danger" variant="caption">
-              {errorText}
-            </AppText>
-          ) : null}
-          <ActionButton
-            accessibilityLabel={submitLabel}
-            label={submitLabel}
-            onPress={submitOrder}
-            tone={tradeTone}
-            variant="filled"
-          />
-        </View>
-      }
-      title={`${instrument.symbol} ${t("order.titleSuffix")}`}
-    >
-      <Stack.Screen
-        options={{ title: `${instrument.symbol} ${t("order.titleSuffix")}` }}
-      />
+  const ticketTitle = instrument
+    ? `${instrument.symbol} ${t("order.titleSuffix")}`
+    : t("common.invalidInstrument");
+  const orderPanelFooter = useMemo(
+    () => (
+      <View style={styles.footerStack}>
+        {errorText ? (
+          <AppText numberOfLines={2} tone="danger" variant="caption">
+            {errorText}
+          </AppText>
+        ) : null}
+        <ActionButton
+          accessibilityLabel={submitLabel}
+          label={submitLabel}
+          onPress={submitOrder}
+          tone={tradeTone}
+          variant="filled"
+        />
+      </View>
+    ),
+    [errorText, submitLabel, submitOrder, tradeTone],
+  );
+  const orderPanelContent = useMemo(() => {
+    if (!instrument) {
+      return null;
+    }
+
+    return (
       <View style={styles.ticketPage}>
         <View style={styles.ticketHeader}>
-              <View style={styles.headerAccountBlock}>
-                <AppText numberOfLines={1} tone="dim" variant="caption">
-                  {t("order.accountNumber", { accountId: account.accountId })}
-                </AppText>
-                <AppText numberOfLines={1} tone="muted" variant="caption">
-                  {t("order.freeMargin")}
-                </AppText>
-                <AppText
-                  adjustsFontSizeToFit
-                  numberOfLines={1}
-                  variant="titleMd"
-                >
-                  {formatMoney(account.freeMargin, account.currency, 2, locale)}
-                </AppText>
-              </View>
-              <View style={styles.headerInstrumentBlock}>
-                <View style={styles.headerInstrumentIdentity}>
-                  <InstrumentIcon instrument={instrument} size={32} />
-                  <AppText numberOfLines={1} variant="subtitle">
-                    {instrument.symbol}
-                  </AppText>
-                </View>
-                <AppText
-                  adjustsFontSizeToFit
-                  numberOfLines={1}
-                  tone={tradeTone}
-                  variant="number"
-                >
-                  {formatPrice(instrument, marketPrice)}
-                </AppText>
-              </View>
-            </View>
-
-            <ScrollView
-          contentContainerStyle={styles.ticketContent}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-          style={styles.ticketScroller}
+          <View style={styles.headerAccountBlock}>
+            <AppText numberOfLines={1} tone="dim" variant="caption">
+              {t("order.accountNumber", { accountId: account.accountId })}
+            </AppText>
+            <AppText numberOfLines={1} tone="muted" variant="caption">
+              {t("order.freeMargin")}
+            </AppText>
+            <AppText
+              adjustsFontSizeToFit
+              numberOfLines={1}
+              variant="titleMd"
             >
+              {formatMoney(account.freeMargin, account.currency, 2, locale)}
+            </AppText>
+          </View>
+          <View style={styles.headerInstrumentBlock}>
+            <View style={styles.headerInstrumentIdentity}>
+              <InstrumentIcon instrument={instrument} size={32} />
+              <AppText numberOfLines={1} variant="subtitle">
+                {instrument.symbol}
+              </AppText>
+            </View>
+            <AppText
+              adjustsFontSizeToFit
+              numberOfLines={1}
+              tone={tradeTone}
+              variant="number"
+            >
+              {formatPrice(instrument, marketPrice)}
+            </AppText>
+          </View>
+        </View>
+
+        <View style={styles.ticketContent}>
               <SegmentedTabs
                 items={orderTypes.map((item) => ({
                   label: orderTypeLabel(item, locale),
@@ -974,10 +1003,112 @@ export default function OrderTicketScreen() {
                   {t("risk.order")}
                 </AppText>
               </Card>
-        </ScrollView>
+        </View>
       </View>
-    </Screen>
-  );
+    );
+  }, [
+    account.accountId,
+    account.currency,
+    account.freeMargin,
+    colors.border.subtle,
+    colors.market.down.fg,
+    colors.market.up.fg,
+    colors.overlay.down.strong,
+    colors.overlay.down.subtle,
+    colors.overlay.up.strong,
+    colors.overlay.up.subtle,
+    colors.overlay.warning.subtle,
+    colors.surface.subtle,
+    colors.text.primary,
+    confirmOneClickTradingChange,
+    defaultExpiresAtText,
+    errorText,
+    expirationError,
+    expirationType,
+    expiresAtText,
+    instrument,
+    locale,
+    lots,
+    lotsText,
+    margin,
+    marketPrice,
+    notional,
+    oneClickTradingEnabled,
+    orderPrice,
+    orderType,
+    pendingPrice,
+    pendingPriceError,
+    pendingPriceText,
+    presetLots,
+    riskEnabled,
+    setLots,
+    shownExpiresAtText,
+    side,
+    stopLossPnl,
+    stopLossPrice,
+    stopLossText,
+    t,
+    takeProfitPnl,
+    takeProfitPrice,
+    takeProfitText,
+    tradeColor,
+    tradeTone,
+  ]);
+
+  useEffect(() => {
+    if (!orderPanelContent || !instrument) {
+      return undefined;
+    }
+
+    const orderPanelOptions = {
+      allowPanDownDismiss: !dirty,
+      content: orderPanelContent,
+      footer: orderPanelFooter,
+      onRequestClose: closeTicket,
+      rightAction: {
+        accessibilityLabel: t("common.cancel"),
+        icon: "icon.system.close",
+        onPress: closeTicket,
+      },
+      title: ticketTitle,
+    } as const;
+
+    if (ownsSheetRef.current) {
+      openScrollableDetailSheet(bottomSheet, orderPanelOptions, "update");
+    } else {
+      ownsSheetRef.current = true;
+      openScrollableDetailSheet(bottomSheet, orderPanelOptions);
+    }
+
+    return undefined;
+  }, [
+    bottomSheet,
+    closeTicket,
+    dirty,
+    finishClose,
+    instrument,
+    t,
+    orderPanelContent,
+    orderPanelFooter,
+    ticketTitle,
+  ]);
+
+  useEffect(() => () => {
+    if (ownsSheetRef.current) {
+      bottomSheet.hideForce();
+      ownsSheetRef.current = false;
+    }
+  }, [bottomSheet]);
+
+  if (!instrument) {
+    return (
+      <Screen closeHref="/trade" leftAction="close" title={t("common.invalidInstrument")}>
+        <AppText variant="title">{t("common.invalidInstrument")}</AppText>
+      </Screen>
+    );
+  }
+
+  return <Stack.Screen options={{ title: ticketTitle }} />;
 }
 
 function formatLots(value: number, locale: Locale) {
@@ -1151,7 +1282,7 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   footerStack: {
-    gap: spacing.sm,
+    gap: layout.sheetFooterGap,
   },
   headerAccountBlock: {
     flex: 1,

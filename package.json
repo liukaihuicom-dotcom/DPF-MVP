@@ -1,7 +1,7 @@
 {
   "name": "dupoin-mvp",
   "main": "expo-router/entry",
-  "version": "1.1.7",
+  "version": "1.1.15",
   "packageManager": "pnpm@10.25.0",
   "scripts": {
     "start": "npx expo start --go --port 8081",

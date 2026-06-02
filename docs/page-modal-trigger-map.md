@@ -6,14 +6,15 @@ Source of truth: `src/navigation/routeRegistry.ts` and `src/navigation/modalRegi
 
 | Page route | Trigger action | Modal id | Result / routeability |
 |---|---|---|---|
-| `/instrument/[id]` | Tap buy or sell footer quote | `order.ticket.route` | Routeable full-screen Modal Page at `/order/[id]` with Close and dirty guard |
-| `/quick` | Open quick trade action | `order.ticket.route` | Routeable full-screen Modal Page at `/order/[id]` with Close and dirty guard |
-| `/discover` | Open challenge ticket or trade entry | `order.ticket.route` | Routeable full-screen Modal Page at `/order/[id]` with Close and dirty guard |
+| `/instrument/[id]` | Tap buy or sell footer quote | `order.ticket.route` | Routeable global BottomSheet modal page at `/order/[id]` with Header Close, backdrop close, and dirty guard |
+| `/quick` | Open quick trade action | `order.ticket.route` | Routeable global BottomSheet modal page at `/order/[id]` with Header Close, backdrop close, and dirty guard |
+| `/discover` | Open challenge ticket or trade entry | `order.ticket.route` | Routeable global BottomSheet modal page at `/order/[id]` with Header Close, backdrop close, and dirty guard |
 | `/discover` | Open layout settings | `discover.layout.route` | Routeable modal at `/discover-layout` with Close / Cancel / Save and draft dirty guard |
 | `/auth` | Tap country code selector in phone login mode | `auth.countryPicker` | Non-routeable picker sheet |
 | `/auth/register` | Tap country code selector | `auth.countryPicker` | Non-routeable picker sheet |
 | `/auth/register-phone` | Tap country code selector | `auth.countryPicker` | Non-routeable picker sheet |
 | `/auth/forgot-password` | Tap country code selector in phone reset mode | `auth.countryPicker` | Non-routeable picker sheet |
+| Auth header action routes | Tap language selector | `auth.languageSheet` | Non-routeable language picker sheet |
 | `/auth/register` | Continue with a valid email | `auth.contactConfirm` | Non-routeable confirmation dialog; confirm opens `/auth/register-email-code` |
 | `/auth/register-phone` | Continue with a valid phone | `auth.contactConfirm` | Non-routeable confirmation dialog; confirm opens `/auth/register-phone-code` |
 | `/auth/register-phone` | Press back after email verification | `auth.leaveVerifiedStep` | Non-routeable leave confirmation |
@@ -27,6 +28,8 @@ Source of truth: `src/navigation/routeRegistry.ts` and `src/navigation/modalRegi
 | `/funding/deposit`, `/funding/withdrawal` | Tap payment or payout method field | `funding.paymentMethodSheet` | Non-routeable method selection sheet |
 | `/funding/deposit`, `/funding/withdrawal`, `/funding/transfer` | Submit funding form | `funding.submitFeedbackAlert` | Non-routeable queued Alert Dialog; handler navigates to `/funding/transactions/[id]` |
 | `/funding/deposit`, `/funding/withdrawal`, `/funding/transfer` | Android/system back with entered amount or transfer target | `global.modalQueue` | Queued dirty-state Alert Dialog; confirm dispatches the original navigation action |
+| `/discover`, `/quick` profile module | Tap profile avatar or profile identity edit | `discover.profileEditSheet` | Non-routeable profile edit sheet through public `openDetailSheet` |
+| `/discover`, `/quick` profile module | Tap manager chat preview | `discover.managerChatSheet` | Non-routeable manager chat preview sheet through public `openDetailSheet` |
 | `/quick` | Submit partner application or review pending partner status | `partner.upgradeFeedbackAlert` | Non-routeable queued Alert Dialog for role / permission state feedback |
 | `/client/[id]` | Approve partner upgrade request | `partner.upgradeFeedbackAlert` | Non-routeable queued Alert Dialog for partner approval result |
 | `/settings/security-log` | Tap device card | `security.deviceDetailSheet` | Non-routeable detail sheet |
@@ -38,7 +41,6 @@ Source of truth: `src/navigation/routeRegistry.ts` and `src/navigation/modalRegi
 | `/trade`, `/portfolio` | Tap pending order | `portfolio.pendingOrderDetailSheet` | Non-routeable pending order detail sheet |
 | `/trade`, `/portfolio` | Tap close position | `portfolio.closePositionConfirm` | Non-routeable confirmation; never create a separate close route |
 | `/trade`, `/portfolio` | Close position, modify pending order, delete pending order, or blocked mutation | `portfolio.orderMutationAlert` | Non-routeable queued Alert Dialog for high-risk trading mutation feedback |
-| `/trade`, `/portfolio` | Modify or delete pending order | `portfolio.pendingOrderFeedbackToast` | Non-routeable toast feedback |
 | `/account-details/[id]` | Tap more action | `account.moreActionSheet` | Non-routeable account action sheet |
 | `/accounts`, `/account`, `/account-basic/[id]` | Tap metric description | `account.metricDescriptionSheet` | Non-routeable informational sheet |
 | `/account-balance/[id]` | Tap balance transaction row | `account.balanceTransactionDetailSheet` | Non-routeable transaction detail sheet |
@@ -50,8 +52,8 @@ Source of truth: `src/navigation/routeRegistry.ts` and `src/navigation/modalRegi
 
 ## Trigger Classes
 
-- Routeable flows: trading order ticket and current Discover layout editor.
+- Routeable flows: trading order ticket and current Discover layout editor. The trading order ticket keeps a route for recovery and direct entry, while its visible operation surface is a global BottomSheet modal page.
 - Non-routeable business sheets: quick actions, account selector, payment method selector, security detail, account menu, transaction detail.
 - Non-routeable feedback and confirmations: auth errors, leave confirmation, close/delete confirmation, toast, tips, and demo-only feedback.
 - Close/back behavior for routeable pages and modals is governed by `docs/page-navigation-policy.md`; routeable modals must provide a deterministic close fallback.
-- Bottom-sheet class triggers must resolve to the shared `GlobalBottomSheetHost` or a shared preset content component, not a page-owned sheet shell. Auth confirmation dialogs, PIN error dialogs, and web select menus remain registered non-sheet exceptions.
+- Bottom-sheet class triggers must resolve to the shared `GlobalBottomSheetHost` plus `BottomSheetActions` public scene openers and public business sheet content, not a page-owned sheet shell. Auth confirmation dialogs, PIN error dialogs, and web select menus remain registered non-sheet exceptions.

@@ -22,7 +22,7 @@ Source of truth: `src/navigation/routeRegistry.ts`, `src/navigation/modalRegistr
 | Primary tabs | `/workspace`, `/markets`, `/trade`, `/accounts`, `/discover`, `/quick`, `/learn`, `/demo`, `/clients`, `/growth`, `/wallet`, `/me` | `none` |
 | Hidden tab aliases | `/portfolio`, `/account`, `/partner-tools` | `none` |
 | Market detail | `/instrument/[id]` | `back` to `/markets` |
-| Trading routeable modal | `/order/[id]` | `close` to `/trade`, `confirm-leave` for input progress |
+| Trading route-backed bottom sheet modal page | `/order/[id]` | `close` to `/trade`, `confirm-leave` for input progress; visible surface uses shared BottomSheet close lifecycle |
 | Partner detail | `/client/[id]` | `back` to `/trade` |
 | Discover detail | `/discover-entry/[id]` | `back` to `/discover` |
 | Discover modal | `/discover-layout` | `close` / `cancel` to `/discover`, `save` then close |
@@ -47,5 +47,5 @@ Source of truth: `src/navigation/routeRegistry.ts`, `src/navigation/modalRegistr
 - `UNSAFE_ROUTER_BACK`: page and component code must use `navigationPolicy` helpers instead of direct `router.back()` or `router.canGoBack()`.
 - `PRIMARY_TAB_LEFT_ACTION`: primary Tab entries must not render Back or Close.
 - `DISCOVER_LAYOUT_BACK_ICON`: routeable modal roots must use Close / Cancel / Save, not page Back.
-- `ORDER_TICKET_MISSING_CLOSE`: high-risk full-screen Modal Page roots must use Close and dirty-state confirmation.
+- `ORDER_TICKET_MISSING_CLOSE`: high-risk route-backed order ticket sheets must use Header Close, shared close lifecycle, deterministic route fallback, and dirty-state confirmation.
 - `PRIVATE_PAN_RESPONDER_SHEET`: pages must not implement private sheet drag/backdrop shells outside registered public overlay hosts.

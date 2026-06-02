@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { ActionButton } from '@/src/design-public-assets/components';
 import { AppIcon, type AppIconName, type IconTone } from '@/src/design-public-assets/components';
-import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
+import { openConfirmSheet, openScrollableDetailSheet, useBottomSheet } from '@/src/design-public-assets/components';
+import { DeviceDetailSheet } from '@/src/design-public-assets/business-components';
 import { Card } from '@/src/design-public-assets/components';
 import { ConfirmActionSheet } from '@/src/design-public-assets/components';
 import { IconSurface, type IconSurfaceTone } from '@/src/design-public-assets/components';
@@ -22,7 +22,6 @@ import {
   type SecurityRiskLevel,
   type SecuritySession,
 } from '@/src/domain/securityLoginLog';
-import { useToast } from '@/src/feedback/Toast';
 import { impactLight, notifySuccess, notifyWarning } from '@/src/feedback/haptics';
 import { useProductSettings } from '@/src/design-public-assets/copy';
 import { layout, lineWidth, radius, size, spacing } from '@/src/design-public-assets/tokens';
@@ -52,8 +51,9 @@ export default function SecurityLoginLogScreen() {
   };
 
   const openDevice = (device: SecurityDevice) => {
-    bottomSheet.show(
-      bottomSheetPresets.detail({
+    openScrollableDetailSheet(
+      bottomSheet,
+      {
         content: (
           <DeviceDetailSheet
             device={device}
@@ -63,25 +63,37 @@ export default function SecurityLoginLogScreen() {
           />
         ),
         leftIcon: deviceIcon(device.deviceType),
-        snapPoints: ['84%'],
         title: device.deviceName,
-      }),
+      },
     );
   };
 
   const openRevokeConfirm = (device: SecurityDevice, session: SecuritySession) => {
-    bottomSheet.push(
-      bottomSheetPresets.detail({
+    openConfirmSheet(
+      bottomSheet,
+      {
         content: (
           <ConfirmActionSheet
             body={session.isCurrentSession ? t('securityLog.revoke.currentBlockedBody') : t('securityLog.revoke.confirmBody', { app: session.appName })}
-            cancelLabel={t('securityLog.action.cancel')}
-            confirmDisabled={session.isCurrentSession || session.status === 'revoked'}
-            confirmLabel={t('securityLog.action.revokeSession')}
             confirmTone="danger"
             icon="icon.system.logout"
-            onCancel={bottomSheet.back}
-            onConfirm={() => {
+            title={t('securityLog.revoke.confirmTitle')}
+          />
+        ),
+        footer: [
+          {
+            label: t('securityLog.action.cancel'),
+            onPress: () => {
+              bottomSheet.back();
+              return false;
+            },
+            tone: 'neutral',
+            variant: 'outline',
+          },
+          {
+            disabled: session.isCurrentSession || session.status === 'revoked',
+            label: t('securityLog.action.revokeSession'),
+            onPress: () => {
               const result = revokeSecuritySession(devices, session.sessionId);
               if (result.code !== 'ok') {
                 void notifyWarning();
@@ -95,7 +107,7 @@ export default function SecurityLoginLogScreen() {
                   tone: 'warning',
                 });
                 bottomSheet.back();
-                return;
+                return false;
               }
 
               updateDevices(result.devices);
@@ -109,8 +121,9 @@ export default function SecurityLoginLogScreen() {
                 title: t('securityLog.toast.revokeTitle'),
                 tone: 'success',
               });
-              bottomSheet.show(
-                bottomSheetPresets.detail({
+              openScrollableDetailSheet(
+                bottomSheet,
+                {
                   content: (
                     <DeviceDetailSheet
                       device={result.devices.find((item) => item.deviceId === device.deviceId) ?? device}
@@ -120,33 +133,47 @@ export default function SecurityLoginLogScreen() {
                     />
                   ),
                   leftIcon: deviceIcon(device.deviceType),
-                  snapPoints: ['84%'],
                   title: device.deviceName,
-                }),
+                },
               );
-            }}
-            title={t('securityLog.revoke.confirmTitle')}
-          />
-        ),
+              return false;
+            },
+            tone: 'danger',
+            variant: 'filled',
+          },
+        ],
         leftIcon: 'icon.system.logout',
         title: t('securityLog.revoke.confirmTitle'),
-      }),
+      },
     );
   };
 
   const openReportConfirm = (device: SecurityDevice, event: SecurityLoginEvent) => {
-    bottomSheet.push(
-      bottomSheetPresets.detail({
+    openConfirmSheet(
+      bottomSheet,
+      {
         content: (
           <ConfirmActionSheet
             body={t('securityLog.report.confirmBody', { device: device.deviceName })}
-            cancelLabel={t('securityLog.action.cancel')}
-            confirmDisabled={event.status === 'reported'}
-            confirmLabel={t('securityLog.action.reportNotMe')}
             confirmTone="danger"
             icon="icon.security.risk_shield"
-            onCancel={bottomSheet.back}
-            onConfirm={() => {
+            title={t('securityLog.report.confirmTitle')}
+          />
+        ),
+        footer: [
+          {
+            label: t('securityLog.action.cancel'),
+            onPress: () => {
+              bottomSheet.back();
+              return false;
+            },
+            tone: 'neutral',
+            variant: 'outline',
+          },
+          {
+            disabled: event.status === 'reported',
+            label: t('securityLog.action.reportNotMe'),
+            onPress: () => {
               const result = reportSecurityEvent(devices, event.eventId);
               if (result.code !== 'ok') {
                 void notifyWarning();
@@ -160,7 +187,7 @@ export default function SecurityLoginLogScreen() {
                   tone: 'warning',
                 });
                 bottomSheet.back();
-                return;
+                return false;
               }
 
               updateDevices(result.devices);
@@ -175,13 +202,15 @@ export default function SecurityLoginLogScreen() {
                 tone: 'warning',
               });
               bottomSheet.hide();
-            }}
-            title={t('securityLog.report.confirmTitle')}
-          />
-        ),
+              return false;
+            },
+            tone: 'danger',
+            variant: 'filled',
+          },
+        ],
         leftIcon: 'icon.security.risk_shield',
         title: t('securityLog.report.confirmTitle'),
-      }),
+      },
     );
   };
 
@@ -275,131 +304,6 @@ function SecurityDeviceCard({ device, formatDate, onPress }: { device: SecurityD
   );
 }
 
-function DeviceDetailSheet({
-  device,
-  formatDate,
-  onOpenConfirmReport,
-  onOpenConfirmRevoke,
-}: {
-  device: SecurityDevice;
-  formatDate: (value: string) => string;
-  onOpenConfirmReport: (event: SecurityLoginEvent) => void;
-  onOpenConfirmRevoke: (session: SecuritySession) => void;
-}) {
-  const { colors, t } = useProductSettings();
-  const toast = useToast();
-  const riskyEvents = device.events.filter((event) => event.riskLevel !== 'low' && event.status !== 'resolved');
-  const showPlaceholder = (title: string) => {
-    void impactLight();
-    toast.show({
-      message: t('securityLog.toast.placeholderBody'),
-      title,
-    });
-  };
-
-  return (
-    <View style={styles.sheetContent}>
-      <View style={StyleSheet.flatten([styles.detailHeaderCard, { backgroundColor: colors.surface.panel }])}>
-        <View style={styles.inlineRow}>
-          <StatusPill compact label={t(`securityLog.risk.${device.riskLevel}`)} tone={riskTone(device.riskLevel)} />
-          {device.isCurrentDevice ? <StatusPill compact label={t('securityLog.status.current')} tone="info" /> : null}
-        </View>
-        <AppText tone="muted" variant="caption">
-          {device.os} · {device.locationLabel}
-        </AppText>
-        <AppText tone="dim" variant="caption">
-          {t('securityLog.device.lastActive')}: {formatDate(device.lastActiveAt)}
-        </AppText>
-      </View>
-
-      <View style={styles.sheetSection}>
-        <AppText variant="subtitle">{t('securityLog.sessions.title')}</AppText>
-        {device.sessions.map((session) => (
-          <View key={session.sessionId} style={StyleSheet.flatten([styles.recordRow, { borderColor: colors.border.subtle }])}>
-            <View style={styles.recordIcon}>
-              <AppIcon name={session.status === 'revoked' ? 'icon.system.logout' : 'icon.security.lock'} sizeVariant="sm" />
-            </View>
-            <View style={styles.recordBody}>
-              <View style={styles.inlineRow}>
-                <AppText numberOfLines={1} variant="subtitle">
-                  {session.appName}
-                </AppText>
-                <StatusPill compact label={t(`securityLog.session.${session.status}`)} tone={session.status === 'active' ? 'success' : 'neutral'} />
-              </View>
-              <AppText tone="muted" variant="caption">
-                {session.ipHintMasked} · {formatDate(session.lastActiveAt)}
-              </AppText>
-              {session.isCurrentSession ? (
-                <AppText tone="blue" variant="caption">
-                  {t('securityLog.session.currentHelp')}
-                </AppText>
-              ) : null}
-            </View>
-            <NativePressable
-              accessibilityLabel={t('securityLog.action.revokeShort')}
-              accessibilityRole="button"
-              accessibilityState={{ disabled: session.isCurrentSession || session.status === 'revoked' }}
-              disabled={session.isCurrentSession || session.status === 'revoked'}
-              minTouch={size.button.textMinTouch}
-              onPress={() => onOpenConfirmRevoke(session)}
-              style={styles.textAction}>
-              <AppIcon name="icon.system.logout" sizeVariant="sm" tone={session.isCurrentSession || session.status === 'revoked' ? 'disabled' : 'danger'} />
-              <AppText tone={session.isCurrentSession || session.status === 'revoked' ? 'disabled' : 'danger'} variant="subtitle">
-                {t('securityLog.action.revokeShort')}
-              </AppText>
-            </NativePressable>
-          </View>
-        ))}
-      </View>
-
-      <View style={styles.sheetSection}>
-        <AppText variant="subtitle">{t('securityLog.events.title')}</AppText>
-        {device.events.map((event) => (
-          <View key={event.eventId} style={StyleSheet.flatten([styles.recordRow, { borderColor: colors.border.subtle }])}>
-            <View style={styles.recordIcon}>
-              <AppIcon name={event.riskLevel === 'low' ? 'icon.trading.history' : 'icon.security.risk_shield'} sizeVariant="sm" tone={event.riskLevel === 'high' ? 'danger' : event.riskLevel === 'medium' ? 'amber' : undefined} />
-            </View>
-            <View style={styles.recordBody}>
-              <View style={styles.inlineRow}>
-                <AppText numberOfLines={1} variant="subtitle">
-                  {t(event.descriptionKey as never)}
-                </AppText>
-                <StatusPill compact label={t(`securityLog.eventStatus.${event.status}`)} tone={event.status === 'reported' ? 'danger' : event.status === 'open' ? riskTone(event.riskLevel) : 'neutral'} />
-              </View>
-              <AppText tone="muted" variant="caption">
-                {formatDate(event.createdAt)}
-              </AppText>
-            </View>
-            {event.status === 'open' && event.riskLevel !== 'low' ? (
-              <NativePressable
-                accessibilityLabel={t('securityLog.action.reportShort')}
-                accessibilityRole="button"
-                minTouch={size.button.textMinTouch}
-                onPress={() => onOpenConfirmReport(event)}
-                style={styles.textAction}>
-                <AppIcon name="icon.security.risk_shield" sizeVariant="sm" tone="danger" />
-                <AppText tone="danger" variant="subtitle">
-                  {t('securityLog.action.reportShort')}
-                </AppText>
-              </NativePressable>
-            ) : null}
-          </View>
-        ))}
-      </View>
-
-      <View style={styles.sheetActions}>
-        <ActionButton icon="icon.security.lock" label={t('securityLog.action.changePassword')} onPress={() => showPlaceholder(t('securityLog.action.changePassword'))} tone="blue" variant="outline" />
-        <ActionButton icon="icon.security.key_access" label={t('securityLog.action.enablePin')} onPress={() => showPlaceholder(t('securityLog.action.enablePin'))} tone="brand" variant="outline" />
-      </View>
-      {riskyEvents.length > 0 ? (
-        <AppText tone="danger" variant="caption">
-          {t('securityLog.recoveryHint')}
-        </AppText>
-      ) : null}
-    </View>
-  );
-}
-
 function deviceIcon(deviceType: SecurityDeviceType): AppIconName {
   if (deviceType === 'phone') {
     return 'icon.security.key_access';
@@ -452,12 +356,6 @@ function formatSecurityDate(value: string, locale: string) {
 }
 
 const styles = StyleSheet.create({
-  detailHeaderCard: {
-    borderRadius: radius.card,
-    borderWidth: lineWidth.none,
-    gap: spacing.sm,
-    padding: spacing.md,
-  },
   deviceBody: {
     flex: 1,
     gap: spacing.sm,
@@ -492,40 +390,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: spacing.sm,
   },
-  recordBody: {
-    flex: 1,
-    gap: spacing.xs,
-    minWidth: 0,
-  },
-  recordIcon: {
-    paddingTop: spacing.xs,
-  },
-  recordRow: {
-    alignItems: 'flex-start',
-    borderTopWidth: lineWidth.hairline,
-    flexDirection: 'row',
-    gap: spacing.sm,
-    paddingVertical: spacing.md,
-  },
   sectionHeader: {
     gap: spacing.xs,
-  },
-  sheetActions: {
-    gap: spacing.sm,
-  },
-  sheetContent: {
-    gap: spacing.lg,
-    paddingBottom: spacing.lg,
-  },
-  sheetSection: {
-    gap: spacing.sm,
-  },
-  textAction: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing.xs,
-    justifyContent: 'center',
-    paddingHorizontal: spacing.sm,
   },
   summaryGrid: {
     flexDirection: 'row',

@@ -6,13 +6,12 @@ import { layout, lineWidth, radius, size, spacing, typography } from '@/src/them
 import { impactLight } from '@/src/feedback/haptics';
 import { handleCloseIntent, handleGlobalBack, safeRouteTargets, type NavigationTarget } from '@/src/navigation/navigationPolicy';
 import { useProductSettings } from '@/src/settings/ProductSettings';
-import { localeOptions, type Locale } from '@/src/i18n/translations';
+import type { Locale } from '@/src/i18n/translations';
 
-import { AppIcon } from './AppIcon';
 import { NativePressable } from './NativePressable';
 import type { AppIconName } from './AppIcon';
-import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
-import { FlagIcon } from './FlagIcon';
+import { openSelectionSheet, useBottomSheet } from '@/src/design-public-assets/components';
+import { AuthLanguageSheetContent } from '@/src/design-public-assets/business-components';
 import { HeaderIconButton } from './HeaderIconButton';
 import { useKeyboardVisible } from './layout/useKeyboardVisible';
 import { TextField } from './TextField';
@@ -232,14 +231,11 @@ export function AuthLanguageAction() {
     bottomSheet.hide();
   };
   const openLanguageSheet = () => {
-    bottomSheet.show(bottomSheetPresets.selection({
+    openSelectionSheet(bottomSheet, {
       content: <AuthLanguageSheetContent onSelect={selectLocale} selectedLocale={locale} />,
-      contentPadding: 'plain',
-      contentSizing: 'auto',
-      heightMode: 'adaptive',
-      sheetSurface: 'panel',
+      fixed: false,
       title: t('auth.language.selectTitle'),
-    }));
+    });
   };
 
   return (
@@ -249,39 +245,6 @@ export function AuthLanguageAction() {
       onPress={openLanguageSheet}
       variant="ghost"
     />
-  );
-}
-
-function AuthLanguageSheetContent({
-  onSelect,
-  selectedLocale,
-}: {
-  onSelect: (locale: Locale) => void;
-  selectedLocale: Locale;
-}) {
-  return (
-    <View style={styles.languageList}>
-      {localeOptions.map((option) => {
-        const active = option.value === selectedLocale;
-
-        return (
-          <NativePressable
-            accessibilityLabel={option.label}
-            accessibilityRole="button"
-            accessibilityState={{ selected: active }}
-            key={option.value}
-            minTouch={44}
-            onPress={() => onSelect(option.value)}
-            style={styles.languageRow}>
-            <FlagIcon code={option.flag} size={30} />
-            <AppText numberOfLines={1} style={styles.languageName} variant={active ? 'titleMd' : 'bodyLg'}>
-              {option.label}
-            </AppText>
-            {active ? <AppIcon name="icon.status.check" sizeVariant="sm" styleVariant="fill" /> : null}
-          </NativePressable>
-        );
-      })}
-    </View>
   );
 }
 
@@ -376,21 +339,6 @@ const styles = StyleSheet.create({
     gap: spacing.xxs,
     justifyContent: 'center',
     paddingHorizontal: spacing.xs,
-  },
-  languageList: {
-    gap: spacing.xs,
-  },
-  languageName: {
-    flex: 1,
-    minWidth: 0,
-  },
-  languageRow: {
-    alignItems: 'center',
-    borderRadius: radius.md,
-    flexDirection: 'row',
-    gap: spacing.md,
-    minHeight: size.input.countryRowMinHeight,
-    paddingHorizontal: layout.listRowPaddingX,
   },
   progressRow: {
     flexDirection: 'row',

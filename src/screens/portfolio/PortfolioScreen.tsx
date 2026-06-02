@@ -4,14 +4,12 @@ import { useState } from "react";
 
 import { layout, lineWidth, radius, spacing } from '@/src/design-public-assets/tokens';
 import { ActionButton } from '@/src/design-public-assets/components';
-import { bottomSheetPresets, useBottomSheet } from '@/src/design-public-assets/components';
-import { ClosedOrderDetailSheet as SharedClosedOrderDetailSheet, createTradingAccountContextSwitcherHeader, FilterPillGroup, PendingOrderDetailSheet as SharedPendingOrderDetailSheet, PositionDetailSheet as SharedPositionDetailSheet, TradingAccountContextSwitcher, TradingOrderActionSheet } from '@/src/design-public-assets/business-components';
+import { openActionSheet, openConfirmSheet, openScrollableDetailSheet, openSelectionSheet, useBottomSheet } from '@/src/design-public-assets/components';
+import { AccountMenuSheet, ClosedOrderDetailSheet as SharedClosedOrderDetailSheet, createTradingAccountContextSwitcherHeader, FilterPillGroup, PendingOrderDetailSheet as SharedPendingOrderDetailSheet, PositionDetailSheet as SharedPositionDetailSheet, TradingAccountContextSwitcher, TradingOrderActionSheet } from '@/src/design-public-assets/business-components';
 import { Card } from '@/src/design-public-assets/components';
 import { ConfirmActionSheet } from '@/src/design-public-assets/components';
 import { MiniBarChart, TradeOrderList } from '@/src/design-public-assets/components';
 import { EmptyState } from '@/src/design-public-assets/components';
-import { FundActionGrid } from '@/src/design-public-assets/components';
-import { GlobalMenuList } from '@/src/design-public-assets/components';
 import { IconSurface } from '@/src/design-public-assets/components';
 import {
   KeyValueList,
@@ -23,9 +21,8 @@ import { useOverlayQueue } from '@/src/design-public-assets/components';
 import { AppIcon } from '@/src/design-public-assets/components';
 import { Screen } from '@/src/design-public-assets/components';
 import { SegmentedTabs } from '@/src/design-public-assets/components';
-import { StatusPill, type StatusPillTone } from '@/src/design-public-assets/components';
+import { StatusPill } from '@/src/design-public-assets/components';
 import { AppText } from '@/src/design-public-assets/components';
-import { getAccountStatusLabel, type TradingAccountProfile } from "@/src/domain/accountProfiles";
 import {
   directionLabel,
   formatMoney,
@@ -35,13 +32,11 @@ import {
   localizeText,
   statusLabel,
 } from "@/src/domain/format";
-import { getFundingOperationActions } from "@/src/domain/funding";
 import { buildSharedTradingAccountProfiles } from "@/src/domain/tradingAccountView";
 import type { Instrument, OrderType } from "@/src/domain/types";
 import type { Locale } from '@/src/design-public-assets/copy';
 import { useToast } from "@/src/feedback/Toast";
 import { notifySuccess, notifyWarning } from "@/src/feedback/haptics";
-import type { AppIconName } from '@/src/design-public-assets/icons';
 import { useProductSettings } from '@/src/design-public-assets/copy';
 import { useBroker } from "@/src/state/BrokerStore";
 
@@ -226,25 +221,39 @@ export function TraderPortfolioScreen() {
 
     void notifyWarning();
 
-    bottomSheet.push(bottomSheetPresets.detail({
+    openConfirmSheet(bottomSheet, {
       content: (
         <ConfirmActionSheet
           body={t("portfolio.closeConfirmMessage", { symbol })}
-          cancelLabel={t("common.cancel")}
-          confirmLabel={t("common.confirm")}
           confirmTone="danger"
           icon="icon.trading.close_position"
-          onCancel={bottomSheet.back}
-          onConfirm={() => {
-            close();
-            bottomSheet.hide();
-          }}
           title={t("portfolio.closeConfirmTitle")}
         />
       ),
+      footer: [
+        {
+          label: t("common.cancel"),
+          onPress: () => {
+            bottomSheet.back();
+            return false;
+          },
+          tone: "neutral",
+          variant: "outline",
+        },
+        {
+          label: t("common.confirm"),
+          onPress: () => {
+            close();
+            bottomSheet.hide();
+            return false;
+          },
+          tone: "danger",
+          variant: "filled",
+        },
+      ],
       leftIcon: "icon.trading.close_position",
       title: t("portfolio.closeConfirmTitle"),
-    }));
+    });
   };
   const openAccountSwitcher = () => {
     const showAddAccountFeedback = () => {
@@ -254,14 +263,12 @@ export function TraderPortfolioScreen() {
       });
     };
 
-    bottomSheet.show(bottomSheetPresets.selection({
+    openSelectionSheet(bottomSheet, {
       ...createTradingAccountContextSwitcherHeader({
         locale,
         onAddAccount: showAddAccountFeedback,
         title: t("funding.account.switchTitle"),
       }),
-      contentPadding: "card",
-      contentSizing: "auto",
       content: (
         <TradingAccountContextSwitcher
           accounts={accountProfiles}
@@ -273,15 +280,22 @@ export function TraderPortfolioScreen() {
           selectedId={selectedAccount.id}
         />
       ),
-      heightMode: "adaptive",
-      sheetSurface: "canvas",
-    }));
+      cardSelection: true,
+      fixed: false,
+    });
   };
   const openAccountMenu = () => {
-    bottomSheet.show(bottomSheetPresets.actionMenu({
+    openActionSheet(bottomSheet, {
       content: (
         <AccountMenuSheet
           account={selectedAccount}
+          onSelectPlaceholder={(label) => {
+            toast.show({
+              message: t("common.demoActionNoAccount"),
+              title: label,
+            });
+            bottomSheet.hide();
+          }}
           onViewBalance={() => {
             bottomSheet.hide();
             router.push(`/account-balance/${selectedAccount.id}` as never);
@@ -296,12 +310,11 @@ export function TraderPortfolioScreen() {
           }}
         />
       ),
-    }));
+      sheetSurface: "canvas",
+    });
   };
   const openPositionOptions = () => {
-    bottomSheet.show(bottomSheetPresets.detail({
-      contentPadding: "plain",
-      title: t("portfolio.positionOptionsTitle"),
+    openActionSheet(bottomSheet, {
       content: (
         <TradingOrderActionSheet
           groups={[
@@ -344,13 +357,11 @@ export function TraderPortfolioScreen() {
           ]}
         />
       ),
-    }));
+      title: t("portfolio.positionOptionsTitle"),
+    });
   };
   const openPendingOrderOptions = () => {
-    bottomSheet.show(bottomSheetPresets.detail({
-      contentPadding: "plain",
-      leftIcon: "icon.system.settings",
-      title: t("portfolio.pendingOptionsTitle"),
+    openActionSheet(bottomSheet, {
       content: (
         <TradingOrderActionSheet
           groups={[
@@ -393,7 +404,9 @@ export function TraderPortfolioScreen() {
           ]}
         />
       ),
-    }));
+      leftIcon: "icon.system.settings",
+      title: t("portfolio.pendingOptionsTitle"),
+    });
   };
   const showPositionOptionFeedback = (title: string) => {
     toast.show({
@@ -412,9 +425,8 @@ export function TraderPortfolioScreen() {
     bottomSheet.hide();
   };
   const openPositionDetail = (position: (typeof positionRows)[number]) => {
-    bottomSheet.show(bottomSheetPresets.actionMenu({
-      sheetSurface: "canvas",
-      content: <PositionDetailSheet position={position} />,
+    openScrollableDetailSheet(bottomSheet, {
+      content: <PositionDetailContent position={position} />,
       footer: [
         {
           icon: "icon.system.settings",
@@ -453,20 +465,19 @@ export function TraderPortfolioScreen() {
           tone: "danger",
         },
       ],
-    }));
+      title: t("portfolio.positionOptionsTitle"),
+    });
   };
   const openClosedOrderDetail = (order: HistoryOrderRow) => {
-    bottomSheet.show(bottomSheetPresets.detail({
+    openScrollableDetailSheet(bottomSheet, {
       leftIcon: "icon.trading.history",
       title: t("portfolio.closedOrderDetailTitle"),
-      content: <ClosedOrderDetailSheet order={order} />,
-      sheetSurface: "canvas",
-    }));
+      content: <ClosedOrderDetailContent order={order} />,
+    });
   };
   const openPendingOrderDetail = (order: (typeof orderRows)[number]) => {
-    bottomSheet.show(bottomSheetPresets.actionMenu({
-      sheetSurface: "canvas",
-      content: <PendingOrderDetailSheet order={order} />,
+    openScrollableDetailSheet(bottomSheet, {
+      content: <PendingOrderDetailContent order={order} />,
       footer: [
         {
           icon: "icon.system.settings",
@@ -529,7 +540,8 @@ export function TraderPortfolioScreen() {
           tone: "down",
         },
       ],
-    }));
+      title: t("portfolio.pendingOptionsTitle"),
+    });
   };
 
   return (
@@ -741,77 +753,6 @@ function OrderViewTabs({
   );
 }
 
-function AccountMenuSheet({
-  account,
-  onViewBasicInfo,
-  onViewBalance,
-  onViewDetails,
-}: {
-  account: TradingAccountProfile;
-  onViewBasicInfo: () => void;
-  onViewBalance: () => void;
-  onViewDetails: () => void;
-}) {
-  const { locale, colors, t } = useProductSettings();
-  const status = getAccountStatusLabel(account.group, locale);
-  const statusTone: StatusPillTone =
-    account.group === "demo"
-      ? "brand"
-      : account.group === "readOnly"
-        ? "warning"
-        : "success";
-  const statusIcon =
-    account.group === "readOnly"
-      ? "icon.security.lock"
-      : account.group === "demo"
-        ? "icon.account.avatar"
-        : "icon.status.verified";
-  const menuItems = [
-    {
-      icon: "icon.kyc.identity" as const,
-      label: t("accountDetails.menuBasicInfo"),
-      onPress: onViewBasicInfo,
-    },
-    { icon: "icon.trading.history" as const, label: t("portfolio.orderRecords") },
-    { icon: "icon.wallet.balance" as const, label: t("balance.title"), onPress: onViewBalance },
-    { icon: "icon.wallet.transfer" as const, label: t("accountDetails.swap") },
-  ];
-
-  return (
-    <View style={styles.accountMenuSheet}>
-      <View style={styles.menuAccountHeader}>
-        <AppText style={styles.menuAccountNo} variant="largeNumber">
-          {account.accountNo}
-        </AppText>
-        <AppText tone="muted" variant="subtitle">
-          {t("account.margin")} · {account.currency}
-        </AppText>
-        <StatusPill icon={statusIcon} label={status} tone={statusTone} />
-      </View>
-
-      <FundActionGrid items={getFundingOperationActions(t, account.id)} />
-
-      <View style={StyleSheet.flatten([styles.menuListInset, { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle }])}>
-        <GlobalMenuList contained items={menuItems} />
-      </View>
-
-      <NativePressable
-        accessibilityLabel={t("accountDetails.open")}
-        minTouch={spacing.xxl + spacing.xl + spacing.xxs}
-        onPress={onViewDetails}
-        style={StyleSheet.flatten([
-          styles.viewDetailsButton,
-          { backgroundColor: colors.surface.panel, borderColor: colors.border.subtle },
-        ])}
-      >
-        <AppText tone="blue" variant="subtitle">
-          {t("accountDetails.open")}
-        </AppText>
-      </NativePressable>
-    </View>
-  );
-}
-
 type PositionDetailRow = {
   closable: boolean;
   currentPrice: string;
@@ -837,7 +778,7 @@ type PendingOrderRow = {
   type: OrderType;
 };
 
-function PendingOrderDetailSheet({ order }: { order: PendingOrderRow }) {
+function PendingOrderDetailContent({ order }: { order: PendingOrderRow }) {
   const { locale, t } = useProductSettings();
   const direction = directionLabel(order.direction, locale).toLowerCase();
   const details = [
@@ -869,7 +810,7 @@ function PendingOrderDetailSheet({ order }: { order: PendingOrderRow }) {
   );
 }
 
-function PositionDetailSheet({ position }: { position: PositionDetailRow }) {
+function PositionDetailContent({ position }: { position: PositionDetailRow }) {
   const { locale, t } = useProductSettings();
   const direction = directionLabel(position.direction, locale).toLowerCase();
   const details = [
@@ -1133,7 +1074,7 @@ function HistoryOrdersView({
   );
 }
 
-function ClosedOrderDetailSheet({ order }: { order: HistoryOrderRow }) {
+function ClosedOrderDetailContent({ order }: { order: HistoryOrderRow }) {
   const { locale, t } = useProductSettings();
   const direction = directionLabel(order.direction, locale).toLowerCase();
   const details = [
@@ -1467,25 +1408,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: spacing.md,
   },
-  accountMenuSheet: {
-    gap: spacing.lg,
-  },
-  menuAccountHeader: {
-    alignItems: "center",
-    gap: spacing.xs + lineWidth.strong,
-    paddingBottom: spacing.xs,
-    paddingTop: spacing.sm,
-  },
-  menuAccountNo: {
-    textAlign: "center",
-  },
-  listCard: {
-    paddingVertical: spacing.none,
-  },
-  historyDivider: {
-    height: spacing.xs + spacing.xxs,
-    marginHorizontal: -spacing.lg,
-  },
   historyOutcomeItem: {
     alignItems: "center",
     flexDirection: "row",
@@ -1542,27 +1464,6 @@ const styles = StyleSheet.create({
     marginRight: spacing.xs + spacing.xxs,
     width: spacing.sm + spacing.xxs,
   },
-  orderMain: {
-    flex: 1,
-    minWidth: 0,
-  },
-  orderRow: {
-    alignItems: "center",
-    borderBottomWidth: lineWidth.hairline,
-    flexDirection: "row",
-    gap: spacing.md,
-    minHeight: spacing.xxl + spacing.xl + spacing.xxs,
-    paddingVertical: spacing.sm + spacing.xxs,
-  },
-  orderSide: {
-    alignItems: "flex-end",
-    minWidth: 92,
-  },
-  menuListInset: {
-    borderRadius: radius.card,
-    borderWidth: lineWidth.none,
-    overflow: "hidden",
-  },
   orderContent: {
     gap: spacing.sm + spacing.xxs,
     minHeight: spacing.section * 5 + spacing.xxs,
@@ -1606,20 +1507,5 @@ const styles = StyleSheet.create({
     height: layout.touchTargetMin + spacing.xs,
     justifyContent: "space-between",
     paddingHorizontal: spacing.sm,
-  },
-  sectionAction: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  tradeRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: spacing.md,
-  },
-  viewDetailsButton: {
-    alignItems: "center",
-    borderRadius: radius.xl,
-    borderWidth: lineWidth.hairline,
-    minHeight: spacing.xxl + spacing.xl + spacing.xxs,
   },
 });

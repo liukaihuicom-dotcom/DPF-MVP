@@ -102,6 +102,29 @@
     ]
   },
   "componentTokenBindings": {
+    "ActionButton": [
+      "size.button.sm",
+      "size.button.md",
+      "size.button.lg",
+      "size.button.xl",
+      "size.button.minHeight",
+      "size.touch.min",
+      "size.icon.xs",
+      "size.icon.sm",
+      "size.icon.md",
+      "typography.buttonSm",
+      "typography.buttonMd",
+      "typography.buttonLg",
+      "spacing.*",
+      "layout.actionButtonPaddingX",
+      "radius.full",
+      "lineWidth.none",
+      "lineWidth.hairline",
+      "lineWidth.strong",
+      "color.border.focus",
+      "palette.*",
+      "iconRegistry.*"
+    ],
     "BottomSheet": [
       "layout.sheetHeaderHeight",
       "layout.contentCardPaddingX",

@@ -7,7 +7,7 @@
 ```text
 .codex/skills/
 ├── l0-utility-startup/
-│   └── quick-local-expo-demo-startup-skill-v1.3.0.md
+│   └── quick-local-expo-demo-startup-skill-v1.4.0.md
 ├── l1-core/
 │   ├── product-engineering/
 │   │   └── ai-product-production-delivery-skill-v3.0.0-l5.md
@@ -106,6 +106,7 @@ L1 Core UI Build Production
 
 | Version | Date | Change |
 |---|---|---|
+| v1.5.0 | 2026-06-02 | Synced Quick Local Expo Demo Startup Skill to v1.4.0 and documented external-network Expo Go tunnel QR startup through a real computer Terminal. |
 | v1.4.0 | 2026-06-01 | Reintroduced mandatory path hierarchy under `.codex/skills/` using L0/L1/L2/L3 layer and category directories while keeping complete versioned file names. |
 | v1.3.0 | 2026-06-01 | Added explicit Skill layers, categories, parent-child hierarchy, dependency rules, and standalone-use rules. |
 | v1.2.0 | 2026-06-01 | Removed `.codex/skills/` and flattened all Skill documents into fully named Markdown files under `.codex/`. |
@@ -126,7 +127,7 @@ Before starting any task, Codex must output:
 
 | Skill | Path | Trigger | Required Outputs | Hard Rules |
 |---|---|---|---|---|
-| Quick Local Expo Demo Startup Skill | `.codex/skills/l0-utility-startup/quick-local-expo-demo-startup-skill-v1.3.0.md` | Quick Expo/Metro startup, local app demo startup, mobile phone demo, QR scan preview, `start expo`, `run app`, `local demo`, `phone preview` | Project root and Expo dependency check, port `8081` check, existing service decision, startup script audit, default command `npm run dev:app`, LAN mode, local Metro address, phone demo instructions, blockers and next-stage decision | Check port `8081` before startup. Reuse existing Expo/Metro service. Use `npm run dev:app` when no Expo/Metro service is running. Default to LAN. Do not allow automatic port drift, default to tunnel, silently kill port owners, or treat LAN/tunnel URLs as stable fixed links. |
+| Quick Local Expo Demo Startup Skill | `.codex/skills/l0-utility-startup/quick-local-expo-demo-startup-skill-v1.4.0.md` | Quick Expo/Metro startup, local app demo startup, mobile phone demo, QR scan preview, external-network Expo Go tunnel QR, `start expo`, `run app`, `local demo`, `phone preview`, `external network QR`, `tunnel QR`, `real Terminal Expo` | Project root and Expo dependency check, port `8081` check, existing service decision, startup script audit, default command `npm run dev:app`, LAN mode, external-network command `npx expo start --tunnel --go --clear` when explicitly requested, real computer Terminal QR Code, local Metro address, phone demo instructions, blockers and next-stage decision | Check port `8081` before startup. Reuse existing Expo/Metro service. Use `npm run dev:app` when no Expo/Metro service is running. Default to LAN. When the user explicitly asks for external-network Expo Go scan, open the user's real computer Terminal and run exactly `npx expo start --tunnel --go --clear`; keep the Terminal process running, preserve the Expo QR Code, confirm Tunnel/`exp.direct`, and never downgrade to Web Preview, LAN, localhost, or browser-only preview if tunnel fails. Do not allow automatic port drift, silently kill port owners, or treat LAN/tunnel URLs as stable fixed links. |
 
 ## Core Skills
 
